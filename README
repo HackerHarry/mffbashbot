@@ -1,0 +1,40 @@
+Harrys My Free Farm Bash Bot
+----------------------------
+
+README
+------
+
+Diese Dateien beinhalten einen Bash Bot, der das Spiel "My Free Farm"
+automatisieren kann. Da dieses Spiel ohne "Premium" wenig Sinn macht,
+beschränkt dieser Bot auch auf Premium-Funktionen. Nicht-Premium Benutzer
+können den Bot zwar nutzen, jedoch werden dann nicht alle Gebäudearten bedient.
+
+Es sei an dieser Stelle DEUTLICHST darauf hingewiesen, dass der Gebrauch
+dieser Skripte gegen die AGB des Betreibers verstösst und u.a. eine Löschung
+des MFF-Spielerkontos zur Folge haben kann!
+Der Einsatz dieser Skripte geschieht auf EIGENES RISIKO.
+Sagt nicht, ihr wurdet nicht gewarnt!
+
+Auch möchte ich euch ermutigen, die Farmspiel-Entwickler gelegentlich durch den
+Kauf von Coins zu unterstützen.
+
+Programmierer sehen sofort, dass ich eigentlich kein Programmierer bin :).
+Für mich wichtig ist jedoch, dass der Code funktioniert; er muss dabei nicht
+schön aussehen.
+
+Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von Bastian
+Kanaan gegeben. Seine Produkte 'Berater' und 'Automat' leisten vielen Spielern
+treue Dienste. Inspiriert von Bastians Automaten, fing ich an diesen Bot zu
+entwickeln. Bastians Berater ist bis heute für mich unverzichtbar.
+
+Die INSTALL Datei gibt (hoffentlich) Aufschluß darüber, wie dieser
+Bot installiert werden kann.
+
+In der Datei MANUAL steht grundsätzliches zur Bedienung und zur Arbeits-
+weise des Bots.
+
+Sollte sich jemand verpflichtet fühlen, etwas für meine Arbeit zu spenden,
+gebe ich auf Anfrage gerne meine PayPal Daten heraus.
+
+Harry Basalamah im September 2016
+hackerharry [punkt] oss [at] arcor [punkt] de

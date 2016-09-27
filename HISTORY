@@ -1,0 +1,77 @@
+This file contains the history information for
+Harrys My Free Farm Bash Bot
+
+who  when            what
+HB 08.06.2014 added handling of mega fruit
+HB 15.08.2014 added food contest
+HB 15.08.2014 added flower pot watering
+HB 11.10.2014 complete script redesign
+HB 12.10.2014 added basic knitting mill handling
+HB 13.10.2014 added generic function handling
+HB 14.10.2014 added few forestry functions
+HB 15.10.2014 debugged oil functions, food world functions
+HB 16.10.2014 added propagation of credentials on command line
+HB 18.10.2014 added farmers market functions
+HB 19.10.2014 added queue for monster fruit, minor debugging in flower pot handling
+HB 19.10.2014 redesign of sleep function
+HB 20.10.2014 fixed bug in tree handling
+HB 21.10.2014 simplified AJAX requests (to upjers)
+HB 19.11.2014 added umask of 002 so www-data wont get into trouble writing to the files
+HB 28.11.2014 added harvest mega field function
+HB 29.11.2014 added plant mega field function
+HB 30.11.2014 massive debugging
+HB 02.12.2014 corrected bug in vehicle durability handling
+HB 04.12.2014 corrected bug in vehicle durability handling YET AGAIN
+HB 07.12.2014 and yet again ... vehicle buying routine, enhanced mega field harvest routine
+HB 08.12.2014 vehicle buying is a pain in the arse!!
+HB 09.12.2014 minor cosmetic chanages and redesign of harvest_MegaField()
+HB 11.12.2014 added skipping of watering of special flowers in farmers market
+HB 21.12.2014 added some status info
+HB 22.12.2014 added BASHPID info in order to be able to break the restart delay from front end
+HB 26.12.2014 added check if RID value could be retrieved or not
+HB 24.01.2015 force BuildingID 19 (mega field) to run through it's check routine since 'remain' timer isn't always accurate
+HB 31.01.2014 last changes where useless. redesign of mega field harvest function to cope with upjers' flaws
+HB 06.02.2015 minor cosmetic and functional changes in function file, repeated watering of trees
+HB 14.02.2015 added selection of current bonus plant in flower area, reduced repeat timer to 15 mins
+HB 01.03.2015 fixed food contest and monster fruit handling (only click when venue is active)
+HB 17.04.2015 minor code clean-up
+HB 19.04.2015 optimized MegaFieldPlant() (quicker planting)
+HB 05.05.2015 vet production, reload farm data after mega field planting
+HB 08.05.2015 animal treatment
+HB 21.05.2015 reduced mega field harvest time by one second per vehicle
+HB 08.06.2015 safety counter in MegaFieldPlant()
+HB 21.06.2015 correction in desease handling (vet)
+HB 25.06.2015 refresh farm data after start of animal treatment
+HB 18.07.2015 added mega field 2x2 harvest devices (dormant, too many problems with this code)
+HB 14.09.2015 foodworld init was changed by upjers, code adapted
+HB 15.10.2015 added farm 5
+HB 17.10.2015 added fuel station handling, UA string changed
+HB 19.10.2015 keep LOGFILE for debugging, append to wget logfile, trap crtl-c for clean logoff (if applicable), fixed error in WGETREQ
+HB 25.10.2015 saving from GUI is now done using AJAX
+HB 27.10.2015 cosmetic changes on GUI (new graphic buttons)
+HB 31.10.2015 automate dog bonus and lottery (GUI not yet adapted)
+HB 01.11.2015 minor corrections in start_MegaField()
+HB 02.11.2015 GUI elements for daily dog and lottery, AJAX bot status update :)
+HB 08.11.2015 changed calculation formula in start_FuelStation()
+HB 09.11.2015 using version.txt and history.txt from now on, display version in running bot, renamed functions to functions.sh,
+              re-try interval (failed login) set from 2 to 5 mins, wind mill handling (no full GUI yet), optimised CreateOptionForQueueList()
+HB 10.11.2015 v0.983 save function for wind mill
+HB 21.11.2015 v0.984 increased slots handled on farms 1-5 to three
+HB 25.11.2015 v0.984a automatically send transport vehicle back to farm 5
+HB 26.11.2015 v0.985 fully load vehicle on farm 5 and send it back to main farm. this WILL FAIL as soon as more farms show up in 'tempstock'
+HB 30.11.2015 v0.985a new function iFieldsOnFarmNum() and minor bug fixes
+HB 07.12.2015 v0.986 new forestry products
+HB 12.12.2015 v0.986a fixed bug in lot handling
+HB 19.01.2016 v0.986b changes by upjers
+HB 30.01.2016 v0.986c monster fruit data update
+HB 09.02.2016 v0.087 rewrote MegaFieldPlant() after changes made by upjers, added username display to GUI
+HB 20.02.2016 v0.088 repeated watering of farms (finally ;))
+HB 23.02.2016 v0.988a corrected error in check_MegaFieldEmptyHarvestDevice() where it wouldn't buy a new vehicle when there's only one in use
+HB 08.03.2016 v0.988b quick fix for non-working vet prod. after patch
+HB 09.03.2016 v0.988c added new drugs & plants to product list, updated deasese matrix
+HB 01.05.2016 v0.988d changed daily-action handling (dog-bonus had been failing after last update), send user to index.php if username is missing in GUI (e.g. after browser restart), cosmetic changes
+HB 16.05.2016 v0.989 cosmetic changes on GUI
+HB 08.08.2016 v0.990 ice cream dealer and new food world products
+HB 02.09.2016 v0.991 cosmetic change to farm watering
+HB 18.09.2016 v0.991a added handling of guild jobs. once an active guild job is found it will be restarted as a guild job. new user agent string
+HB 25.09.2016 v1.0   minor code cleanup, applied GPL license info
