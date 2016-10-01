@@ -1,10 +1,3 @@
-<html>
- <head>
-  <title>Harrys MFF Bash Bot - B&auml;umerei</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <link href="css/mffbot.css" rel="stylesheet" type="text/css">
- </head>
- <body id="main_body" class="main_body" onload="window.setTimeout(updateBotStatus, 30000)">
 <?php
 // Show forestry file for Harrys My Free Farm Bash Bot (front end)
 // Copyright 2016 Harun "Harry" Basalamah
@@ -23,6 +16,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+?>
+<html>
+ <head>
+  <title>Harrys MFF Bash Bot - B&auml;umerei</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <link href="css/mffbot.css" rel="stylesheet" type="text/css">
+ </head>
+ <body id="main_body" class="main_body" onload="window.setTimeout(updateBotStatus, 30000)">
+<?php
 $farm=$_POST["farm"];
 $username=$_POST["username"];
 include 'gamepath.php';

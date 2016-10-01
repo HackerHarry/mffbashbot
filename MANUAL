@@ -140,3 +140,6 @@ Ob die Bäume in der Bäumerei fertig sind, stellt der Bot an nur einem einzigen
 Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
 also nicht abhandeln.
 
+Für Äcker ist in der GUI alles auswählbar, auch wenn nicht alles überall
+gepflanzt werden kann. Beispiel: Farmen eins bis fünf nehmen keine Exotischen
+Früchte auf.

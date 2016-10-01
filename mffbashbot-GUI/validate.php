@@ -1,8 +1,3 @@
-<html>
- <head>
-  <title>Harrys MFF Bot - Anmeldungspr&uuml;fung</title>
- </head>
- <body bgcolor="#4E7AB1">
 <?php
 // Login validation file for Harrys My Free Farm Bash Bot (front end)
 // Copyright 2016 Harun "Harry" Basalamah
@@ -21,6 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+?>
+<html>
+ <head>
+  <title>Harrys MFF Bot - Anmeldungspr&uuml;fung</title>
+ </head>
+ <body bgcolor="#4E7AB1">
+<?php
 include 'functions.php';
 print "<h1>Bitte warten...</h1>";
 print ("<br>");
