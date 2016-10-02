@@ -23,10 +23,20 @@ if ($farm == "runbot") {
  $farm = 1;
 }
 $dogisset = is_file($gamepath . "/dodog.txt");
-$lotisset = is_file($gamepath . "/dolot.txt");
+if (is_file($gamepath . "/dolot.txt")) {
+ $LotAction=file_get_contents($gamepath . "/dolot.txt");
+ $LotAction=intval($LotAction);
+}
 if (is_file($gamepath . "/vehiclemgmt.txt")) {
  $Vehicle2Manage=file_get_contents($gamepath . "/vehiclemgmt.txt");
  $Vehicle2Manage=intval($Vehicle2Manage);
+}
+
+function Check4Lot($LotOption) {
+ global $LotAction;
+ if ($LotAction)
+  if ($LotOption === $LotAction)
+   print " selected=\"selected\"";
 }
 
 function Check4Vehicle($VehicleOption) {
@@ -58,7 +68,11 @@ print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" tit
 print "<input type=\"button\" name=\"runbot\" value=\"BOT&#13;&#10;START\" title=\"Bot-Durchlauf erzwingen\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\" style=\"text-align:center;\">&nbsp;\n";
 print "<input type=\"button\" name=\"logon\" value=\"Anmeldung\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
 print "<br>";
-print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\"  value=\"on\" " . (($dogisset) ? 'checked' : '') . ">&nbsp;Ben t&auml;gl. aktivieren&nbsp;&nbsp;<input type=\"checkbox\" id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\" value=\"on\" " . (($lotisset) ? 'checked' : '') . ">&nbsp;Los t&auml;gl. abholen\n";
+print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\"  value=\"on\" " . (($dogisset) ? 'checked' : '') . ">&nbsp;Ben t&auml;gl. aktivieren\n";
+print "&nbsp;<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
+print "<option value=\"sleep\">Sleep</option>\n";
+print "<option value=\"1\""; Check4Lot(1); print ">Los</option>\n";
+print "<option value=\"2\""; Check4Lot(2); print ">Sofortgewinn</option></select>&nbsp;t&auml;gl. abholen\n";
 print "&nbsp;<select id=\"vehiclemgmt\" name=\"vehiclemgmt\" onchange=\"saveMisc();\">";
 print "<option value=\"sleep\">Sleep</option>\n";
 print "<option value=\"1\""; Check4Vehicle(1); print ">Schafkarren</option>\n";

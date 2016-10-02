@@ -93,6 +93,9 @@ root@testbox:/var/www/html/mffbashbot# nano gamepath.php
 
 In der 'gamepath.php' muss der Pfad zum Botordner angepasst werden.
 
+In der 'savemisc.php' müssen die chgrp() funktionen an den Bot-Benutzer
+angepasst werden.
+
 root@testbox:/var/www/html/mffbashbot# nano index.php
 
 In der 'index.php' muss der Pfad in der system() Funktion angepasst werden.

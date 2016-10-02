@@ -102,10 +102,9 @@ function saveMisc() {
  else
   sData += "off&lottoggle=";
 
- if (document.getElementById('lottoggle').checked)
-  sData += "on&vehiclemgmt=";
- else
-  sData += "off&vehiclemgmt=";
+ var v = document.getElementById("lottoggle");
+ sData += v.options[v.selectedIndex].value;
+ sData += "&vehiclemgmt=";
  
  var v = document.getElementById("vehiclemgmt");
  sData += v.options[v.selectedIndex].value;

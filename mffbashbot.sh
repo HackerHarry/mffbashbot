@@ -227,13 +227,17 @@ fi
 
 if [ -f "$LOTFILE" ]; then
   echo -n "Checking for daily lottery bonus..."
-  GetLotteryData "$LOTFILE"
-  LOTSTATUS=$($JQBIN '.datablock[2]' $LOTFILE)
+  GetLotteryData "$FARMDATAFILE"
+  LOTSTATUS=$($JQBIN '.datablock[2]' $FARMDATAFILE)
  if [ "$LOTSTATUS" = "0" ]; then
+  iLot=$(head -1 $LOTFILE)
   echo "not yet claimed, getting lottery ticket..."
   SendAJAXCityRequest "city=2&mode=newlot"
-  sleep 1
-  SendAJAXCityRequest "city=2&mode=lotgetprize"
+  if [ "$iLot" = "2" ]; then
+   echo "and trading it for an instant-win..."
+   sleep 1
+   SendAJAXCityRequest "city=2&mode=lotgetprize"
+  fi
  else
   echo "already claimed"
  fi 

@@ -32,8 +32,8 @@ else
  unlink($gamepath . "/dodog.txt");
 
 // Lottery
-if ($lottoggle == "on") {
- touch($gamepath . "/dolot.txt");
+if ($lottoggle != "sleep") {
+ file_put_contents($gamepath . "/dolot.txt", $lottoggle . "\n");
  chgrp($gamepath . "/dolot.txt", "pi");
  chmod($gamepath . "/dolot.txt", 0664);
 }

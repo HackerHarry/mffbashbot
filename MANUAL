@@ -102,8 +102,6 @@ Eine Warteschlange, die aus zwei oder mehr Elementen besteht, wiederholt sich
 ebenfalls; wobei das oberste Element nach Abarbeitung ganz nach unten in die
 Warteschlange verschoben wird. Verbleibende Elemente rücken eins nach oben.
 
-Wird das tägliche Los automatisch abholt, wird es als Sofortgewinn eingesammelt!
-
 Der Ponyhof wird vom Bot überhaupt nicht bedient.
 Es ist nicht geplant, dass sich das in absehbarer Zeit ändert.
 
