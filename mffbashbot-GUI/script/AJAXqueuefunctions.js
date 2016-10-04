@@ -206,7 +206,7 @@ return false;
 function displaySavedNote() {
  var options = {icon: 'image/mffbot.png'}
  if (!("Notification" in window))
-  alert("Desktop-Nachrichten kann dieser Browser nicht darstellen!");
+  alert("Gespeichert. Leider kann dieser Browser keine Desktop-Nachrichten anzeigen :(");
  else if (Notification.permission === "granted")
   var notification = new Notification("Gespeichert", options);
  else if (Notification.permission !== 'denied') {
@@ -216,3 +216,15 @@ function displaySavedNote() {
   });
  }
 }
+
+function showHideOptions() {
+ var div = document.getElementById("optionspane");
+ if (div.style.display !== "none") {
+  div.style.display = "none";
+  return false;
+  }
+ else {
+  div.style.display = "inline-block";
+  return false
+  }
+};
