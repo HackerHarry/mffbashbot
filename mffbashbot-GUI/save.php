@@ -105,8 +105,8 @@ switch ($farm) {
   break;
 
  case "farmersmarket":
-  $position = ["flowerarea", "nursery", "monsterfruit", "vet"];
-  for ($poscount = 0; $poscount <= 3; $poscount++) {
+  $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
+  for ($poscount = 0; $poscount <= 4; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // 3 slots
     $slot1 = explode(" ", $slots[0]);

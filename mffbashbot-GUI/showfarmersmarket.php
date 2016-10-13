@@ -32,7 +32,7 @@ include 'functions.php';
 include 'buttons.php';
 include 'farmdata.php';
 
-$position = [ "flowerarea", "nursery", "monsterfruit", "", "vet" ];
+$position = [ "flowerarea", "nursery", "monsterfruit", "pets", "vet" ];
 
 for ($pc = 0; $pc <= 2; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc]);
@@ -60,7 +60,7 @@ print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"
 print "<input type=\"submit\" name=\"save\" value=\"Speichern\" onclick=\"return saveConfig()\">";
 print "<br><br>";
 
-for ($pc = 4; $pc <= 4; $pc++) {
+for ($pc = 3; $pc <= 4; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc]);
  print "<table name=\"" . $position[$pc] . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] . "</th>";

@@ -331,6 +331,19 @@ function DoFoodContestFeeding {
  SendAJAXFarmRequest "mode=foodcontest_feed&farm=1&position=1"
 }
 
+function harvest_Pets {
+ local iSlot=$3
+ SendAJAXFarmRequest "mode=pets_harvest_production&slot=${iSlot}&position=1"
+}
+
+function start_Pets {
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "mode=pets_start_production&slot=${iSlot}&pid=${iGood}"
+}
+
 function harvest_Vet {
  local iSlot=$3
  SendAJAXFarmRequest "mode=vet_harvestproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pos=1"

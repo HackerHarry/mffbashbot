@@ -130,16 +130,17 @@ switch (sFarm) {
   case "foodworld":
   case "city2":
   if (sFarm == "farmersmarket")
-    var fmpos = ["flowerarea", "nursery", "monsterfruit", "vet"];
+    var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
   if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
   if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
   if (sFarm == "city2")
-    var fmpos = ["windmill", "windmill", "windmill"]; // ugly... i know ;-)
+    var fmpos = ["windmill"];
 
-for (k = 0; k <= (fmpos.length > 3 ? 3 : 2); k++) {
- var i = fmpos[k]; // why not (fmpos.length - 1) ??
+for (k = 0; k <= (fmpos.length - 1); k++) {
+// old (fmpos.length > 3 ? 3 : 2)
+ var i = fmpos[k];
  sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
  sData += document.getElementById("queue" + i)[1].value + " "; // building type
  for (j = 0; j < document.getElementById("queue" + i)[2].options.length; j++)

@@ -172,6 +172,11 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateOptions(300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 400, 401, 402, 403);
         print "<option value=\"sleep\">Sleep</option></select>\n";
         break;
+  case "pets":
+        // Tieraufzucht
+        CreateOptions(600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
+        print "<option value=\"sleep\">Sleep</option></select>\n";
+        break;
   case "sawmill":
         // Sägewerk
         CreateForestryOptions(41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
@@ -246,6 +251,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "vet":
 	$buildingType = "Vet";
 	break;
+  case "pets":
+	$buildingType = "Pets";
+	break;
   case "windmill":
 	$buildingType = "WindMill";
 	break;
@@ -274,7 +282,6 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  print "</select>";
  print "</td>\n";
 }
-
 function GetQueueName($gamepath, $farm, $position, $QueueNum) {
  $retval=exec("ls -1 " . $gamepath . "/" . $farm . "/" . $position . "/ | head -" . $QueueNum . " | tail -1");
  return $retval;
@@ -343,6 +350,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "Factory":
    case "FlowerArea":
    case "Nursery":
+   case "Pets":
    case "Vet":
    case "FuelStation":
    $queueItemFriendlyName = $productlist[intval($queueItem)];

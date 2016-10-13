@@ -170,6 +170,14 @@ if [ $? -ne 1 -a $? -ne 4 ]; then
     DoFoodContestFeeding
   fi
 fi
+# stuff for pets production
+for SLOT in 1 2 3; do
+ PETSREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
+  if [ "$PETSREMAIN" = "0" ]; then
+    echo "Doing pets stuff production slot ${SLOT}..."
+    DoFarmersMarket farmersmarket pets ${SLOT}
+  fi
+done
 # veterinarian
 for SLOT in 1 2 3; do
  VETREMAIN=$($JQBIN '.updateblock.farmersmarket.vet.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
