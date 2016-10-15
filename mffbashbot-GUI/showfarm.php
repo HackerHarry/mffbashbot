@@ -29,8 +29,8 @@ $farm=$_POST["farm"];
 $username=$_POST["username"];
 include 'gamepath.php';
 include 'functions.php';
-include 'buttons.php';
 include 'farmdata.php';
+include 'buttons.php';
 
 // headings
 for ($position = 1; $position <= 3; $position++) {

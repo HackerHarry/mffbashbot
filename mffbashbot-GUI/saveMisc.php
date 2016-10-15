@@ -20,31 +20,22 @@ $username = $_POST["username"];
 $dogtoggle = $_POST["dogtoggle"];
 $lottoggle = $_POST["lottoggle"];
 $vehiclemgmt = $_POST["vehiclemgmt"];
+$carefood = $_POST["carefood"];
+$caretoy = $_POST["caretoy"];
+$careplushy = $_POST["careplushy"];
+
 include 'gamepath.php';
+include 'functions.php';
+include 'farmdata.php';
+global $configContents;
 
-// Dog
-if ($dogtoggle == "on") {
- touch($gamepath . "/dodog.txt");
- chgrp($gamepath . "/dodog.txt", "pi");
- chmod($gamepath . "/dodog.txt", 0664);
-}
-else
- unlink($gamepath . "/dodog.txt");
+$configContents['carefood'] = $carefood;
+$configContents['caretoy'] = $caretoy;
+$configContents['careplushy'] = $careplushy;
+$configContents['dodog'] = $dogtoggle;
+$configContents['dolot'] = $lottoggle;
+$configContents['vehiclemgmt'] = $vehiclemgmt;
 
-// Lottery
-if ($lottoggle != "sleep") {
- file_put_contents($gamepath . "/dolot.txt", $lottoggle . "\n");
- chgrp($gamepath . "/dolot.txt", "pi");
- chmod($gamepath . "/dolot.txt", 0664);
-}
-else
- unlink($gamepath . "/dolot.txt");
-
-if ($vehiclemgmt != "sleep") {
- file_put_contents($gamepath . "/vehiclemgmt.txt", $vehiclemgmt . "\n");
- chgrp($gamepath . "/vehiclemgmt.txt", "pi");
- chmod($gamepath . "/vehiclemgmt.txt", 0664);
-}
-else
-  unlink($gamepath . "/vehiclemgmt.txt");
+$filename = $gamepath . "/config.ini";
+write_ini_file($configContents, $filename);
 ?>

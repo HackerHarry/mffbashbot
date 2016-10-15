@@ -29,8 +29,8 @@ $farm=$_POST["farm"];
 $username=$_POST["username"];
 include 'gamepath.php';
 include 'functions.php';
-include 'buttons.php';
 include 'farmdata.php';
+include 'buttons.php';
 
 $position = [0 => ["sodastall", "Getr&auml;nkebude", "1"], 1 => ["snackbooth", "Imbissbude", "2"], 2 => ["pastryshop", "Konditorei", "3"], 3 => ["icecreamparlour", "Eisdiele", "4"]];
 

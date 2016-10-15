@@ -16,36 +16,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+//include_once 'farmdata.php';
+
 if ($farm == NULL)
  $farm = 1;
 if ($farm == "runbot") {
  exec("script/wakeupthebot.sh " . $gamepath);
  $farm = 1;
 }
-$dogisset = is_file($gamepath . "/dodog.txt");
-if (is_file($gamepath . "/dolot.txt")) {
- $LotAction=file_get_contents($gamepath . "/dolot.txt");
- $LotAction=intval($LotAction);
-}
-if (is_file($gamepath . "/vehiclemgmt.txt")) {
- $Vehicle2Manage=file_get_contents($gamepath . "/vehiclemgmt.txt");
- $Vehicle2Manage=intval($Vehicle2Manage);
-}
-
-function Check4Lot($LotOption) {
- global $LotAction;
- if ($LotAction)
-  if ($LotOption === $LotAction)
-   print " selected=\"selected\"";
-}
-
-function Check4Vehicle($VehicleOption) {
- global $Vehicle2Manage;
- if ($Vehicle2Manage)
-  if ($VehicleOption === $Vehicle2Manage)
-   print " selected=\"selected\"";
-}
-
 $farmFriendlyName = ["1" => "Farm 1", "2" => "Farm 2", "3" => "Farm 3", "4" => "Farm 4", "5" => "Farm 5", "farmersmarket" => "der Bauernmarkt", "forestry" => "die B&auml;umerei", "foodworld" => "die Picknickarea", "city2" => "Teichlingen"];
 print "<script type=\"text/javascript\" src=\"script/AJAXqueuefunctions.js\"></script>\n";
 print "<small>";
@@ -72,24 +50,61 @@ print "<div id=\"optionspane\" style=\"display:none;\">";
 print "<table name=\"opttbl\" style=\"float:left;\" border=\"1\">";
 print "<tr><th>Optionen</th></tr>";
 print "<tr><td>";
-print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\" value=\"on\" " . (($dogisset) ? 'checked' : '') . ">&nbsp;Ben t&auml;glich aktivieren";
+print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;Ben t&auml;glich aktivieren";
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
-print "<option value=\"sleep\">Sleep</option>\n";
-print "<option value=\"1\""; Check4Lot(1); print ">Los</option>\n";
-print "<option value=\"2\""; Check4Lot(2); print ">Sofortgewinn</option></select>&nbsp;t&auml;glich abholen\n";
+print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
+print "<option value=\"1\" id=\"lot1\">Los</option>\n";
+print "<option value=\"2\" id=\"lot2\">Sofortgewinn</option></select>&nbsp;t&auml;glich abholen\n";
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"vehiclemgmt\" name=\"vehiclemgmt\" onchange=\"saveMisc();\">";
-print "<option value=\"sleep\">Sleep</option>\n";
-print "<option value=\"1\""; Check4Vehicle(1); print ">Schafkarren</option>\n";
-print "<option value=\"2\""; Check4Vehicle(2); print ">Traktor</option>\n";
-print "<option value=\"3\""; Check4Vehicle(3); print ">LKW</option>\n";
-print "<option value=\"4\""; Check4Vehicle(4); print ">Sportwagen</option>\n";
-print "<option value=\"5\""; Check4Vehicle(5); print ">Truck</option></select>&nbsp;Automatische Transportfahrten";
+print "<option value=\"0\" id=\"vehicle0\">Sleep</option>\n";
+print "<option value=\"1\" id=\"vehicle1\">Schafkarren</option>\n";
+print "<option value=\"2\" id=\"vehicle2\">Traktor</option>\n";
+print "<option value=\"3\" id=\"vehicle3\">LKW</option>\n";
+print "<option value=\"4\" id=\"vehicle4\">Sportwagen</option>\n";
+print "<option value=\"5\" id=\"vehicle5\">Truck</option></select>&nbsp;Automatische Transportfahrten";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+CreateOptionsWithID(600, 601, 602, 603, 604, 605, 606, 607, 608, 609);
+print "</select>&nbsp;Futterbed&uuml;rfnis stillen";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"caretoy\" name=\"caretoy\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+CreateOptionsWithID(630, 631, 632, 633, 634, 635, 636, 637, 638, 639);
+print "</select>&nbsp;Spielzeugbed&uuml;rfnis stillen";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
+print "</select>&nbsp;Kuscheltierbed&uuml;rfnis stillen";
 print "</td></tr></table>\n";
 print "</div>\n";
 print "</form><button id=\"optbtn\" onclick=\"showHideOptions();\">Optionen...</button>\n";
 print "<hr>\n";
+// set saved options
+print "<script type=\"text/javascript\">\n";
+global $configContents;
+$savedValue = $configContents['carefood'];
+print "document.getElementById('carefood').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['caretoy'];
+print "document.getElementById('caretoy').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['careplushy'];
+print "document.getElementById('careplushy').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['vehiclemgmt'];
+$savedValue = "vehicle" . $savedValue;
+print "document.getElementById('vehiclemgmt').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['dolot'];
+$savedValue = "lot" . $savedValue;
+print "document.getElementById('lottoggle').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['dodog'];
+if ($savedValue == '1')
+ print "document.getElementById('dogtoggle').checked = true;\n";
+print "</script>\n";
 ?>

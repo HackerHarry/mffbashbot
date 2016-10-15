@@ -98,15 +98,27 @@ function saveMisc() {
  var sData = "username=" + sUser + "&dogtoggle=";
 
  if (document.getElementById('dogtoggle').checked)
-  sData += "on&lottoggle=";
+  sData += "1&lottoggle=";
  else
-  sData += "off&lottoggle=";
+  sData += "0&lottoggle=";
 
  var v = document.getElementById("lottoggle");
  sData += v.options[v.selectedIndex].value;
  sData += "&vehiclemgmt=";
  
  var v = document.getElementById("vehiclemgmt");
+ sData += v.options[v.selectedIndex].value;
+ sData += "&carefood=";
+
+ var v = document.getElementById("carefood");
+ sData += v.options[v.selectedIndex].value;
+ sData += "&caretoy=";
+
+ var v = document.getElementById("caretoy");
+ sData += v.options[v.selectedIndex].value;
+ sData += "&careplushy=";
+
+ var v = document.getElementById("careplushy");
  sData += v.options[v.selectedIndex].value;
 
  xhttp = new XMLHttpRequest();

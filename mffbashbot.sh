@@ -39,9 +39,7 @@ COOKIEFILE=mffcookies.txt
 FARMDATAFILE=farmdata.txt
 LASTRUNFILE=lastrun.txt
 STATUSFILE=status.txt
-DOGFILE=dodog.txt
-LOTFILE=dolot.txt
-VMGMTFILE=vehiclemgmt.txt
+CFGFILE=config.ini
 echo "<font color=\"red\">aktiv</font>" > "$STATUSFILE"
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -170,6 +168,17 @@ if [ $? -ne 1 -a $? -ne 4 ]; then
     DoFoodContestFeeding
   fi
 fi
+# check for active pet breeding
+PETBREEDING=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE 2>/dev/null)
+if [ "$PETBREEDING" != "0" ]; then
+ for SLOT in food toy plushy; do
+  CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.happiness_interval.'${SLOT}'' $FARMDATAFILE 2>/dev/null)
+  if [ "$CAREREMAIN" != "1" ]; then
+   echo "Taking care of pet using ${SLOT}..."
+   DoFarmersMarketPetCare ${SLOT}
+  fi
+ done
+fi
 # stuff for pets production
 for SLOT in 1 2 3; do
  PETSREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
@@ -191,7 +200,7 @@ done
 VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role|tonumber' $FARMDATAFILE)
 if [ "$VETJOBSTATUS" != "0" ]; then
  for SLOT in 1 2 3; do
-  if $JQBIN '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"].remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+  if $JQBIN '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"].remain' $FARMDATAFILE | grep -q '-' ; then
   echo "Doing animal treatment slot ${SLOT}..."
   DoFarmersMarketAnimalTreatment ${SLOT}
   fi
@@ -199,9 +208,11 @@ if [ "$VETJOBSTATUS" != "0" ]; then
 fi
 
 # transport vehicle handling
-if [ -f "$VMGMTFILE" ]; then
+if ! grep vehiclemgmt $CFGFILE | grep -q 0; then
   echo -n "Transport vehicle is "
-  iVehicle=$(head -1 $VMGMTFILE)
+  CFGLINE=$(grep vehiclemgmt $CFGFILE)
+  TOKENS=( $CFGLINE )
+  iVehicle=${TOKENS[2]}
   if ! $JQBIN -e '.updateblock.map.vehicles["1"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
    iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["1"]["'$iVehicle'"].current|tonumber' $FARMDATAFILE)
    if [ "$iCurrentVehiclePos" = "1" ]; then
@@ -219,9 +230,8 @@ if [ -f "$VMGMTFILE" ]; then
 fi
 
 # daily actions
-if [ -f "$DOGFILE" ]; then
+if ! grep dodog $CFGFILE | grep -q 0; then
  echo -n "Checking for daily dog bonus..."
-# GetMenuUpdateData "$DOGFILE"
  DOGSTATUS=$($JQBIN '.updateblock.menue.farmdog_harvest' $FARMDATAFILE)
  if [ "$DOGSTATUS" != "1" ]; then
   echo "not yet claimed, activating it..."
@@ -233,12 +243,14 @@ if [ -f "$DOGFILE" ]; then
  fi
 fi
 
-if [ -f "$LOTFILE" ]; then
+if ! grep dolot $CFGFILE | grep -q 0; then
   echo -n "Checking for daily lottery bonus..."
   GetLotteryData "$FARMDATAFILE"
   LOTSTATUS=$($JQBIN '.datablock[2]' $FARMDATAFILE)
  if [ "$LOTSTATUS" = "0" ]; then
-  iLot=$(head -1 $LOTFILE)
+  CFGLINE=$(grep dolot $CFGFILE)
+  TOKENS=( $CFGLINE )
+  iLot=${TOKENS[2]}
   echo "not yet claimed, getting lottery ticket..."
   SendAJAXCityRequest "city=2&mode=newlot"
   if [ "$iLot" = "2" ]; then

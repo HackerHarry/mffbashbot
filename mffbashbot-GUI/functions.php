@@ -21,6 +21,11 @@ function CreateOptions() {
  foreach (func_get_args() as $i)
 	print "<option value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
 }
+function CreateOptionsWithID() {
+ global $productlist;
+ foreach (func_get_args() as $i)
+	print "<option id=\"" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+}
 function CreateOilOptions() {
  global $oillist;
  foreach (func_get_args() as $i)
@@ -399,5 +404,15 @@ function saveConfig($filename, $queueData) {
    fwrite($fh, $queueData[$itemcount - 1] . "\n");
 // chmod($filename, 0775);
  fclose($fh);
+}
+function write_ini_file($configData, $filename) {
+ $data2write = "";
+ foreach ($configData as $configItem => $iValue)
+  $data2write .= $configItem . " = " . $iValue . "\n";
+ // we'll be using numelical values only, hence no quotes
+ if (!$handle = fopen($filename, 'w'))
+  return false;
+ fwrite($handle, $data2write);
+ fclose($handle);
 }
 ?>

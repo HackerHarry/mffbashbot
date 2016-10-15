@@ -390,10 +390,23 @@ function DoFarmersMarketAnimalTreatment {
  GetFarmData $FARMDATAFILE
 }
 
+function DoFarmersMarketPetCare {
+ local sSlot=$1
+ # get config data
+ if grep -q "care${sSlot} = 0" $CFGFILE; then
+  echo "Pet's $sSlot care is set to sleep"
+ else
+  CFGLINE=$(grep care${sSlot} $CFGFILE)
+  TOKENS=( $CFGLINE )
+  local sCare=${TOKENS[2]}
+  SendAJAXFarmRequest "mode=pets_care&set=${sCare},${sCare},${sCare}"
+ fi
+}
+
 function harvest_MegaField {
- iFarm=$1
- iPosition=$2
- iSlot=$3
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # check for running job
  if check_RunningMegaFieldJob ; then

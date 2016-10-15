@@ -31,4 +31,5 @@ $foodworldproductlist = [ 1 => "Karottensaft", 2 => "Tomatensaft", 3 => "Erdbeer
 $megafieldvehicleslist = [ 1 => "Ernte-Fuhrwerk", 2 => "Ernte-Gespann", 3 => "Mechanische Erntemaschine", 4 => "Dampfbetriebene Erntemaschine", 5 => "Fl&uuml;gelerntemaschine", 6 => "Traktor", 7 => "Automatische Erntemaschine", 8 => "Pr&auml;zisions-Erntemaschine", 9 => "Computer&uuml;berwachte Erntemaschine", 10 => "Ernt-O-Mat-2000" ];
 $JSONwindmillproductlist = file_get_contents("data/formulas.txt");
 $windmillproductlist = (json_decode($JSONwindmillproductlist, true));
+$configContents = parse_ini_file($gamepath . "/config.ini");
 ?>
