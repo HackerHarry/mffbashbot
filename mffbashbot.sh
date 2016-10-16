@@ -53,8 +53,6 @@ JQBIN=/usr/bin/jq
 
 echo "Running Harrys My Free Farm Bash Bot $VERSION"
 echo "Getting a token to MFF server ${MFFSERVER}"
-# backslashes need to be escaped within backticks
-# echo "Got a (hopefully valid) login token"
 MFFTOKEN=$(wget -nv -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
 echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"
 wget -nv -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
@@ -76,7 +74,6 @@ echo "Our RID is $RID"
 # trap CTRL-C to call ctrl_c (in functions) for clean logoff in case bot is active
 trap ctrl_c INT
 
-# get farm status
 echo "Getting farm status..."
 GetFarmData $FARMDATAFILE
 

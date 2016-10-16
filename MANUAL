@@ -31,9 +31,7 @@ den fehlenden Slot in Form einer Datei im Dateisystems erzeugen!
 Der Bot ist nur schwer "aus der Ruhe" zu bringen. Damit ist gemeint, dass wenn
 es ein Problem bei der Abarbeitung von Vorgängen gibt, der Bot nicht gleich
 komplett stehen bleibt. Im Allgemeinen ist dann nur die fehlerhafte Position
-betroffen - alle andere funktionieren weiter. Eine Ausnahme bildet der Güterhof.
-Hat der Spieler nicht genügend Matarial für einen Auftrag, bleibt der Bot u. U.
-auf dem Güterhof hängen. Das wird vielleicht in Zukunft mal behoben.
+betroffen - alle andere funktionieren weiter.
 
 
 Start des Bots
@@ -74,14 +72,14 @@ Die Anmeldung in der GUI schaut Serverseitig, wie viele Farmen unterhalb
 Die GUI ist relativ selbsterklärend (z.B. durch Mouse-Over Text).
 Eine Position ist schnell beschrieben:
 Oben, in einem Pull-Down Menü, sind die Auswahlmöglichkeiten für die Position
-bereitgestellt. Daruter befinden sich die Knöpfe, mit denen man Elemente in
-der darunterliegenden Warteschlange manipulieren kann.
+bereitgestellt. Daruter befinden sich Knöpfe, mit denen man Elemente in der
+darunterliegenden Warteschlange manipulieren kann.
 
 Was man für die Ställe wissen sollte, ist, dass immer mit angegeben werden muss,
 wieviel man an die Tiere verfüttern will. Ställe haben ZWEI Eingabefelder.
 
-"BOT START" erzwingt eine vorzeitige Beendigung der zehnminütigen Pause zwischen
-zwei Bot-Durchläufen.
+"BOT START" erzwingt eine vorzeitige Beendigung der unter PAUSETIME definierten
+Pause zwischen zwei Bot-Durchläufen.
 
 
 Arbeitsweise des Bots
@@ -139,5 +137,5 @@ Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
 also nicht abhandeln.
 
 Für Äcker ist in der GUI alles auswählbar, auch wenn nicht alles überall
-gepflanzt werden kann. Beispiel: Farmen eins bis fünf nehmen keine Exotischen
+gepflanzt werden kann. Beispiel: Farmen eins bis vier nehmen keine Exotischen
 Früchte auf.

@@ -446,6 +446,11 @@ function harvest_MegaField {
 
 function start_MegaField {
  local iProductSlot
+ local iSafetyCount=$1
+ if [ $iSafetyCount -gt 4 ] 2>/dev/null; then
+  echo "Exiting start_MegaField after four cycles! (Not enough crop in stock?)"
+  return
+ fi
  for iProductSlot in 0 1 2; do
   if ! check_MegaFieldProductIsHarvestable $iProductSlot ; then
    continue
@@ -473,7 +478,12 @@ function start_MegaField {
   MegaFieldPlant $iPID $amountToGo
   # call function again since there are still free plots
   GetFarmData $FARMDATAFILE
-  start_MegaField
+  if [ "$iSafetyCount" = "" ]; then
+   start_MegaField 2
+  else
+   iSafetyCount=$((iSafetyCount+1))
+   start_MegaField $iSafetyCount
+  fi
  done
  GetFarmData $FARMDATAFILE
 }

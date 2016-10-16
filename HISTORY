@@ -80,3 +80,4 @@ HB 02.10.2016 v1.011 daily lottery ticket can now be collected or traded
 HB 04.10.2016 v1.012 options are now hidden behind a button
 HB 12.10.2016 v1.020 new feature on farmers market (production part only)
 HB 15.10.2016 v1.10 automated pet care, improved handling of misc data (now in INI file)
+HB 16.10.2016 v1.11 prevent start_MegaField() from getting stuck in an infinite loop, minor clean up
