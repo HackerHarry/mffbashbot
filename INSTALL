@@ -15,8 +15,7 @@ Erklärungen darüber, wie man sich z.B. anmeldet, oder Dateien editiert sind
 nicht Teil dieser Dokumentation.
 
 Pakete wie sudo, sed, wget, (p)grep und so weiter sollten schon installiert
-sein. Und wie der Name schon vermuten lässt, muss auch die bash shell an
-Bord sein. ;)
+sein. Und wie der Name schon vermuten lässt, muss auch die bash an Bord sein. ;)
 
 Wir benötigen einige neue Pakete:
 harry@testbox:~$ sudo apt-get install jq lighttpd php5-cgi screen logrotate cron unzip
@@ -93,9 +92,6 @@ root@testbox:/var/www/html/mffbashbot# nano gamepath.php
 
 In der 'gamepath.php' muss der Pfad zum Botordner angepasst werden.
 
-In der 'savemisc.php' müssen die chgrp() funktionen an den Bot-Benutzer
-angepasst werden.
-
 root@testbox:/var/www/html/mffbashbot# nano index.php
 
 In der 'index.php' muss der Pfad in der system() Funktion angepasst werden.
@@ -124,7 +120,7 @@ harry@testbox:~$ echo '/home/harry/mffbashbot/*/mffbot.log
 Auch hier muss der Pfad ebenso wie die 'su' Zeile angepasst werden.
 
 Im Prinzip ist der Bot nun fertig installiert.
-Wie man den Bot startet, steht in der MANUAL.txt
+Wie man den Bot startet, steht in der MANUAL
 
 Die GUI zum steuern des Bots erreichst Du dort, wo Dein lighttpd Webserver
 läuft. Dort unter http://IP-oder-Hostname/mffbashbot
