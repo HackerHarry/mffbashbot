@@ -46,11 +46,15 @@ print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" tit
 print "<input type=\"button\" name=\"runbot\" value=\"BOT&#13;&#10;START\" title=\"Bot-Durchlauf erzwingen\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\" style=\"text-align:center;\">&nbsp;\n";
 print "<input type=\"button\" name=\"logon\" value=\"Anmeldung\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
 print "<br>";
+// misc options
 print "<div id=\"optionspane\" style=\"display:none;\">";
 print "<table name=\"opttbl\" style=\"float:left;\" border=\"1\">";
 print "<tr><th>Optionen</th></tr>";
 print "<tr><td>";
 print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;Ben t&auml;glich aktivieren";
+print "</td></tr>";
+print "<tr><td>";
+print "<input type=\"checkbox\" id=\"puzzlepartstoggle\" name=\"puzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;Puzzlezeile-Paket t&auml;glich f&uuml;r 5000kT kaufen";
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
@@ -106,5 +110,8 @@ print "document.getElementById('lottoggle').selectedIndex = document.getElementB
 $savedValue = $configContents['dodog'];
 if ($savedValue == '1')
  print "document.getElementById('dogtoggle').checked = true;\n";
+$savedValue = $configContents['dopuzzleparts'];
+if ($savedValue == '1')
+ print "document.getElementById('puzzlepartstoggle').checked = true;\n";
 print "</script>\n";
 ?>

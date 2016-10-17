@@ -120,6 +120,12 @@ function saveMisc() {
 
  var v = document.getElementById("careplushy");
  sData += v.options[v.selectedIndex].value;
+ sData += "&puzzlepartstoggle=";
+
+ if (document.getElementById('puzzlepartstoggle').checked)
+  sData += "1";
+ else
+  sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);

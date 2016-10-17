@@ -240,6 +240,17 @@ if ! grep dodog $CFGFILE | grep -q 0; then
  fi
 fi
 
+if grep -q "dopuzzleparts = 1" $CFGFILE; then
+ echo -n "Checking for buyable puzzle parts..."
+ PARTSSTATUS=$($JQBIN '.updateblock.farmersmarket.pets.daily' $FARMDATAFILE 2>&1)
+ if [ "$PARTSSTATUS" = "1" ]; then
+  echo "available, buying it..."
+  SendAJAXFarmRequest "mode=pets_buy_parts&id=1&amount=1"
+ else
+  echo "already bought"
+ fi
+fi
+
 if ! grep dolot $CFGFILE | grep -q 0; then
   echo -n "Checking for daily lottery bonus..."
   GetLotteryData "$FARMDATAFILE"
@@ -260,7 +271,6 @@ if ! grep dolot $CFGFILE | grep -q 0; then
  fi 
 fi
 
-# get forestry status
 echo "Getting forestry status..."
 GetForestryData $FARMDATAFILE
 
@@ -284,7 +294,6 @@ for POSITION in 1 2; do
  done
 done
 
-# get food world status
 echo "Getting food world status..."
 GetFoodWorldData $FARMDATAFILE
 
@@ -299,7 +308,6 @@ for POSITION in 1 2 3 4; do
  done
 done
 
-# get wind mill status
 # this is the only building with a queue in city 2, and it's unlikely for this
 # to ever change, hence static coding
 echo "Getting wind mill status..."

@@ -23,6 +23,7 @@ $vehiclemgmt = $_POST["vehiclemgmt"];
 $carefood = $_POST["carefood"];
 $caretoy = $_POST["caretoy"];
 $careplushy = $_POST["careplushy"];
+$puzzlepartstoggle = $_POST["puzzlepartstoggle"];
 
 include 'gamepath.php';
 include 'functions.php';
@@ -35,6 +36,7 @@ $configContents['careplushy'] = $careplushy;
 $configContents['dodog'] = $dogtoggle;
 $configContents['dolot'] = $lottoggle;
 $configContents['vehiclemgmt'] = $vehiclemgmt;
+$configContents['dopuzzleparts'] = $puzzlepartstoggle;
 
 $filename = $gamepath . "/config.ini";
 write_ini_file($configContents, $filename);
