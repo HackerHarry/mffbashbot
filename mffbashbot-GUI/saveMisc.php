@@ -24,6 +24,7 @@ $carefood = $_POST["carefood"];
 $caretoy = $_POST["caretoy"];
 $careplushy = $_POST["careplushy"];
 $puzzlepartstoggle = $_POST["puzzlepartstoggle"];
+$farmiestoggle = $_POST["farmiestoggle"];
 
 include 'gamepath.php';
 include 'functions.php';
@@ -37,6 +38,7 @@ $configContents['dodog'] = $dogtoggle;
 $configContents['dolot'] = $lottoggle;
 $configContents['vehiclemgmt'] = $vehiclemgmt;
 $configContents['dopuzzleparts'] = $puzzlepartstoggle;
+$configContents['sendfarmiesaway'] = $farmiestoggle;
 
 $filename = $gamepath . "/config.ini";
 write_ini_file($configContents, $filename);

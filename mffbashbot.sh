@@ -251,6 +251,21 @@ if grep -q "dopuzzleparts = 1" $CFGFILE; then
  fi
 fi
 
+# this may have to go to functions.sh, if i can use it for other farmies as well
+if grep -q "sendfarmiesaway = 1" $CFGFILE; then
+ echo "Checking for waiting farmies..."
+ NUMFARMIES=$($JQBIN '.updateblock.farmis[0]|length' $FARMDATAFILE)
+ if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
+  NUMFARMIES=$((NUMFARMIES-1))
+  for FARMIE in $(seq 0 $NUMFARMIES); do
+   ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+   echo "Sending Farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+   SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
+  done
+ fi
+fi
+
+# contents of FARMDATAFILE change from here !
 if ! grep dolot $CFGFILE | grep -q 0; then
   echo -n "Checking for daily lottery bonus..."
   GetLotteryData "$FARMDATAFILE"

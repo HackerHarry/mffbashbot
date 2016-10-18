@@ -57,6 +57,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"puzzlepartstoggle\" name=\"puzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;Puzzlezeile-Paket t&auml;glich f&uuml;r 5000kT kaufen";
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"farmiestoggle\" name=\"farmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;Alle Farmis mit 'Nein' beantworten";
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"lot1\">Los</option>\n";
@@ -113,5 +116,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['dopuzzleparts'];
 if ($savedValue == '1')
  print "document.getElementById('puzzlepartstoggle').checked = true;\n";
+$savedValue = $configContents['sendfarmiesaway'];
+if ($savedValue == '1')
+ print "document.getElementById('farmiestoggle').checked = true;\n";
 print "</script>\n";
 ?>

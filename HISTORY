@@ -83,3 +83,4 @@ HB 15.10.2016 v1.10 automated pet care, improved handling of misc data (now in I
 HB 16.10.2016 v1.11 prevent start_MegaField() from getting stuck in an infinite loop, minor clean up
 HB 17.10.2016 v1.12 automatic purchase of daily puzzle packet
 HB 18.10.2016 v1.13 removed unsupported options from CreateMegaFieldOptions() call
+HB 18.10.2016 v1.20 answer all farmies 'No' on demand

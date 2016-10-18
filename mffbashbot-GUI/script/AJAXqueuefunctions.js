@@ -123,6 +123,11 @@ function saveMisc() {
  sData += "&puzzlepartstoggle=";
 
  if (document.getElementById('puzzlepartstoggle').checked)
+  sData += "1&farmiestoggle=";
+ else
+  sData += "0&farmiestoggle=";
+
+ if (document.getElementById('farmiestoggle').checked)
   sData += "1";
  else
   sData += "0";
