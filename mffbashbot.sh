@@ -259,7 +259,7 @@ if ! grep dolot $CFGFILE | grep -q 0; then
   CFGLINE=$(grep dolot $CFGFILE)
   TOKENS=( $CFGLINE )
   iLot=${TOKENS[2]}
-  echo "not yet claimed, getting lottery ticket..."
+  echo "not yet claimed, getting it..."
   SendAJAXCityRequest "city=2&mode=newlot"
   if [ "$iLot" = "2" ]; then
    echo "and trading it for an instant-win..."

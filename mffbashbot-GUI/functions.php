@@ -148,7 +148,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         break;
   case 19:
         // Fahrzeughalle
-        CreateMegaFieldOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        CreateMegaFieldOptions(1, 2, 3, 4, 6, 8);
         print "<option value=\"sleep\">Sleep</option></select>\n";
         break;
   case 20:
