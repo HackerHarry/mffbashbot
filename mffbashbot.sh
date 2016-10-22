@@ -119,41 +119,43 @@ for SLOT in 1 2; do
   fi
 done
 # see if flower pots need water...
-for SLOT in {1..17}; do
- # check if water is needed and pot hasn't withered yet
- $JQBIN -e '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].waterremain' $FARMDATAFILE >/dev/null 2>&1
- if [ $? -ne 1 -a $? -ne 4 ]; then
-  if ! $JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null; then
+NUMPOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots|length' $FARMDATAFILE)
+if [ $NUMPOTS -gt 0 ]; then
+ NUMPOTS=$((NUMPOTS-1))
+ for SLOTINDEX in $(seq 0 $NUMPOTS); do
+  SLOT=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots|keys['$SLOTINDEX']|tonumber' $FARMDATAFILE)
+  if ! $JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
    POTTED=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid|tonumber' $FARMDATAFILE 2>/dev/null)
    # skip watering of special flowers
    if [ $POTTED -ne 220 -a $POTTED -ne 221 ]; then
+    # we'll just water as long as it hasn't withered
     echo "Watering flower pot ${SLOT}..."
     DoFarmersMarketFlowerPots ${SLOT}
    fi
   fi
- fi
-done
+ done
+fi
 # monster fruit
 if ! $JQBIN '.updateblock.farmersmarket.megafruit.current.remain' $FARMDATAFILE | grep '-' >/dev/null ; then
   for HELPER in water light fertilize; do
-    if $JQBIN '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+    if $JQBIN '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain' $FARMDATAFILE | grep -q '-' ; then
       echo "Using ${HELPER} on monster fruit..."
       DoFarmersMarket farmersmarket monsterfruit ${HELPER}
     fi
   done
 fi
 # food contest
-$JQBIN -e '.updateblock.farmersmarket.foodcontest.current.remain' $FARMDATAFILE >/dev/null 2>&1
-if [ $? -ne 1 -a $? -ne 4 ]; then
+FCRUNNING=$($JQBIN '.updateblock.farmersmarket.foodcontest.current.remain' $FARMDATAFILE)
+if [ "$FCRUNNING" != "null" ]; then
 # check for a ready cash desk first
- if $JQBIN '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+ if $JQBIN '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain' $FARMDATAFILE | grep -q '-' ; then
    echo "Doing cash desk..."
    DoFoodContestCashDesk
  fi
 # next the audience
  for BLOCK in 1 2 3 4; do
   for PINTYPE in fame money points products; do
-    if $JQBIN '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+    if $JQBIN '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain' $FARMDATAFILE | grep -q '-' ; then
       echo "Picking up ${PINTYPE} from block ${BLOCK}..."
       DoFoodContestAudience ${BLOCK} ${PINTYPE}
     fi
@@ -226,6 +228,20 @@ if ! grep vehiclemgmt $CFGFILE | grep -q 0; then
   fi
 fi
 
+# this may have to go to functions.sh, if i can use it for other farmies as well
+if grep -q "sendfarmiesaway = 1" $CFGFILE; then
+ echo "Checking for waiting farmies..."
+ NUMFARMIES=$($JQBIN '.updateblock.farmis[0]|length' $FARMDATAFILE)
+ if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
+  NUMFARMIES=$((NUMFARMIES-1))
+  for FARMIE in $(seq 0 $NUMFARMIES); do
+   ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+   echo "Sending Farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+   SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
+  done
+ fi
+fi
+
 # daily actions
 if ! grep dodog $CFGFILE | grep -q 0; then
  echo -n "Checking for daily dog bonus..."
@@ -248,20 +264,6 @@ if grep -q "dopuzzleparts = 1" $CFGFILE; then
   SendAJAXFarmRequest "mode=pets_buy_parts&id=1&amount=1"
  else
   echo "already bought"
- fi
-fi
-
-# this may have to go to functions.sh, if i can use it for other farmies as well
-if grep -q "sendfarmiesaway = 1" $CFGFILE; then
- echo "Checking for waiting farmies..."
- NUMFARMIES=$($JQBIN '.updateblock.farmis[0]|length' $FARMDATAFILE)
- if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
-  NUMFARMIES=$((NUMFARMIES-1))
-  for FARMIE in $(seq 0 $NUMFARMIES); do
-   ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id|tonumber' $FARMDATAFILE)
-   echo "Sending Farmie no. $((FARMIE+1)) (ID ${ID}) away..."
-   SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
-  done
  fi
 fi
 

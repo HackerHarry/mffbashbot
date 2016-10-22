@@ -671,12 +671,13 @@ function check_QueueSleep {
 }
 
 function check_RunningMegaFieldJob {
- $JQBIN -e '.updateblock.megafield.job_start' $FARMDATAFILE >/dev/null 2>&1
- if [ $? -ne 1 -a $? -ne 4 ]; then
+ local iJobEnd=$($JQBIN '.updateblock.megafield.job_endtime|tonumber' $FARMDATAFILE)
+ local iJobStart=$($JQBIN '.updateblock.megafield.job_start|tonumber' $FARMDATAFILE)
+ if [ $iJobStart -gt 0 -a $iJobEnd -eq 0 ]; then
   # check for job start
-  if [[ $($JQBIN '.updateblock.megafield.job_start' $FARMDATAFILE | wc -c) -gt 4 ]]; then
+#  if [[ $($JQBIN '.updateblock.megafield.job_start' $FARMDATAFILE | wc -c) -gt 4 ]]; then
    return 0
-  fi
+#  fi
  fi
  return 1
 }
