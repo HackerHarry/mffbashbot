@@ -85,3 +85,4 @@ HB 17.10.2016 v1.12 automatic purchase of daily puzzle packet
 HB 18.10.2016 v1.13 removed unsupported options from CreateMegaFieldOptions() call
 HB 18.10.2016 v1.20 answer all farmies 'No' on demand
 HB 22.10.2016 v1.21 make bot script compatible with jq 1.5, minor changes
+HB 23.10.2016 v1.30 Cygwin support

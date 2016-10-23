@@ -45,4 +45,3 @@ mkdir -p /var/log/lighttpd 2>/dev/null
 
 echo "Done!"
 echo "Do not forget adjusting your farm name."
-cd ~/mffbashbot

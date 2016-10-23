@@ -161,8 +161,12 @@ Eck-Symbol, dann auf "Options", dann "Text" und wählte dort über den "Select..
 Knopf eine grössere Schriftart. Für mich war das Courier New / bold / 18.
 Übrigens: Willkommen in der Unix-Welt! :-)
 
+Tipp: Im Cygwin Fenster kann man komfortabel copy and paste über die rechte
+Mausstaste erledigen.
 Noch immer in dem neuen, "fremden" Fenster gibst nu folgendes ein:
 "wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-win.sh"
+Nun das Skript als "ausführbar" markieren:
+"chmod +x install-win.sh"
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
 "./install-win.sh" und ENTER naklar.
 Am Ende könnte eure Firewall über den lighttpd prozess meckern; falls Dir eine
@@ -184,4 +188,4 @@ Wer mehrere Farmen betreiben will, findet in der MANUAL Datei wertvolle Infos.
 Wenn Du Deinen Rechner neu startest, wirst Du auch den Webserver und Deinen
 Bot neu starten müssen!
 Im "Cygwin Terminal" mit "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
-den Webserver, den Bot wie im MANUAL beschrieben neu starten.
+den Webserver, und den Bot wie im MANUAL beschrieben neu starten.
