@@ -48,7 +48,7 @@ harry@testbox:~/mffbashbot$ ./mffbashbot.sh farm0815 sEcr3t 9
 Der Bot kann mehrfach für verschiedene Farmen gestartet werden. Hierfür hat
 sich der Einsatz des 'screen' Programms bewährt. Was screen genau ist, kannst
 Du im Netz nachlesen.
-Meine .screenrc sieht so aus:
+Meine ~/.screenrc sieht so aus:
 ---
 hardstatus alwayslastline
 hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
@@ -62,6 +62,8 @@ harry@testbox:~/mffbashbot$ screen -t FarmName2 ./mffbashbot.sh FarmName2 Passwo
 harry@testbox:~/mffbashbot$ screen -t FarmName3 ./mffbashbot.sh FarmName3 Passwort3 11
 harry@testbox:~/mffbashbot$ ./mffbashbot.sh FarmName1 Passwort1 19
 
+Hin und herschalten zwischen den Farmen kann man u.a. mit STRG-A, und dann die
+Leertaste.
 
 Steuerelemente des Bots (GUI im Browser)
 ----------------------------------------
@@ -79,7 +81,7 @@ Was man für die Ställe wissen sollte, ist, dass immer mit angegeben werden mus
 wieviel man an die Tiere verfüttern will. Ställe haben ZWEI Eingabefelder.
 
 "BOT START" erzwingt eine vorzeitige Beendigung der unter PAUSETIME definierten
-Pause zwischen zwei Bot-Durchläufen.
+Pause zwischen zwei Bot-Durchläufen. (Funktioniert in der Cygwin Version nicht!)
 
 
 Arbeitsweise des Bots
