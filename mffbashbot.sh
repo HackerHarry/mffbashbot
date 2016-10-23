@@ -145,8 +145,8 @@ if ! $JQBIN '.updateblock.farmersmarket.megafruit.current.remain' $FARMDATAFILE 
   done
 fi
 # food contest
-FCRUNNING=$($JQBIN '.updateblock.farmersmarket.foodcontest.current.remain' $FARMDATAFILE)
-if [ "$FCRUNNING" != "null" ]; then
+FCRUNNING=$($JQBIN '.updateblock.farmersmarket.foodcontest.current' $FARMDATAFILE)
+if [ "$FCRUNNING" != "0" -a "$FCRUNNING" != "null" ]; then
 # check for a ready cash desk first
  if $JQBIN '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain' $FARMDATAFILE | grep -q '-' ; then
    echo "Doing cash desk..."
