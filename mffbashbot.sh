@@ -171,8 +171,8 @@ fi
 PETBREEDING=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE 2>/dev/null)
 if [ "$PETBREEDING" != "0" ]; then
  for SLOT in food toy plushy; do
-  CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.happiness_interval.'${SLOT}'' $FARMDATAFILE 2>/dev/null)
-  if [ "$CAREREMAIN" != "1" ]; then
+  CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
+  if [ "$CAREREMAIN" == "null" ]; then
    echo "Taking care of pet using ${SLOT}..."
    DoFarmersMarketPetCare ${SLOT}
   fi
