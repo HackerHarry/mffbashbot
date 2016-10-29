@@ -86,16 +86,16 @@ for FARM in 1 2 3 4 5; do
    continue
   fi
   for SLOT in 0 1 2; do
-    if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null ; then
+    if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
       echo "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
-      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild|tonumber' $FARMDATAFILE 2>/dev/null | grep '1' >/dev/null ; then
+      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild|tonumber' $FARMDATAFILE 2>/dev/null | grep -q '1' ; then
        echo "(as a Guild job)"
        GUILDJOB=true
       fi
       DoFarm ${FARM} ${POSITION} ${SLOT}
     fi
     if [ $SLOT -eq 0 ]; then
-     if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null ; then
+     if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
       echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
       SendAJAXFarmRequest "mode=watergarden&farm=${FARM}&position=${POSITION}"
      fi
@@ -107,13 +107,13 @@ done
 # work farmers market
 echo "Checking for pending tasks on farmers market..."
 # first the flower area. we'll only check one of 'em.
-if $JQBIN '.updateblock.farmersmarket.flower_area["1"].remain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null ; then
+if $JQBIN '.updateblock.farmersmarket.flower_area["1"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
   echo "Doing flower area..."
   DoFarmersMarket farmersmarket flowerarea 0
 fi
 # nursery is next
 for SLOT in 1 2; do
-  if $JQBIN '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null ; then
+  if $JQBIN '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
     echo "Doing nursery slot ${SLOT}..."
     DoFarmersMarket farmersmarket nursery ${SLOT}
   fi
@@ -136,36 +136,41 @@ if [ $NUMPOTS -gt 0 ]; then
  done
 fi
 # monster fruit
-if ! $JQBIN '.updateblock.farmersmarket.megafruit.current.remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+RUNCHK=$($JQBIN '.updateblock.farmersmarket.megafruit.current' $FARMDATAFILE)
+if [ "$RUNCHK" != "0" -a "$RUNCHK" != "null" ]; then
+ if ! $JQBIN '.updateblock.farmersmarket.megafruit.current.remain' $FARMDATAFILE | grep -q '-' ; then
   for HELPER in water light fertilize; do
-    if $JQBIN '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain' $FARMDATAFILE | grep -q '-' ; then
-      echo "Using ${HELPER} on monster fruit..."
-      DoFarmersMarket farmersmarket monsterfruit ${HELPER}
-    fi
+   if $JQBIN '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain' $FARMDATAFILE | grep -q '-' ; then
+    echo "Using ${HELPER} on monster fruit..."
+    DoFarmersMarket farmersmarket monsterfruit ${HELPER}
+   fi
   done
+ fi
 fi
 # food contest
-FCRUNNING=$($JQBIN '.updateblock.farmersmarket.foodcontest.current' $FARMDATAFILE)
-if [ "$FCRUNNING" != "0" -a "$FCRUNNING" != "null" ]; then
+RUNCHK=$($JQBIN '.updateblock.farmersmarket.foodcontest.current' $FARMDATAFILE)
+if [ "$RUNCHK" != "0" -a "$RUNCHK" != "null" ]; then
+ if ! $JQBIN '.updateblock.farmersmarket.foodcontest.current.remain' $FARMDATAFILE | grep -q '-' ; then
 # check for a ready cash desk first
- if $JQBIN '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain' $FARMDATAFILE | grep -q '-' ; then
-   echo "Doing cash desk..."
-   DoFoodContestCashDesk
- fi
-# next the audience
- for BLOCK in 1 2 3 4; do
-  for PINTYPE in fame money points products; do
-    if $JQBIN '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain' $FARMDATAFILE | grep -q '-' ; then
-      echo "Picking up ${PINTYPE} from block ${BLOCK}..."
-      DoFoodContestAudience ${BLOCK} ${PINTYPE}
-    fi
-  done
- done
-# feed the contestant if needed
-  if $JQBIN '.updateblock.farmersmarket.foodcontest.current.feedremain' $FARMDATAFILE | grep '-' >/dev/null ; then
-    echo "Feeding contestant..."
-    DoFoodContestFeeding
+  if $JQBIN '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain' $FARMDATAFILE | grep -q '-' ; then
+    echo "Doing cash desk..."
+    DoFoodContestCashDesk
   fi
+# next the audience
+  for BLOCK in 1 2 3 4; do
+   for PINTYPE in fame money points products; do
+    if $JQBIN '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain' $FARMDATAFILE | grep -q '-' ; then
+     echo "Picking up ${PINTYPE} from block ${BLOCK}..."
+     DoFoodContestAudience ${BLOCK} ${PINTYPE}
+    fi
+   done
+  done
+# feed the contestant if needed
+  if $JQBIN '.updateblock.farmersmarket.foodcontest.current.feedremain' $FARMDATAFILE | grep -q '-' ; then
+   echo "Feeding contestant..."
+   DoFoodContestFeeding
+  fi
+ fi
 fi
 # check for active pet breeding
 PETBREEDING=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE 2>/dev/null)
@@ -304,7 +309,7 @@ fi
 # then the forestry buildings
 for POSITION in 1 2; do
  for SLOT in 1 2; do
-   if $JQBIN '.datablock[2]["'${POSITION}'"].slots["'${SLOT}'"].remain' $FARMDATAFILE | grep '-' >/dev/null ; then
+   if $JQBIN '.datablock[2]["'${POSITION}'"].slots["'${SLOT}'"].remain' $FARMDATAFILE | grep -q '-' ; then
      echo "Doing position ${POSITION}, slot ${SLOT}..."
      DoFarm forestry ${POSITION} ${SLOT}
    fi
@@ -318,7 +323,7 @@ echo "Checking for pending tasks in food world..."
 for POSITION in 1 2 3 4; do
  for SLOT in 1 2; do
    # readiness in food world is signalled by a "ready:1" value
-   if $JQBIN '.datablock.buildings["'${POSITION}'"].slots["'${SLOT}'"].ready' $FARMDATAFILE 2>/dev/null | grep '1' >/dev/null; then
+   if $JQBIN '.datablock.buildings["'${POSITION}'"].slots["'${SLOT}'"].ready' $FARMDATAFILE 2>/dev/null | grep -q '1' ; then
      echo "Doing position ${POSITION}, slot ${SLOT}..."
      DoFarm foodworld ${POSITION} ${SLOT}
    fi
@@ -332,7 +337,7 @@ GetWindMillData $FARMDATAFILE
 
 echo "Checking for pending tasks in wind mill..."
 # we only handle one slot here
-if $JQBIN '.datablock[2]["1"].remain' $FARMDATAFILE 2>/dev/null | grep '-' >/dev/null; then
+if $JQBIN '.datablock[2]["1"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
  echo "Doing wind mill, slot 1..."
  DoFarm city2 windmill 0
 fi

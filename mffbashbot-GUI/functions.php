@@ -66,161 +66,191 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
  switch ($BuildingID) {
   case 1:
         // Acker
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 153, 154, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 2:
         // Hühnerstall
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 3:
         // Kuhstall
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(3, 4);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 4:
         // Schafskoppel
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(5, 6);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 5:
         // Imkerei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(7, 8);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 11:
         // Fischzucht
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(92, 93);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 12:
         // Ziegenfarm
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(108, 109);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 15:
         // Angorastall
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(153, 154);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 16:
         // Strickerei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateWoolOptions(1, 2, 3);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 7:
         // Mayo-Küche
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(9, 21);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 8:
         // Käserei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(10, 110);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 9:
         // Wollspinnerei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(11, 151);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 10:
         // Bonbonküche
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(12);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 13:
         // Ölpresse
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOilOptions(1, 2, 3, 4, 5, 6);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 14:
         // Spezialölmanufaktur
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOilOptions(7, 8, 9, 10);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case 19:
         // Fahrzeughalle
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateMegaFieldOptions(1, 2, 3, 4, 6, 8);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "/select>\n";
         break;
   case 20:
         // Biosprit-Anlage
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "flowerarea":
         // Blumenwiese
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 998);
         // 998 is a self created item (!)
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "nursery":
         // Blumenwerkstatt
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "monsterfruit":
         // Monsterfruchtzucht
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateMonsterOptions(1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "vet":
         // Tierarzt
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 400, 401, 402, 403);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "pets":
         // Tieraufzucht
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(600, 601, 602, 603, 604, 605, 606, 607, 608, 609, 630, 631, 632, 633, 634, 635, 636, 637, 638, 639, 660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "sawmill":
         // Sägewerk
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateForestryOptions(41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "carpentry":
         // Schreinerei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateForestryOptions(101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 143, 144, 146, 148, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "forestry":
         // Bäumerei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateForestryOptions(1, 2, 3, 4, 5, 7, 8, 9);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "sodastall":
         // Getränkebude
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateFoodworldOptions(1, 2, 3, 4, 5, 6, 15, 16, 17, 49, 50, 51, 52, 53, 54);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "snackbooth":
         // Imbissbude
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateFoodworldOptions(7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 55, 56, 57, 58);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "pastryshop":
         // Konditorei
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateFoodworldOptions(21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 59, 60, 61, 62, 63, 64);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "icecreamparlour":
         // Eisdiele
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateFoodworldOptions(31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41 ,42, 43 ,44, 45, 46, 47, 48);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   case "windmill":
         // Mühle
+        print "<option value=\"sleep\">Sleep</option>\n";
         CreateWindMillOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35);
-        print "<option value=\"sleep\">Sleep</option></select>\n";
+        print "</select>\n";
         break;
   default:
         // nicht unterstuetzte auswahl
