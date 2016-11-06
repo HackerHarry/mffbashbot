@@ -17,39 +17,51 @@
 
 # variable 1 is mandatory
 : ${1:?No MFF username provided}
+cd $1 || exit 1
 
-# as are 2 and 3
-: ${2:?No MFF password provided}
-: ${3:?No MFF server provided}
-
-cd $1
-umask 002
-PIDFILE=bashpid.txt
-echo $BASHPID > "$PIDFILE"
-while (true); do
 # variables
-MFFUSER=$1
-MFFPASS=$2
-MFFSERVER=$3
 VERSION=$(cat ../version.txt)
-PAUSETIME=10
 LOGFILE=mffbot.log
 OUTFILE=mffbottemp.html
 COOKIEFILE=mffcookies.txt
 FARMDATAFILE=farmdata.txt
 LASTRUNFILE=lastrun.txt
-STATUSFILE=status.txt
+STATUSFILE=isactive.txt
 CFGFILE=config.ini
-echo "<font color=\"red\">aktiv</font>" > "$STATUSFILE"
+PIDFILE=bashpid.txt
+JQBIN=/usr/bin/jq
+MFFUSER=$1
+# get server, password & language
+MFFPASS=$(grep password $CFGFILE)
+MFFSERVER=$(grep server $CFGFILE)
+TLD=$(grep lang $CFGFILE)
+# let's just hope IFS is a white space ;)
+set -- $MFFPASS
+: ${3:?No MFF password found in $CFGFILE}
+MFFPASS=$3
+set -- $MFFSERVER
+: ${3:?No MFF server-no. found in $CFGFILE}
+MFFSERVER=$3
+set -- $TLD
+: ${3:?No MFF language found in $CFGFILE}
+TLD=$3
+if [ "$TLD" = "en" ]; then
+ TLD=com
+fi
+umask 002
+echo $BASHPID > "$PIDFILE"
+
+while (true); do
+PAUSETIME=10
+touch "$STATUSFILE"
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
-LOGOFFURL="http://s${MFFSERVER}.myfreefarm.de/main.php?page=logout&logoutbutton=1"
-POSTURL="http://www.myfreefarm.de/ajax/createtoken2.php?n=${NANOVALUE}"
+LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
+POSTURL="http://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
 AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
 # There's another AGENT string in logonandgetfarmdata.sh (!)
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
-JQBIN=/usr/bin/jq
 
 echo "Running Harrys My Free Farm Bash Bot $VERSION"
 echo "Getting a token to MFF server ${MFFSERVER}"
@@ -177,7 +189,7 @@ PETBREEDING=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE 2>/de
 if [ "$PETBREEDING" != "0" ]; then
  for SLOT in food toy plushy; do
   CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
-  if [ "$CAREREMAIN" == "null" ]; then
+  if [ "$CAREREMAIN" == "null" -o "$CAREREMAIN" == "[]" ]; then
    echo "Taking care of pet using ${SLOT}..."
    DoFarmersMarketPetCare ${SLOT}
   fi
@@ -201,8 +213,8 @@ for SLOT in 1 2 3; do
 done
 # animal treatment
 # check for running treatment job
-VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role|tonumber' $FARMDATAFILE)
-if [ "$VETJOBSTATUS" != "0" ]; then
+VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role|tonumber' $FARMDATAFILE 2>/dev/null)
+if [ "$VETJOBSTATUS" != "0" -a "$VETJOBSTATUS" != "" ]; then
  for SLOT in 1 2 3; do
   if $JQBIN '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"].remain' $FARMDATAFILE | grep -q '-' ; then
   echo "Doing animal treatment slot ${SLOT}..."
@@ -251,7 +263,7 @@ fi
 if ! grep dodog $CFGFILE | grep -q 0; then
  echo -n "Checking for daily dog bonus..."
  DOGSTATUS=$($JQBIN '.updateblock.menue.farmdog_harvest' $FARMDATAFILE)
- if [ "$DOGSTATUS" != "1" ]; then
+ if [ "$DOGSTATUS" != "1" -a "$DOGSTATUS" != "null" ]; then
   echo "not yet claimed, activating it..."
   SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
   # reduce pause time to 5 mins after claiming the (dog) time bonus
@@ -298,11 +310,11 @@ GetForestryData $FARMDATAFILE
 
 echo "Checking for pending tasks in forestry..."
 # first the trees ... we'll only check one of 'em. timer ends at '0'
-if [ $($JQBIN '.datablock[1][0].remain' $FARMDATAFILE) = "0" ];  then
+if [ $($JQBIN '.datablock[1][0].remain' $FARMDATAFILE 2>/dev/null) = "0" ] 2>/dev/null; then
   echo "Doing trees..."
   DoForestry forestry
 fi
-if [ $($JQBIN '.datablock[1][0].waterremain' $FARMDATAFILE) = "0" ];  then
+if [ $($JQBIN '.datablock[1][0].waterremain' $FARMDATAFILE 2>/dev/null) = "0" ] 2>/dev/null;  then
   echo "Watering trees..."
   water_Tree
 fi
@@ -350,6 +362,6 @@ echo -n "Time stamp: "
 echo $(date "+%A, %d. %B %Y - %H:%Mh") | tee $LASTRUNFILE
 echo "Pausing $PAUSETIME mins..."
 echo "---"
-echo "<font color=\"green\">inaktiv</font>" > "$STATUSFILE"
+rm -f "$STATUSFILE"
 sleep ${PAUSETIME}m
 done

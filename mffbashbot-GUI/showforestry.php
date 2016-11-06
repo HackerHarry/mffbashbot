@@ -16,24 +16,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-?>
-<html>
- <head>
-  <title>Harrys MFF Bash Bot - B&auml;umerei</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <link href="css/mffbot.css" rel="stylesheet" type="text/css">
- </head>
- <body id="main_body" class="main_body" onload="window.setTimeout(updateBotStatus, 30000)">
-<?php
 $farm=$_POST["farm"];
 $username=$_POST["username"];
-include 'gamepath.php';
-include 'functions.php';
-include 'farmdata.php';
-include 'buttons.php';
+include_once 'gamepath.php';
+include_once 'lang.php';
+include_once 'functions.php';
+include_once 'farmdata.php';
+include_once 'buttons.php';
 
+include 'header.php';
 
-$position = [0 => ["sawmill", "S&auml;gewerk", "1"], 1 => ["carpentry", "Schreinerei", "2"], 2 => ["forestry", "B&auml;umerei", "forestry"]];
+$position = [0 => ["sawmill", $forestryBuildingFriendlyName[0], "1"], 1 => ["carpentry", $forestryBuildingFriendlyName[1], "2"], 2 => ["forestry", $forestryBuildingFriendlyName[2], "forestry"]];
 
 for ($pc = 0; $pc <= 2; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
@@ -58,7 +51,7 @@ for ($pc = 0; $pc <= 2; $pc++) {
 print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
-print "<input type=\"submit\" name=\"save\" value=\"Speichern\" onclick=\"return saveConfig()\">";
+print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
 print "<br><br>";
 ?>
  </form>

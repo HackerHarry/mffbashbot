@@ -19,14 +19,19 @@
 # variable 1 is mandatory
 : ${1:?No MFF username provided}
 
-# as are 2 and 3
+# as are 2, 3 and 4
 : ${2:?No MFF password provided}
 : ${3:?No MFF server provided}
+: ${4:?No language provided}
 
 # variables
 MFFUSER=$1
 MFFPASS=$2
 MFFSERVER=$3
+TLD=$4
+if [ "$TLD" = "en" ]; then
+ TLD=com
+fi
 LOGFILE=/tmp/mffbot-$$.log
 OUTFILE=/tmp/mffbottemp-$$.html
 COOKIEFILE=/tmp/mffcookies-$$.txt
@@ -37,8 +42,8 @@ FOODDATAFILE=/tmp/fooddata-${MFFUSER}.txt
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
-LOGOFFURL="http://s${MFFSERVER}.myfreefarm.de/main.php?page=logout&logoutbutton=1"
-POSTURL="http://www.myfreefarm.de/ajax/createtoken2.php?n=${NANOVALUE}"
+LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
+POSTURL="http://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
 AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
@@ -49,9 +54,9 @@ wget -v -o $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-sess
 RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
 
 # get farm status
-wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.de/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
-wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.de/ajax/forestry.php?rid=${RID}&action=initforestry"
-wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.de/ajax/foodworld.php?action=init&id=0&table=0&chair=0&rid=${RID}"
+wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&action=initforestry"
+wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?action=init&id=0&table=0&chair=0&rid=${RID}"
 
 # logoff
 # i don't really care, if all this succeeds or not

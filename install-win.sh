@@ -44,4 +44,4 @@ mkdir -p /var/log/lighttpd 2>/dev/null
 /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
 
 echo "Done!"
-echo "Do not forget adjusting your farm name."
+echo "Do not forget adjusting your farm name and the data in config.ini!"

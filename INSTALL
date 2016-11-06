@@ -1,64 +1,73 @@
-Harrys My Free Farm Bash Bot (MFF Bash Bot)
--------------------------------------------
+Harrys My Free Farm Bash Bot
+----------------------------
 
 Installation
 ------------
 
-A) Debian-basierte Distributionen
-B) Windows (weiter unten)
+A) Debian-based distributions
+B) Windows (further down)
 
 A)
-Grundsätzliches Linux-Wissen wird an dieser Stelle vorausgesetzt.
-Solltest Du über dieses Wissen nicht verfügen, ist es empfehlenswert, sich
-dieses anzueignen oder im Zweifel von einer Installation des Bots abzusehen.
-Erklärungen darüber, wie man sich z.B. anmeldet, oder Dateien editiert sind
-nicht Teil dieser Dokumentation.
+You need at least basic Linux knowledge at this point.
+If you don't know about basic Linux stuff, you can either try and learn it or
+refrain from installing the bot. I might write some sort of setup script in the
+future. You surely understand i can't explain here how to log on to Linux or
+how to edit files.
 
-Pakete wie sudo, sed, wget, (p)grep und so weiter sollten schon installiert
-sein. Und wie der Name schon vermuten lässt, muss auch die bash an Bord sein. ;)
+Packets like sudo, sed, wget, (p)grep etc. should be already on your box.
+And as the product name suggests, you'll also need the bash ;)
 
-Wir benötigen einige neue Pakete:
+We need to install a few packets:
 harry@testbox:~$ sudo apt-get install jq lighttpd php5-cgi screen logrotate cron unzip
 
-Nachdem diese Pakete idealerweise erfolgreich installiert wurden, widmen wir uns
-zunächst der Installation des Bots.
-Dazu erzeugen wir die erforerliche Grundstruktur im Dateisystem. Sie ist im
-Gesamtpaket enthalten und beinhaltet eine komplette Farm - auch Teile, die ggf.
-noch nicht freigespielt sind.
+After a (hopefully) successful installation, we'll turn to installing the bot.
+For that, we need a basic structure in the file system. That scructure can be
+found in the below mentioned archive. It contains an entire farm, which includes
+parts that might not be accassible to you yet.
 harry@testbox:~$ cd
 harry@testbox:~$ wget --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 harry@testbox:~$ unzip master.zip
 harry@testbox:~$ mv mffbashbot-master mffbashbot
 
-Die jetzt erstellte Grundstruktur beinhaltet u.a. die Information darüber,
-was der Bot wo erledigen soll, den Bot selbst und die GUI.
+The scrutcture contains, amongst other things, information on what the bot's
+supposed to do and where, as well as the bots GUI.
 
 harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ chmod +x mffbashbot.sh
 
-Jetzt müssen wir Rechte anpassen, da hier später der Prozess
-des Webservers schreiben können muss:
+We need to adjust file system rights so the web server process can write here:
 harry@testbox:~/mffbashbot$ find . -type d -exec chmod 775 {} +
 harry@testbox:~/mffbashbot$ find . -type f -exec chmod 664 {} +
-Paranoiker können naklar auch 770 und 660 verwenden ;)
+Paranoiacs can use 770 and 660 ;)
 
-Hier kann der dummy ordner bereits umbenannt werden. Der neue Name hängt vom
-Spielernamen bei My Free Farm ab. Wenn Du Dich als Benutzer 'hanswurst' bei MFF
-anmeldest, benennst Du den dummy Ordner in hanswurst um:
+The newly created 'dummy' folder can be renamed here. The new name depends on
+how you log on to the My Free Farm website. If you log on as 'hanswurst', simply
+rename the 'dummy' folder to 'hanswurst':
 harry@testbox:~/mffbashbot$ mv dummy hanswurst
 
-Davon ausgehend, dass euer Webserver als 'www-data' läuft, passen wir die
-Gruppenrechte an.
+While we're at it: The server-no., password and language need to be set once
+per farm. Make sure to leave the white spaces in front and behind the equal
+sign. Edit the config.ini:
+harry@testbox:~/mffbashbot$ nano hanswurst/config.ini
+to reflect your account settings.
+--- snip ---
+lang = en
+server = 2
+password = s3cRet!
+--- snip ---
+
+Assuming your web server runs as 'www-data' we need to adjust group rights.
 harry@testbox:~$ grep server.username /etc/lighttpd/lighttpd.conf
 server.username             = "www-data"
 harry@testbox:~$ sudo nano /etc/group
 
-Mein Bot-Benutzer ist in diesem Beispiel 'harry' mit gleichlautender Gruppe.
-Ergo sieht mein Eintrag in der group Datei so aus:
+The Linux user name i use to operate my bot is 'harry', using also 'harry' for
+the primary group.
+My group entry looks like this:
 harry:x:1000:www-data
 
-Nun konfgurieren wir den lighttpd Webserver. Zunächst diesen Codeblock ans
-ende der /etc/lighttpd/lighttpd.conf setzen:
+Let's now configure the lighttpd web server. Copy and paste this code block to
+the end of your /etc/lighttpd/lighttpd.conf:
 
 harry@testbox:~$ echo '
 fastcgi.server = ( ".php" => ((
@@ -68,7 +77,7 @@ fastcgi.server = ( ".php" => ((
 # source of all modification in order to make php5 run under
 # lighttpd http://www.howtoforge.com/lighttpd_mysql_php_debian_etch ' | sudo tee --append /etc/lighttpd/lighttpd.conf > /dev/null
 
-Weiter gehts mit der Konfiguration des Webservers:
+Some more web server configuration:
 harry@testbox:~$ cd /etc/lighttpd/conf-enabled/
 harry@testbox:/etc/lighttpd/conf-enabled$ ls
 harry@testbox:/etc/lighttpd/conf-enabled$ sudo ln -s ../conf-available/10-accesslog.conf 10-accesslog.conf
@@ -76,35 +85,35 @@ harry@testbox:/etc/lighttpd/conf-enabled$ sudo ln -s ../conf-available/10-fastcg
 harry@testbox:/etc/lighttpd/conf-enabled$ sudo /etc/init.d/lighttpd restart
 [ ok ] Restarting lighttpd (via systemctl): lighttpd.service.
 
-Jetzt wird es Zeit, die GUI zur Botkontrolle zu installieren.
+We will now install the bots GUI.
 
 harry@testbox:~$ sudo su
 root@testbox:/home/harry# cd /var/www/html/
 root@testbox:/var/www/html# mv /home/harry/mffbashbot/mffbashbot-GUI ./mffbashbot
 
-Hier kannst Du noch den Besitzer der Ordner und Dateien anpassen, wenn
-Du das wünschst. Das obige Beispiel kann dazu als Referenz dienen.
+If you wish, you can adjust ownership for files and folders. Use the above
+mentioned command as a reference.
 
 root@testbox:/var/www/html# cd mffbashbot/script/
 root@testbox:/var/www/html/mffbashbot/script# chmod +x wakeupthebot.sh logonandgetfarmdata.sh
 root@testbox:/var/www/html/mffbashbot/script# cd ..
 root@testbox:/var/www/html/mffbashbot# nano gamepath.php
 
-In der 'gamepath.php' muss der Pfad zum Botordner angepasst werden.
+In 'gamepath.php' adjust the path to the bots folder.
 
 root@testbox:/var/www/html/mffbashbot# nano index.php
 
-In der 'index.php' muss der Pfad in der system() Funktion angepasst werden.
-Ziel ist (naklar) euer Botordner.
+'index.php' also needs a hand. Adjust the path in the system() function.
+The destination needs to be the bot's folder as well.
 
-Damit der Webserver die Zwangspause des Bots auf Wunsch des Benutzers
-unterbrechen darf, muss für 'sudo' ein passender Eintrag her:
+In order to allow the web server's process to force an iteration of the bot,
+you need to add the proper entry for 'sudo':
 root@testbox:/var/www/html/mffbashbot# exit
 harry@testbox:~$ echo 'www-data ALL=(ALL) NOPASSWD: /bin/kill' | sudo tee /etc/sudoers.d/www-data-kill-cmd > /dev/null
 
-Standardmässig wird ein Bot-Log erzeugt.
-Optional, aber der Übersicht förderlich, kann man nun noch logrotate für die
-Rotation des Bot-Logs einrichten.
+Bot log file creation is set as default.
+So optionally, you can set up logrotate to take care of log rotation.
+Adjust the path accordingly.
 
 harry@testbox:~$ echo '/home/harry/mffbashbot/*/mffbot.log
 {
@@ -117,75 +126,78 @@ harry@testbox:~$ echo '/home/harry/mffbashbot/*/mffbot.log
         compress
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
 
-Auch hier muss der Pfad ebenso wie die 'su' Zeile angepasst werden.
+Adjust also the file owner in the 'su' line.
 
-Im Prinzip ist der Bot nun fertig installiert.
-Wie man den Bot startet, steht in der MANUAL
+Congrats: The bot is now installed.
+Find info on how to start the bot in the MANUAL file.
 
-Die GUI zum steuern des Bots erreichst Du dort, wo Dein lighttpd Webserver
-läuft. Dort unter http://IP-oder-Hostname/mffbashbot
+You can access the bots GUI where you've installed your web server.
+Just use http://IP-or-Hostname/mffbashbot
 
-Wenn Du mehr als eine Farm betreiben möchtest, kannst Du das selbstverständlich
-tun. Dazu kopierst Du einfach eine vorhandene Farm als Vorlage für die neue
-Farm. Im folgenden Beispiel ist der Name der neuen Farm 'inge05' :
+If you want to operate more than one farm, you can use an existing farm as a
+template. The new farm's name in the example is 'inge05' :
 
 harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ cp -a dummy/ inge05
 --------------------------------------------------------------------------------
 B)
-Getestet unter Windows 7 SP1 x64
+Tested with Windows 7 SP1 x64
 
-Wir arbeiten hier mit der x86 Variante von Cygwin, da diese den Grossteil der
-Windows-Versionen abdeckt. Wer unbedingt 64bit installieren will, möge die
-notwendigen Anpassungen bitte selbst vornehmen.
+We'll be working with the x86 variant of Cygwin, since this should work with
+most Windows versions. If you must use Cygwin x64, you'll be on your own.
 
-Alle folgenden Befehle werden OHNE Anführungszeichen eingegeben.
+Enter all following commands WITHOUT double quotes.
 
-https://cygwin.com/setup-x86.exe herunterladen (und MERKEN wo's gespeichert ist)
-Windows-Taste drücken, dann "cmd" eingeben, dann ENTER (Eingabetaste) drücken.
-"cd <Ordner wohin setup-x86.exe heruntergeladen wurde>" eingeben, ENTER
-Wenn setup-x86.exe nach C:\Users\Harry\Downloads heruntergeladen wurde,
-lautet der Befehl "cd c:\Users\Harry\Downloads".
-Jetzt folgendes eingeben, oder per kopieren-und-einfügen ins CMD Fenster einsetzen:
+Download https://cygwin.com/setup-x86.exe and remember where you put it.
+Press the Windows key, enter "cmd" then press ENTER.
+"cd <to where you've downloaded setup-x86.exe to>", ENTER
+If you saved setup-x86.exe in C:\Users\Harry\Downloads, your command would be
+"cd c:\Users\Harry\Downloads".
+Now copy and paste the following command into your CMD Window:
 "setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base"
-mit ENTER bestätigen, die erweiterten Rechte abnicken, und dann dem Setup-Prozess zuschauen :)
-Hier werden ca. 44MB aus dem Internet geladen.
-Irgendwann isser dann fertig und das Setup-Fenster schliesst sich automatisch.
-Das CMD Fenster kannst auch zumachen, wenn'd willst.
-Auf Deiner Arbeitsoberfläche (dem Desktop) findest Du nun eine neue Ikone namens
-"Cygwin Terminal" - da einen Doppelklick drauf machen, dann öffnet sich ein
-neues Fenster.
+hit ENTER, confirm the elevated rights, and watch the progress bar :)
+Download size will be around 44MB.
+After setup completes, the setup window should close automagically.
+Close the CMD window, if you wish.
+On your deskop you'll find an icon labelled "Cygwin Terminal" - double click it,
+and a new window opens.
 
-Mir war der Text viel zu klein, also klickte ich auf das schwarz-grüne
-Eck-Symbol, dann auf "Options", dann "Text" und wählte dort über den "Select..."
-Knopf eine grössere Schriftart. Für mich war das Courier New / bold / 18.
-Übrigens: Willkommen in der Unix-Welt! :-)
+To me, the font was way too small. So i changed the font size by clicking the
+black and green symbol (top left corner), then "Options", then "Text", finally
+chose via the "Select..." button a larger font. In my case
+Courier New / bold / 18.
+By the way: Welcome to the Unix-World! :-)
 
-Tipp: Im Cygwin Fenster kann man komfortabel copy and paste über die rechte
-Mausstaste erledigen.
-Noch immer in dem neuen, "fremden" Fenster gibst nu folgendes ein:
+Tip: You can copy n paste stuff to the Cygwin window using the right mouse
+button.
+Still in that new and "strange" window, enter:
 "wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-win.sh"
-Nun das Skript als "ausführbar" markieren:
+Change it to "executable":
 "chmod +x install-win.sh"
-Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
-"./install-win.sh" und ENTER naklar.
-Am Ende könnte eure Firewall über den lighttpd prozess meckern; falls Dir eine
-Ausnahme angeboten wird, musst Du diese naklar annehmen.
+This script does most of the work for you. Just enter:
+"./install-win.sh" and hit ENTER.
+If your firewall complains at the end, you'll want to approve an exception
+for the web servers process.
 
-Jetzt müssen wir einen Ordner umbenennen. Unter *nix macht man
-das mit "mv". Der neue Name richtet sich nach Deinem ANMELDENAMEN
-bei My Free Farm. Wenn Du Dich mit "susi0815" anmeldest, lauten Deine Befehle
-"cd ~/mffbashbot", dann
-"mv dummy susi0815" und mit der Eingabetaste bestätigen.
+Now, we need to rename a folder. This can be done using the "mv" command.
+The new name depends on how you log on to the My Free Farm website.
+If you log on as 'susi0815', just enter
+"cd ~/mffbashbot", then
+"mv dummy susi0815" and finally ENTER.
 
-Wie der Bot gestartet wird, steht in der MANUAL Datei.
+You also need to configure the password, server-no. and language. See the
+Linux-install section for details.
 
-Deinen Bot kannst Du nun mit Deinem Browser (unterstützt wird meinerseits nur
-Firefox) konfigurieren. Die Adresse lautet http://localhost/mffbashbot
+The MANUAL file gives you an insight on how to start the bot.
 
-Wer mehrere Farmen betreiben will, findet in der MANUAL Datei wertvolle Infos.
+Configure your bot using your web browser (I only support Mozilla Firefox).
+The address is http://localhost/mffbashbot
 
-Wenn Du Deinen Rechner neu startest, wirst Du auch den Webserver und Deinen
-Bot neu starten müssen!
-Im "Cygwin Terminal" mit "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
-den Webserver, und den Bot wie im MANUAL beschrieben neu starten.
+If you want to operate more than one farm, find some info on that in the
+MANUAL file.
+
+Important:
+If you restart your computer, you'll have to restart the web servers process
+as well! 
+In "Cygwin Terminal" use "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
+to start the web server. The bot is (re)started as explained in the MANUAL.

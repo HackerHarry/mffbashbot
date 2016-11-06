@@ -1,5 +1,5 @@
 <?php
-// Get Bot status file for Harrys My Free Farm Bash Bot (front end)
+// Header file for Harrys My Free Farm Bash Bot (front end)
 // Copyright 2016 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -16,12 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-if (!isset($username))
- $username = $_POST["username"];
-include_once 'gamepath.php';
-include_once 'lang.php';
-if (file_exists($gamepath . "/isactive.txt"))
- print "<font color=\"red\">" . $strings['botisactive'] . "</font>";
-else
- print "<font color=\"green\">" . $strings['botisidle'] . "</font>";
+print "<html>\n";
+print "<head>\n";
+print "<title>Harrys MFF Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
+print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
+print "<link href=\"css/mffbot.css\" rel=\"stylesheet\" type=\"text/css\">\n";
+print "</head>\n";
+print "<body id=\"main_body\" class=\"main_body\" onload=\"window.setTimeout(updateBotStatus, 30000)\">\n";
 ?>

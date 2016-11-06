@@ -439,11 +439,11 @@ function saveConfig($filename, $queueData) {
 // chmod($filename, 0775);
  fclose($fh);
 }
-function write_ini_file($configData, $filename) {
+function writeINI($configData, $filename) {
  $data2write = "";
  foreach ($configData as $configItem => $iValue)
   $data2write .= $configItem . " = " . $iValue . "\n";
- // we'll be using numelical values only, hence no quotes
+ // nevermind ;)
  if (!$handle = fopen($filename, 'w'))
   return false;
  fwrite($handle, $data2write);

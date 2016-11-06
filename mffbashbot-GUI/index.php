@@ -20,15 +20,18 @@ include 'functions.php';
 ?>
 <html>
  <head>
-  <title>Harrys MFF Bash Bot - Anmeldung</title>
+  <title>Harrys MFF Bash Bot - Log on</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link href="css/mffbot.css" rel="stylesheet" type="text/css">
  </head>
  <body id="main_body" class="main_body">
-<h1>Konto w&auml;hlen...</h1>
+<h1>Log on...</h1>
+<small>Remember to set your language in config.ini</small>
 <br><br>
+<table name="logontbl" style="float:left; margin-right:20px;" border="1">
 <form name="logon" method="post" action="validate.php">
-<br>Server&nbsp;
+<tr><td align="left">Server</td>
+<td align="left">
 <select name="server"><option value="1">1</option><option value="2">2</option>
 <option value="3">3</option><option value="4">4</option><option value="5">5</option>
 <option value="6">6</option><option value="7">7</option><option value="8">8</option>
@@ -37,16 +40,27 @@ include 'functions.php';
 <option value="15">15</option><option value="16">16</option><option value="17">17</option>
 <option value="18">18</option><option value="19">19</option><option value="20">20</option>
 <option value="21">21</option><option value="22">22</option><option value="23">23</option>
-<option value="24">24</option><option value="25">25</option></select><br>
-Benutzername&nbsp;
+<option value="24">24</option><option value="25">25</option></select>
+</td></tr>
+<tr><td align="left">
+User name
+</td><td align="left">
 <select name="username">
 <?php
+// to do: involve gamepath.php and trick it into returning a path
 system("cd /home/pi/mffbashbot; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/<option>\\1<\\/option>/'");
 ?>
-</select><br>
-Passwort
-&nbsp;<input type="password" name="password"><br>
-<input type="submit" value="GIB STOFF!">
+</select>
+</td></tr>
+<tr><td align="left">
+Password
+</td><td align="left">
+<input type="password" name="password">
+</td></tr>
+<tr><td colspan="2" align="center">
+<input type="submit" value="GO!">
+</td></tr>
+</table>
 </form>
 </body>
 </html>

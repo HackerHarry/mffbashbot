@@ -16,28 +16,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-?>
-<html>
- <head>
-  <title>Harrys MFF Bash Bot - Teichlingen</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <link href="css/mffbot.css" rel="stylesheet" type="text/css">
- </head>
- <body id="main_body" class="main_body" onload="window.setTimeout(updateBotStatus, 30000)">
-<?php
 $farm=$_POST["farm"];
 $username=$_POST["username"];
-include 'gamepath.php';
-include 'functions.php';
-include 'farmdata.php';
-include 'buttons.php';
+include_once 'gamepath.php';
+include_once 'lang.php';
+include_once 'functions.php';
+include_once 'farmdata.php';
+include_once 'buttons.php';
+
+include 'header.php';
 
 $position = [ "windmill" ];
 
 for ($pc = 0; $pc < 1; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc]);
  print "<table name=\"" . $position[$pc] . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">M&uuml;hle</th>";
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . $strings['mill'] . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc] . "\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc], $position[$pc]);
@@ -57,7 +51,7 @@ for ($pc = 0; $pc < 1; $pc++) {
 print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
-print "<input type=\"submit\" name=\"save\" value=\"Speichern\" onclick=\"return saveConfig()\">";
+print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
 print "<br><br>";
 ?>
  </form>

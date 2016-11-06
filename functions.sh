@@ -20,46 +20,46 @@ function WGETREQ {
  sHTTPReq=$1
  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq
 }
-AJAXFARM="http://s${MFFSERVER}.myfreefarm.de/ajax/farm.php?rid=${RID}&"
-AJAXFOREST="http://s${MFFSERVER}.myfreefarm.de/ajax/forestry.php?rid=${RID}&"
-AJAXFOOD="http://s${MFFSERVER}.myfreefarm.de/ajax/foodworld.php?rid=${RID}&"
-AJAXCITY="http://s${MFFSERVER}.myfreefarm.de/ajax/city.php?rid=${RID}&"
+AJAXFARM="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&"
+AJAXFOREST="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&"
+AJAXFOOD="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?rid=${RID}&"
+AJAXCITY="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&"
 
 function ctrl_c {
  echo "Caught CTRL-C - Trying to log off..."
  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- echo "<font color=\"green\">inaktiv</font>" > "$STATUSFILE"
+ rm -f "$STATUSFILE"
  exit 1
 }
 
 function GetFarmData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
 }
 
 function GetForestryData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/ajax/forestry.php?rid=${RID}&action=initforestry"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&action=initforestry"
 }
 
 function GetFoodWorldData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
 }
 
 #function GetMenuUpdateData {
 # sFile=$1
-# wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/menu-update.php"
+# wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/menu-update.php"
 #}
 
 function GetLotteryData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/ajax/city.php?rid=${RID}&city=2&mode=initlottery"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=initlottery"
 }
 
 function GetWindMillData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.de/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
 function DoFarm {

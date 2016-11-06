@@ -1,5 +1,5 @@
 <?php
-// Get Bot status file for Harrys My Free Farm Bash Bot (front end)
+// Language file for Harrys My Free Farm Bash Bot (front end)
 // Copyright 2016 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -16,12 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-if (!isset($username))
- $username = $_POST["username"];
-include_once 'gamepath.php';
-include_once 'lang.php';
-if (file_exists($gamepath . "/isactive.txt"))
- print "<font color=\"red\">" . $strings['botisactive'] . "</font>";
-else
- print "<font color=\"green\">" . $strings['botisidle'] . "</font>";
+$configContents = parse_ini_file($gamepath . "/config.ini");
+$translations_available = ['de', 'en'];
+$lang=$configContents['lang'];
+// fallback to german if lang is unsupported or missing
+if (!in_array($lang, $translations_available))
+ $lang='de';
+include_once 'lang/lang.' . $lang . '.php';
 ?>

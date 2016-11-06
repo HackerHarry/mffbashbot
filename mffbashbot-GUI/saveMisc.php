@@ -31,6 +31,7 @@ include 'functions.php';
 include 'farmdata.php';
 global $configContents;
 
+// langugage, password and server-no. must be set manually in config.ini
 $configContents['carefood'] = $carefood;
 $configContents['caretoy'] = $caretoy;
 $configContents['careplushy'] = $careplushy;
@@ -41,5 +42,5 @@ $configContents['dopuzzleparts'] = $puzzlepartstoggle;
 $configContents['sendfarmiesaway'] = $farmiestoggle;
 
 $filename = $gamepath . "/config.ini";
-write_ini_file($configContents, $filename);
+writeINI($configContents, $filename);
 ?>

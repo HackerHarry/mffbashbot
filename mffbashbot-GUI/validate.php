@@ -16,21 +16,22 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-?>
-<html>
- <head>
-  <title>Harrys MFF Bot - Anmeldungspr&uuml;fung</title>
- </head>
- <body bgcolor="#4E7AB1">
-<?php
-include 'functions.php';
-print "<h1>Bitte warten...</h1>";
-print ("<br>");
 $username=$_POST["username"];
 $password=$_POST["password"];
 $server=$_POST["server"];
+include_once 'functions.php';
+include_once 'gamepath.php';
+include_once 'lang.php';
+
+print "<html>\n";
+print "<head>\n";
+print "<title>Harrys MFF Bot - " . $strings['validation'] . "</title>\n";
+print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
+print "</head><body bgcolor=\"#4E7AB1\"\n>";
+print "<h1>" . $strings['pleasewait'] . "</h1>";
+print ("<br>");
 // logon and get farm data
-system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server);
+system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang);
 $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
 $JSONforestdata = file_get_contents("/tmp/forestdata-" . $username . ".txt");
 $JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
@@ -42,12 +43,13 @@ if ( $retval == 0 ) {
 	print "<form name=\"jump2farm\" method=\"post\" action='showfarm.php'>";
 	print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
 	print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
+  print "<input type=\"hidden\" name=\"lang\" value=\"" . $lang . "\">";
 	print "</form>"; 
 	print "<script type=\"text/javascript\">";
 	print "document.jump2farm.submit();";
 	print "</script>"; }
 else
-	print "Anmeldung fehlgeschlagen!";
+	print "<big>" . $strings['logonfailed'] . "</big>";
 ?>
  </body>
 </html>
