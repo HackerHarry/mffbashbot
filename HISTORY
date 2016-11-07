@@ -90,3 +90,4 @@ HB 28.10.2016 v1.31 fixed bug in pet care
 HB 29.10.2016 v1.32 minor changes
 HB 30.10.2016 v1.33 limit available products for fields (farm no. dependant)
 HB 06.11.2016 v1.40 internationalisation, bug fixes, minor changes
+HB 07.11.2016 v1.41 dynamic PAUSETIME (thanks jbond47)

@@ -92,10 +92,8 @@ function start_Stable {
  local iPosition=$2
  local aParams=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  IFS=,
- set -f
  set -- $aParams
  unset IFS
- set +f
  local iPID=$1
  local iAmount=$2
  # feeding

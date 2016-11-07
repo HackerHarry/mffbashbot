@@ -52,7 +52,7 @@ umask 002
 echo $BASHPID > "$PIDFILE"
 
 while (true); do
-PAUSETIME=10
+PAUSETIME=$(shuf -i8-10 -n1)
 touch "$STATUSFILE"
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -266,8 +266,8 @@ if ! grep dodog $CFGFILE | grep -q 0; then
  if [ "$DOGSTATUS" != "1" -a "$DOGSTATUS" != "null" ]; then
   echo "not yet claimed, activating it..."
   SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
-  # reduce pause time to 5 mins after claiming the (dog) time bonus
-  PAUSETIME=5
+  # reduce pause time by 5 mins after claiming the dogs' time bonus
+  PAUSETIME=$((PAUSETIME-5))
  else
   echo "already claimed"
  fi
