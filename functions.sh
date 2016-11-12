@@ -75,7 +75,7 @@ function DoFarm {
  sFunction=$(head -1 ${iFarm}/${iPosition}/${iSlot})
  # now we should know which function to call
  harvest_${sFunction} ${iFarm} ${iPosition} ${iSlot}
- start_${sFunction} ${iFarm} ${iPosition} ${iSlot}
+ start_${sFunction}${NONPREMIUM} ${iFarm} ${iPosition} ${iSlot}
  update_queue ${iFarm} ${iPosition} ${iSlot}
 }
 
@@ -106,6 +106,11 @@ function start_Stable {
  SendAJAXFarmRequest $sAJAXSuffix
 }
 
+function start_StableNP {
+ # we can use the premium function for this :-)
+ start_Stable $1 $2
+}
+
 function harvest_KnittingMill {
  local iFarm=$1
  local iPosition=$2
@@ -126,6 +131,10 @@ function start_KnittingMill {
  fi
  # do the knitting
  SendAJAXFarmRequest $sAJAXSuffix
+}
+
+function start_KnittingMillNP {
+ start_KnittingMill $1 $2 $3
 }
 
 function harvest_OilMill {
@@ -150,6 +159,10 @@ function start_OilMill {
  SendAJAXFarmRequest "position=${iPosition}&oil=${iGood}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
 }
 
+function start_OilMillNP {
+ start_OilMill $1 $2 $3
+}
+
 function harvest_Factory {
  iFarm=$1
  iPosition=$2
@@ -172,6 +185,10 @@ function start_Factory {
  SendAJAXFarmRequest $sAJAXSuffix
 }
 
+function start_FactoryNP {
+ start_Factory $1 $2 $3
+}
+
 function harvest_Farm {
  iFarm=$1
  iPosition=$2
@@ -180,15 +197,142 @@ function harvest_Farm {
 }
 
 function start_Farm {
- iFarm=$1
- iPosition=$2
- iSlot=$3
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  # Farm takes one parameter
- iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # start the farm
  SendAJAXFarmRequest "mode=autoplant&farm=${iFarm}&position=${iPosition}&id=${iGood}&product=${iGood}"
  # water the farm
  SendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
+}
+
+function start_FarmNP {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ # fetch garden data overwriting $FARMDATAFILE
+ SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
+ local iProduct=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'"|tonumber')
+ local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'"|tonumber')
+ local iPlot=1
+ local iCache=0
+ local iCacheFlag=0
+ local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+ local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+ while (true); do
+  if [ $iPlot -gt 120 ]; then
+   if [ $iCacheFlag -eq 1 ]; then
+    SendAJAXFarmRequest "${sData}cid=${iPosition}"
+    SendAJAXFarmRequest "${sDataWater}"
+    GetFarmData $FARMDATAFILE
+    return
+   fi
+  GetFarmData $FARMDATAFILE
+  return
+  fi
+ if ! ((iPlot % 12)); then
+  if [ $iProductDim_x -eq 2 ]; then
+   iPlot=$((iPlot+1))
+   continue
+  fi
+ fi
+ if [ $iPlot -ge 109 ]; then
+  if [ $iProductDim_y -eq 2 ]; then
+   if [ $iCacheFlag -eq 1 ]; then
+    SendAJAXFarmRequest "${sData}cid=${iPosition}"
+    SendAJAXFarmRequest "${sDataWater}"
+    GetFarmData $FARMDATAFILE
+    return
+   else
+    GetFarmData $FARMDATAFILE
+    return
+   fi
+  fi
+ fi
+ if ! get_FieldPlotReadiness $iPlot ; then
+  iPlot=$((iPlot+1))
+  continue
+ fi
+ # plot can be used
+ if [ $iProductDim_x -eq 1 ]; then
+  # product dimensions is 1 x 1
+  # pflanze[]=[PRODUCT]&feld[]=[PLOT_START]&felder[]=[PLOTS_OCCUPIED] (seeding)
+  #                     feld[]=[PLOT_START]&felder[]=[PLOTS_OCCUPIED] (watering)
+  sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot}&"
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
+  iCacheFlag=1
+  $iCache=$((iCache+1))
+  if [ $iCache -eq 5 ]; then
+   # CID is some water interval ID .. screw it.
+   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+   SendAJAXFarmRequest "${sDataWater}"
+   local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+   local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   iPlot=$((iPlot+1))
+   iCacheFlag=0
+   iCache=0
+   continue
+  else
+   iPlot=$((iPlot+1))
+   continue
+  fi
+ fi
+ # x dim is 2
+ if ! get_FieldPlotReadiness $((iPlot+1)) ; then
+  iPlot=$((iPlot+2))
+  continue
+ fi
+ if [ $iProductDim_y -eq 1 ]; then
+  # product dimensions is 1 x 2
+  sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
+  iCacheFlag=1
+  iCache=$((iCache+1))
+  if [ $iCache -eq 5 ]; then
+   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+   SendAJAXFarmRequest "${sDataWater}"
+   local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+   local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   iPlot=$((iPlot+2))
+   iCacheFlag=0
+   iCache=0
+   continue
+  else
+   iPlot=$((iPlot+2))
+   continue
+  fi
+ fi
+ # y dim is 2
+ if ! get_FieldPlotReadiness $((iPlot+12)) ; then
+  iPlot=$((iPlot+1))
+  continue
+ fi
+ if ! get_FieldPlotReadiness $((iPlot+13)) ; then
+  iPlot=$((iPlot+1))
+  continue
+ fi
+ sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
+ sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
+ iCacheFlag=1
+ iCache=$((iCache+1))
+ if [ $iCache -eq 5 ]; then
+  SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+  SendAJAXFarmRequest "${sDataWater}"
+  local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+  local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+  iPlot=$((iPlot+2))
+  iCacheFlag=0
+  iCache=0
+  continue
+ else
+  iPlot=$((iPlot+2))
+  continue
+ fi
+# you should not get here :)
+ done
 }
 
 function DoForestry {
@@ -421,7 +565,7 @@ function harvest_MegaField {
 #    ;;
 #   esac
    echo -n "Harvesting Mega Field plot ${iPlotnum}..."
-   SendAJAXMegaFieldRequest "mode=megafield_tour&farm=1&position=1&set=${iPlotnum},|&vid=${iHarvestDevice}"
+   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlotnum},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
    sleep ${iHarvestDelay}s
   done
@@ -616,10 +760,8 @@ function get_VehicleSlotCount {
 
 function get_ProductCountFittingOnField {
  local iProduct=$1
- local aProduct_x='{"351":"2","352":"2","353":"2","354":"2","355":"1","356":"2","357":"1","358":"2","359":"2","360":"2","361":"2"}'
- local aProduct_y='{"351":"1","352":"1","353":"2","354":"2","355":"1","356":"2","357":"1","358":"2","359":"2","360":"1","361":"2"}'
- local iProductDim_x=$(echo $aProduct_x | $JQBIN '."'${iProduct}'"|tonumber')
- local iProductDim_y=$(echo $aProduct_y | $JQBIN '."'${iProduct}'"|tonumber')
+ local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'"|tonumber')
+ local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'"|tonumber')
  local iProductDim=$((iProductDim_x*iProductDim_y))
  local iProductCountFittingOnField=$((120/iProductDim))
  echo $iProductCountFittingOnField
@@ -819,7 +961,7 @@ function get_MegaFieldBusyPlotsNum {
 #     # plot is free, plant stuff on it
 #     local iPlotnum=$(echo $sUnlockedPlotName | tr -d '"')
 #     echo "Planting item ${iPID} on Mega Field plot ${iPlotnum}..."
-#     SendAJAXMegaFieldRequest "mode=megafield_plant&farm=1&position=1&set=${iPlotnum}_${iPID}|"
+#     SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${iPlotnum}_${iPID}|"
 #     # make sure we exit after 100 cycles when not enough crop in stock
 #     iSafetyCount=$((iSafetyCount+1))
 #     if [ $iSafetyCount -gt 99 ]; then
@@ -839,7 +981,7 @@ function MegaFieldPlant {
  local iPID=$1
  local iAmount=$2
  echo "Planting item ${iPID} on ${iAmount} Mega Field plot(s)..."
- SendAJAXMegaFieldRequest "mode=megafield_autoplant&farm=1&position=1&id=${iPID}&pid=${iPID}"
+ SendAJAXFarmRequestOverwrite "mode=megafield_autoplant&farm=1&position=1&id=${iPID}&pid=${iPID}"
 }
 
 function get_AnimalQueueLength {
@@ -1027,12 +1169,27 @@ function get_RealSlotName {
  echo $iSlotName
 }
 
+function get_FieldPlotReadiness {
+ # returns 0 if a plot is not occupied in any way
+ local iPlot=$1
+ local sResult=$($JQBIN '.datablock[1]|to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
+ if [ -z "$sResult" ]; then
+  # structure changes after planting once
+  sResult=$($JQBIN '.datablock[3][1]|to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
+ fi
+ if ! $(echo $sResult | grep -q '"'${iPlot}'"'); then
+  return 0
+ else
+  return 1
+ fi
+}
+
 function SendAJAXFarmRequest {
  sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}
 }
 
-function SendAJAXMegaFieldRequest {
+function SendAJAXFarmRequestOverwrite {
  sAJAXSuffix=$1
  wget -nv -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix}
  # need to keep farm data file up to date here

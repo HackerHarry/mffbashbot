@@ -5,11 +5,10 @@ README
 ------
 
 Diese Dateien beinhalten einen Bash Bot, der das Spiel "My Free Farm"
-automatisieren kann. Da dieses Spiel ohne "Premium" wenig Sinn macht,
-beschränkt dieser Bot auch auf Premium-Funktionen. Nicht-Premium Benutzer
-können den Bot zwar nutzen, jedoch werden dann nicht alle Gebäudearten bedient.
+automatisieren kann. Dieser Bot ist grundsätzlich für Premium-Benutzer gedacht;
+Nicht-Premium-Unterstützung ist nur rudimentär vorhanden.
 
-Diese Software benötigt u.a. PHP >=v5.4
+Diese Software benötigt u.a. PHP >=v5.4 sowie jq >=v1.5
 
 Es sei an dieser Stelle DEUTLICHST darauf hingewiesen, dass der Gebrauch
 dieser Skripte gegen die AGB des Betreibers verstösst und u.a. eine Löschung

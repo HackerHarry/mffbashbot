@@ -5,12 +5,10 @@ README
 ------
 
 These files contain a Bash bot for the "My Free Farm" game.
-Since playing the game without the "premium" features is pretty much senseless,
-this bot makes use of premium-functions only.
-Non-premium users can use this bot, but it's functionality is very limited in
-that case.
+This bot serves primarily "premium" users. There's only basic non-premium
+support built-in.
 
-This software needs (among other things) PHP >=v5.4
+This software needs (among other things) PHP >=v5.4 and jq >=v1.5
 
 Be advised, that the use of bots is against the game providers' terms and
 conditions. Your game account may be suspended by using this bot.

@@ -91,3 +91,4 @@ HB 29.10.2016 v1.32 minor changes
 HB 30.10.2016 v1.33 limit available products for fields (farm no. dependant)
 HB 06.11.2016 v1.40 internationalisation, bug fixes, minor changes
 HB 07.11.2016 v1.41 dynamic PAUSETIME (thanks jbond47)
+HB 12.11.2016 v1.45 basic non-premium support for field, minor changes, jq 1.5 is now required
