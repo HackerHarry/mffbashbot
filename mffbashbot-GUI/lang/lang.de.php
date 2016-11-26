@@ -32,5 +32,6 @@ $strings['satisfyplushyneed'] = 'Kuscheltierbed&uuml;rfnis stillen';
 $strings['botisactive'] = 'aktiv';
 $strings['botisidle'] = 'inaktiv';
 $strings['saynotoforestryfarmies'] = 'Alle B&auml;umerei-Farmis mit "Nein" beantworten';
+$strings['saynotomunchies'] = 'Alle Mampfis mit "Nein" beantworten';
 // $strings[''] = '';
 ?>

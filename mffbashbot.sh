@@ -366,7 +366,19 @@ for POSITION in 1 2 3 4; do
    fi
  done
 done
-
+# munchies
+if grep -q "sendmunchiesaway = 1" $CFGFILE; then
+ echo "Checking for waiting munchies..."
+ NUMFARMIES=$($JQBIN '.datablock.farmis|length' $FARMDATAFILE)
+ if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
+  NUMFARMIES=$((NUMFARMIES-1))
+  for FARMIE in $(seq 0 $NUMFARMIES); do
+   ID=$($JQBIN '.datablock.farmis['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+   echo "Sending munchies no. $((FARMIE+1)) (ID ${ID}) away..."
+   SendAJAXFoodworldRequest "action=kick&id=${ID}&table=0&chair=0"
+  done
+ fi
+fi
 # this is the only building with a queue in city 2, and it's unlikely for this
 # to ever change, hence static coding
 echo "Getting wind mill status..."

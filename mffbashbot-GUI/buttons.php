@@ -62,6 +62,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"forestryfarmiestoggle\" name=\"forestryfarmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotoforestryfarmies'];
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"munchiestoggle\" name=\"munchiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotomunchies'];
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"lot1\">" . $strings['lot'] . "</option>\n";
@@ -124,5 +127,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['sendforestryfarmiesaway'];
 if ($savedValue == '1')
  print "document.getElementById('forestryfarmiestoggle').checked = true;\n";
+$savedValue = $configContents['sendmunchiesaway'];
+if ($savedValue == '1')
+ print "document.getElementById('munchiestoggle').checked = true;\n";
 print "</script>\n";
 ?>

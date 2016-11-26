@@ -33,22 +33,22 @@ function ctrl_c {
 }
 
 function GetFarmData {
- sFile=$1
+ local sFile=$1
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
 }
 
 function GetForestryData {
- sFile=$1
+ local sFile=$1
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&action=initforestry"
 }
 
 function GetFoodWorldData {
- sFile=$1
+ local sFile=$1
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
 }
 
 #function GetMenuUpdateData {
-# sFile=$1
+# local sFile=$1
 # wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/menu-update.php"
 #}
 
@@ -58,7 +58,7 @@ function GetLotteryData {
 }
 
 function GetWindMillData {
- sFile=$1
+ local sFile=$1
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
@@ -72,7 +72,7 @@ function DoFarm {
   echo "Set to sleep."
   return
  fi
- sFunction=$(head -1 ${iFarm}/${iPosition}/${iSlot})
+ local sFunction=$(head -1 ${iFarm}/${iPosition}/${iSlot})
  # now we should know which function to call
  harvest_${sFunction} ${iFarm} ${iPosition} ${iSlot}
  start_${sFunction}${NONPREMIUM} ${iFarm} ${iPosition} ${iSlot}
@@ -80,8 +80,8 @@ function DoFarm {
 }
 
 function harvest_Stable {
- iFarm=$1
- iPosition=$2
+ local iFarm=$1
+ local iPosition=$2
  SendAJAXFarmRequest "mode=inner_crop&farm=${iFarm}&position=${iPosition}"
 }
 
@@ -163,9 +163,9 @@ function start_OilMillNP {
 }
 
 function harvest_Factory {
- iFarm=$1
- iPosition=$2
- iSlot=$3
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  SendAJAXFarmRequest "mode=getadvancedcrop&farm=${iFarm}&position=${iPosition}"
 }
 
@@ -189,9 +189,9 @@ function start_FactoryNP {
 }
 
 function harvest_Farm {
- iFarm=$1
- iPosition=$2
- iSlot=$3
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  SendAJAXFarmRequest "mode=cropgarden&farm=${iFarm}&position=${iPosition}"
 }
 
@@ -337,8 +337,8 @@ function start_FarmNP {
 function DoForestry {
  # read stuff from queue file
  # code iss a bit cheesy due to laziness ;)
- sFile=$1
- sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
+ local sFile=$1
+ local sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
  if check_QueueSleep ${sFile}/${sFile}/${sFile}; then
   echo "Set to sleep."
   return
@@ -437,20 +437,20 @@ function start_FlowerArea {
 }
 
 function harvest_Nursery {
- iSlot=$3
+ local iSlot=$3
  SendAJAXFarmRequest "mode=nursery_harvest&farm=1&position=1&id=1&slot=${iSlot}"
 }
 
 function start_Nursery {
- sFarm=$1
- sPosition=$2
- iSlot=$3
- iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
  SendAJAXFarmRequest "mode=nursery_startproduction&farm=1&position=1&id=${iGood}&pid=${iGood}&slot=${iSlot}"
 }
 
 function DoFarmersMarketFlowerPots {
- iSlot=$1
+ local iSlot=$1
  SendAJAXFarmRequest "mode=flowerslot_water&farm=1&position=1&set=${iSlot}:1,"
 }
 
@@ -471,8 +471,8 @@ function DoFoodContestCashDesk {
 }
 
 function DoFoodContestAudience {
- iBlock=$1
- sPinType=$2
+ local iBlock=$1
+ local sPinType=$2
  SendAJAXFarmRequest "mode=foodcontest_pincache&farm=1&position=1&id=1_${sPinType},&value=${iBlock}_${sPinType},"
 }
 
@@ -545,9 +545,9 @@ function DoFarmersMarketPetCare {
  if grep -q "care${sSlot} = 0" $CFGFILE; then
   echo "Pet's $sSlot care is set to sleep"
  else
-  CFGLINE=$(grep care${sSlot} $CFGFILE)
-  TOKENS=( $CFGLINE )
-  local sCare=${TOKENS[2]}
+  local sCFGline=$(grep care${sSlot} $CFGFILE)
+  local sTokens=( $sCFGline )
+  local sCare=${sTokens[2]}
   SendAJAXFarmRequest "mode=pets_care&set=${sCare},${sCare},${sCare}"
  fi
 }
@@ -791,13 +791,13 @@ function get_FieldsOnFarmNum {
 }
 
 function update_queue {
- iFarm=$1
- iPosition=$2
- iSlot=$3
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  # re-order the queue if any
- sInfile=${iFarm}/${iPosition}/${iSlot}
- sTmpfile=/tmp/mff-q-$$
- iLines=$(cat $sInfile | wc -l)
+ local sInfile=${iFarm}/${iPosition}/${iSlot}
+ local sTmpfile=/tmp/mff-q-$$
+ local iLines=$(cat $sInfile | wc -l)
  if [ $iLines -gt 2 ]; then
   echo "Updating queue..."
   head -1 $sInfile >$sTmpfile
@@ -833,24 +833,27 @@ function check_RipePlotOnMegaField {
  # returns true if a plot shows a negative remainder
  # propagates iPlot and sPlotName
  local iBusyPlots=$(get_MegaFieldBusyPlotsNum)
+ # DON'T set this local
  iPlot=0
  while [ "$iPlot" -lt "$iBusyPlots" ]; do
+  # or this
   sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
   if $JQBIN '.updateblock.megafield.area['${sPlotName}'].remain' $FARMDATAFILE | grep '-' >/dev/null; then
    return 0
   fi
+  # or this
   iPlot=$((iPlot+1))
  done
  return 1 
 }
 
 function get_BusyMegaFieldPlotNum {
- iBusyPlots=($($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE))
+ local iBusyPlots=($($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE))
  return $iBusyPlots
 }
 
 function get_UnlockedMegaFieldPlotNum {
- iUnlockedPlots=($($JQBIN '.updateblock.megafield.area_free|length' $FARMDATAFILE))
+ local iUnlockedPlots=($($JQBIN '.updateblock.megafield.area_free|length' $FARMDATAFILE))
  # we always have a positive number here
  echo $iUnlockedPlots
 }
@@ -1192,27 +1195,27 @@ function get_FieldPlotReadiness {
 }
 
 function SendAJAXFarmRequest {
- sAJAXSuffix=$1
+ local sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}
 }
 
 function SendAJAXFarmRequestOverwrite {
- sAJAXSuffix=$1
+ local sAJAXSuffix=$1
  wget -nv -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix}
  # need to keep farm data file up to date here
 }
 
 function SendAJAXForestryRequest {
- sAJAXSuffix=$1
+ local sAJAXSuffix=$1
  WGETREQ ${AJAXFOREST}${sAJAXSuffix}
 }
 
 function SendAJAXFoodworldRequest {
- sAJAXSuffix=$1
+ local sAJAXSuffix=$1
  WGETREQ ${AJAXFOOD}${sAJAXSuffix}
 }
 
 function SendAJAXCityRequest {
- sAJAXSuffix=$1
+ local sAJAXSuffix=$1
  WGETREQ ${AJAXCITY}${sAJAXSuffix}
 }

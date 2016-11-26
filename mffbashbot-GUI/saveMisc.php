@@ -26,6 +26,7 @@ $careplushy = $_POST["careplushy"];
 $puzzlepartstoggle = $_POST["puzzlepartstoggle"];
 $farmiestoggle = $_POST["farmiestoggle"];
 $forestryfarmiestoggle = $_POST["forestryfarmiestoggle"];
+$munchiestoggle = $_POST["munchiestoggle"];
 
 include 'gamepath.php';
 include 'functions.php';
@@ -42,6 +43,7 @@ $configContents['vehiclemgmt'] = $vehiclemgmt;
 $configContents['dopuzzleparts'] = $puzzlepartstoggle;
 $configContents['sendfarmiesaway'] = $farmiestoggle;
 $configContents['sendforestryfarmiesaway'] = $forestryfarmiestoggle;
+$configContents['sendmunchiesaway'] = $munchiestoggle;
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

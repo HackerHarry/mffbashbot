@@ -115,7 +115,8 @@ function saveMisc() {
 
  document.getElementById('puzzlepartstoggle').checked ? sData += "1&farmiestoggle=" : sData += "0&farmiestoggle=";
  document.getElementById('farmiestoggle').checked ? sData += "1&forestryfarmiestoggle=" : sData += "0&forestryfarmiestoggle=";
- document.getElementById('forestryfarmiestoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('forestryfarmiestoggle').checked ? sData += "1&munchiestoggle=" : sData += "0&munchiestoggle=";
+ document.getElementById('munchiestoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);
