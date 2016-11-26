@@ -96,41 +96,26 @@ function updateBotStatus() {
 function saveMisc() {
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&dogtoggle=";
-
- if (document.getElementById('dogtoggle').checked)
-  sData += "1&lottoggle=";
- else
-  sData += "0&lottoggle=";
+ document.getElementById('dogtoggle').checked ? sData += "1&lottoggle=" : sData += "0&lottoggle=";
 
  var v = document.getElementById("lottoggle");
- sData += v.options[v.selectedIndex].value;
- sData += "&vehiclemgmt=";
+ sData += v.options[v.selectedIndex].value + "&vehiclemgmt=";
  
  var v = document.getElementById("vehiclemgmt");
- sData += v.options[v.selectedIndex].value;
- sData += "&carefood=";
+ sData += v.options[v.selectedIndex].value + "&carefood=";
 
  var v = document.getElementById("carefood");
- sData += v.options[v.selectedIndex].value;
- sData += "&caretoy=";
+ sData += v.options[v.selectedIndex].value + "&caretoy=";
 
  var v = document.getElementById("caretoy");
- sData += v.options[v.selectedIndex].value;
- sData += "&careplushy=";
+ sData += v.options[v.selectedIndex].value + "&careplushy=";
 
  var v = document.getElementById("careplushy");
- sData += v.options[v.selectedIndex].value;
- sData += "&puzzlepartstoggle=";
+ sData += v.options[v.selectedIndex].value + "&puzzlepartstoggle=";
 
- if (document.getElementById('puzzlepartstoggle').checked)
-  sData += "1&farmiestoggle=";
- else
-  sData += "0&farmiestoggle=";
-
- if (document.getElementById('farmiestoggle').checked)
-  sData += "1";
- else
-  sData += "0";
+ document.getElementById('puzzlepartstoggle').checked ? sData += "1&farmiestoggle=" : sData += "0&farmiestoggle=";
+ document.getElementById('farmiestoggle').checked ? sData += "1&forestryfarmiestoggle=" : sData += "0&forestryfarmiestoggle=";
+ document.getElementById('forestryfarmiestoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);

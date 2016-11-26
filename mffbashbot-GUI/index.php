@@ -26,7 +26,7 @@ include 'functions.php';
  </head>
  <body id="main_body" class="main_body">
 <h1>Log on...</h1>
-<small>Remember to set your language in config.ini</small>
+<small>Remember to set your user data in config.ini</small>
 <br><br>
 <table name="logontbl" style="float:left; margin-right:20px;" border="1">
 <form name="logon" method="post" action="validate.php">

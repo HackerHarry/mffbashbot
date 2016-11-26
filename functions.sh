@@ -107,7 +107,6 @@ function start_Stable {
 }
 
 function start_StableNP {
- # we can use the premium function for this :-)
  start_Stable $1 $2
 }
 
@@ -356,7 +355,7 @@ function harvest_Tree {
 
 function start_Tree {
  local sFile=$1
- iGood=$(sed '2q;d' ${sFile})
+ local iGood=$(sed '2q;d' ${sFile})
  # plant trees
  SendAJAXForestryRequest "action=autoplant&productid=${iGood}"
  water_Tree
@@ -368,44 +367,52 @@ function water_Tree {
 }
 
 function harvest_ForestryBuilding {
- iPosition=$2
- iSlot=$3
+ local iPosition=$2
+ local iSlot=$3
  SendAJAXForestryRequest "action=cropproduction&position=${iPosition}&slot=${iSlot}"
 }
 
 function start_ForestryBuilding {
-  sFarm=$1
-  iPosition=$2
-  iSlot=$3
-  # this building needs one parameter
-  iGood=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
-  SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iGood}&slot=${iSlot}"
-  }
+ local sFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ # this building needs one parameter
+ local iGood=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
+ SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iGood}&slot=${iSlot}"
+}
+
+function start_ForestryBuildingNP {
+ start_ForestryBuilding $1 $2 $3
+}
 
 function harvest_FoodWorldBuilding {
- iPosition=$2
- iSlot=$3
+ local iPosition=$2
+ local iSlot=$3
  SendAJAXFoodworldRequest "action=crop&id=0&table=${iPosition}&chair=${iSlot}"
 }
 
 function start_FoodWorldBuilding {
- sFarm=$1
- iPosition=$2
- iSlot=$3
+ local sFarm=$1
+ local iPosition=$2
+ local iSlot=$3
  # this building needs one parameter
  iGood=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
  SendAJAXFoodworldRequest "action=production&id=${iGood}&table=${iPosition}&chair=${iSlot}"
 }
 
+function start_FoodWorldBuildingNP {
+ start_FoodWorldBuilding $1 $2 $3
+}
+
 function DoFarmersMarket {
- sFarm=$1
- sPosition=$2
- iSlot=$3
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
  if check_QueueSleep ${sFarm}/${sPosition}/${iSlot}; then
   echo "Set to sleep."
   return
  fi
- sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
+ local sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
  harvest_${sFunction} ${sFarm} ${sPosition} ${iSlot}
  start_${sFunction} ${sFarm} ${sPosition} ${iSlot}
  update_queue ${sFarm} ${sPosition} ${iSlot}  
@@ -417,10 +424,10 @@ function harvest_FlowerArea {
 }
 
 function start_FlowerArea {
- sFarm=$1
- sPosition=$2
- iSlot=$3
- iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
  if [ "$iGood" = "998" ]; then
   iGood=$($JQBIN '.updateblock.farmersmarket.flower_bonus.pid' $FARMDATAFILE)
  fi

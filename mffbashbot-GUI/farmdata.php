@@ -16,6 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+include_once 'lang.php';
 $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
 $farmdata = (json_decode($JSONfarmdata, true));
 $JSONproductlist = file_get_contents("data/" . $lang . "/productlist.txt");

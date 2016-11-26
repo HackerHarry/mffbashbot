@@ -442,8 +442,7 @@ function saveConfig($filename, $queueData) {
 function writeINI($configData, $filename) {
  $data2write = "";
  foreach ($configData as $configItem => $iValue)
-  $data2write .= $configItem . " = " . $iValue . "\n";
- // nevermind ;)
+  $data2write .= $configItem . " = " . (is_numeric($iValue) ? $iValue : "'" . $iValue . "'") . "\n";
  if (!$handle = fopen($filename, 'w'))
   return false;
  fwrite($handle, $data2write);

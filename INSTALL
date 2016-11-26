@@ -47,13 +47,16 @@ harry@testbox:~/mffbashbot$ mv dummy hanswurst
 
 While we're at it: The server-no., password and language need to be set once
 per farm. Make sure to leave the white spaces in front and behind the equal
-sign. Edit the config.ini:
+sign. Make also sure you don't use the exclamation mark (!) for your first
+character of your password. Please also don't use the single quote (') _within_
+your password.
+Edit the config.ini:
 harry@testbox:~/mffbashbot$ nano hanswurst/config.ini
 to reflect your account settings.
 --- snip ---
-lang = en
+lang = 'en'
 server = 2
-password = s3cRet!
+password = 's3cRet!'
 --- snip ---
 
 Assuming your web server runs as 'www-data' we need to adjust group rights.

@@ -31,5 +31,6 @@ $strings['satisfytoyneed'] = 'Satisfy toy need';
 $strings['satisfyplushyneed'] = 'Satisfy plushy need';
 $strings['botisactive'] = 'active';
 $strings['botisidle'] = 'idle';
+$strings['saynotoforestryfarmies'] = 'Answer "No" to all Forestry Farmies';
 // $strings[''] = '';
 ?>

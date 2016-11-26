@@ -49,14 +49,16 @@ harry@testbox:~/mffbashbot$ mv dummy hanswurst
 
 Wenn wir schonmal dabei sind: Auch die Servernummer, das Passwort und die
 Sprache muss einmalig angepasst werden. Es ist darauf zu achten, dass die
-Leerschritte vor und nach dem Gleichheitszeichen erhalten bleiben.
+Leerschritte vor und nach dem Gleichheitszeichen erhalten bleiben. Das erste
+Zeichen des Passwortes darf kein Ausrufezeichen (!) sein! Auch das Hochkomma (')
+sollte _innerhalb_ des Passwortes vermieden werden.
 Wir passen also mit
 harry@testbox:~/mffbashbot$ nano hanswurst/config.ini
 die u.a. daten auf die eigene Farm an.
 --- schnipp ---
-lang = de
+lang = 'de'
 server = 2
-password = s3cRet!
+password = 's3cRet!'
 --- schnapp ---
 
 Davon ausgehend, dass euer Webserver als 'www-data' läuft, passen wir die

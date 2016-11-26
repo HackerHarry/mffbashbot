@@ -32,9 +32,9 @@ PIDFILE=bashpid.txt
 JQBIN=/usr/bin/jq
 MFFUSER=$1
 # get server, password & language
-MFFPASS=$(grep password $CFGFILE)
+MFFPASS=$(grep password $CFGFILE | tr -d "'")
 MFFSERVER=$(grep server $CFGFILE)
-TLD=$(grep lang $CFGFILE)
+TLD=$(grep lang $CFGFILE | tr -d "'")
 # let's just hope IFS is a white space ;)
 set -- $MFFPASS
 : ${3:?No MFF password found in $CFGFILE}
@@ -258,7 +258,6 @@ if ! grep vehiclemgmt $CFGFILE | grep -q 0; then
   fi
 fi
 
-# this may have to go to functions.sh, if i can use it for other farmies as well
 if grep -q "sendfarmiesaway = 1" $CFGFILE; then
  echo "Checking for waiting farmies..."
  NUMFARMIES=$($JQBIN '.updateblock.farmis[0]|length' $FARMDATAFILE)
@@ -266,7 +265,7 @@ if grep -q "sendfarmiesaway = 1" $CFGFILE; then
   NUMFARMIES=$((NUMFARMIES-1))
   for FARMIE in $(seq 0 $NUMFARMIES); do
    ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id|tonumber' $FARMDATAFILE)
-   echo "Sending Farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+   echo "Sending farmie no. $((FARMIE+1)) (ID ${ID}) away..."
    SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
   done
  fi
@@ -340,6 +339,19 @@ for POSITION in 1 2; do
    fi
  done
 done
+# finally the forestry farmies
+if grep -q "sendforestryfarmiesaway = 1" $CFGFILE; then
+ echo "Checking for waiting forestry farmies..."
+ NUMFARMIES=$($JQBIN '.datablock[5]|length' $FARMDATAFILE)
+ if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
+  NUMFARMIES=$((NUMFARMIES-1))
+  for FARMIE in $(seq 0 $NUMFARMIES); do
+   ID=$($JQBIN '.datablock[5]['${FARMIE}'].farmiid|tonumber' $FARMDATAFILE)
+   echo "Sending forestry farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+   SendAJAXForestryRequest "action=kickfarmi&productid=${ID}"
+  done
+ fi
+fi
 
 echo "Getting food world status..."
 GetFoodWorldData $FARMDATAFILE
