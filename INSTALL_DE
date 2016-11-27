@@ -106,11 +106,6 @@ root@testbox:/var/www/html/mffbashbot# nano gamepath.php
 
 In der 'gamepath.php' muss der Pfad zum Botordner angepasst werden.
 
-root@testbox:/var/www/html/mffbashbot# nano index.php
-
-In der 'index.php' muss der Pfad in der system() Funktion angepasst werden.
-Ziel ist (naklar) euer Botordner.
-
 Damit der Webserver die Zwangspause des Bots auf Wunsch des Benutzers
 unterbrechen darf, muss für 'sudo' ein passender Eintrag her:
 root@testbox:/var/www/html/mffbashbot# exit

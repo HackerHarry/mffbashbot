@@ -216,13 +216,13 @@ return false;
 function displaySavedNote() {
  var options = {icon: 'image/mffbot.png'}
  if (!("Notification" in window))
-  alert("Gespeichert. Leider kann dieser Browser keine Desktop-Nachrichten anzeigen :(");
+  alert("OK. This browser cannot display desktop messages :(");
  else if (Notification.permission === "granted")
-  var notification = new Notification("Gespeichert", options);
+  var notification = new Notification("OK", options);
  else if (Notification.permission !== 'denied') {
   Notification.requestPermission(function (permission) {
  if (permission === "granted")
-  var notification = new Notification("Gespeichert", options);
+  var notification = new Notification("OK", options);
   });
  }
 }

@@ -20,6 +20,7 @@ include 'functions.php';
 $farm = $_POST["farm"];
 $username = $_POST["username"];
 include 'gamepath.php';
+include 'lang.php';
 $farmQueue = $_POST["queueContent"];
 $queue = explode("#", $farmQueue);
 
@@ -32,16 +33,18 @@ switch ($farm) {
   // Normal farms
   for ($position = 1; $position <= 6; $position++) {
    if (strrpos($queue[$position - 1], "-") !== false) {
-    $slots = explode("-", $queue[$position - 1]); // we handle 3 slots
+    $slots = explode("-", $queue[$position - 1]); // we have more than 1 slot
     $slot1 = explode(" ", $slots[0]);
     $slot2 = explode(" ", $slots[1]);
-    if ($slots[2])
+    if (isset($slots[2]))
      $slot3 = explode(" ", $slots[2]);
     $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot1);
     saveConfig($filename, $slot1); // feed it filename and data to write
-    $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot2);
-    saveConfig($filename, $slot2);
-    if ($slot3) {
+    if ($slot2) { // this should not be needed since we have at least 2 slots here
+     $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot2);
+     saveConfig($filename, $slot2);
+    }
+    if (isset($slot3)) {
      $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot3);
      saveConfig($filename, $slot3);
     }
@@ -51,73 +54,26 @@ switch ($farm) {
   $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot1);
   saveConfig($filename, $slot1);
   }
-  break;
+ break;
 
+ case "farmersmarket":
+ case "foodworld":
  case "forestry":
-  // guess what...
   $position = ["1", "2", "forestry"];
-  for ($poscount = 0; $poscount <= 2; $poscount++) {
+  $farm == "foodworld" ? $position = ["1", "2", "3", "4"] : '';
+  $farm == "farmersmarket" ? $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"] : '';
+  for ($poscount = 0; $poscount <= (count($position) - 1); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 3 slots
     $slot1 = explode(" ", $slots[0]);
     $slot2 = explode(" ", $slots[1]);
-    if ($slots[2])
+    if (isset($slots[2]))
      $slot3 = explode(" ", $slots[2]);
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
     saveConfig($filename, $slot1);
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
     saveConfig($filename, $slot2);
-    if ($slot3) {
-     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot3);
-     saveConfig($filename, $slot3);
-    }
-   continue;
-   }
-  $slot1 = explode(" ", $queue[$poscount]);
-  $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-  saveConfig($filename, $slot1);
-  }
-  break;
-
- case "foodworld":
-  $position = ["1", "2", "3", "4"];
-  for ($poscount = 0; $poscount <= 3; $poscount++) {
-   if (strrpos($queue[$poscount], "-") !== false) {
-    $slots = explode("-", $queue[$poscount]); // 3 slots
-    $slot1 = explode(" ", $slots[0]);
-    $slot2 = explode(" ", $slots[1]);
-    if ($slots[2])
-     $slot3 = explode(" ", $slots[2]);
-    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-    saveConfig($filename, $slot1);
-    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
-    saveConfig($filename, $slot2);
-    if ($slot3) {
-     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot3);
-     saveConfig($filename, $slot3);
-    }
-   continue;
-   }
-   $slot1 = explode(" ", $queue[$poscount]);
-   $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-   saveConfig($filename, $slot1);
-  }
-  break;
-
- case "farmersmarket":
-  $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
-  for ($poscount = 0; $poscount <= 4; $poscount++) {
-   if (strrpos($queue[$poscount], "-") !== false) {
-    $slots = explode("-", $queue[$poscount]); // 3 slots
-    $slot1 = explode(" ", $slots[0]);
-    $slot2 = explode(" ", $slots[1]);
-    if ($slots[2])
-     $slot3 = explode(" ", $slots[2]);
-    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-    saveConfig($filename, $slot1);
-    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
-    saveConfig($filename, $slot2);
-    if ($slot3) {
+    if (isset($slot3)) {
      $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot3);
      saveConfig($filename, $slot3);
      unset($slot3);
@@ -129,36 +85,30 @@ switch ($farm) {
    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
    saveConfig($filename, $slot1);
   }
-  break;
+ break;
 
  case "city2":
   $position = ["windmill"];
   for ($poscount = 0; $poscount < 1; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
-    $slots = explode("-", $queue[$poscount]); // handle 3 slots
+    $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
     $slot2 = explode(" ", $slots[1]);
-    if ($slots[2])
-     $slot3 = explode(" ", $slots[2]);
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
     saveConfig($filename, $slot1); // feed it filename and data to write
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
     saveConfig($filename, $slot2);
-    if ($slot3) {
-     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot3);
-     saveConfig($filename, $slot3);
-    }
-   continue;
+    continue;
    }
-  $slot1 = explode(" ", $queue[$poscount]);
-  $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-  saveConfig($filename, $slot1);
+   $slot1 = explode(" ", $queue[$poscount]);
+   $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
+   saveConfig($filename, $slot1);
   }
-  break;
+ break;
  
  default:
-  print "<html><head><title>Harrys MFF Bot - Speichern</title>";
+  print "<html><head><title>Harrys MFF Bash Bot</title>";
   print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
-  print "</head><body bgcolor=\"#FE2A21\"><h1>Fehler!</h1></body></html>";
+  print "</head><body bgcolor=\"#FE2A21\"><h1>" . $strings['errorsavinggamedata'] . "</h1></body></html>";
 }
 ?>

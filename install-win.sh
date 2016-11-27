@@ -37,11 +37,10 @@ chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeuptheb
 
 echo "Patching GUI files..."
 sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
-sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/index.php
 
 echo "Starting webserver lighttpd..."
 mkdir -p /var/log/lighttpd 2>/dev/null
 /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
 
 echo "Done!"
-echo "Do not forget adjusting your farm name and the data in config.ini!"
+echo "Do not forget adjusting your game data in config.ini!"

@@ -94,3 +94,4 @@ HB 07.11.2016 v1.41 dynamic PAUSETIME (thanks jbond47)
 HB 12.11.2016 v1.45 basic non-premium support for field, minor changes, jq 1.5 is now required
 HB 25.11.2016 v1.46 answer all forestry farmies 'No' on demand, enclose config strings in single quotes
 HB 26.11.2016 v1.47 answer all munchies 'No' on demand, minor code cleanup
+HB 26.11.2016 v1.48 game path is now set in one place only, some code cleanup

@@ -47,8 +47,10 @@ User name
 </td><td align="left">
 <select name="username">
 <?php
-// to do: involve gamepath.php and trick it into returning a path
-system("cd /home/pi/mffbashbot; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/<option>\\1<\\/option>/'");
+$username = "dummy";
+include 'gamepath.php';
+system("cd " . $gamepath . "/../; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/<option>\\1<\\/option>/'");
+unset($username);
 ?>
 </select>
 </td></tr>

@@ -104,11 +104,6 @@ root@testbox:/var/www/html/mffbashbot# nano gamepath.php
 
 In 'gamepath.php' adjust the path to the bots folder.
 
-root@testbox:/var/www/html/mffbashbot# nano index.php
-
-'index.php' also needs a hand. Adjust the path in the system() function.
-The destination needs to be the bot's folder as well.
-
 In order to allow the web server's process to force an iteration of the bot,
 you need to add the proper entry for 'sudo':
 root@testbox:/var/www/html/mffbashbot# exit
