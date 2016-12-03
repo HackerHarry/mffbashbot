@@ -47,9 +47,9 @@ User name
 </td><td align="left">
 <select name="username">
 <?php
-$username = "dummy";
+$username = "./";
 include 'gamepath.php';
-system("cd " . $gamepath . "/../; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/<option>\\1<\\/option>/'");
+system("cd " . $gamepath . " ; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/<option>\\1<\\/option>/'");
 unset($username);
 ?>
 </select>

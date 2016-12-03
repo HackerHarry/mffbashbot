@@ -122,8 +122,8 @@ function start_KnittingMill {
  local iPosition=$2
  local iSlot=$3
  # Knitting Mill takes one parameter
- local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local sAJAXSuffix="position=${iPosition}&item=${iGood}&mode=start&slot=$((iSlot+1))&farm=${iFarm}"
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local sAJAXSuffix="position=${iPosition}&item=${iPID}&mode=start&slot=$((iSlot+1))&farm=${iFarm}"
  if [ "$GUILDJOB" = true ]; then
   local sAJAXSuffix="${sAJAXSuffix}&guildjob=1"
   GUILDJOB=false
@@ -152,10 +152,10 @@ function start_OilMill {
  local iSlot=$3
  # oil mills use slots 1, 2 and 3 FFS
  # Special Oil Mill takes one parameter
- local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  # do the mill
- SendAJAXFarmRequest "position=${iPosition}&oil=${iGood}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
+ SendAJAXFarmRequest "position=${iPosition}&oil=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
 }
 
 function start_OilMillNP {
@@ -174,8 +174,8 @@ function start_Factory {
  local iPosition=$2
  local iSlot=$3
  # Factory takes one parameter
- local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local sAJAXSuffix="mode=setadvancedproduction&farm=${iFarm}&position=${iPosition}&id=${iGood}&product=${iGood}"
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local sAJAXSuffix="mode=setadvancedproduction&farm=${iFarm}&position=${iPosition}&id=${iPID}&product=${iPID}"
  if [ "$GUILDJOB" = true ]; then
   local sAJAXSuffix="${sAJAXSuffix}&guildjob=1"
   GUILDJOB=false
@@ -200,9 +200,9 @@ function start_Farm {
  local iPosition=$2
  local iSlot=$3
  # Farm takes one parameter
- local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # start the farm
- SendAJAXFarmRequest "mode=autoplant&farm=${iFarm}&position=${iPosition}&id=${iGood}&product=${iGood}"
+ SendAJAXFarmRequest "mode=autoplant&farm=${iFarm}&position=${iPosition}&id=${iPID}&product=${iPID}"
  # water the farm
  SendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
 }
@@ -355,9 +355,9 @@ function harvest_Tree {
 
 function start_Tree {
  local sFile=$1
- local iGood=$(sed '2q;d' ${sFile})
+ local iPID=$(sed '2q;d' ${sFile})
  # plant trees
- SendAJAXForestryRequest "action=autoplant&productid=${iGood}"
+ SendAJAXForestryRequest "action=autoplant&productid=${iPID}"
  water_Tree
 }
 
@@ -377,8 +377,8 @@ function start_ForestryBuilding {
  local iPosition=$2
  local iSlot=$3
  # this building needs one parameter
- local iGood=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
- SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iGood}&slot=${iSlot}"
+ local iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
+ SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iPID}&slot=${iSlot}"
 }
 
 function start_ForestryBuildingNP {
@@ -396,8 +396,8 @@ function start_FoodWorldBuilding {
  local iPosition=$2
  local iSlot=$3
  # this building needs one parameter
- iGood=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
- SendAJAXFoodworldRequest "action=production&id=${iGood}&table=${iPosition}&chair=${iSlot}"
+ iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
+ SendAJAXFoodworldRequest "action=production&id=${iPID}&table=${iPosition}&chair=${iSlot}"
 }
 
 function start_FoodWorldBuildingNP {
@@ -420,20 +420,53 @@ function DoFarmersMarket {
 
 function harvest_FlowerArea {
  # harvest flowers
+ if [ "$NONPREMIUM" = "NP" ]; then
+  harvest_FlowerAreaNP
+  return
+ fi
  SendAJAXFarmRequest "mode=flowerarea_harvest_all&farm=1&position=1"
+}
+
+function harvest_FlowerAreaNP {
+ # this function only supports the same flower in all spots
+ local iPID=$($JQBIN '.updateblock.farmersmarket.flower_area["1"].pid|tonumber' $FARMDATAFILE)
+ local iCount
+ local sData="mode=flowerarea_harvest&farm=1&position=1&set="
+ for iCount in $(seq 1 36); do
+  sData=${sData}${iCount}:${iPID},
+ done
+ SendAJAXFarmRequest $sData
 }
 
 function start_FlowerArea {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
- local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- if [ "$iGood" = "998" ]; then
-  iGood=$($JQBIN '.updateblock.farmersmarket.flower_bonus.pid' $FARMDATAFILE)
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ if [ "$iPID" = "998" ]; then
+  # bonus plant?
+  iPID=$($JQBIN '.updateblock.farmersmarket.flower_bonus.pid' $FARMDATAFILE)
  fi
- SendAJAXFarmRequest "mode=flowerarea_autoplant&farm=1&position=1&set=0&pid=${iGood}"
+ if [ "$NONPREMIUM" = "NP" ]; then
+  start_FlowerAreaNP $iPID
+  return
+ fi
+ SendAJAXFarmRequest "mode=flowerarea_autoplant&farm=1&position=1&set=0&pid=${iPID}"
  # water the flowers
  SendAJAXFarmRequest "mode=flowerarea_water_all&farm=1&position=1"
+}
+
+function start_FlowerAreaNP {
+ local iPID=$1
+ local iCount
+ local sData="mode=flowerarea_plant&farm=1&position=1&set="
+ local sDataWater="mode=flowerarea_water&farm=1&position=1&set="
+ for iCount in $(seq 1 36); do
+  sData=${sData}${iCount}:${iPID},
+  sDataWater=${sDataWater}${iCount}:${iPID},
+ done
+ SendAJAXFarmRequest $sData
+ SendAJAXFarmRequest $sDataWater
 }
 
 function harvest_Nursery {
@@ -445,8 +478,8 @@ function start_Nursery {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
- local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=nursery_startproduction&farm=1&position=1&id=${iGood}&pid=${iGood}&slot=${iSlot}"
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "mode=nursery_startproduction&farm=1&position=1&id=${iPID}&pid=${iPID}&slot=${iSlot}"
 }
 
 function DoFarmersMarketFlowerPots {
@@ -462,8 +495,8 @@ function start_MonsterFruitHelper {
  sFarm=$1
  sPosition=$2
  iSlot=$3
- iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=megafruit_buyobject&farm=1&position=1&id=${iGood}&oid=${iGood}"
+ iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "mode=megafruit_buyobject&farm=1&position=1&id=${iPID}&oid=${iPID}"
 }
 
 function DoFoodContestCashDesk {
@@ -489,8 +522,8 @@ function start_Pets {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
- local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=pets_start_production&slot=${iSlot}&pid=${iGood}"
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "mode=pets_start_production&slot=${iSlot}&pid=${iPID}"
 }
 
 function harvest_Vet {
@@ -502,8 +535,8 @@ function start_Vet {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
- local iGood=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=vet_startproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pid=${iGood}&pos=1"
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "mode=vet_startproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pid=${iPID}&pos=1"
 }
 
 function DoFarmersMarketAnimalTreatment {
@@ -650,10 +683,10 @@ function start_FuelStation {
  local iPosition=$2
  local iSlot=$3
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
- local iGood=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  iSlot=$iRealSlot
  # get points per good
- local iPointsPerGood=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iSlot}'"].products["'${iGood}'"].points' $FARMDATAFILE)
+ local iPointsPerGood=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iSlot}'"].products["'${iPID}'"].points' $FARMDATAFILE)
  # calculate points and amount needed to start fuel production
  # it's defined as constants in .updateblock.farms.farms[FARM][POSITION].data.constants.slot_level[LEVEL].limit
  # and devided by the points we get per good
@@ -664,7 +697,7 @@ function start_FuelStation {
  local iAmount=$(((iPointsNeededToStart+(iPointsPerGood-1))/iPointsPerGood))
  # force 3 second delay, cuz upjers server can't handle too quick a re-start
  sleep 3
- SendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iGood}"
+ SendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iPID}"
 }
 
 function harvest_WindMill {
@@ -672,8 +705,8 @@ function harvest_WindMill {
 }
 
 function start_WindMill {
- local iGood=$(sed '2q;d' city2/windmill/0)
- SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iGood}&slot=1"
+ local iPID=$(sed '2q;d' city2/windmill/0)
+ SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=1"
 }
 
 function check_VehicleFullLoad {
