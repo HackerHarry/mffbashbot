@@ -96,3 +96,4 @@ HB 25.11.2016 v1.46 answer all forestry farmies 'No' on demand, enclose config s
 HB 26.11.2016 v1.47 answer all munchies 'No' on demand, minor code cleanup
 HB 27.11.2016 v1.48 game path is now set in one place only, some code cleanup
 HB 03.12.2016 v1.49 non-premium support for flower area, minor changes
+HB 05.12.2016 v1.50 fixed farm dog handling

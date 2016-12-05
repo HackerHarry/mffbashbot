@@ -274,8 +274,9 @@ fi
 # daily actions
 if ! grep dodog $CFGFILE | grep -q 0; then
  echo -n "Checking for daily dog bonus..."
- DOGSTATUS=$($JQBIN '.updateblock.menue.farmdog_harvest' $FARMDATAFILE)
- if [ "$DOGSTATUS" != "1" -a "$DOGSTATUS" != "null" ]; then
+ DOGEXISTS=$($JQBIN '.updateblock.menue.farmdog?' $FARMDATAFILE)
+ DOGSTATUS=$($JQBIN '.updateblock.menue.farmdog_harvest?' $FARMDATAFILE)
+ if [ "$DOGEXISTS" = "1" -a "$DOGSTATUS" = "null" ]; then
   echo "not yet claimed, activating it..."
   SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
   # reduce pause time by 5 mins after claiming the dogs' time bonus

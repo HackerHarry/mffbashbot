@@ -130,7 +130,7 @@ If your harvesting device uses up all its durability, the bot will try and buy
 a new one.
 
 The bot determines plucking-readiness of trees only by one single tree:
-The top left one. That's why you can not have to bot plant different trees
+The top left one. That's why you can not have the bot plant different trees
 in one go.
 
 The monster fruit queues aren't labelled.. so let me reveal:
