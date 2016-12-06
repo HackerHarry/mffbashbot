@@ -263,7 +263,7 @@ function start_FarmNP {
   sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot}&"
   sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
   iCacheFlag=1
-  $iCache=$((iCache+1))
+  iCache=$((iCache+1))
   if [ $iCache -eq 5 ]; then
    # CID is some water interval ID .. screw it.
    SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
@@ -755,7 +755,7 @@ function check_VehicleFullLoad {
   fi
  done
  if [ $iTransportCount -lt 0 ]; then
-  $iTransportCount=0
+  iTransportCount=0
  fi
  echo "$iTransportCount/$iVehicleCapacity items available for transport, no transport started"
 }
@@ -815,7 +815,7 @@ function get_FieldsOnFarmNum {
  for iCount in {1..6}; do
   iBuildingID=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iCount}'"].buildingid|tonumber' $FARMDATAFILE)
   bStatus=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iCount}'"].status|tonumber' $FARMDATAFILE)
-  if [ $iBuildingID -eq 1 -a $bStatus -eq 1 ]; then
+  if [ $iBuildingID -eq 1 ] && [ $bStatus -eq 1 ]; then
    # building is a field and is active
    iFieldsOnFarm=$((iFieldsOnFarm+1))
   fi
@@ -853,7 +853,7 @@ function check_QueueSleep {
 function check_RunningMegaFieldJob {
  local iJobEnd=$($JQBIN '.updateblock.megafield.job_endtime|tonumber' $FARMDATAFILE)
  local iJobStart=$($JQBIN '.updateblock.megafield.job_start|tonumber' $FARMDATAFILE)
- if [ $iJobStart -gt 0 -a $iJobEnd -eq 0 ]; then
+ if [ $iJobStart -gt 0 ] && [ $iJobEnd -eq 0 ]; then
   # check for job start
 #  if [[ $($JQBIN '.updateblock.megafield.job_start' $FARMDATAFILE | wc -c) -gt 4 ]]; then
    return 0
@@ -929,7 +929,7 @@ function get_MegaFieldHarvesterDelay {
 function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability' $FARMDATAFILE 2>/dev/null)
- if [ "$iDurability" = "null" -o -z "$iDurability" ]; then
+ if [ "$iDurability" = "null" ] || [ -z "$iDurability" ]; then
   # buy a brand new one if empty
   echo "Buying new vehicle #${iHarvestDevice}..."
   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
@@ -1220,7 +1220,7 @@ function get_FieldPlotReadiness {
   # structure changes after planting once
   sResult=$($JQBIN '.datablock[3][1]|to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
  fi
- if ! $(echo $sResult | grep -q '"'${iPlot}'"'); then
+ if ! echo $sResult | grep -q '"'${iPlot}'"' ; then
   return 0
  else
   return 1
