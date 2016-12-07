@@ -153,9 +153,11 @@ while (true); do
     POTTED=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid|tonumber' $FARMDATAFILE 2>/dev/null)
     # skip watering of special flowers
     if [ $POTTED -ne 220 ] && [ $POTTED -ne 221 ]; then
-     # we'll just water as long as it hasn't withered
-     echo "Watering flower pot ${SLOT}..."
-     DoFarmersMarketFlowerPots ${SLOT}
+     # skip plants that don't need water anymore
+     if [ "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE)" != "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].waterremain' $FARMDATAFILE)" ]; then
+      echo "Watering flower pot ${SLOT}..."
+      DoFarmersMarketFlowerPots ${SLOT}
+     fi
     fi
    fi
   done
