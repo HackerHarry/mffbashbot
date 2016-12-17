@@ -22,9 +22,8 @@ include_once 'gamepath.php';
 include_once 'lang.php';
 include_once 'functions.php';
 include_once 'farmdata.php';
+include_once 'header.php';
 include_once 'buttons.php';
-
-include 'header.php';
 
 $position = [0 => ["sodastall", $foodworldBuildingFriendlyName[0], "1"], 1 => ["snackbooth", $foodworldBuildingFriendlyName[1], "2"], 2 => ["pastryshop", $foodworldBuildingFriendlyName[2], "3"], 3 => ["icecreamparlour", $foodworldBuildingFriendlyName[3], "4"]];
 

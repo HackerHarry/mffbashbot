@@ -258,8 +258,6 @@ function start_FarmNP {
  # plot can be used
  if [ $iProductDim_x -eq 1 ]; then
   # product dimensions is 1 x 1
-  # pflanze[]=[PRODUCT]&feld[]=[PLOT_START]&felder[]=[PLOTS_OCCUPIED] (seeding)
-  #                     feld[]=[PLOT_START]&felder[]=[PLOTS_OCCUPIED] (watering)
   sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot}&"
   sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
   iCacheFlag=1

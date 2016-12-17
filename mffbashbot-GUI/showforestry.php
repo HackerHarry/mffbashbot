@@ -22,9 +22,8 @@ include_once 'gamepath.php';
 include_once 'lang.php';
 include_once 'functions.php';
 include_once 'farmdata.php';
+include_once 'header.php';
 include_once 'buttons.php';
-
-include 'header.php';
 
 $position = [0 => ["sawmill", $forestryBuildingFriendlyName[0], "1"], 1 => ["carpentry", $forestryBuildingFriendlyName[1], "2"], 2 => ["forestry", $forestryBuildingFriendlyName[2], "forestry"]];
 

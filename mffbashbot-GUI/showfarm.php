@@ -22,9 +22,8 @@ include_once 'gamepath.php';
 include_once 'lang.php';
 include_once 'functions.php';
 include_once 'farmdata.php';
+include_once 'header.php';
 include_once 'buttons.php';
-
-include 'header.php';
 
 // headings
 for ($position = 1; $position <= 3; $position++) {

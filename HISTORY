@@ -98,4 +98,5 @@ HB 27.11.2016 v1.48 game path is now set in one place only, some code cleanup
 HB 03.12.2016 v1.49 non-premium support for flower area, minor changes
 HB 05.12.2016 v1.50 fixed farm dog handling
 HB 06.12.2016 v1.51 make shellcheck a bit more happy, small bug fixes
-HB 07.12.2016 v.152 water only flower pots that really need water
+HB 07.12.2016 v1.52 water only flower pots that really need water
+HB 17.12.2016 v1.53 force reload of JS functions file when version changes, bug fix

@@ -24,9 +24,9 @@ if ($farm == "runbot") {
  exec("script/wakeupthebot.sh " . $gamepath);
  $farm = 1;
 }
-print "<script type=\"text/javascript\" src=\"script/AJAXqueuefunctions.js\"></script>\n";
-print "<small>";
-system("cat " . $gamepath . "/../version.txt");
+$botver = file_get_contents($gamepath . "/../version.txt");
+print "<script type=\"text/javascript\" src=\"script/AJAXqueuefunctions.js?v=" . $botver . "\"></script>\n";
+print "<small>" . $botver;
 print " - " . $username . "</small>";
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
 print $strings['lastbotiteration'] . ": <b><div id=\"lastruntime\" style=\"display:inline\">";
