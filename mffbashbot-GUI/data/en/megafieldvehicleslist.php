@@ -1,4 +1,3 @@
 <?php
-$megafieldvehicleslist = [1 => "Ernte-Fuhrwerk", 2 => "Ernte-Gespann", 3 => "Mechanische Erntemaschine", 4 => "Dampfbetriebene Erntemaschine", 5 => "Fl&uuml;gelerntemaschine", 6 => "Traktor", 7 => "Automatische Erntemaschine", 8 => "Pr&auml;zisions-Erntemaschine", 9 => "Computer&uuml;berwachte Erntemaschine", 10 => "Ernt-O-Mat-2000"];
-// not yet translated, cuz i can't access the original game data yet
+$megafieldvehicleslist = [1 => "Harvest wagon", 2 => "Harvest cart", 3 => "Mechanical harvester", 4 => "Steam operated harvester", 5 => "Winged fertilizing machine", 6 => "Tractor", 7 => "Automatic harvester", 8 => "Precision harvester", 9 => "Computer operated harvester", 10 => "Harvest-O-Tron 2000"];
 ?>
