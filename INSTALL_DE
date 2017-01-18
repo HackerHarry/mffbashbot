@@ -17,34 +17,17 @@ nicht Teil dieser Dokumentation.
 Pakete wie sudo, sed, wget, (p)grep und so weiter sollten schon installiert
 sein. Und wie der Name schon vermuten lässt, muss auch die bash an Bord sein. ;)
 
-Wir benötigen einige neue Pakete:
-harry@testbox:~$ sudo apt-get install jq lighttpd php5-cgi screen logrotate cron unzip
+Starte ein Terminal und setze folgende Befehle (ohne Anführungszeichen) ab:
+"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-linux.sh"
+Nun das Skript als "ausführbar" markieren:
+"chmod +x install-linux.sh"
+Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
+"./install-linux.sh" und ENTER.
 
-Nachdem diese Pakete idealerweise erfolgreich installiert wurden, widmen wir uns
-zunächst der Installation des Bots.
-Dazu erzeugen wir die erforerliche Grundstruktur im Dateisystem. Sie ist im
-Gesamtpaket enthalten und beinhaltet eine komplette Farm - auch Teile, die ggf.
-noch nicht freigespielt sind.
-harry@testbox:~$ cd
-harry@testbox:~$ wget --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
-harry@testbox:~$ unzip master.zip
-harry@testbox:~$ mv mffbashbot-master mffbashbot
-
-Die jetzt erstellte Grundstruktur beinhaltet u.a. die Information darüber,
-was der Bot wo erledigen soll, den Bot selbst und die GUI.
-
-harry@testbox:~$ cd ~/mffbashbot
-harry@testbox:~/mffbashbot$ chmod +x mffbashbot.sh
-
-Jetzt müssen wir Rechte anpassen, da hier später der Prozess
-des Webservers schreiben können muss:
-harry@testbox:~/mffbashbot$ find . -type d -exec chmod 775 {} +
-harry@testbox:~/mffbashbot$ find . -type f -exec chmod 664 {} +
-Paranoiker können naklar auch 770 und 660 verwenden ;)
-
-Hier kann der dummy ordner bereits umbenannt werden. Der neue Name hängt vom
+Nun kann der dummy ordner bereits umbenannt werden. Der neue Name hängt vom
 Spielernamen bei My Free Farm ab. Wenn Du Dich als Benutzer 'hanswurst' bei MFF
 anmeldest, benennst Du den dummy Ordner in hanswurst um:
+harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ mv dummy hanswurst
 
 Wenn wir schonmal dabei sind: Auch die Servernummer, das Passwort und die
@@ -60,73 +43,6 @@ lang = 'de'
 server = 2
 password = 's3cRet!'
 --- schnapp ---
-
-Davon ausgehend, dass euer Webserver als 'www-data' läuft, passen wir die
-Gruppenrechte an.
-harry@testbox:~$ grep server.username /etc/lighttpd/lighttpd.conf
-server.username             = "www-data"
-harry@testbox:~$ sudo nano /etc/group
-
-Mein Bot-Benutzer ist in diesem Beispiel 'harry' mit gleichlautender Gruppe.
-Ergo sieht mein Eintrag in der group Datei so aus:
-harry:x:1000:www-data
-
-Nun konfgurieren wir den lighttpd Webserver. Zunächst diesen Codeblock ans
-ende der /etc/lighttpd/lighttpd.conf setzen:
-
-harry@testbox:~$ echo '
-fastcgi.server = ( ".php" => ((
-                     "bin-path" => "/usr/bin/php5-cgi",
-                     "socket" => "/tmp/php.socket"
-                 )))
-# source of all modification in order to make php5 run under
-# lighttpd http://www.howtoforge.com/lighttpd_mysql_php_debian_etch ' | sudo tee --append /etc/lighttpd/lighttpd.conf > /dev/null
-
-Weiter gehts mit der Konfiguration des Webservers:
-harry@testbox:~$ cd /etc/lighttpd/conf-enabled/
-harry@testbox:/etc/lighttpd/conf-enabled$ ls
-harry@testbox:/etc/lighttpd/conf-enabled$ sudo ln -s ../conf-available/10-accesslog.conf 10-accesslog.conf
-harry@testbox:/etc/lighttpd/conf-enabled$ sudo ln -s ../conf-available/10-fastcgi.conf 10-fastcgi.conf
-harry@testbox:/etc/lighttpd/conf-enabled$ sudo /etc/init.d/lighttpd restart
-[ ok ] Restarting lighttpd (via systemctl): lighttpd.service.
-
-Jetzt wird es Zeit, die GUI zur Botkontrolle zu installieren.
-
-harry@testbox:~$ sudo su
-root@testbox:/home/harry# cd /var/www/html/
-root@testbox:/var/www/html# mv /home/harry/mffbashbot/mffbashbot-GUI ./mffbashbot
-
-Hier kannst Du noch den Besitzer der Ordner und Dateien anpassen, wenn
-Du das wünschst. Das obige Beispiel kann dazu als Referenz dienen.
-
-root@testbox:/var/www/html# cd mffbashbot/script/
-root@testbox:/var/www/html/mffbashbot/script# chmod +x wakeupthebot.sh logonandgetfarmdata.sh
-root@testbox:/var/www/html/mffbashbot/script# cd ..
-root@testbox:/var/www/html/mffbashbot# nano gamepath.php
-
-In der 'gamepath.php' muss der Pfad zum Botordner angepasst werden.
-
-Damit der Webserver die Zwangspause des Bots auf Wunsch des Benutzers
-unterbrechen darf, muss für 'sudo' ein passender Eintrag her:
-root@testbox:/var/www/html/mffbashbot# exit
-harry@testbox:~$ echo 'www-data ALL=(ALL) NOPASSWD: /bin/kill' | sudo tee /etc/sudoers.d/www-data-kill-cmd > /dev/null
-
-Standardmässig wird ein Bot-Log erzeugt.
-Optional, aber der Übersicht förderlich, kann man nun noch logrotate für die
-Rotation des Bot-Logs einrichten.
-
-harry@testbox:~$ echo '/home/harry/mffbashbot/*/mffbot.log
-{
-        rotate 6
-        daily
-        su harry harry
-        missingok
-        notifempty
-        delaycompress
-        compress
-} ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
-
-Auch hier muss der Pfad ebenso wie die 'su' Zeile angepasst werden.
 
 Im Prinzip ist der Bot nun fertig installiert.
 Wie man den Bot startet, steht in der MANUAL_DE Datei.
