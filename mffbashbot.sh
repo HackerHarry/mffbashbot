@@ -377,7 +377,7 @@ while (true); do
    NUMFARMIES=$((NUMFARMIES-1))
    for FARMIE in $(seq 0 $NUMFARMIES); do
     ID=$($JQBIN '.datablock.farmis['${FARMIE}'].id|tonumber' $FARMDATAFILE)
-    echo "Sending munchies no. $((FARMIE+1)) (ID ${ID}) away..."
+    echo "Sending munchie no. $((FARMIE+1)) (ID ${ID}) away..."
     SendAJAXFoodworldRequest "action=kick&id=${ID}&table=0&chair=0"
    done
   fi

@@ -650,12 +650,12 @@ function start_MegaField {
   # plant
   if [ $iFreePlots -lt $amountToGo ]; then
    # plant on all free plots
-   MegaFieldPlant $iPID $iFreePlots
+   MegaFieldPlant${NONPREMIUM} $iPID $iFreePlots
    GetFarmData $FARMDATAFILE
    # exit function
    return
   fi
-  MegaFieldPlant $iPID $amountToGo
+  MegaFieldPlant${NONPREMIUM} $iPID $amountToGo
   # call function again since there are still free plots
   GetFarmData $FARMDATAFILE
   if [ "$iSafetyCount" = "" ]; then
@@ -666,6 +666,10 @@ function start_MegaField {
   fi
  done
  GetFarmData $FARMDATAFILE
+}
+
+function start_MegaFieldNP {
+ start_MegaField
 }
 
 function harvest_FuelStation {
@@ -987,38 +991,32 @@ function get_MegaFieldBusyPlotsNum {
  echo $iBusyPlots
 }
 
-#function MegaFieldPlant {
-# local iPID=$1
-# local iFreePlots=$2
-# local iCount=1
-# local iCount2=0
-# local iSafetyCount=0
-# local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotNum)
-# while [ "$iCount" -le "$iFreePlots" ]; do
-#   while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
-#    sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free|keys|.['$iCount2']' $FARMDATAFILE)
-#    $JQBIN -e '.updateblock.megafield.area['$sUnlockedPlotName']' $FARMDATAFILE >/dev/null 2>&1
-#    if [ $? -eq 1 -o $? -eq 4 ]; then
-#     # plot is free, plant stuff on it
-#     local iPlotnum=$(echo $sUnlockedPlotName | tr -d '"')
-#     echo "Planting item ${iPID} on Mega Field plot ${iPlotnum}..."
-#     SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${iPlotnum}_${iPID}|"
-#     # make sure we exit after 100 cycles when not enough crop in stock
-#     iSafetyCount=$((iSafetyCount+1))
-#     if [ $iSafetyCount -gt 99 ]; then
-#      echo "Exiting MegaFieldPlant after 100 cycles! (Not enough crop in stock?)"
-#      return
-#     fi
-#     break
-#    fi
-#    iCount2=$((iCount2+1))
-#   done
-#  iCount=$((iCount+1))
-# done
-#}
+function MegaFieldPlantNP {
+ local iPID=$1
+ local iFreePlots=$2
+ local iCount=1
+ local iCount2=0
+ local sPlotOccupied
+ local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotNum)
+ while [ "$iCount" -le "$iFreePlots" ]; do
+   while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
+    sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free|keys|.['$iCount2']|tonumber' $FARMDATAFILE)
+    sPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"]?' $FARMDATAFILE)
+    if [ -z "$sPlotOccupied" ] || [ "$sPlotOccupied" = "null" ]; then
+     # plot is free, plant stuff on it
+     echo "Planting item ${iPID} on Mega Field plot ${sUnlockedPlotName}..."
+     SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
+     iCount2=$((iCount2+1))
+     break
+    fi
+    iCount2=$((iCount2+1))
+   done
+  iCount=$((iCount+1))
+ done
+}
 
 function MegaFieldPlant {
- # new function after changes made by upjers 09.02.2016
+ # new premium function after changes made by upjers 09.02.2016
  local iPID=$1
  local iAmount=$2
  echo "Planting item ${iPID} on ${iAmount} Mega Field plot(s)..."

@@ -102,3 +102,4 @@ HB 07.12.2016 v1.52 water only flower pots that really need water
 HB 17.12.2016 v1.53 force reload of JS functions file when version changes, bug fix
 HB 10.01.2017 v1.54 completed english translation
 HB 18.01.2017 v1.55 simplified installation on Debian GNU/Linux, updated INSTALL files
+HB 21.01.2017 v1.56 support for non-premium mega field handling, removed useless safety counter (08.06.2015)
