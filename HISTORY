@@ -30,7 +30,7 @@ HB 21.12.2014 added some status info
 HB 22.12.2014 added BASHPID info in order to be able to break the restart delay from front end
 HB 26.12.2014 added check if RID value could be retrieved or not
 HB 24.01.2015 force BuildingID 19 (mega field) to run through it's check routine since 'remain' timer isn't always accurate
-HB 31.01.2014 last changes where useless. redesign of mega field harvest function to cope with upjers' flaws
+HB 31.01.2014 last changes were useless. redesign of mega field harvest function to cope with upjers' flaws
 HB 06.02.2015 minor cosmetic and functional changes in function file, repeated watering of trees
 HB 14.02.2015 added selection of current bonus plant in flower area, reduced repeat timer to 15 mins
 HB 01.03.2015 fixed food contest and monster fruit handling (only click when venue is active)
@@ -103,3 +103,4 @@ HB 17.12.2016 v1.53 force reload of JS functions file when version changes, bug 
 HB 10.01.2017 v1.54 completed english translation
 HB 18.01.2017 v1.55 simplified installation on Debian GNU/Linux, updated INSTALL files
 HB 21.01.2017 v1.56 support for non-premium mega field handling, removed useless safety counter (08.06.2015)
+HB 24.01.2017 v1.57 fixed bug in get_MegaFieldAmountToGoInSlot(), automatic bot restart if version(.txt) changes

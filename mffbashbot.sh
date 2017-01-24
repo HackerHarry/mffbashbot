@@ -54,6 +54,12 @@ umask 002
 echo $BASHPID > "$PIDFILE"
 
 while (true); do
+ if [ "$VERSION" != "$(cat ../version.txt)" ]; then
+  echo "Version change detected, restarting bot..."
+  sleep 3
+  cd ..
+  exec /bin/bash mffbashbot.sh $MFFUSER
+ fi
  PAUSETIME=$(shuf -i8-10 -n1)
  touch "$STATUSFILE"
  # remove lingering cookies

@@ -879,12 +879,12 @@ function check_RipePlotOnMegaField {
   # or this
   iPlot=$((iPlot+1))
  done
- return 1 
+ return 1
 }
 
 function get_BusyMegaFieldPlotNum {
- local iBusyPlots=($($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE))
- return $iBusyPlots
+ local iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
+ echo $iBusyPlots
 }
 
 function get_UnlockedMegaFieldPlotNum {
@@ -950,6 +950,7 @@ function check_MegaFieldProductIsHarvestable {
 }
 
 function get_MegaFieldAmountToGoInSlot {
+ local iBusyPlots
  local iProductSlot=$1
  local iNeededPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].need' $FARMDATAFILE)
  local iHavePID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].have' $FARMDATAFILE)
@@ -961,7 +962,8 @@ function get_MegaFieldAmountToGoInSlot {
   return
  fi
  # look at mega field, see if theres still busy plots with needed PID
- if get_BusyMegaFieldPlotNum ; then
+ iBusyPlots=$(get_BusyMegaFieldPlotNum)
+ if [ $iBusyPlots -eq 0 ] ; then
   # no busy plots at all... return needed products
   echo $iSeeminglyNeeded
   return
@@ -969,7 +971,6 @@ function get_MegaFieldAmountToGoInSlot {
  local iPIDOnBusyPlots=0
  for iPlot in $(seq 0 $((iBusyPlots-1))); do
   sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
-  # iBusyPlots came from get_BusyMegaFieldPlotNum
   local iBusyPID=$($JQBIN '.updateblock.megafield.area['${sPlotName}'].pid' $FARMDATAFILE)
   if [ "$iBusyPID" = "$iPID" ]; then
    iPIDOnBusyPlots=$((iPIDOnBusyPlots+1))
