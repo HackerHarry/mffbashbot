@@ -104,3 +104,4 @@ HB 10.01.2017 v1.54 completed english translation
 HB 18.01.2017 v1.55 simplified installation on Debian GNU/Linux, updated INSTALL files
 HB 21.01.2017 v1.56 support for non-premium mega field handling, removed useless safety counter (08.06.2015)
 HB 24.01.2017 v1.57 fixed bug in get_MegaFieldAmountToGoInSlot(), automatic bot restart if version(.txt) changes
+HB 05.02.2017 v1.58 minor changes

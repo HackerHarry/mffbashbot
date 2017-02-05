@@ -18,12 +18,16 @@
 //
 include_once 'lang.php';
 $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
+if ($JSONfarmdata === false)
+ header("Location: index.php");
 $farmdata = (json_decode($JSONfarmdata, true));
 $JSONproductlist = file_get_contents("data/" . $lang . "/productlist.txt");
 $productlist = (json_decode($JSONproductlist, true));
 $JSONforestryproductlist = file_get_contents("data/" . $lang . "/forestryproductlist.txt");
 $forestryproductlist = (json_decode($JSONforestryproductlist, true));
 $JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
+if ($JSONfooddata === false)
+ header("Location: index.php");
 $fooddata = (json_decode($JSONfooddata, true));
 $JSONwindmillproductlist = file_get_contents("data/" . $lang . "/formulas.txt");
 $windmillproductlist = (json_decode($JSONwindmillproductlist, true));

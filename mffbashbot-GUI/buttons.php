@@ -18,7 +18,7 @@
 //
 //include_once 'farmdata.php';
 
-if ($farm == NULL)
+if (!isset($farm))
  $farm = 1;
 if ($farm == "runbot") {
  exec("script/wakeupthebot.sh " . $gamepath);

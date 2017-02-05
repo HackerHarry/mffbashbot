@@ -873,7 +873,7 @@ function check_RipePlotOnMegaField {
  while [ "$iPlot" -lt "$iBusyPlots" ]; do
   # or this
   sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
-  if $JQBIN '.updateblock.megafield.area['${sPlotName}'].remain' $FARMDATAFILE | grep '-' >/dev/null; then
+  if $JQBIN '.updateblock.megafield.area['${sPlotName}'].remain' $FARMDATAFILE | grep -q '-' ; then
    return 0
   fi
   # or this
