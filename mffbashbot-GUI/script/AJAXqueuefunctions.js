@@ -23,6 +23,20 @@
 
 function insertOptionBefore(elSel, elSelDest, amountpos)
 {
+ if (elSel.id == "itemposmonsterfruit") {
+  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+  if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+  if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+ }
   if (elSel.selectedIndex >= 0) {
     var elOptNew = document.createElement('option');
     if (amountpos > 0) {
@@ -44,6 +58,20 @@ function insertOptionBefore(elSel, elSelDest, amountpos)
 
 function appendOptionLast(elSel, elSelDest, amountpos)
 {
+ if (elSel.id == "itemposmonsterfruit") {
+  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+  if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+  if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
+   alert("Wrong queue!\nFalsche Warteschlange!");
+   return false;
+  }
+ }
   var elOptNew = document.createElement('option');
   if (amountpos > 0) {
      elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
