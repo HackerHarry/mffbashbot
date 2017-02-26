@@ -106,3 +106,4 @@ HB 21.01.2017 v1.56 support for non-premium mega field handling, removed useless
 HB 24.01.2017 v1.57 fixed bug in get_MegaFieldAmountToGoInSlot(), automatic bot restart if version(.txt) changes
 HB 05.02.2017 v1.58 minor changes
 HB 25.02.2017 v1.59 force monsterfruit item into correct queue
+HB 26.02.2017 v1.60 dynamic java script, cosmetic changes

@@ -34,5 +34,7 @@ $strings['botisidle'] = 'inaktiv';
 $strings['saynotoforestryfarmies'] = 'Alle B&auml;umerei-Farmis mit "Nein" beantworten';
 $strings['saynotomunchies'] = 'Alle Mampfis mit "Nein" beantworten';
 $strings['errorsavinggamedata'] = 'Speichern fehlgeschlagen. Bitte Protokolldateien pr&uuml;fen.';
+$strings['wrongqueue'] = 'Dies ist nicht die richtige Warteschlange für diese Aktion.';
+$strings['saved'] = 'Gespeichert';
 // $strings[''] = '';
 ?>

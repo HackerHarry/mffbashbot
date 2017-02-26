@@ -1,4 +1,5 @@
-// JavaScript file for Harrys My Free Farm Bash Bot (front end)
+<?php
+// Dynamic JavaScript for Harrys My Free Farm Bash Bot (front end)
 // Copyright 2016 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
@@ -21,19 +22,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+echo <<<EOT
+<script type="text/javascript">
 function insertOptionBefore(elSel, elSelDest, amountpos)
 {
  if (elSel.id == "itemposmonsterfruit") {
   if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
   if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
   if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
  }
@@ -60,15 +63,15 @@ function appendOptionLast(elSel, elSelDest, amountpos)
 {
  if (elSel.id == "itemposmonsterfruit") {
   if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
   if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
   if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
-   alert("Wrong queue!\nFalsche Warteschlange!");
+   alert("{$strings['wrongqueue']}");
    return false;
   }
  }
@@ -244,13 +247,13 @@ return false;
 function displaySavedNote() {
  var options = {icon: 'image/mffbot.png'}
  if (!("Notification" in window))
-  alert("OK. This browser cannot display desktop messages :(");
+  alert("{$strings['saved']}");
  else if (Notification.permission === "granted")
-  var notification = new Notification("OK", options);
+  var notification = new Notification("{$strings['saved']}", options);
  else if (Notification.permission !== 'denied') {
   Notification.requestPermission(function (permission) {
  if (permission === "granted")
-  var notification = new Notification("OK", options);
+  var notification = new Notification("{$strings['saved']}", options);
   });
  }
 }
@@ -265,4 +268,8 @@ function showHideOptions() {
   div.style.display = "inline-block";
   return false
   }
-};
+}
+</script>
+
+EOT;
+?>

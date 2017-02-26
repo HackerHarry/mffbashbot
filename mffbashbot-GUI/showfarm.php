@@ -30,7 +30,7 @@ include_once 'buttons.php';
 // headings
 for ($position = 1; $position <= 3; $position++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position);
- print "<table name=\"" . $position . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
+ print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
@@ -53,11 +53,11 @@ print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
 print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
-print "<br><br>";
+print "</form>\n";
 
 for ($position = 4; $position <= 6; $position++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position);
- print "<table name=\"" . $position . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
+ print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form id=\"selpos" . $position . "\" name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
@@ -75,6 +75,5 @@ for ($position = 4; $position <= 6; $position++) {
  print "</tr></table>";
 }
 ?>
- </form>
  </body>
 </html>

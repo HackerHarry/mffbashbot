@@ -133,5 +133,4 @@ The bot determines plucking-readiness of trees only by one single tree:
 The top left one. That's why you can not have the bot plant different trees
 in one go.
 
-The monster fruit queues aren't labelled.. so let me reveal:
-Ferteliser goes left, light in the middle and water is set in the right queue.
+The farm name has to be unique. This means server independently unique.

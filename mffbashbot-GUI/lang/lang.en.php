@@ -34,5 +34,7 @@ $strings['botisidle'] = 'idle';
 $strings['saynotoforestryfarmies'] = 'Answer "No" to all Forestry Farmies';
 $strings['saynotomunchies'] = 'Answer "No" to all Munchies';
 $strings['errorsavinggamedata'] = 'Error saving gamedata. Please check the log files.';
+$strings['wrongqueue'] = 'This is not the correct queue for this item.';
+$strings['saved'] = 'Saved';
 // $strings[''] = '';
 ?>

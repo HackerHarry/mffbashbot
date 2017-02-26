@@ -31,7 +31,7 @@ $position = [0 => ["sodastall", $foodworldBuildingFriendlyName[0], "1"], 1 => ["
 
 for ($pc = 0; $pc <= 2; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
- print "<table name=\"" . $position[$pc][0] . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
+ print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
@@ -53,11 +53,11 @@ print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
 print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
-print "<br><br>";
+print "</form>\n";
 
 for ($pc = 3; $pc <= 3; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
- print "<table name=\"" . $position[$pc][0] . "\" style=\"float:left; margin-right:20px;\" border=\"1\">";
+ print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
@@ -76,6 +76,5 @@ for ($pc = 3; $pc <= 3; $pc++) {
  print "</tr></table>";
 }
 ?>
- </form>
  </body>
 </html>

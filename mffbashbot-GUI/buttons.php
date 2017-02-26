@@ -16,24 +16,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-//include_once 'farmdata.php';
-
 if (!isset($farm))
  $farm = 1;
 if ($farm == "runbot") {
  exec("script/wakeupthebot.sh " . $gamepath);
  $farm = 1;
 }
+include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
-print "<script type=\"text/javascript\" src=\"script/AJAXqueuefunctions.js?v=" . $botver . "\"></script>\n";
-print "<small>" . $botver;
-print " - " . $username . "</small>";
+print "<small>" . $botver . " - " . $username . "</small>";
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
-print $strings['lastbotiteration'] . ": <b><div id=\"lastruntime\" style=\"display:inline\">";
+print $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline\"><b>";
 system("cat " . $gamepath . "/lastrun.txt");
-print "</div></b> -- " . $strings['thebotis'] . " <b><div id=\"botstatus\" style=\"display:inline\">\n";
+print "</b></div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline\"><b>\n";
 include 'getbotstatus.php';
-print "</div></b><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
+print "</b></div><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
 for ($i = 1; $i < 6; $i++)
@@ -47,7 +44,7 @@ print "<input type=\"button\" name=\"logon\" value=\"" . $strings['logon'] . "\"
 print "<br>";
 // misc options
 print "<div id=\"optionspane\" style=\"display:none;\">";
-print "<table name=\"opttbl\" style=\"float:left;\" border=\"1\">";
+print "<table id=\"opttbl\" style=\"float:left;\" border=\"1\">";
 print "<tr><th>" . $strings['options'] . "</th></tr>";
 print "<tr><td>";
 print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['ben'];
@@ -81,19 +78,19 @@ print "<option value=\"5\" id=\"vehicle5\">" . $strings['truck'] . "</option></s
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
-print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+print "<option value=\"0\" id=\"carefood0\">Sleep</option>\n";
 CreateOptionsWithID(600, 601, 602, 603, 604, 605, 606, 607, 608, 609);
 print "</select>&nbsp;" . $strings['satisfyfoodneed'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"caretoy\" name=\"caretoy\" onchange=\"saveMisc();\">";
-print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+print "<option value=\"0\" id=\"caretoy0\">Sleep</option>\n";
 CreateOptionsWithID(630, 631, 632, 633, 634, 635, 636, 637, 638, 639);
 print "</select>&nbsp;" . $strings['satisfytoyneed'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
-print "<option value=\"0\" id=\"0\">Sleep</option>\n";
+print "<option value=\"0\" id=\"careplushy0\">Sleep</option>\n";
 CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
 print "</td></tr></table>\n";
@@ -104,11 +101,11 @@ print "<hr>\n";
 print "<script type=\"text/javascript\">\n";
 global $configContents;
 $savedValue = $configContents['carefood'];
-print "document.getElementById('carefood').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+print "document.getElementById('carefood').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['caretoy'];
-print "document.getElementById('caretoy').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+print "document.getElementById('caretoy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['careplushy'];
-print "document.getElementById('careplushy').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+print "document.getElementById('careplushy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['vehiclemgmt'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";

@@ -24,7 +24,7 @@ function CreateOptions() {
 function CreateOptionsWithID() {
  global $productlist;
  foreach (func_get_args() as $i)
-	print "<option id=\"" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
 }
 function CreateOilOptions() {
  global $oillist;
@@ -267,11 +267,11 @@ function GetQueueCount($gamepath, $farm, $position) {
  return $retval;
 }
 function PlaceQueueButtons($position, $QueueNum) {
- print"<td align=\"center\">";
- print "<input type=\"button\" value=\"&lt;&lt;\" onclick=\"insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl vor die Markierung in der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">";
- print "<input type=\"button\" value=\"X\" onclick=\"removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"Markiertes Element in Warteschlange l&ouml;schen\" style=\"height:20px; width:22px; margin-left:3px; margin-right:3px\">";
- print "<input type=\"button\" value=\"&gt;&gt;\" onclick=\"appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl ans Ende der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">";
- print "</td>";
+ print"<td align=\"center\">\n";
+ print "<input type=\"button\" value=\"&lt;&lt;\" onclick=\"insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl vor die Markierung in der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
+ print "<input type=\"button\" value=\"X\" onclick=\"removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"Markiertes Element in Warteschlange l&ouml;schen\" style=\"height:20px; width:22px; margin-left:3px; margin-right:3px\">\n";
+ print "<input type=\"button\" value=\"&gt;&gt;\" onclick=\"appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl ans Ende der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
+ print "</td>\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  global $farmdata;

@@ -141,5 +141,4 @@ Ob die Bäume in der Bäumerei fertig sind, stellt der Bot an nur einem einzigen
 Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
 also nicht abhandeln.
 
-Bei der Monsterfrucht-Zucht kommt Dünger in die linke, Licht in die mittlere
-und Wasser in die rechte Warteschlange.
+Ein Farmname muss für den Bot eindeutig sein; auch über Servergrenzen hinweg.
