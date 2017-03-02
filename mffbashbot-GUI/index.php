@@ -18,6 +18,7 @@
 //
 include 'functions.php';
 ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
  <head>
   <title>Harrys MFF Bash Bot - Log on</title>
@@ -28,8 +29,8 @@ include 'functions.php';
 <h1>Log on...</h1>
 <small>Remember to set your user data in config.ini</small>
 <br><br>
-<table name="logontbl" style="float:left; margin-right:20px;" border="1">
 <form name="logon" method="post" action="validate.php">
+<table id="logontbl" style="float:left; margin-right:20px;" border="1">
 <tr><td align="left">Server</td>
 <td align="left">
 <select name="server"><option value="1">1</option><option value="2">2</option>

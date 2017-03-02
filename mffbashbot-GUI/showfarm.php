@@ -33,45 +33,53 @@ for ($position = 1; $position <= 3; $position++) {
  print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form action=\"makeW3Chappy\" name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["buildingid"], $position);
- print "</td>";
+ print "</form></td>";
  print "</tr><tr>";
 // buttons
- for ($i = 1; $i <= $iNumQueues; $i++)
+ for ($i = 1; $i <= $iNumQueues; $i++) {
+  print "<td align=\"center\">\n";
+  print "<form action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
   PlaceQueueButtons($position, $i);
- print "</form>";
+  print "</form></td>";
+ }
  print "</tr><tr>";
 // queues
- print "<form name=\"queue" . $position . "\" id=\"queue" . $position . "\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
+ print "<form name=\"queue" . $position . "\" id=\"queue" . $position . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
   PlaceQueues($gamepath, $farm, $position, $i);
- print "</form>";
+ print "</form></td>";
  print "</tr></table>";
 }
 print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
 print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
-print "</form>\n";
+print "</form><br>\n";
 
 for ($position = 4; $position <= 6; $position++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position);
  print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form id=\"selpos" . $position . "\" name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form id=\"selpos" . $position . "\" name=\"selpos" . $position . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["buildingid"], $position);
- print "</td>";
+ print "</form></td>";
  print "</tr><tr>";
- for ($i = 1; $i <= $iNumQueues; $i++)
+ for ($i = 1; $i <= $iNumQueues; $i++) {
+  print "<td align=\"center\">\n";
+  print "<form action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
   PlaceQueueButtons($position, $i);
- print "</form>";
+  print "</form></td>";
+ }
  print "</tr><tr>";
- print "<form name=\"queue" . $position . "\" id=\"queue" . $position . "\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
+ print "<form name=\"queue" . $position . "\" id=\"queue" . $position . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
- PlaceQueues($gamepath, $farm, $position, $i);
- print "</form>";
+  PlaceQueues($gamepath, $farm, $position, $i);
+ print "</form></td>";
  print "</tr></table>";
 }
 ?>

@@ -34,45 +34,52 @@ for ($pc = 0; $pc <= 2; $pc++) {
  print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);
- print "</td>";
+ print "</form></td>";
  print "</tr><tr>";
- for ($i = 1; $i <= $iNumQueues; $i++)
+ for ($i = 1; $i <= $iNumQueues; $i++) {
+  print "<td align=\"center\">\n";
+  print "<form action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
   PlaceQueueButtons($position[$pc][2], $i);
- print "</form>";
+  print "</form></td>";
+ }
  print "</tr><tr>";
  // queues
- print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
+ print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
   PlaceQueues($gamepath, $farm, $position[$pc][2], $i);
- print "</form>";
+ print "</form></td>";
  print "</tr></table>";
 }
 print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
 print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
-print "</form>\n";
+print "</form><br>\n";
 
 for ($pc = 3; $pc <= 3; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
  print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);
- print "</td>";
+ print "</form></td>";
  print "</tr><tr>";
- for ($i = 1; $i <= $iNumQueues; $i++)
+ for ($i = 1; $i <= $iNumQueues; $i++) {
+  print "<td align=\"center\">\n";
+  print "<form action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
   PlaceQueueButtons($position[$pc][2], $i);
- print "</form>";
+  print "</form></td>";
+ }
  print "</tr><tr>";
- // queues
- print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
+ print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
   PlaceQueues($gamepath, $farm, $position[$pc][2], $i);
- print "</form>";
+ print "</form></td>";
  print "</tr></table>";
 }
 ?>
