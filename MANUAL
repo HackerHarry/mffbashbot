@@ -19,8 +19,7 @@ When you buy or change any building, you'll have to relogon using the "Back to
 logon" button. Otherwise the change can't be reflected with the GUI.
 
 If a station has multiple slots, only those will be served that aren't rented
-using coins. The only exception is the speed eating: Rented audience
-slots will be served.
+using coins. Exceptions are the speed eating and the wind mill.
 
 If you are missing a slot at a certain position, you'll have to modify the
 files within the file system yourself! The file structure should be

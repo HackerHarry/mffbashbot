@@ -394,10 +394,14 @@ while (true); do
  GetWindMillData $FARMDATAFILE
 
  echo "Checking for pending tasks in wind mill..."
- # we only handle one slot here
+ # we handle two slots
  if $JQBIN '.datablock[2]["1"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
   echo "Doing wind mill, slot 1..."
   DoFarm city2 windmill 0
+ fi
+ if $JQBIN '.datablock[2]["2"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+  echo "Doing wind mill, slot 2..."
+  DoFarm city2 windmill 1
  fi
 
  echo "Logging off..."

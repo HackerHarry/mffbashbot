@@ -22,8 +22,7 @@ Wenn man auf seiner Farm baulich etwas verändert, ist eine Neuanmeldung (Knopf
 'Anmeldung') in der GUI ERFORDERLICH. Die Änderung wird sonst nicht abgebildet.
 
 Bei Positionen die mehrere Slots haben, werden keine Slots bedient, die durch
-Coins angemietet sind. Die einzige Ausnahme bildet das Wettmampfen: Angemietete
-Zuschauerblöcke werden hier bedient.
+Coins angemietet sind. Ausnahmen bilden das Wettmampfen und die Windmühle.
 
 Wenn ein Slot in der GUI fehlt, muss der Spieler selbst Hand anlegen und 
 den fehlenden Slot in Form einer Datei im Dateisystems erzeugen!
