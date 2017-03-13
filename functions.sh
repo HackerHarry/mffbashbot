@@ -703,12 +703,16 @@ function start_FuelStation {
 }
 
 function harvest_WindMill {
- SendAJAXCityRequest "city=2&mode=windmillcrop&slot=1"
+ local iSlot=$3
+ SendAJAXCityRequest "city=2&mode=windmillcrop&slot=${iSlot}"
 }
 
 function start_WindMill {
- local iPID=$(sed '2q;d' city2/windmill/0)
- SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=1"
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
 function check_VehicleFullLoad {
