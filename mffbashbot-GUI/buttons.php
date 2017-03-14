@@ -33,7 +33,7 @@ include 'getbotstatus.php';
 print "</b></div><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
-for ($i = 1; $i < 6; $i++)
+for ($i = 1; $i < 7; $i++)
  print "<input type=\"image\" src=\"image/navi_farm" . $i . ".png\" class=\"navilink\" title=\"" . $farmFriendlyName[$i] . "\" name=\"" . $i . "\" onclick=\"document.venueselect.farm.value = '" . $i . "'; this.form.submit();\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket'] . "\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showfarmersmarket.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"" . $farmFriendlyName['forestry'] . "\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showforestry.php'; this.form.submit()\">\n";

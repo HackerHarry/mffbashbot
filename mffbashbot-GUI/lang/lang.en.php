@@ -1,6 +1,6 @@
 <?php
 // Most buildings names are extracted from LIVE DATA and can hence not be found here
-$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', 'farmersmarket' => 'Farmers\' Market', 'forestry' => 'Forestry', 'foodworld' => 'Picnic Area', 'city2' => 'Pondsville'];
+$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', 'farmersmarket' => 'Farmers\' Market', 'forestry' => 'Forestry', 'foodworld' => 'Picnic Area', 'city2' => 'Pondsville'];
 $forestryBuildingFriendlyName = ['Saw mill', 'Carpentry', 'Forestry'];
 $foodworldBuildingFriendlyName = ['Soda stall', 'Snack booth', 'Pastry shop', 'Ice cream parlour' ];
 $strings['mill'] = 'Wind mill';

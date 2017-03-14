@@ -110,3 +110,4 @@ HB 26.02.2017 v1.60 dynamic java script, cosmetic changes
 HB 02.03.2017 v1.61 make W3C happy :)
 HB 12.03.2017 v1.62 2nd wind mill slot
 HB 13.03.2017 v1.63 fixed bug in wind mill handling, slots need to be named 1 and 2 within file system
+HB 14.03.2017 v1.64 support for farm 6

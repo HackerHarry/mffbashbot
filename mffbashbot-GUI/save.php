@@ -30,6 +30,7 @@ switch ($farm) {
  case 3:
  case 4:
  case 5:
+ case 6:
   // Normal farms
   for ($position = 1; $position <= 6; $position++) {
    if (strrpos($queue[$position - 1], "-") !== false) {
