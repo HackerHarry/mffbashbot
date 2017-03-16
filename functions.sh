@@ -715,9 +715,34 @@ function start_WindMill {
  SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
+function check_VehiclePosition {
+ local iFarm=$1
+ local iRoute=$2
+ local iVehicle
+ local iCurrentVehiclePos
+ echo -n "Transport vehicle for route $iRoute is "
+ CFGLINE=$(grep vehiclemgmt${iFarm} $CFGFILE)
+ TOKENS=( $CFGLINE )
+ iVehicle=${TOKENS[2]}
+ if ! $JQBIN -e '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
+  iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current|tonumber' $FARMDATAFILE)
+  if [ "$iCurrentVehiclePos" = "1" ]; then
+   echo "on farm 1, sending it to farm $iFarm"
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
+  else
+   echo "on farm $iCurrentVehiclePos"
+   # check if sending a full vehicle is possible
+   check_VehicleFullLoad $iVehicle $iFarm $iRoute
+  fi
+ else
+  echo "en route"
+ fi
+}
+
 function check_VehicleFullLoad {
  local iVehicle=$1
  local iFarm=$2
+ local iRoute=$3
  local iProduct
  local iProductCount
  local iSafetyCount
@@ -725,16 +750,15 @@ function check_VehicleFullLoad {
  local sCart=
  local iTransportCount=0
  local iVehicleSlotsUsed=0
- local iVehicleCapacity=$(get_VehicleCapacity $iVehicle)
- local iVehicleSlotCount=$(get_VehicleSlotCount $iVehicle)
+ local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
+ local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
  local iFieldsOnFarmNum=$(get_FieldsOnFarmNum $iFarm)
- local iItemCount=$($JQBIN '.updateblock.stock.tempstock|.[]|."'${iFarm}'"' $FARMDATAFILE | wc -l)
- # at the time of writing, the temp stock only exists on farm 5
- # if this changes, and this is likely if you look at the data structure,
- # this function WILL FAIL
- for iCount in $(seq 0 $((iItemCount-1))); do
-  iProduct=$($JQBIN '.updateblock.stock.tempstock|keys['${iCount}']|tonumber' $FARMDATAFILE)
-  iProductCount=$($JQBIN '.updateblock.stock.tempstock["'${iProduct}'"]["'${iFarm}'"]|tonumber' $FARMDATAFILE)
+ # this will fail if more than one rack is in use on farms 5 or 6
+ local iItemCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]|keys|length' $FARMDATAFILE)
+ # You know, somehow, "I told you so" just doesn't quite say it. ;)
+ for iCount in $(seq 1 $iItemCount); do
+  iProduct=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["pid"]|tonumber' $FARMDATAFILE)
+  iProductCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["amount"]|tonumber' $FARMDATAFILE)
   iSafetyCount=$(get_ProductCountFittingOnField $iProduct)
   # do we have multiple fields on the current farm?
   iSafetyCount=$((iSafetyCount*iFieldsOnFarmNum))
@@ -749,59 +773,21 @@ function check_VehicleFullLoad {
    iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
    sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
    echo "Sending $((iTransportCount-iCropValue)) items to main farm..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=1&vehicle=${iVehicle}&cart=${sCart}"
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
   iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
   sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
    echo "Sending partially loaded vehicle to main farm (no slots left)..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=1&vehicle=${iVehicle}&cart=${sCart}"
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
  done
  if [ $iTransportCount -lt 0 ]; then
   iTransportCount=0
  fi
- echo "$iTransportCount/$iVehicleCapacity items available for transport, no transport started"
-}
-
-function get_VehicleCapacity {
- local iVehicle=$1
- case "$iVehicle" in
-   1) echo 125
-      ;;
-   2) echo 750
-      ;;
-   3) echo 2500
-      ;;
-   4) echo 1000
-      ;;
-   5) echo 20000
-      ;;
-   *) echo "Unknown vehicle in get_VehicleCapacity()" >&2
-      echo 0
-      ;;
- esac
-}
-
-function get_VehicleSlotCount {
- local iVehicle=$1
- case "$iVehicle" in
-   1) echo 2
-      ;;
-   2) echo 6
-      ;;
-   3) echo 10
-      ;;
-   4) echo 3
-      ;;
-   5) echo 16
-      ;;
-   *) echo "Unknown vehicle in get_VehicleSlotCount()" >&2
-      echo 0
-      ;;
- esac
+ echo "$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
 }
 
 function get_ProductCountFittingOnField {

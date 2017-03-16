@@ -130,9 +130,12 @@ function saveMisc() {
  document.getElementById('dogtoggle').checked ? sData += "1&lottoggle=" : sData += "0&lottoggle=";
 
  var v = document.getElementById("lottoggle");
- sData += v.options[v.selectedIndex].value + "&vehiclemgmt=";
+ sData += v.options[v.selectedIndex].value + "&vehiclemgmt5=";
  
- var v = document.getElementById("vehiclemgmt");
+ var v = document.getElementById("vehiclemgmt5");
+ sData += v.options[v.selectedIndex].value + "&vehiclemgmt6=";
+ 
+ var v = document.getElementById("vehiclemgmt6");
  sData += v.options[v.selectedIndex].value + "&carefood=";
 
  var v = document.getElementById("carefood");

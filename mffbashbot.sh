@@ -246,25 +246,12 @@ while (true); do
  fi
 
  # transport vehicle handling
- if ! grep vehiclemgmt $CFGFILE | grep -q 0; then
-   echo -n "Transport vehicle is "
-   CFGLINE=$(grep vehiclemgmt $CFGFILE)
-   TOKENS=( $CFGLINE )
-   iVehicle=${TOKENS[2]}
-   if ! $JQBIN -e '.updateblock.map.vehicles["1"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
-    iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["1"]["'$iVehicle'"].current|tonumber' $FARMDATAFILE)
-    if [ "$iCurrentVehiclePos" = "1" ]; then
-     echo "on farm 1, sending it to farm 5"
-     SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=1&vehicle=${iVehicle}&cart="
-    else
-     # assuming farm 5 here
-     echo "on farm 5"
-     # check if sending a full vehicle is possible
-     check_VehicleFullLoad $iVehicle 5
-    fi
-   else
-    echo "en route"
-   fi
+ if ! grep vehiclemgmt5 $CFGFILE | grep -q 0; then
+  # parameters are farm no. and route no.
+  check_VehiclePosition 5 1
+ fi
+ if ! grep vehiclemgmt6 $CFGFILE | grep -q 0; then
+  check_VehiclePosition 6 2
  fi
 
  if grep -q "sendfarmiesaway = 1" $CFGFILE; then
