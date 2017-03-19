@@ -115,6 +115,13 @@ while (true); do
     DoFarm ${FARM} ${POSITION} 0
     continue
    fi
+   # skip premium fields for non-premium users
+   if [ "$NONPREMIUM" = "NP" ]; then
+    if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].premium?' $FARMDATAFILE | grep -q '1' ; then
+     echo "Skipping farm ${FARM}, position ${POSITION}"
+     continue
+    fi
+   fi
    for SLOT in 0 1 2; do
      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
        echo "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
@@ -126,9 +133,11 @@ while (true); do
      fi
      if [ $SLOT -eq 0 ]; then
       if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-       echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
        if [ $PREMIUM -eq 1 ]; then
+        echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
         SendAJAXFarmRequest "mode=watergarden&farm=${FARM}&position=${POSITION}"
+       else
+        echo "Sorry, non-premium re-watering is not (yet) supported"
        fi
       fi
      fi

@@ -107,7 +107,7 @@ Warteschlange verschoben wird. Verbleibende Elemente rücken eins nach oben.
 Der Ponyhof wird vom Bot überhaupt nicht bedient.
 Es ist nicht geplant, dass sich das in absehbarer Zeit ändert.
 
-Die automatische Transportfunktion (Transport zw. d. Farmen eins und fünf)
+Die automatische Transportfunktion (Transport zw. d. Farmen eins und fünf/sechs)
 lässt immer so viel Saatgut auf Farm 5, wie zum Anbau auf _verfügbaren_
 Äckern notwendig wäre. Dieses Verhalten lässt sich ohne Eingriff in den Code
 nicht ändern.

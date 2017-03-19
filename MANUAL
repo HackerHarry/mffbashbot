@@ -101,7 +101,7 @@ all move one up.
 The pony area is not served at all by the bot.
 There are no plans to change that for the time being.
 
-Automatic transportation (between farms one and five) leaves as many seeds
+Automatic transportation (between farms one and five/six) leaves as many seeds
 behind, that's needed to cultivate the current number of fields. So if you
 have two fields on farm five, the bot would leave 120 grain seeds on farm five.
 This behaviour cannot be altered without changing the code.

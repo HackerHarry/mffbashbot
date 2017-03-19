@@ -31,7 +31,7 @@ include_once 'buttons.php';
 for ($position = 1; $position <= 3; $position++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position);
  print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . (!empty($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"]) ? $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] : $strings['notavailable']) . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form action=\"makeW3Chappy\" name=\"selpos" . $position . "\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["buildingid"], $position);
@@ -62,7 +62,7 @@ print "</form><br>\n";
 for ($position = 4; $position <= 6; $position++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position);
  print "<table id=\"t" . $position . "\" class=\"queuetable\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] . "</th>";
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . (!empty($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"]) ? $farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["name"] : $strings['notavailable']) . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form id=\"selpos" . $position . "\" name=\"selpos" . $position . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["buildingid"], $position);
