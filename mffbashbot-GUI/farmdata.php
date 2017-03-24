@@ -31,9 +31,6 @@ if ($JSONfooddata === false)
 $fooddata = (json_decode($JSONfooddata, true));
 $JSONwindmillproductlist = file_get_contents("data/" . $lang . "/formulas.txt");
 $windmillproductlist = (json_decode($JSONwindmillproductlist, true));
-include_once 'data/' . $lang . '/oillist.php';
-include_once 'data/' . $lang . '/woollist.php';
-include_once 'data/' . $lang . '/tealist.php';
 include_once 'data/' . $lang . '/monsterlist.php';
 include_once 'data/' . $lang . '/foodworldproductlist.php';
 include_once 'data/' . $lang . '/megafieldvehicleslist.php';

@@ -114,3 +114,4 @@ HB 14.03.2017 v1.64 support for farm 6 (make sure to adjust your config.ini!)
 HB 15.03.2017 v1.65 fixed auto-transport from farm 5, added auto-transport from farm 6
 HB 19.03.2017 v1.66 skip premium positions for non-premium users, minor cosmetics
 HB 23.03.2017 v1.67 support for tea house
+HB 24.03.2017 v1.68 code cosmetics: please adjust queue items for knitting mill, oil mills and tea house

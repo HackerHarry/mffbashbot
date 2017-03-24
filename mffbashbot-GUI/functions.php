@@ -26,21 +26,6 @@ function CreateOptionsWithID() {
  foreach (func_get_args() as $i)
 	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
 }
-function CreateOilOptions() {
- global $oillist;
- foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $oillist[$i]  . "</option>\n";
-}
-function CreateTeaOptions() {
- global $tealist;
- foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $tealist[$i]  . "</option>\n";
-}
-function CreateWoolOptions() {
- global $woollist;
- foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $woollist[$i]  . "</option>\n";
-}
 function CreateMonsterOptions() {
  global $monsterlist;
  foreach (func_get_args() as $i)
@@ -134,7 +119,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case 16:
         // Strickerei
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateWoolOptions(1, 2, 3);
+        CreateOptions(155, 156, 157);
         print "</select>\n";
         break;
   case 7:
@@ -164,13 +149,13 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case 13:
         // Ölpresse
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOilOptions(1, 2, 3, 4, 5, 6);
+        CreateOptions(116, 117, 118, 119, 120, 121);
         print "</select>\n";
         break;
   case 14:
         // Spezialölmanufaktur
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOilOptions(7, 8, 9, 10);
+        CreateOptions(122, 123, 124, 125);
         print "</select>\n";
         break;
   case 19:
@@ -188,7 +173,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case 21:
         // Teeverfeinerung
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateTeaOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        CreateOptions(750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         break;
   case "flowerarea":
@@ -281,15 +266,12 @@ function GetQueueCount($gamepath, $farm, $position) {
  return $retval;
 }
 function PlaceQueueButtons($position, $QueueNum) {
-// print "<td align=\"center\">\n";
  print "<input type=\"button\" value=\"&lt;&lt;\" onclick=\"insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl vor die Markierung in der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
  print "<input type=\"button\" value=\"X\" onclick=\"removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"Markiertes Element in Warteschlange l&ouml;schen\" style=\"height:20px; width:22px; margin-left:3px; margin-right:3px\">\n";
  print "<input type=\"button\" value=\"&gt;&gt;\" onclick=\"appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl ans Ende der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
-// print "</td>\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  global $farmdata;
-// print"<td align=\"center\">";
  print "<input type=\"hidden\" name=\"queue" . $QueueNum . "\" value=\"" . GetQueueName($gamepath, $farm, $position, $QueueNum) . "\">\n";
  switch ($position) {
   case "flowerarea":
@@ -333,7 +315,6 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  print "<select id=\"qsel" . $position . $QueueNum . "\" size=\"5\" multiple>";
  print CreateQueueList($gamepath, $farm, $position, GetQueueName($gamepath, $farm, $position, $QueueNum), $buildingType);
  print "</select>";
-// print "</td>\n";
 }
 function GetQueueName($gamepath, $farm, $position, $QueueNum) {
  $retval=exec("ls -1 " . $gamepath . "/" . $farm . "/" . $position . "/ | head -" . $QueueNum . " | tail -1");
@@ -391,9 +372,6 @@ function CreateQueueList($gamepath, $farm, $position, $queueName, $buildingType)
 }
 function CreateOptionForQueueList($queueItem, $buildingType) {
  global $productlist;
- global $oillist;
- global $tealist;
- global $woollist;
  global $monsterlist;
  global $forestryproductlist;
  global $foodworldproductlist;
@@ -410,16 +388,10 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "Pets":
    case "Vet":
    case "FuelStation":
-   $queueItemFriendlyName = $productlist[intval($queueItem)];
-   break;
-   case "OilMill":
-   $queueItemFriendlyName = $oillist[intval($queueItem)];
-   break;
    case "TeaFactory":
-   $queueItemFriendlyName = $tealist[intval($queueItem)];
-   break;
    case "KnittingMill":
-   $queueItemFriendlyName = $woollist[intval($queueItem)];
+   case "OilMill":
+   $queueItemFriendlyName = $productlist[intval($queueItem)];
    break;
    case "Stable":
    // first the item, then the amount

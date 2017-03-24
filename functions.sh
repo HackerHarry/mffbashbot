@@ -114,16 +114,20 @@ function harvest_KnittingMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=$((iSlot+1))&farm=${iFarm}"
+ local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
 }
 
 function start_KnittingMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
+ local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  # Knitting Mill takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local sAJAXSuffix="position=${iPosition}&item=${iPID}&mode=start&slot=$((iSlot+1))&farm=${iFarm}"
+ # PIDs start at 1 for this building type
+ iPID=$((iPID-154))
+ local sAJAXSuffix="position=${iPosition}&item=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
  if [ "$GUILDJOB" = true ]; then
   local sAJAXSuffix="${sAJAXSuffix}&guildjob=1"
   GUILDJOB=false
@@ -153,6 +157,8 @@ function start_OilMill {
  # oil mills use slots 1, 2 and 3 FFS
  # Special Oil Mill takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ # PIDs start at 1 for this building type
+ iPID=$((iPID-115))
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  # do the mill
  SendAJAXFarmRequest "position=${iPosition}&oil=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
@@ -175,6 +181,9 @@ function start_TeaFactory {
  local iPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ # PIDs start at 1 for this building type
+ iPID=$((iPID-749))
+ # this only works cuz the farm data isn't updated in between harvesting and planting (!)
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  SendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
 }
