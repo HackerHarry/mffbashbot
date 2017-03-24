@@ -162,6 +162,27 @@ function start_OilMillNP {
  start_OilMill $1 $2 $3
 }
 
+ function harvest_TeaFactory {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
+}
+
+function start_TeaFactory {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ SendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
+}
+
+function start_TeaFactoryNP {
+ start_TeaFactory $1 $2 $3
+}
+
 function harvest_Factory {
  local iFarm=$1
  local iPosition=$2

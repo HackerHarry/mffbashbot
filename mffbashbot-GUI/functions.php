@@ -31,6 +31,11 @@ function CreateOilOptions() {
  foreach (func_get_args() as $i)
         print "<option value=\"" . $i . "\">" . $oillist[$i]  . "</option>\n";
 }
+function CreateTeaOptions() {
+ global $tealist;
+ foreach (func_get_args() as $i)
+        print "<option value=\"" . $i . "\">" . $tealist[$i]  . "</option>\n";
+}
 function CreateWoolOptions() {
  global $woollist;
  foreach (func_get_args() as $i)
@@ -178,6 +183,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         // Biosprit-Anlage
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154);
+        print "</select>\n";
+        break;
+  case 21:
+        // Teeverfeinerung
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateTeaOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
         print "</select>\n";
         break;
   case "flowerarea":
@@ -361,6 +372,9 @@ function GetBuildingTypeForBuildingID($buildingID) {
   case 20:
 	return "FuelStation";
 	break;
+  case 21:
+	return "TeaFactory";
+	break;
   default:
 	return "unsupported";
   }
@@ -378,6 +392,7 @@ function CreateQueueList($gamepath, $farm, $position, $queueName, $buildingType)
 function CreateOptionForQueueList($queueItem, $buildingType) {
  global $productlist;
  global $oillist;
+ global $tealist;
  global $woollist;
  global $monsterlist;
  global $forestryproductlist;
@@ -399,6 +414,9 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "OilMill":
    $queueItemFriendlyName = $oillist[intval($queueItem)];
+   break;
+   case "TeaFactory":
+   $queueItemFriendlyName = $tealist[intval($queueItem)];
    break;
    case "KnittingMill":
    $queueItemFriendlyName = $woollist[intval($queueItem)];

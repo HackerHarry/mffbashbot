@@ -113,3 +113,4 @@ HB 13.03.2017 v1.63 fixed bug in wind mill handling, slots need to be named 1 an
 HB 14.03.2017 v1.64 support for farm 6 (make sure to adjust your config.ini!)
 HB 15.03.2017 v1.65 fixed auto-transport from farm 5, added auto-transport from farm 6
 HB 19.03.2017 v1.66 skip premium positions for non-premium users, minor cosmetics
+HB 23.03.2017 v1.67 support for tea house
