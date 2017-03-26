@@ -137,7 +137,7 @@ while (true); do
         echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
         SendAJAXFarmRequest "mode=watergarden&farm=${FARM}&position=${POSITION}"
        else
-        echo "Sorry, non-premium re-watering is not (yet) supported"
+        water_FieldNP $FARM $POSITION
        fi
       fi
      fi

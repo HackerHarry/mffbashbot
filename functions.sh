@@ -296,8 +296,8 @@ function start_FarmNP {
    # CID is some water interval ID .. screw it.
    SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
-   local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
-   local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+1))
    iCacheFlag=0
    iCache=0
@@ -321,8 +321,8 @@ function start_FarmNP {
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
-   local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
-   local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+2))
    iCacheFlag=0
    iCache=0
@@ -348,8 +348,8 @@ function start_FarmNP {
  if [ $iCache -eq 5 ]; then
   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
   SendAJAXFarmRequest "${sDataWater}"
-  local sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
-  local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+  sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
+  sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot+2))
   iCacheFlag=0
   iCache=0
@@ -359,6 +359,98 @@ function start_FarmNP {
   continue
  fi
 # you should not get here :)
+ done
+}
+
+ function water_FieldNP {
+ # this function only supports completely filled fields of the same crop
+ local iFarm=$1
+ local iPosition=$2
+ SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
+ local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $FARMDATAFILE)
+ local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $FARMDATAFILE)
+ local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+ local iPlot=1
+ local iCache=0
+ local iCacheFlag=0
+ while (true); do
+  if [ $iPlot -gt 120 ]; then
+   if [ $iCacheFlag -eq 1 ]; then
+    SendAJAXFarmRequest "${sDataWater}"
+    GetFarmData $FARMDATAFILE
+    return
+   fi
+  GetFarmData $FARMDATAFILE
+  return
+  fi
+ if ! ((iPlot % 12)); then
+  if [ $iProductDim_x -eq 2 ]; then
+   iPlot=$((iPlot+1))
+   continue
+  fi
+ fi
+ if [ $iPlot -ge 109 ]; then
+  if [ $iProductDim_y -eq 2 ]; then
+   if [ $iCacheFlag -eq 1 ]; then
+    SendAJAXFarmRequest "${sDataWater}"
+    GetFarmData $FARMDATAFILE
+    return
+   else
+    GetFarmData $FARMDATAFILE
+    return
+   fi
+  fi
+ fi
+ if [ $iProductDim_x -eq 1 ]; then
+  # product dimensions is 1 x 1
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
+  iCacheFlag=1
+  iCache=$((iCache+1))
+  if [ $iCache -eq 5 ]; then
+   SendAJAXFarmRequest "${sDataWater}"
+   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   iPlot=$((iPlot+1))
+   iCacheFlag=0
+   iCache=0
+   continue
+  else
+   iPlot=$((iPlot+1))
+   continue
+  fi
+ fi
+ # x dim is 2
+ if [ $iProductDim_y -eq 1 ]; then
+  # product dimensions is 1 x 2
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
+  iCacheFlag=1
+  iCache=$((iCache+1))
+  if [ $iCache -eq 5 ]; then
+   SendAJAXFarmRequest "${sDataWater}"
+   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+   iPlot=$((iPlot+2))
+   iCacheFlag=0
+   iCache=0
+   continue
+  else
+   iPlot=$((iPlot+2))
+   continue
+  fi
+ fi
+ # y dim is 2
+ sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
+ iCacheFlag=1
+ iCache=$((iCache+1))
+ if [ $iCache -eq 5 ]; then
+  SendAJAXFarmRequest "${sDataWater}"
+  sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
+  iPlot=$((iPlot+2))
+  iCacheFlag=0
+  iCache=0
+  continue
+ else
+  iPlot=$((iPlot+2))
+  continue
+ fi
  done
 }
 
