@@ -43,5 +43,7 @@ $strings['errorsavinggamedata'] = 'Speichern fehlgeschlagen. Bitte Protokolldate
 $strings['wrongqueue'] = 'Dies ist nicht die richtige Warteschlange für diese Aktion.';
 $strings['saved'] = 'Gespeichert';
 $strings['notavailable'] = 'Nicht verfügbar';
+$strings['nonsense'] = 'Diese Auswahl macht wenig Sinn...';
+$strings['missingamount'] = 'Die Anzahl fehlt!';
 // $strings[''] = '';
 ?>

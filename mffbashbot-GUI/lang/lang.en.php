@@ -43,5 +43,7 @@ $strings['errorsavinggamedata'] = 'Error saving gamedata. Please check the log f
 $strings['wrongqueue'] = 'This is not the correct queue for this item.';
 $strings['saved'] = 'Saved';
 $strings['notavailable'] = 'Not available';
+$strings['nonsense'] = 'This choice does not make much sense...';
+$strings['missingamount'] = 'The amount is missing!';
 // $strings[''] = '';
 ?>

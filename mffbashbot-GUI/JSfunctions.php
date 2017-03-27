@@ -24,8 +24,16 @@
 
 echo <<<EOT
 <script type="text/javascript">
-function insertOptionBefore(elSel, elSelDest, amountpos)
-{
+
+function sanityCheck(elSel, elSelDest, amountpos) {
+ if (elSel.options[elSel.selectedIndex].value == "sleep" && amountpos > 0) {
+  alert("{$strings['nonsense']}");
+  return false;
+ }
+ if (elSel.options[elSel.selectedIndex].value != "sleep" && amountpos < 1) {
+  alert("{$strings['missingamount']}");
+  return false;
+ }
  if (elSel.id == "itemposmonsterfruit") {
   if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
    alert("{$strings['wrongqueue']}");
@@ -40,64 +48,59 @@ function insertOptionBefore(elSel, elSelDest, amountpos)
    return false;
   }
  }
-  if (elSel.selectedIndex >= 0) {
-    var elOptNew = document.createElement('option');
-    if (amountpos > 0) {
-     elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
-     elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
-    } else {
-     elOptNew.text = elSel.options[elSel.selectedIndex].text;
-     elOptNew.value = elSel.options[elSel.selectedIndex].value;
-    }
-    var elOptOld = elSelDest.options[elSelDest.selectedIndex];  
-    try {
-      elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
-    }
-    catch(ex) {
-      elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
-    }
+ return true;
+}
+
+function insertOptionBefore(elSel, elSelDest, amountpos)
+{
+ if (!sanityCheck(elSel, elSelDest, amountpos))
+  return false;
+ if (elSel.selectedIndex >= 0) {
+  var elOptNew = document.createElement('option');
+  if (amountpos > 0) {
+   elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
+   elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
+  } else {
+   elOptNew.text = elSel.options[elSel.selectedIndex].text;
+   elOptNew.value = elSel.options[elSel.selectedIndex].value;
   }
+  var elOptOld = elSelDest.options[elSelDest.selectedIndex];
+  try {
+   elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+  }
+  catch(ex) {
+   elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
+  }
+ }
 }
 
 function appendOptionLast(elSel, elSelDest, amountpos)
 {
- if (elSel.id == "itemposmonsterfruit") {
-  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
-   alert("{$strings['wrongqueue']}");
-   return false;
-  }
-  if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
-   alert("{$strings['wrongqueue']}");
-   return false;
-  }
-  if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
-   alert("{$strings['wrongqueue']}");
-   return false;
-  }
+ if (!sanityCheck(elSel, elSelDest, amountpos))
+  return false;
+ var elOptNew = document.createElement('option');
+ if (amountpos > 0) {
+  elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
+  elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
+ } else {
+  elOptNew.text = elSel.options[elSel.selectedIndex].text;
+  elOptNew.value = elSel.options[elSel.selectedIndex].value;
  }
-  var elOptNew = document.createElement('option');
-  if (amountpos > 0) {
-     elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
-     elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
-    } else {
-     elOptNew.text = elSel.options[elSel.selectedIndex].text;
-     elOptNew.value = elSel.options[elSel.selectedIndex].value;
-    }
-  try {
-    elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
-  }
-  catch(ex) {
-    elSelDest.add(elOptNew); // IE only
-  }
+ try {
+  elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
+ }
+ catch(ex) {
+  elSelDest.add(elOptNew); // IE only
+ }
 }
 
 function removeOptionSelected(elSelDest)
 {
-  for (var i = elSelDest.length - 1; i>=0; i--) {
-    if (elSelDest.options[i].selected) {
-      elSelDest.remove(i);
-    }
+ for (var i = elSelDest.length - 1; i>=0; i--) {
+  if (elSelDest.options[i].selected) {
+   elSelDest.remove(i);
   }
+ }
 }
 
 function updateBotStatus() {
