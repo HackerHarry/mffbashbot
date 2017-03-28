@@ -133,8 +133,8 @@ while (true); do
      fi
      if [ $SLOT -eq 0 ]; then
       if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+       echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
        if [ $PREMIUM -eq 1 ]; then
-        echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
         SendAJAXFarmRequest "mode=watergarden&farm=${FARM}&position=${POSITION}"
        else
         water_FieldNP $FARM $POSITION
