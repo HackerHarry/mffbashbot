@@ -1,6 +1,7 @@
 #!/bin/bash
 # Install script for Harrys My Free Farm Bash Bot on GNU/Linux
-# Tested on Debian Jessie, Stretch and Ubuntu 16.04.1 LTS
+# Tested on Debian Jessie, Stretch, Ubuntu 16.04.1 LTS
+# and Bash on Windows 10 x64 Version 1703 Build 15063.0
 
 if [ -f /etc/debian_version ]; then
  DVER=$(cat /etc/debian_version)
@@ -56,7 +57,7 @@ sudo /etc/init.d/lighttpd restart
 echo "Setting up GUI files..."
 cd ~/mffbashbot
 sudo mv mffbashbot-GUI /var/www/html/mffbashbot
-sudo chmod +x /var/www/html/mffbashbot/script/wakeupthebot.sh /var/www/html/mffbashbot/script/logonandgetfarmdata.sh
+sudo chmod +x /var/www/html/mffbashbot/script/*.sh
 sudo sed -i 's/\/pi\//\/'$USER'\//' /var/www/html/mffbashbot/gamepath.php
 echo $HTTPUSER' ALL=(ALL) NOPASSWD: /bin/kill' | sudo tee /etc/sudoers.d/www-data-kill-cmd > /dev/null
 

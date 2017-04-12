@@ -5,7 +5,8 @@ Installation
 ------------
 
 A) Debian-based distributions
-B) Windows (further down)
+B) Windows (using Cygwin)
+C) Bash on Windows 10
 
 A)
 You need at least basic Linux knowledge at this point.
@@ -48,7 +49,8 @@ Congrats: The bot is now installed.
 Find info on how to start the bot in the MANUAL file.
 
 You can access the bots GUI where you've installed your web server.
-Just use http://IP-or-Hostname/mffbashbot
+Just use http://IP-or-Hostname/mffbashbot or, if it runs locally,
+http://localhost/mffbashbot
 
 If you want to operate more than one farm, you can use an existing farm as a
 template. The new farm's name in the example is 'inge05' :
@@ -57,7 +59,7 @@ harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ cp -a dummy/ inge05
 --------------------------------------------------------------------------------
 B)
-Tested with Windows 7 SP1 x64
+Tested on Windows 7 SP1 x64
 
 We'll be working with the x86 variant of Cygwin, since this should work with
 most Windows versions. If you must use Cygwin x64, you'll be on your own.
@@ -117,3 +119,17 @@ If you restart your computer, you'll have to restart the web servers process
 as well! 
 In "Cygwin Terminal" use "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
 to start the web server. The bot is (re)started as explained in the MANUAL.
+--------------------------------------------------------------------------------
+C)
+Tested on Windows 10 x64 Version 1703 Build 15063.0
+
+The Bash installation won't be covered here.
+There are several useful guides on the internet that'll help you install the
+Bash on Windows, like this one:
+www.windowscentral.com/how-install-bash-shell-command-line-windows-10
+
+Once the Bash is installed, start it and follow the instructions from A).
+
+Hint: The lighttpd server will not automatically start, if you have to restart
+the Bash shell. You might have to issue a 'sudo service start lighttpd' command in
+that case.

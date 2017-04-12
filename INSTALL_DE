@@ -5,7 +5,8 @@ Installation
 ------------
 
 A) Debian-basierte Distributionen
-B) Windows (weiter unten)
+B) Windows (mit Cygwin)
+C) Bash auf Windows 10
 
 A)
 Grundsätzliches Linux-Wissen wird an dieser Stelle vorausgesetzt.
@@ -48,7 +49,8 @@ Im Prinzip ist der Bot nun fertig installiert.
 Wie man den Bot startet, steht in der MANUAL_DE Datei.
 
 Die GUI zum steuern des Bots erreichst Du dort, wo Dein lighttpd Webserver
-läuft. Dort unter http://IP-oder-Hostname/mffbashbot
+läuft. Dort unter http://IP-oder-Hostname/mffbashbot oder wenn er auf Deinem
+lokalen Rechner läuft http://localhost/mffbashbot
 
 Wenn Du mehr als eine Farm betreiben möchtest, kannst Du das selbstverständlich
 tun. Dazu kopierst Du einfach eine vorhandene Farm als Vorlage für die neue
@@ -117,3 +119,17 @@ Wenn Du Deinen Rechner neu startest, wirst Du auch den Webserver und Deinen
 Bot neu starten müssen!
 Im "Cygwin Terminal" mit "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
 den Webserver, und den Bot wie in MANUAL_DE beschrieben neu starten.
+--------------------------------------------------------------------------------
+C)
+Getestet mit Windows 10 x64 Version 1703 Build 15063.0
+
+Die Installation der Bash wird hier nicht erklärt.
+Es gibt zahlreiche Anleitungen im Internet, welche die Installation
+anschaulich darstellen. Zum Beispiel diese:
+www.pcwelt.de/ratgeber/Windows-10-Linux-Bash-Powershell-10026342.html
+
+Sobald die Bash installiert ist, starte sie und fahre fort bei A).
+
+Hinweis: Der lighttpd server startet nicht automatisch zusammen mit der Bash.
+Du mußt also ggf. einen Befehl wie 'sudo service start lighttpd' absetzen, damit
+der Webserver gestartet wird.

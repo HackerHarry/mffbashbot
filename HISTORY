@@ -115,6 +115,7 @@ HB 15.03.2017 v1.65 fixed auto-transport from farm 5, added auto-transport from 
 HB 19.03.2017 v1.66 skip premium positions for non-premium users, minor cosmetics
 HB 23.03.2017 v1.67 support for tea house
 HB 24.03.2017 v1.68 code cosmetics: please adjust queue items for knitting mill, oil mills and tea house
-HB 26.03.2017 v1.69 support for re-watering of non-premium fields (only completely filled fields of the same crop)
-HB 27.03.2017 v1.70 force reasonable values into stable queues
+HB 26.03.2017 v1.69 support for re-watering of non-premium fields (only completely filled fields of the same crop size)
+HB 27.03.2017 v1.70 force reasonable values into stables' queues
 HB 30.03.2017 v1.71 authenticate via TLS. this REQUIRES access to valid issuer certificates!
+HB 12.04.2017 v1.72 added instructions for installing on bash on Windows 10
