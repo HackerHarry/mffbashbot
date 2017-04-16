@@ -24,13 +24,19 @@ if ($farm == "runbot") {
 }
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
-print "<small>" . $botver . " - " . $username . "</small>";
+print "<small>" . $botver . " - " . $username . " ";
+if (strlen($versionavailable) == 5)
+ if (strcmp($botver, $versionavailable) !== 0) {
+  print " -- <b>" . $strings['updateavailable'] . "</b>";
+  print "<button onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
+ }
+print "</small>";
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
 print $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
 system("cat " . $gamepath . "/lastrun.txt");
-print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline\"><b>\n";
+print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
 include 'getbotstatus.php';
-print "</b></div><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
+print "</div><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
 for ($i = 1; $i < 7; $i++)
@@ -87,7 +93,8 @@ print "<option value=\"10\" id=\"vehicle10\">" . $strings['hotairballoon'] . "</
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
-print "<option value=\"0\" id=\"carefood0\">Sleep</option>\n";
+// dirty coding so getElementById() can find id "o0"
+print "<option value=\"0\" id=\"o0\">Sleep</option>\n";
 CreateOptionsWithID(600, 601, 602, 603, 604, 605, 606, 607, 608, 609);
 print "</select>&nbsp;" . $strings['satisfyfoodneed'];
 print "</td></tr>";

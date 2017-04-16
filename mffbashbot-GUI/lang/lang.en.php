@@ -45,5 +45,9 @@ $strings['saved'] = 'Saved';
 $strings['notavailable'] = 'Not available';
 $strings['nonsense'] = 'This choice does not make much sense...';
 $strings['missingamount'] = 'The amount is missing!';
+$strings['updateavailable'] = 'Update available: ';
+$strings['updateto'] = 'Update to';
+$strings['confirmupdate'] = 'The bot will be instructed to perform an update on it\'s next iteration.\nYou will have to check the results yourself.\nDo you wish to continue?';
+$strings['botisupdating'] = 'updating';
 // $strings[''] = '';
 ?>

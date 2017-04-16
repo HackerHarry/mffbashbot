@@ -19,11 +19,11 @@ Pakete wie sudo, sed, wget, (p)grep und so weiter sollten schon installiert
 sein. Und wie der Name schon vermuten lässt, muss auch die bash an Bord sein. ;)
 
 Starte ein Terminal und setze folgende Befehle (ohne Anführungszeichen) ab:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-linux.sh"
+"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
 Nun das Skript als "ausführbar" markieren:
-"chmod +x install-linux.sh"
+"chmod +x install.sh"
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
-"./install-linux.sh" und ENTER.
+"./install.sh" und ENTER.
 
 Nun kann der dummy ordner bereits umbenannt werden. Der neue Name hängt vom
 Spielernamen bei My Free Farm ab. Wenn Du Dich als Benutzer 'hanswurst' bei MFF
@@ -91,11 +91,11 @@ Knopf eine grössere Schriftart. Für mich war das Courier New / bold / 18.
 Tipp: Im Cygwin Fenster kann man komfortabel copy and paste über die rechte
 Mausstaste erledigen.
 Noch immer in dem neuen, "fremden" Fenster gibst nu folgendes ein:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-win.sh"
+"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
 Nun das Skript als "ausführbar" markieren:
-"chmod +x install-win.sh"
+"chmod +x install-cygwin.sh"
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
-"./install-win.sh" und ENTER naklar.
+"./install-cygwin.sh" und ENTER naklar.
 Am Ende könnte eure Firewall über den lighttpd prozess meckern; falls Dir eine
 Ausnahme angeboten wird, musst Du diese naklar annehmen.
 

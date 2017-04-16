@@ -17,6 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 include_once 'lang.php';
+$versionavailable=file_get_contents("/tmp/mffbot-version-available.txt");
 $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
 if ($JSONfarmdata === false)
  header("Location: index.php");

@@ -55,6 +55,20 @@ umask 002
 echo $BASHPID > "$PIDFILE"
 
 while (true); do
+ if [ -f ../updateInProgress ]; then
+  echo "Bot update in progress detected. Restarting bot in 3 mins..."
+  sleep 3m
+  cd ..
+  exec /bin/bash mffbashbot.sh $MFFUSER
+ fi
+ if [ -f ../updateTrigger ]; then
+  echo "Update trigger detected. Starting bot update..."
+  /bin/bash ../update.sh
+  echo "Restarting bot..."
+  sleep 3
+  cd ..
+  exec /bin/bash mffbashbot.sh $MFFUSER
+ fi
  if [ "$VERSION" != "$(cat ../version.txt)" ]; then
   echo "Version change detected, restarting bot..."
   sleep 3

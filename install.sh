@@ -26,13 +26,14 @@ echo "Downloading Harrys MFF Bash Bot..."
 wget --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
-unzip master.zip
+unzip -q master.zip
 mv mffbashbot-master mffbashbot
+chmod 775 mffbashbot
 cd ~/mffbashbot
 echo "Setting permissions..."
 find . -type d -exec chmod 775 {} +
 find . -type f -exec chmod 664 {} +
-chmod +x mffbashbot.sh
+chmod +x *.sh
 
 echo "Configuring lighttpd..."
 HTTPUSER=$(grep server.username /etc/lighttpd/lighttpd.conf | sed -e 's/.*= \"\(.*\)\"/\1/')
@@ -72,5 +73,6 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
         delaycompress
         compress
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
+echo "Done!"
 echo "Don't forget configuring your bot. Keep in mind jq v1.5 or higher is needed!"
 echo "Nicht vergessen, den Bot zu konfigurieren und dass mind. jq v1.5 benoetigt wird!"

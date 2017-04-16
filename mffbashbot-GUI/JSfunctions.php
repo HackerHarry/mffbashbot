@@ -275,6 +275,19 @@ function showHideOptions() {
   return false
   }
 }
+
+function confirmUpdate() {
+ var cu = confirm("{$strings['confirmupdate']}");
+ if (cu == true) {
+  xhttp = new XMLHttpRequest();
+  xhttp.open("GET", "triggerUpdate.php", false);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send();
+  return false;
+ }
+ else
+  return false;
+}
 </script>
 
 EOT;

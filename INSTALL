@@ -19,11 +19,11 @@ Packets like sudo, sed, wget, (p)grep etc. should be already on your box.
 And as the product name suggests, you'll also need the bash ;)
 
 Start a terminal and enter (without the double quotes)
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-linux.sh"
+"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
 Change it to "executable":
-"chmod +x install-linux.sh"
+"chmod +x install.sh"
 This script does most of the work for you. Just enter:
-"./install-linux.sh" and hit ENTER.
+"./install.sh" and hit ENTER.
 
 The newly created 'dummy' folder can be renamed now. The new name depends on
 how you log on to the My Free Farm website. If you log on as 'hanswurst', simply
@@ -89,11 +89,11 @@ By the way: Welcome to the Unix-World! :-)
 Tip: You can copy n paste stuff to the Cygwin window using the right mouse
 button.
 Still in that new and "strange" window, enter:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-win.sh"
+"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
 Change it to "executable":
-"chmod +x install-win.sh"
+"chmod +x install-cygwin.sh"
 This script does most of the work for you. Just enter:
-"./install-win.sh" and hit ENTER.
+"./install-cygwin.sh" and hit ENTER.
 If your firewall complains at the end, you'll want to approve an exception
 for the web servers process.
 

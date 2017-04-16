@@ -423,7 +423,6 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  print "<option value=\"" . $queueItem . "\">" . $queueItemFriendlyName . "</option>\n";
 }
 function saveConfig($filename, $queueData) {
-// umask(0002); // VERY BAD IDEA .. since this applies to ALL threads ;)
  $fh = fopen($filename, "w");
  // skip first entry, we're using live data building type
  if ($fh)

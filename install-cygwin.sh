@@ -4,7 +4,7 @@
 LCONF=/etc/lighttpd/lighttpd.conf
 LMODS=/etc/lighttpd/modules.conf
 LCGICONF=/etc/lighttpd/conf.d/cgi.conf
-BOTGUIROOT=/var/www/mffbashbot
+BOTGUIROOT=/var/www/html/mffbashbot
 
 cd
 echo "Downloading Harrys MFF Bash Bot..."
@@ -14,10 +14,10 @@ wget -nv --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archi
 echo "Unpacking the archive..."
 unzip -q master.zip
 mv mffbashbot-master mffbashbot
-chmod +x mffbashbot/mffbashbot.sh
+chmod +x mffbashbot/*.sh
 
 echo "Configuring lighttpd..."
-sed -i 's/var\.server_root = \"\/srv\/www\"/var\.server_root = \"\/var\/www\"/' $LCONF
+sed -i 's/var\.server_root = \"\/srv\/www\"/var\.server_root = \"\/var\/www\/html\"/' $LCONF
 sed -i 's/server_root + \"\/htdocs\"/server_root/' $LCONF
 sed -i 's/server\.username/#server\.username/' $LCONF
 sed -i 's/server\.groupname/#server\.groupname/' $LCONF
@@ -31,7 +31,7 @@ cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
 
 echo "Moving GUI files..."
-mkdir -p /var/www 2>/dev/null
+mkdir -p /var/www/html 2>/dev/null
 mv mffbashbot/mffbashbot-GUI $BOTGUIROOT
 chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeupthebot.sh
 
@@ -43,4 +43,5 @@ mkdir -p /var/log/lighttpd 2>/dev/null
 /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
 
 echo "Done!"
-echo "Do not forget adjusting your game data in config.ini!"
+echo "Don't forget configuring your bot. Keep in mind jq v1.5 or higher is needed!"
+echo "Nicht vergessen, den Bot zu konfigurieren und dass mind. jq v1.5 benoetigt wird!"

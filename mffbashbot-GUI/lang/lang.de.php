@@ -45,5 +45,9 @@ $strings['saved'] = 'Gespeichert';
 $strings['notavailable'] = 'Nicht verfügbar';
 $strings['nonsense'] = 'Diese Auswahl macht wenig Sinn...';
 $strings['missingamount'] = 'Die Anzahl fehlt!';
+$strings['updateavailable'] = 'Update verfügbar: ';
+$strings['updateto'] = 'Aktualisieren auf';
+$strings['confirmupdate'] = 'Der Bot wird angewiesen, sich beim nächsten Durchlauf zu aktualisieren.\nDas Ergebnis wirst Du selbst prüfen müssen.\nMöchtest Du fortfahren?';
+$strings['botisupdating'] = 'am aktualisieren';
 // $strings[''] = '';
 ?>

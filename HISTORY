@@ -119,3 +119,4 @@ HB 26.03.2017 v1.69 support for re-watering of non-premium fields (only complete
 HB 27.03.2017 v1.70 force reasonable values into stables' queues
 HB 30.03.2017 v1.71 authenticate via TLS. this REQUIRES access to valid issuer certificates!
 HB 12.04.2017 v1.72 added instructions for installing on bash on Windows 10
+HB 16.04.2017 v1.73 added update handler, fixed bug in recalling misc settings, cosmetic changes

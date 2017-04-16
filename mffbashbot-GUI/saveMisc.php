@@ -17,17 +17,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 $username = $_POST["username"];
-$dogtoggle = $_POST["dogtoggle"];
-$lottoggle = $_POST["lottoggle"];
-$vehiclemgmt5 = $_POST["vehiclemgmt5"];
-$vehiclemgmt6 = $_POST["vehiclemgmt6"];
-$carefood = $_POST["carefood"];
-$caretoy = $_POST["caretoy"];
-$careplushy = $_POST["careplushy"];
-$puzzlepartstoggle = $_POST["puzzlepartstoggle"];
-$farmiestoggle = $_POST["farmiestoggle"];
-$forestryfarmiestoggle = $_POST["forestryfarmiestoggle"];
-$munchiestoggle = $_POST["munchiestoggle"];
 
 include 'gamepath.php';
 include 'functions.php';
@@ -35,17 +24,17 @@ include 'farmdata.php';
 global $configContents;
 
 // langugage, password and server-no. must be set manually in config.ini
-$configContents['carefood'] = $carefood;
-$configContents['caretoy'] = $caretoy;
-$configContents['careplushy'] = $careplushy;
-$configContents['dodog'] = $dogtoggle;
-$configContents['dolot'] = $lottoggle;
-$configContents['vehiclemgmt5'] = $vehiclemgmt5;
-$configContents['vehiclemgmt6'] = $vehiclemgmt6;
-$configContents['dopuzzleparts'] = $puzzlepartstoggle;
-$configContents['sendfarmiesaway'] = $farmiestoggle;
-$configContents['sendforestryfarmiesaway'] = $forestryfarmiestoggle;
-$configContents['sendmunchiesaway'] = $munchiestoggle;
+$configContents['carefood'] = $_POST["carefood"];
+$configContents['caretoy'] = $_POST["caretoy"];
+$configContents['careplushy'] = $_POST["careplushy"];
+$configContents['dodog'] = $_POST["dogtoggle"];
+$configContents['dolot'] = $_POST["lottoggle"];
+$configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
+$configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
+$configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
+$configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
+$configContents['sendforestryfarmiesaway'] = $_POST["forestryfarmiestoggle"];
+$configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

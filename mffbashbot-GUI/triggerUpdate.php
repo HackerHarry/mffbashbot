@@ -1,7 +1,6 @@
 <?php
-// Get Bot status file for Harrys My Free Farm Bash Bot (front end)
+// Triggers an update for Harrys My Free Farm Bash Bot
 // Copyright 2016 Harun "Harry" Basalamah
-// Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,15 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-if (!isset($username))
- $username = $_POST["username"];
-include_once 'gamepath.php';
-include_once 'lang.php';
-if (file_exists($gamepath . "/../updateInProgress"))
- print "<font color=\"yellow\">" . $strings['botisupdating'] . "</font>";
-else
- if (file_exists($gamepath . "/isactive.txt"))
-  print "<font color=\"darkred\">" . $strings['botisactive'] . "</font>";
- else
-  print "<font color=\"lime\">" . $strings['botisidle'] . "</font>";
+$username = "./";
+include 'gamepath.php';
+$filename = $gamepath . "updateTrigger";
+touch($filename);
 ?>
