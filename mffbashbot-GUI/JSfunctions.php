@@ -279,14 +279,25 @@ function showHideOptions() {
 function confirmUpdate() {
  var cu = confirm("{$strings['confirmupdate']}");
  if (cu == true) {
+  var sData = "username=" + document.venueselect.username.value;
   xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "triggerUpdate.php", false);
+  xhttp.open("POST", "triggerUpdate.php", true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send();
+  xhttp.send(sData);
+  window.setTimeout(showCountdown, 250, 15);
   return false;
- }
+  }
  else
   return false;
+}
+
+function showCountdown(counter) {
+ if (counter <= 0)
+  window.location.href="/mffbashbot";
+ else {
+  document.getElementById("updatenotification").innerHTML = "Countdown: " + counter + " ";
+  window.setTimeout(showCountdown, 1000, --counter);
+ }
 }
 </script>
 

@@ -74,9 +74,9 @@ Windows-Taste drücken, dann "cmd" eingeben, dann ENTER (Eingabetaste) drücken.
 Wenn setup-x86.exe nach C:\Users\Harry\Downloads heruntergeladen wurde,
 lautet der Befehl "cd c:\Users\Harry\Downloads".
 Jetzt folgendes eingeben, oder per kopieren-und-einfügen ins CMD Fenster einsetzen:
-"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base"
+"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base,procps-ng"
 mit ENTER bestätigen, die erweiterten Rechte abnicken, und dann dem Setup-Prozess zuschauen :)
-Hier werden ca. 44MB aus dem Internet geladen.
+Hier werden ca. 71MB aus dem Internet geladen.
 Irgendwann isser dann fertig und das Setup-Fenster schliesst sich automatisch.
 Das CMD Fenster kannst auch zumachen, wenn'd willst.
 Auf Deiner Arbeitsoberfläche (dem Desktop) findest Du nun eine neue Ikone namens
@@ -91,7 +91,7 @@ Knopf eine grössere Schriftart. Für mich war das Courier New / bold / 18.
 Tipp: Im Cygwin Fenster kann man komfortabel copy and paste über die rechte
 Mausstaste erledigen.
 Noch immer in dem neuen, "fremden" Fenster gibst nu folgendes ein:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
+"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
 Nun das Skript als "ausführbar" markieren:
 "chmod +x install-cygwin.sh"
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:

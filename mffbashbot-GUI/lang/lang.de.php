@@ -47,7 +47,7 @@ $strings['nonsense'] = 'Diese Auswahl macht wenig Sinn...';
 $strings['missingamount'] = 'Die Anzahl fehlt!';
 $strings['updateavailable'] = 'Update verfügbar: ';
 $strings['updateto'] = 'Aktualisieren auf';
-$strings['confirmupdate'] = 'Der Bot wird angewiesen, sich beim nächsten Durchlauf zu aktualisieren.\nDas Ergebnis wirst Du selbst prüfen müssen.\nMöchtest Du fortfahren?';
+$strings['confirmupdate'] = 'Diese Aktion löst ein Update aus, welches gewöhnlich nur wenige Sekunden dauert.\nStelle sicher, dass der Bot nicht arbeitet wenn Du OK klickst.\n15 Sekunden nach Klick auf OK wirst Du zur Anmeldung geleitet.\n\nMöchtest Du fortfahren?';
 $strings['botisupdating'] = 'am aktualisieren';
 // $strings[''] = '';
 ?>

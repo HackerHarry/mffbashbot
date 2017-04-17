@@ -83,7 +83,7 @@ Was man für die Ställe wissen sollte, ist, dass immer mit angegeben werden mus
 wieviel man an die Tiere verfüttern will. Ställe haben ZWEI Eingabefelder.
 
 "BOT START" erzwingt eine vorzeitige Beendigung der unter PAUSETIME definierten
-Pause zwischen zwei Bot-Durchläufen. (Funktioniert in der Cygwin Version nicht!)
+Pause zwischen zwei Bot-Durchläufen.
 
 
 Arbeitsweise des Bots
@@ -141,3 +141,6 @@ Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
 also nicht abhandeln.
 
 Ein Farmname muss für den Bot eindeutig sein; auch über Servergrenzen hinweg.
+
+Die Update-Funktion schaut _nur_ bei Anmeldung an die GUI nach einer neuen
+Version. Es schadet also nicht, sich hin und wieder neu anzumelden.

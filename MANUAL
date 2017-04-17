@@ -78,7 +78,7 @@ Please note, that you need to fill in TWO text boxes with the stables.
 The bot needs to know how many grain, corn, ... need to be fed.
 
 "BOT START" forces the bot to end its pause (defined as PAUSETIME in the bot
-script) and to start an iteration. This doesn't work with the Cygwin version!
+script) and to start an iteration.
 
 
 How the bot works
@@ -133,3 +133,6 @@ The top left one. That's why you can not have the bot plant different trees
 in one go.
 
 The farm name has to be unique. This means server independently unique.
+
+The update handler only looks for a new version upon login from the GUI.
+A re-login every now and then can be helpful.

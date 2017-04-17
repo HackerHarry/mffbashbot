@@ -72,9 +72,9 @@ Press the Windows key, enter "cmd" then press ENTER.
 If you saved setup-x86.exe in C:\Users\Harry\Downloads, your command would be
 "cd c:\Users\Harry\Downloads".
 Now copy and paste the following command into your CMD Window:
-"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base"
+"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base,procps-ng"
 hit ENTER, confirm the elevated rights, and watch the progress bar :)
-Download size will be around 44MB.
+Download size will be around 71MB.
 After setup completes, the setup window should close automagically.
 Close the CMD window, if you wish.
 On your deskop you'll find an icon labelled "Cygwin Terminal" - double click it,
@@ -89,7 +89,7 @@ By the way: Welcome to the Unix-World! :-)
 Tip: You can copy n paste stuff to the Cygwin window using the right mouse
 button.
 Still in that new and "strange" window, enter:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
+"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
 Change it to "executable":
 "chmod +x install-cygwin.sh"
 This script does most of the work for you. Just enter:

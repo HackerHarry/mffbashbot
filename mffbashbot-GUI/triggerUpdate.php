@@ -19,4 +19,9 @@ $username = "./";
 include 'gamepath.php';
 $filename = $gamepath . "updateTrigger";
 touch($filename);
+// force bot iteration
+unset ($username);
+$username = $_POST["username"];
+$gamepath .= $username;
+exec("script/wakeupthebot.sh " . $gamepath);
 ?>

@@ -53,5 +53,7 @@ $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
 
 echo "Done!"
 cd
+# delete updateTrigger in case someone pressed the update button in the meantime
+rm -f mffbashbot/updateTrigger 2>/dev/null
 rm -f mffbashbot/updateInProgress master.zip
 rm -rf mffbashbot-master

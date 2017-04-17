@@ -24,13 +24,13 @@ if ($farm == "runbot") {
 }
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
-print "<small>" . $botver . " - " . $username . " ";
+print "<small>" . $botver . " - " . $username . "</small>";
 if (strlen($versionavailable) == 5)
  if (strcmp($botver, $versionavailable) !== 0) {
-  print " -- <b>" . $strings['updateavailable'] . "</b>";
-  print "<button onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
+  print " -- ";
+  print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
+  print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button></div>";
  }
-print "</small>";
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
 print $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
 system("cat " . $gamepath . "/lastrun.txt");

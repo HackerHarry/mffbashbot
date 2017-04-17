@@ -19,9 +19,11 @@
 
 # variable 1 is mandatory
 : ${1:?No game path provided}
-
+if ! uname -a | grep -qi "cygwin"; then
+ SUDO=sudo
+fi
 GAMEPATH=$1
 PIDFILE=bashpid.txt
 PID2KILL=$(cat $GAMEPATH/$PIDFILE)
-sudo /bin/kill $(pgrep -P $PID2KILL sleep)
+$SUDO /bin/kill $(pgrep -P $PID2KILL sleep)
 sleep 2s
