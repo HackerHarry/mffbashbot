@@ -90,7 +90,8 @@ This bot will do something for you, after the player's started something.
 The topmost element in a queue will be the next one to be served to that
 position.
 
-If the topmost element is "Sleep", the bot will leave that position alone.
+If the topmost element is "Sleep", the bot will leave that position alone. It
+won't be harvested in that case either.
 
 A single element in the queue gets repeated indefinitely.
 

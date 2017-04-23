@@ -62,7 +62,7 @@ while (true); do
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
  if [ -f ../updateTrigger ]; then
-  echo "Update trigger detected. Starting bot update..."
+  echo "Update trigger detected."
   /bin/bash ../update.sh
   echo "Restarting bot..."
   sleep 3

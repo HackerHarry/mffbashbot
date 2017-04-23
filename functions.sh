@@ -501,10 +501,6 @@ function start_ForestryBuilding {
  SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iPID}&slot=${iSlot}"
 }
 
-function start_ForestryBuildingNP {
- start_ForestryBuilding $1 $2 $3
-}
-
 function harvest_FoodWorldBuilding {
  local iPosition=$2
  local iSlot=$3
@@ -518,10 +514,6 @@ function start_FoodWorldBuilding {
  # this building needs one parameter
  iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
  SendAJAXFoodworldRequest "action=production&id=${iPID}&table=${iPosition}&chair=${iSlot}"
-}
-
-function start_FoodWorldBuildingNP {
- start_FoodWorldBuilding $1 $2 $3
 }
 
 function DoFarmersMarket {
@@ -822,6 +814,10 @@ function start_FuelStation {
  # force 3 second delay, cuz upjers server can't handle too quick a re-start
  sleep 3
  SendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iPID}"
+}
+
+function start_FuelStationNP {
+ start_FuelStation
 }
 
 function harvest_WindMill {

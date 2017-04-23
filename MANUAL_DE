@@ -96,7 +96,7 @@ Das Element, welches an oberster Stelle in der Warteschlange steht wird als
 nächstes bearbeitet.
 
 Trifft der Bot in einer Warteschlange auf ein "Sleep", wird die Position nicht
-weiter bearbeitet.
+weiter bearbeitet. In diesem Fall wird auch nicht geerntet.
 
 Eine Warteschlange, die aus nur einem Element besteht, wiederholt sich ständig.
 
