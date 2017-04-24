@@ -817,7 +817,7 @@ function start_FuelStation {
 }
 
 function start_FuelStationNP {
- start_FuelStation
+ start_FuelStation $1 $2 $3
 }
 
 function harvest_WindMill {
