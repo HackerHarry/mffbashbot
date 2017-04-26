@@ -501,6 +501,10 @@ function start_ForestryBuilding {
  SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iPID}&slot=${iSlot}"
 }
 
+function start_ForestryBuildingNP {
+ start_ForestryBuilding $1 $2 $3
+}
+
 function harvest_FoodWorldBuilding {
  local iPosition=$2
  local iSlot=$3
@@ -514,6 +518,10 @@ function start_FoodWorldBuilding {
  # this building needs one parameter
  iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
  SendAJAXFoodworldRequest "action=production&id=${iPID}&table=${iPosition}&chair=${iSlot}"
+}
+
+function start_FoodWorldBuildingNP {
+ start_FoodWorldBuilding $1 $2 $3
 }
 
 function DoFarmersMarket {
@@ -849,7 +857,7 @@ function check_VehiclePosition {
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
   else
    echo "on farm $iCurrentVehiclePos"
-   # check if sending a full vehicle is possible
+   # check if sending a fully loaded vehicle is possible
    check_VehicleFullLoad $iVehicle $iFarm $iRoute
   fi
  else

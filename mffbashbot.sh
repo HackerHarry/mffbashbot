@@ -125,16 +125,17 @@ while (true); do
   echo "Checking for pending tasks on farm ${FARM}..."
   for POSITION in 1 2 3 4 5 6; do
    BUILDINGID=$($JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].buildingid|tonumber' $FARMDATAFILE 2>/dev/null)
-   if [ "$BUILDINGID" = "19" ]; then
-    DoFarm ${FARM} ${POSITION} 0
-    continue
-   fi
    # skip premium fields for non-premium users
    if [ "$NONPREMIUM" = "NP" ]; then
     if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].premium?' $FARMDATAFILE | grep -q '1' ; then
      echo "Skipping farm ${FARM}, position ${POSITION}"
      continue
     fi
+   fi
+   if [ "$BUILDINGID" = "19" ]; then
+    # 19 is a mega field
+    DoFarm ${FARM} ${POSITION} 0
+    continue
    fi
    for SLOT in 0 1 2; do
      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then

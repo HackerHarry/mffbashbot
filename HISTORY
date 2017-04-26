@@ -122,3 +122,4 @@ HB 12.04.2017 v1.72 added instructions for installing on bash on Windows 10
 HB 16.04.2017 v1.73 added update handler, fixed bug in recalling misc settings, cosmetic changes
 HB 17.04.2017 v1.74 'BOT START' support for cygwin, more friendly update process
 HB 23.04.2017 v1.75 fixed non-premium fuel station handling, removed useless functions
+HB 26.04.2017 v1.76 those functions weren't that useless afterall
