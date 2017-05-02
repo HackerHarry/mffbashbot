@@ -24,8 +24,8 @@ Wenn man auf seiner Farm baulich etwas verändert, ist eine Neuanmeldung (Knopf
 Bei Positionen die mehrere Slots haben, werden keine Slots bedient, die durch
 Coins angemietet sind. Ausnahmen bilden das Wettmampfen und die Windmühle.
 
-Wenn ein Slot in der GUI fehlt, muss der Spieler selbst Hand anlegen und 
-den fehlenden Slot in Form einer Datei im Dateisystems erzeugen!
+Fehlende oder überzählige Warteschlangen werden auf den Farmen automatisch
+erkannt und passend erzeugt bzw. gelöscht.
 
 Der Bot ist nur schwer "aus der Ruhe" zu bringen. Damit ist gemeint, dass wenn
 es ein Problem bei der Abarbeitung von Vorgängen gibt, der Bot nicht gleich

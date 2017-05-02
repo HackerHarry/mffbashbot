@@ -31,6 +31,7 @@ CFGFILE=config.ini
 PIDFILE=bashpid.txt
 JQBIN=/usr/bin/jq
 MFFUSER=$1
+TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
 MFFPASS=$(grep password $CFGFILE | tr -d "'")
 MFFSERVER=$(grep server $CFGFILE)
@@ -131,6 +132,31 @@ while (true); do
      echo "Skipping farm ${FARM}, position ${POSITION}"
      continue
     fi
+   fi
+   # add/remove queues
+   QFS=$(get_QueueCountInFS $FARM $POSITION)
+   MAXQ=$(get_MaxQueuesForBuildingID $BUILDINGID)
+   if [ "$QFS" -gt "$MAXQ" ]; then
+    echo "Reducing position $POSITION to $MAXQ Queue(s)..."
+    reduce_QueuesOnPosition $FARM $POSITION $MAXQ
+   fi
+   # queues are capped to the max. possible value
+   # from here we'll handle multi-q buildings
+   case "$BUILDINGID" in
+    13|14|16|21) QGAME=$(get_QueueCountFromInnerInfo $FARM $POSITION)
+        ;;
+    20) QGAME=$(get_QueueCount20 $FARM $POSITION)
+        ;;
+     *) QGAME=1
+        ;;
+   esac
+   if [ "$QFS" -lt "$QGAME" ]; then
+    echo "Adding $((QGAME-QFS)) Queue(s) to position $POSITION..."
+    add_QueuesToPosition $FARM $POSITION $QFS $QGAME
+   fi
+   if [ "$QFS" -gt "$QGAME" ]; then
+    echo "Reducing position $POSITION to $QGAME Queue(s)..."
+    reduce_QueuesOnPosition $FARM $POSITION $QGAME
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field

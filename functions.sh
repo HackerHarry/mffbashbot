@@ -62,6 +62,13 @@ function GetWindMillData {
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
+function GetInnerInfoData {
+ local sFile=$1
+ local iFarm=$2
+ local iPosition=$3
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=innerinfos&farm=${iFarm}&position=${iPosition}"
+}
+
 function DoFarm {
  # read function from queue file
  local iFarm=$1
@@ -1338,6 +1345,79 @@ function get_FieldPlotReadiness {
  else
   return 1
  fi
+}
+
+function get_QueueCountInFS {
+ local iFarm=$1
+ local iPosition=$2
+ local iQueueNum
+ iQueueNum=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
+ echo $iQueueNum
+}
+
+function get_MaxQueuesForBuildingID {
+ local iBuildingID=$1
+ case "$iBuildingID" in
+  13|14|16|20|21) echo 3
+   ;;
+  *) echo 1
+   ;;
+ esac
+}
+
+function reduce_QueuesOnPosition {
+ local iFarm=$1
+ local iPosition=$2
+ local iMaxQ=$3
+ local iQueueNum=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
+ local iQDel=$((iQueueNum-iMaxQ))
+ rm $(ls -d1 ${iFarm}/${iPosition}/* | tail -${iQDel})
+}
+
+function get_QueueCountFromInnerInfo {
+ local iFarm=$1
+ local iPosition=$2
+ local iCount
+ local iSlots=1
+ local iBlocked
+ GetInnerInfoData $TMPFILE $iFarm $iPosition
+ # these buildings always have at least one slot. we'll check slots 2 and 3...
+ for iCount in 2 3; do
+  iBlocked=$($JQBIN '.datablock[1]["slots"]["'${iCount}'"].block?' $TMPFILE 2>/dev/null)
+  if [ $iBlocked -eq 0 ]; then
+   iSlots=$((iSlots+1))
+  fi
+ done
+ echo $iSlots
+}
+
+function get_QueueCount20 {
+ local iFarm=$1
+ local iPosition=$2
+ local iCount
+ local iSlots=1
+ local sBlocked
+ # building ID 20 can have 4 slots, we only handle 3
+ for iCount in 2 3; do
+  sBlocked=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
+  if [ "$sBlocked" = "null" ]; then
+   iSlots=$((iSlots+1))
+  fi
+ done
+ echo $iSlots
+}
+
+function add_QueuesToPosition {
+ local iFarm=$1
+ local iPosition=$2
+ local iQueuesInFS=$3
+ local iQueuesInGame=$4
+ local iQueuesToAdd=$((iQueuesInGame-iQueuesInFS))
+ # we'll assume queue '0' already exists
+ if [ $iQueuesToAdd -eq 2 ]; then
+  echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/2
+ fi
+ echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/1
 }
 
 function SendAJAXFarmRequest {

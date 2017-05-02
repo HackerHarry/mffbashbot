@@ -21,9 +21,8 @@ logon" button. Otherwise the change can't be reflected with the GUI.
 If a station has multiple slots, only those will be served that aren't rented
 using coins. Exceptions are the speed eating and the wind mill.
 
-If you are missing a slot at a certain position, you'll have to modify the
-files within the file system yourself! The file structure should be
-self-explanatory.
+Missing or superfluous queues on normal farms will be detected and added or
+deleted accordingly.
 
 My Bot hardly loses its cool. Meaning that if a station can't operate normally,
 the bot won't stop entirely. Typically, only the faulty position stops but
