@@ -19,7 +19,7 @@ Packets like sudo, sed, wget, (p)grep etc. should be already on your box.
 And as the product name suggests, you'll also need the bash ;)
 
 Start a terminal and enter (without the double quotes)
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
+"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
 Change it to "executable":
 "chmod +x install.sh"
 This script does most of the work for you. Just enter:

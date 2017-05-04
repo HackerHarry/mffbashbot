@@ -19,7 +19,7 @@ Pakete wie sudo, sed, wget, (p)grep und so weiter sollten schon installiert
 sein. Und wie der Name schon vermuten lässt, muss auch die bash an Bord sein. ;)
 
 Starte ein Terminal und setze folgende Befehle (ohne Anführungszeichen) ab:
-"wget --no-check-certificate https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
+"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install.sh"
 Nun das Skript als "ausführbar" markieren:
 "chmod +x install.sh"
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
