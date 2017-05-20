@@ -35,6 +35,7 @@ $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
 $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
 $configContents['sendforestryfarmiesaway'] = $_POST["forestryfarmiestoggle"];
 $configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
+$configContents['sendflowerfarmiesaway'] = $_POST["flowerfarmiestoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

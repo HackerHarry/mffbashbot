@@ -125,3 +125,4 @@ HB 23.04.2017 v1.75 fixed non-premium fuel station handling, removed useless fun
 HB 26.04.2017 v1.76 those functions weren't that useless afterall
 HB 01.05.2017 v1.77 add/remove queues on farms 1-6 automatically
 HB 04.05.2017 v1.78 minor changes
+HB 20.05.2017 v1.79 answer all flower farmies 'No' on demand, link to this file on github if update is available

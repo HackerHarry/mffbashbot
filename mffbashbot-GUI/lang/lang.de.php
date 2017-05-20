@@ -49,5 +49,7 @@ $strings['updateavailable'] = 'Update verfügbar: ';
 $strings['updateto'] = 'Aktualisieren auf';
 $strings['confirmupdate'] = 'Diese Aktion löst ein Update aus, welches gewöhnlich nur wenige Sekunden dauert.\nStelle sicher, dass der Bot nicht arbeitet wenn Du OK klickst.\n15 Sekunden nach Klick auf OK wirst Du zur Anmeldung geleitet.\n\nMöchtest Du fortfahren?';
 $strings['botisupdating'] = 'am aktualisieren';
+$strings['saynotoflowerfarmies'] = 'Alle Blumenfarmis mit "Nein" beantworten';
+$strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Versionshistorie (Nur in Englisch)</a>';
 // $strings[''] = '';
 ?>

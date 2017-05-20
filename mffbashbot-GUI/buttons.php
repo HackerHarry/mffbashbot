@@ -28,7 +28,8 @@ print "<small>" . $botver . " - " . $username . "</small>";
 if (version_compare($botver, $versionavailable) == -1) {
  print " -- ";
  print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
- print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button></div>";
+ print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
+ print "<small> -- " . $strings['historyishere'] . "</small></div>";
 }
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
 print $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
@@ -65,6 +66,9 @@ print "<input type=\"checkbox\" id=\"forestryfarmiestoggle\" name=\"forestryfarm
 print "</td></tr>";
 print "<tr><td>";
 print "<input type=\"checkbox\" id=\"munchiestoggle\" name=\"munchiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotomunchies'];
+print "</td></tr>";
+print "<tr><td>";
+print "<input type=\"checkbox\" id=\"flowerfarmiestoggle\" name=\"flowerfarmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotoflowerfarmies'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
@@ -145,5 +149,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['sendmunchiesaway'];
 if ($savedValue == '1')
  print "document.getElementById('munchiestoggle').checked = true;\n";
+$savedValue = $configContents['sendflowerfarmiesaway'];
+if ($savedValue == '1')
+ print "document.getElementById('flowerfarmiestoggle').checked = true;\n";
 print "</script>\n";
 ?>

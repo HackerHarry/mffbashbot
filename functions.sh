@@ -979,10 +979,7 @@ function check_RunningMegaFieldJob {
  local iJobEnd=$($JQBIN '.updateblock.megafield.job_endtime|tonumber' $FARMDATAFILE)
  local iJobStart=$($JQBIN '.updateblock.megafield.job_start|tonumber' $FARMDATAFILE)
  if [ $iJobStart -gt 0 ] && [ $iJobEnd -eq 0 ]; then
-  # check for job start
-#  if [[ $($JQBIN '.updateblock.megafield.job_start' $FARMDATAFILE | wc -c) -gt 4 ]]; then
-   return 0
-#  fi
+  return 0
  fi
  return 1
 }
@@ -1011,14 +1008,14 @@ function get_BusyMegaFieldPlotNum {
 }
 
 function get_UnlockedMegaFieldPlotNum {
- local iUnlockedPlots=($($JQBIN '.updateblock.megafield.area_free|length' $FARMDATAFILE))
+ local iUnlockedPlots=$($JQBIN '.updateblock.megafield.area_free|length' $FARMDATAFILE)
  # we always have a positive number here
  echo $iUnlockedPlots
 }
 
 function get_BusyMegaFieldPlotName {
  local iPlotIndex=$1
- local sPlotName=($($JQBIN '.updateblock.megafield.area|keys|.['$iPlotIndex']' $FARMDATAFILE))
+ local sPlotName=$($JQBIN '.updateblock.megafield.area|keys|.['$iPlotIndex']' $FARMDATAFILE)
  echo $sPlotName
 }
 

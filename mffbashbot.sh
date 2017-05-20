@@ -317,6 +317,19 @@ while (true); do
   fi
  fi
 
+ if grep -q "sendflowerfarmiesaway = 1" $CFGFILE; then
+  echo "Checking for waiting flower farmies..."
+  NUMFARMIES=$($JQBIN '.updateblock.farmersmarket.farmis|length' $FARMDATAFILE)
+  if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
+   NUMFARMIES=$((NUMFARMIES-1))
+   for FARMIE in $(seq 0 $NUMFARMIES); do
+    ID=$($JQBIN '.updateblock.farmersmarket.farmis['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+    echo "Sending flower farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+    SendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
+   done
+  fi
+ fi
+
  # daily actions
  if ! grep dodog $CFGFILE | grep -q 0; then
   echo -n "Checking for daily dog bonus..."
