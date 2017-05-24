@@ -51,5 +51,6 @@ $strings['confirmupdate'] = 'Diese Aktion löst ein Update aus, welches gewöhnl
 $strings['botisupdating'] = 'am aktualisieren';
 $strings['saynotoflowerfarmies'] = 'Alle Blumenfarmis mit "Nein" beantworten';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Versionshistorie (Nur in Englisch)</a>';
+$strings['correctqueuenumber'] = 'Anzahl Warteschlangen einmalig korrigieren';
 // $strings[''] = '';
 ?>

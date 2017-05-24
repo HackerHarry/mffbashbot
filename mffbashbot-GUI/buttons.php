@@ -71,6 +71,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"flowerfarmiestoggle\" name=\"flowerfarmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotoflowerfarmies'];
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"correctqueuenumtoggle\" name=\"correctqueuenumtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['correctqueuenumber'];
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"lot1\">" . $strings['lot'] . "</option>\n";
@@ -152,5 +155,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['sendflowerfarmiesaway'];
 if ($savedValue == '1')
  print "document.getElementById('flowerfarmiestoggle').checked = true;\n";
+$savedValue = $configContents['correctqueuenum'];
+if ($savedValue == '1')
+ print "document.getElementById('correctqueuenumtoggle').checked = true;\n";
 print "</script>\n";
 ?>

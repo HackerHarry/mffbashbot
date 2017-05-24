@@ -36,6 +36,7 @@ $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
 $configContents['sendforestryfarmiesaway'] = $_POST["forestryfarmiestoggle"];
 $configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
 $configContents['sendflowerfarmiesaway'] = $_POST["flowerfarmiestoggle"];
+$configContents['correctqueuenum'] = $_POST["correctqueuenumtoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

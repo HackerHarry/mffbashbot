@@ -51,5 +51,6 @@ $strings['confirmupdate'] = 'This will trigger an update, which should only take
 $strings['botisupdating'] = 'updating';
 $strings['saynotoflowerfarmies'] = 'Answer "No" to all Flower Farmies';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Version history</a>';
+$strings['correctqueuenumber'] = 'Correct queue numbers once';
 // $strings[''] = '';
 ?>

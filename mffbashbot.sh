@@ -133,30 +133,32 @@ while (true); do
      continue
     fi
    fi
-   # add/remove queues
-   QFS=$(get_QueueCountInFS $FARM $POSITION)
-   MAXQ=$(get_MaxQueuesForBuildingID $BUILDINGID)
-   if [ "$QFS" -gt "$MAXQ" ]; then
-    echo "Reducing position $POSITION to $MAXQ Queue(s)..."
-    reduce_QueuesOnPosition $FARM $POSITION $MAXQ
-   fi
-   # queues are capped to the max. possible value
-   # from here we'll handle multi-q buildings
-   case "$BUILDINGID" in
-    13|14|16|21) QGAME=$(get_QueueCountFromInnerInfo $FARM $POSITION)
-        ;;
-    20) QGAME=$(get_QueueCount20 $FARM $POSITION)
-        ;;
-     *) QGAME=1
-        ;;
-   esac
-   if [ "$QFS" -lt "$QGAME" ]; then
-    echo "Adding $((QGAME-QFS)) Queue(s) to position $POSITION..."
-    add_QueuesToPosition $FARM $POSITION $QFS $QGAME
-   fi
-   if [ "$QFS" -gt "$QGAME" ]; then
-    echo "Reducing position $POSITION to $QGAME Queue(s)..."
-    reduce_QueuesOnPosition $FARM $POSITION $QGAME
+   # add/remove queues on demand
+   if grep -q "correctqueuenum = 1" $CFGFILE; then
+    QFS=$(get_QueueCountInFS $FARM $POSITION)
+    MAXQ=$(get_MaxQueuesForBuildingID $BUILDINGID)
+    if [ "$QFS" -gt "$MAXQ" ]; then
+     echo "Reducing position $POSITION to $MAXQ Queue(s)..."
+     reduce_QueuesOnPosition $FARM $POSITION $MAXQ
+    fi
+    # queues are capped to the max. possible value
+    # from here we'll handle multi-q buildings
+    case "$BUILDINGID" in
+     13|14|16|21) QGAME=$(get_QueueCountFromInnerInfo $FARM $POSITION)
+         ;;
+     20) QGAME=$(get_QueueCount20 $FARM $POSITION)
+         ;;
+      *) QGAME=1
+         ;;
+    esac
+    if [ "$QFS" -lt "$QGAME" ]; then
+     echo "Adding $((QGAME-QFS)) Queue(s) to position $POSITION..."
+     add_QueuesToPosition $FARM $POSITION $QFS $QGAME
+    fi
+    if [ "$QFS" -gt "$QGAME" ]; then
+     echo "Reducing position $POSITION to $QGAME Queue(s)..."
+     reduce_QueuesOnPosition $FARM $POSITION $QGAME
+    fi
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field
@@ -185,6 +187,8 @@ while (true); do
    done
   done
  done
+ # reset queue correction flag if set
+ sed -i 's/correctqueuenum = 1/correctqueuenum = 0/' $CFGFILE
 
  # work farmers market
  echo "Checking for pending tasks on farmers market..."
