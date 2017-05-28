@@ -51,6 +51,11 @@ function CreateWindMillOptions() {
  foreach (func_get_args() as $i)
         print "<option value=\"" . $i . "\">" . $windmillproductlist[$i]  . "</option>\n";
 }
+function CreatePonyFarmOptions() {
+ global $ponyfarmproductlist;
+ foreach (func_get_args() as $i)
+        print "<option value=\"" . $i . "\">" . $ponyfarmproductlist[$i]  . "</option>\n";
+}
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  print "<select id=\"itempos" . $position . "\" name=\"itempos" . $position . "\">\n";
  switch ($BuildingID) {
@@ -157,6 +162,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(122, 123, 124, 125);
         print "</select>\n";
+        break;
+  case 18:
+        // Ponyhof
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreatePonyFarmOptions(2, 4, 8);
+        print "/select>\n";
         break;
   case 19:
         // Fahrzeughalle
@@ -347,6 +358,9 @@ function GetBuildingTypeForBuildingID($buildingID) {
   case 16:
 	return "KnittingMill";
 	break;
+  case 18:
+	return "PonyFarm";
+	break;
   case 19:
 	return "MegaField";
 	break;
@@ -377,6 +391,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  global $foodworldproductlist;
  global $megafieldvehicleslist;
  global $windmillproductlist;
+ global $ponyfarmproductlist;
  if ($queueItem == "sleep\n")
   $queueItemFriendlyName = "Sleep";
  else {
@@ -413,6 +428,9 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "WindMill":
    $queueItemFriendlyName = $windmillproductlist[intval($queueItem)];
+   break;
+   case "PonyFarm":
+   $queueItemFriendlyName = $ponyfarmproductlist[intval($queueItem)];
    break;
    default:
    $queueItemFriendlyName = "Sleep";

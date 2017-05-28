@@ -127,3 +127,4 @@ HB 01.05.2017 v1.77 add/remove queues on farms 1-6 automatically
 HB 04.05.2017 v1.78 minor changes
 HB 20.05.2017 v1.79 answer all flower farmies 'No' on demand, link to this file on github if update is available
 HB 24.05.2017 v1.80 made queue number correction an option for it was producing unpredictable errors
+HB 28.05.2017 v1.81 support for pony farm

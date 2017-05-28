@@ -22,7 +22,8 @@ Wenn man auf seiner Farm baulich etwas verändert, ist eine Neuanmeldung (Knopf
 'Anmeldung') in der GUI ERFORDERLICH. Die Änderung wird sonst nicht abgebildet.
 
 Bei Positionen die mehrere Slots haben, werden keine Slots bedient, die durch
-Coins angemietet sind. Ausnahmen bilden das Wettmampfen und die Windmühle.
+Coins angemietet sind. Ausnahmen bilden das Wettmampfen, die Windmühle und der
+Ponyhof.
 
 Fehlende oder überzählige Warteschlangen werden auf den Farmen automatisch
 erkannt und passend erzeugt bzw. gelöscht.
@@ -104,15 +105,18 @@ Eine Warteschlange, die aus zwei oder mehr Elementen besteht, wiederholt sich
 ebenfalls; wobei das oberste Element nach Abarbeitung ganz nach unten in die
 Warteschlange verschoben wird. Verbleibende Elemente rücken eins nach oben.
 
-Der Ponyhof wird vom Bot überhaupt nicht bedient.
-Es ist nicht geplant, dass sich das in absehbarer Zeit ändert.
+Der Ponyhof wird von nur einer Warteschlange bedient. Nach einem Ausritt wird
+versucht, den Futterspender komplett zu füllen. Pony-Kraftriegel können über die
+Optionen zugeschaltet werden. Hierbei wird immer die maximale Anzahl an Kraft-
+riegeln eingeworfen.
 
 Die automatische Transportfunktion (Transport zw. d. Farmen eins und fünf/sechs)
-lässt immer so viel Saatgut auf Farm 5, wie zum Anbau auf _verfügbaren_
-Äckern notwendig wäre. Dieses Verhalten lässt sich ohne Eingriff in den Code
-nicht ändern.
+lässt immer so viel Saatgut zurück, wie zum Anbau auf verfügbaren Äckern
+notwendig wäre. Dieses Verhalten lässt sich ohne Eingriff in den Code nicht
+ändern.
 
 Ausgestellte Gestecke auf dem Bauernmarkt, werden automatisch gegossen.
+Ausgenommen sind Gestecke, die kein Wasser (mehr) benötigen.
 
 Der Bot bedient den Teilnehmer eines (laufenden) "Wettmampfens" automatisch.
 Belohnungen werden automatisch eingesammelt. Auch die Kassenauswertung erfolgt

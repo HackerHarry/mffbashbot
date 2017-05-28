@@ -52,5 +52,6 @@ $strings['botisupdating'] = 'updating';
 $strings['saynotoflowerfarmies'] = 'Answer "No" to all Flower Farmies';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Version history</a>';
 $strings['correctqueuenumber'] = 'Correct queue numbers once';
+$strings['useponyenergybar'] = 'Use pony energy bars on pony farm hacks';
 // $strings[''] = '';
 ?>

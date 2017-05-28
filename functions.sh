@@ -848,6 +848,94 @@ function start_WindMill {
  SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
+function harvest_PonyFarm {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot
+ local sBlocked
+ GetInnerInfoData $TMPFILE $iFarm $iPosition
+ # we don't know which slots are ready... and we don't care
+ for iSlot in 1 2 3; do
+  sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
+  if [ "$sBlocked" = "null" ]; then
+   SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
+  fi
+ done
+}
+
+function start_PonyFarmNP {
+ start_PonyFarm $1 $2
+}
+
+function start_PonyFarm {
+ local iFarm=$1
+ local iPosition=$2
+ local iMaxFood=8
+ local iDuration
+ local iSlot
+ local iFarmie
+ local iPony
+ local iFood
+ local iEnergyBarCount
+ for iSlot in 1 2 3; do
+  GetInnerInfoData $TMPFILE $iFarm $iPosition
+  sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
+  if [ "$sBlocked" = "null" ]; then
+   iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
+   if [ "$iFarmie" = "null" ]; then
+    # slot is unblocked and idle...
+    iPony=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].animalid|tonumber' $TMPFILE)
+    # refill food dispenser
+    iFood=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.feed' $TMPFILE)
+    iFood=$((iMaxFood-iFood))
+    SendAJAXFarmRequest "mode=pony_feed&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iFood}"
+    # find a farmie
+    if [ $iSlot -ge 2 ]; then
+     update_queue ${iFarm} ${iPosition} 0
+    fi
+    local iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
+    iFarmie=$(get_Farmie4Pony $iDuration)
+    if [ "$iFarmie" = "-1" ]; then
+     # something went wrong. bail out.
+     return
+    fi
+    SendAJAXFarmRequest "mode=pony_setfarmi&farm=${iFarm}&position=${iPosition}&farmi=${iFarmie}&pony=${iPony}"
+    # check for pony energy bar...
+    if grep -q "useponyenergybar = 1" $CFGFILE; then
+     iEnergyBarCount=$((iDuration/2))
+     SendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
+    fi
+   fi
+  fi
+ done
+}
+
+function get_Farmie4Pony {
+ local iDuration=$1
+ local iFarmiesCount
+ local iFarmie
+ local iCount
+ local iStatus
+ local iType
+ iFarmiesCount=$($JQBIN '.datablock[1].farmis|length' $TMPFILE)
+ for iCount in $(seq 0 $((iFarmiesCount-1))); do
+  iFarmie=$($JQBIN '.datablock[1].farmis|keys['${iCount}']|tonumber' $TMPFILE)
+  iStatus=$($JQBIN '.datablock[1].farmis["'${iFarmie}'"].status|tonumber' $TMPFILE)
+  if [ $iStatus -eq 0 ]; then
+   # farmie is not in use
+   iType=$($JQBIN '.datablock[1].farmis["'${iFarmie}'"].type|tonumber' $TMPFILE)
+   if [ $iType -eq $iDuration ]; then
+    # this is "the one"
+    echo $iFarmie
+    return
+   fi
+  fi
+ done
+ # ideally, you don't get here
+ echo "-1"
+ return
+}
+
 function check_VehiclePosition {
  local iFarm=$1
  local iRoute=$2
