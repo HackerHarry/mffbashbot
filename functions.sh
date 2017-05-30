@@ -893,7 +893,7 @@ function start_PonyFarm {
     if [ $iSlot -ge 2 ]; then
      update_queue ${iFarm} ${iPosition} 0
     fi
-    local iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
+    iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
     iFarmie=$(get_Farmie4Pony $iDuration)
     if [ "$iFarmie" = "-1" ]; then
      # something went wrong. bail out.

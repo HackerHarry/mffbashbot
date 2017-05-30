@@ -21,8 +21,8 @@ logon" button. Otherwise the change can't be reflected with the GUI.
 If a station has multiple slots, only those will be served that aren't rented
 using coins. Exceptions are the speed eating, the wind mill and the pony farm.
 
-Missing or superfluous queues on normal farms will be detected and added or
-deleted accordingly.
+Missing or superfluous queues on normal farms can be added or deleted by using
+the 'Correct queue numbers once' option.
 
 My Bot hardly loses its cool. Meaning that if a station can't operate normally,
 the bot won't stop entirely. Typically, only the faulty position stops but
