@@ -853,12 +853,17 @@ function harvest_PonyFarm {
  local iPosition=$2
  local iSlot
  local sBlocked
+ local iFarmie
  GetInnerInfoData $TMPFILE $iFarm $iPosition
- # we don't know which slots are ready... and we don't care
  for iSlot in 1 2 3; do
   sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
-  if [ "$sBlocked" = "null" ]; then
-   SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
+  if [ "$sBlocked" = "null" ] || [ "$sBlocked" = "0" ]; then
+   iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
+   if [ "$iFarmie" != "null" ]; then
+    if $JQBIN '.datablock[1].farmis["'$iFarmie'"].data.remain?' $TMPFILE | grep -q '-' ; then
+     SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
+    fi
+   fi
   fi
  done
 }
@@ -903,6 +908,7 @@ function start_PonyFarm {
     # check for pony energy bar...
     if grep -q "useponyenergybar = 1" $CFGFILE; then
      iEnergyBarCount=$((iDuration/2))
+     sleep 2
      SendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
     fi
    fi
