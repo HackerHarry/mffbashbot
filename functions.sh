@@ -370,7 +370,7 @@ function start_FarmNP {
 }
 
  function water_FieldNP {
- # this function only supports completely filled fields of the same crop
+ # this function only supports completely filled fields of the same crop size
  local iFarm=$1
  local iPosition=$2
  SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
@@ -1505,10 +1505,12 @@ function add_QueuesToPosition {
  local iQueuesInGame=$4
  local iQueuesToAdd=$((iQueuesInGame-iQueuesInFS))
  # we'll assume queue '0' already exists
- if [ $iQueuesToAdd -eq 2 ]; then
+ if [ $iQueuesToAdd -eq 2 ] || ([ $iQueuesInFS -eq 2 ] && [ $iQueuesToAdd -eq 1 ]); then
   echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/2
  fi
- echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/1
+ if [ $iQueuesInFS -eq 1 ]; then
+  echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/1
+ fi
 }
 
 function SendAJAXFarmRequest {
