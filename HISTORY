@@ -130,3 +130,4 @@ HB 24.05.2017 v1.80 made queue number correction an option for it was producing 
 HB 28.05.2017 v1.81 support for pony farm
 HB 01.06.2017 v1.82 update UA string, nicer pony farm harvesting
 HB 07.06.2017 v1.83 fixed bug in add_QueuesToPosition()
+HB 10.06.2017 v1.84 support for 2x2 devices on mega field. keep in mind to select a 1x1 after the 2x2 device!

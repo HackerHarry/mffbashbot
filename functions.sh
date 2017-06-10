@@ -249,6 +249,7 @@ function start_FarmNP {
  local iPosition=$2
  local iSlot=$3
  # fetch garden data overwriting $FARMDATAFILE
+ # TO DO: use $TMPFILE if possible
  SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
  local iProduct=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'"|tonumber')
@@ -716,21 +717,28 @@ function harvest_MegaField {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # check for running job
  if check_RunningMegaFieldJob ; then
   echo "Checking for pending tasks on Mega Field..."
+  # check for 2x2 harvest device
+  case "$iHarvestDevice" in
+   5|7|9|10) harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
+   update_queue ${iFarm} ${iPosition} ${iSlot}
+   iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+   ;;
+  esac
   iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+  case "$iHarvestDevice" in
+   5|7|9|10) echo "You need a 1x1 device after the 2x2 one. Cannot continue."
+   return
+   ;;
+  esac
   while check_RipePlotOnMegaField ; do
    # iPlot and sPlotName come from check_RipePlotOnMegaField
    check_MegaFieldEmptyHarvestDevice $iHarvestDevice
    # harvest mega field plot
    local iPlotnum=$(echo $sPlotName | tr -d '"')
-   # check for 2x2 harvest device
-#   case "$iHarvestDevice" in
-#    5|7|9|10) iPlotnum=$(get_MegaField2x2Set $iPlotnum)
-#    ;;
-#   esac
    echo -n "Harvesting Mega Field plot ${iPlotnum}..."
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlotnum},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
@@ -738,20 +746,6 @@ function harvest_MegaField {
   done
  fi
 }
-
-#function get_MegaField2x2Set {
-# local s2x2Set=$1
-# if [ $s2x2Set -gt 88 ]; then
-#  s2x2Set=$((s2x2Set-11))
-#  # prevent harvesting of last row
-# fi
-# if ! ((s2x2Set % 11)); then
-#  s2x2Set=$((s2x2Set-1))
-#  # prevent harvesting of last column
-# fi
-# s2x2Set="${s2x2Set},$((s2x2Set+1)),$((s2x2Set+11)),$((s2x2Set+12))"
-# echo $s2x2Set
-#}
 
 function start_MegaField {
  local iProductSlot
@@ -1236,6 +1230,50 @@ function MegaFieldPlant {
  local iAmount=$2
  echo "Planting item ${iPID} on ${iAmount} Mega Field plot(s)..."
  SendAJAXFarmRequestOverwrite "mode=megafield_autoplant&farm=1&position=1&id=${iPID}&pid=${iPID}"
+}
+
+function harvest_MegaField2x2 {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iHarvestDevice=$4
+ iPlot=1
+ iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ while (true); do
+  if [ $iPlot -gt 87 ]; then
+   GetFarmData $FARMDATAFILE
+   return
+  fi
+  check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  if ! ((iPlot % 11)); then
+   iPlot=$((iPlot+1))
+   # prevent harvesting of last column
+  fi
+  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+   if $JQBIN '.updateblock.megafield.area["'$((iPlot+1))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+    if $JQBIN '.updateblock.megafield.area["'$((iPlot+11))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+     if $JQBIN '.updateblock.megafield.area["'$((iPlot+12))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+      echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot+1)), $((iPlot+11)), $((iPlot+12))..."
+      SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
+      echo "delaying ${iHarvestDelay} seconds"
+      sleep ${iHarvestDelay}s
+      iPlot=$((iPlot+2))
+      continue
+     else
+      iPlot=$((iPlot+1))
+      continue
+     fi
+    else
+     iPlot=$((iPlot+1))
+     continue
+    fi
+   else
+    iPlot=$((iPlot+2))
+    continue
+   fi
+  fi
+ iPlot=$((iPlot+1))
+ done
 }
 
 function get_AnimalQueueLength {
