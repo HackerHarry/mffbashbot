@@ -125,10 +125,9 @@ chosen the proper profession, the field will produce for the guild without
 further intervention.
 
 Required goods at the vehicle hall (mega field) will be worked on in a
-left-to-right order. My bot can not use machines that occupy a 2x2 matrix.
-Also fertilising machines can not be automated by the bot.
+left-to-right order. Fertilising machines can not be automated by the bot.
 If your harvesting device uses up all its durability, the bot will try and buy
-a new one.
+a new one. Careful: This might cost Coins!
 
 The bot determines plucking-readiness of trees only by one single tree:
 The top left one. That's why you can not have the bot plant different trees

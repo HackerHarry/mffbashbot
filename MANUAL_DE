@@ -135,11 +135,9 @@ Der Acker bildet eine Ausnahme - Solange der Spieler einen passenden Beruf
 gewählt hat, wird vom Acker automatisch für den Klub-Auftrag produziert.
 
 Geforderte Waren auf dem Güterhof werden von links nach rechts abgearbeitet.
-Der Einsatz von Maschinen, die 2 x 2 Felder auf dem Güterhof ernten können,
-funktioniert nicht. Auch ein automatisierter Einsatz von Dünge-Maschinen ist
-nicht vorgesehen.
+Ein automatisierter Einsatz von Dünge-Maschinen ist nicht vorgesehen.
 Wenn das gewählte Erntegerät aufgebraucht ist, versucht der Bot ein neues
-Gerät der selben Art zu kaufen.
+Gerät der selben Art zu kaufen. Vorsicht: Das könnte Coins kosten!
 
 Ob die Bäume in der Bäumerei fertig sind, stellt der Bot an nur einem einzigen
 Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
