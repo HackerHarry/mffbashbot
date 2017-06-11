@@ -162,8 +162,14 @@ while (true); do
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field
-    DoFarm ${FARM} ${POSITION} 0
-    continue
+    if check_RunningMegaFieldJob ; then
+     echo "Checking for pending tasks on Mega Field..."
+     if check_RipePlotOnMegaField ; then
+      DoFarm ${FARM} ${POSITION} 0
+      GetFarmData $FARMDATAFILE
+      continue
+     fi
+    fi
    fi
    for SLOT in 0 1 2; do
      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then

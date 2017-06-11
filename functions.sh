@@ -718,33 +718,35 @@ function harvest_MegaField {
  local iPosition=$2
  local iSlot=$3
  local iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- # check for running job
- if check_RunningMegaFieldJob ; then
-  echo "Checking for pending tasks on Mega Field..."
-  # check for 2x2 harvest device
-  case "$iHarvestDevice" in
-   5|7|9|10) harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
-   update_queue ${iFarm} ${iPosition} ${iSlot}
-   iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
-   ;;
-  esac
-  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ local iPlot=1
+ # check for 2x2 harvest device
+ case "$iHarvestDevice" in
+  5|7|9|10) harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
+  update_queue ${iFarm} ${iPosition} ${iSlot}
+  iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
   case "$iHarvestDevice" in
    5|7|9|10) echo "You need a 1x1 device after the 2x2 one. Cannot continue."
    return
    ;;
   esac
-  while check_RipePlotOnMegaField ; do
-   # iPlot and sPlotName come from check_RipePlotOnMegaField
-   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
-   # harvest mega field plot
-   local iPlotnum=$(echo $sPlotName | tr -d '"')
-   echo -n "Harvesting Mega Field plot ${iPlotnum}..."
-   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlotnum},|&vid=${iHarvestDevice}"
+  ;;
+ esac
+ iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ while (true); do
+  if [ $iPlot -gt 99 ]; then
+   return
+  fi
+  check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+   echo -n "Harvesting Mega Field plot ${iPlot}..."
+   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
    sleep ${iHarvestDelay}s
-  done
- fi
+   iPlot=$((iPlot+1))
+   continue
+  fi
+  iPlot=$((iPlot+1))
+ done
 }
 
 function start_MegaField {
@@ -774,13 +776,11 @@ function start_MegaField {
   if [ $iFreePlots -lt $amountToGo ]; then
    # plant on all free plots
    MegaFieldPlant${NONPREMIUM} $iPID $iFreePlots
-   GetFarmData $FARMDATAFILE
-   # exit function
    return
   fi
   MegaFieldPlant${NONPREMIUM} $iPID $amountToGo
   # call function again since there are still free plots
-  GetFarmData $FARMDATAFILE
+  # GetFarmData $FARMDATAFILE ... still needed?
   if [ "$iSafetyCount" = "" ]; then
    start_MegaField 2
   else
@@ -788,7 +788,6 @@ function start_MegaField {
    start_MegaField $iSafetyCount
   fi
  done
- GetFarmData $FARMDATAFILE
 }
 
 function start_MegaFieldNP {
@@ -1074,25 +1073,17 @@ function check_RunningMegaFieldJob {
 
 function check_RipePlotOnMegaField {
  # returns true if a plot shows a negative remainder
- # propagates iPlot and sPlotName
- local iBusyPlots=$(get_MegaFieldBusyPlotsNum)
- # DON'T set this local
- iPlot=0
+ local iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
+ local iPlot=0
+ local sPlotName
  while [ "$iPlot" -lt "$iBusyPlots" ]; do
-  # or this
   sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
   if $JQBIN '.updateblock.megafield.area['${sPlotName}'].remain' $FARMDATAFILE | grep -q '-' ; then
    return 0
   fi
-  # or this
   iPlot=$((iPlot+1))
  done
  return 1
-}
-
-function get_BusyMegaFieldPlotNum {
- local iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
- echo $iBusyPlots
 }
 
 function get_UnlockedMegaFieldPlotNum {
@@ -1109,6 +1100,7 @@ function get_BusyMegaFieldPlotName {
 
 function get_MegaFieldHarvesterDelay {
  local iHarvestDevice=$1
+ # taken from here: .updateblock.megafield.vehicle_slots["nn"].duration
  case "$iHarvestDevice" in
    1) echo 55
       ;;
@@ -1170,7 +1162,7 @@ function get_MegaFieldAmountToGoInSlot {
   return
  fi
  # look at mega field, see if theres still busy plots with needed PID
- iBusyPlots=$(get_BusyMegaFieldPlotNum)
+ iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
  if [ $iBusyPlots -eq 0 ] ; then
   # no busy plots at all... return needed products
   echo $iSeeminglyNeeded
@@ -1193,11 +1185,6 @@ function get_MegaFieldFreePlotsNum {
  local iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
  local iFreePlots=$((iTotalPlots-iBusyPlots))
  echo $iFreePlots
-}
-
-function get_MegaFieldBusyPlotsNum {
- local iBusyPlots=$($JQBIN '.updateblock.megafield.area|length' $FARMDATAFILE)
- echo $iBusyPlots
 }
 
 function MegaFieldPlantNP {
@@ -1237,11 +1224,10 @@ function harvest_MegaField2x2 {
  local iPosition=$2
  local iSlot=$3
  local iHarvestDevice=$4
- iPlot=1
+ local iPlot=1
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
  while (true); do
   if [ $iPlot -gt 87 ]; then
-   GetFarmData $FARMDATAFILE
    return
   fi
   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
