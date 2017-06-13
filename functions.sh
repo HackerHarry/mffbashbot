@@ -737,7 +737,7 @@ function harvest_MegaField {
    return
   fi
   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
-  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
    echo -n "Harvesting Mega Field plot ${iPlot}..."
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
@@ -1235,10 +1235,10 @@ function harvest_MegaField2x2 {
    iPlot=$((iPlot+1))
    # prevent harvesting of last column
   fi
-  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE | grep -q '-' ; then
-   if $JQBIN '.updateblock.megafield.area["'$((iPlot+1))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
-    if $JQBIN '.updateblock.megafield.area["'$((iPlot+11))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
-     if $JQBIN '.updateblock.megafield.area["'$((iPlot+12))'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+   if $JQBIN '.updateblock.megafield.area["'$((iPlot+1))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+    if $JQBIN '.updateblock.megafield.area["'$((iPlot+11))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+     if $JQBIN '.updateblock.megafield.area["'$((iPlot+12))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
       echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot+1)), $((iPlot+11)), $((iPlot+12))..."
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"

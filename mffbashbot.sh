@@ -140,6 +140,7 @@ while (true); do
     if [ "$QFS" -gt "$MAXQ" ]; then
      echo "Reducing position $POSITION to $MAXQ Queue(s)..."
      reduce_QueuesOnPosition $FARM $POSITION $MAXQ
+     QFS=$(get_QueueCountInFS $FARM $POSITION)
     fi
     # queues are capped to the max. possible value
     # from here we'll handle multi-q buildings
