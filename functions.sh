@@ -734,7 +734,11 @@ function harvest_MegaField {
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
  while (true); do
   if [ $iPlot -gt 99 ]; then
-   return
+   if ! check_RipePlotOnMegaField ; then
+    return
+   fi
+   # there's more to harvest...
+   iPlot=1
   fi
   check_MegaFieldEmptyHarvestDevice $iHarvestDevice
   if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
