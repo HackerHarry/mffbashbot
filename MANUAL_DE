@@ -111,10 +111,23 @@ versucht, den Futterspender komplett zu füllen. Pony-Kraftriegel können über 
 Optionen zugeschaltet werden. Hierbei wird immer die maximale Anzahl an Kraft-
 riegeln eingeworfen.
 
-Die automatische Transportfunktion (Transport zw. d. Farmen eins und fünf/sechs)
+Die automatische Transportfunktion weg von den Farmen fünf/sechs,
 lässt immer so viel Saatgut zurück, wie zum Anbau auf verfügbaren Äckern
 notwendig wäre. Dieses Verhalten lässt sich ohne Eingriff in den Code nicht
 ändern.
+Der Auto-Transport weg von den Farmen fünf/sechs beschränkt sich auf die
+Dinge, die dort angebaut werden können.
+
+Der Auto-Transport ZU den Farmen fünf/sechs (zu finden in Teichlingen) findet
+unter folgenden Bedingungen statt:
+- Die Kapazität des gewählten Fahrzeuges ist exakt ausgenutzt
+oder
+- Alle Ladeplätze sind belegt
+oder
+- Nach Belegung mind. eines Ladeplatzes trifft der Bot auf ein "Sleep"
+ACHTUNG: Wenn das Fahrzeug überladen wird, bleibt es auf Farm eins stehen!
+Wenn in der Transport-Warteschlange nur ein "Sleep" steht, wir das Fahrzeug
+leer zurückgeschickt.
 
 Ausgestellte Gestecke auf dem Bauernmarkt, werden automatisch gegossen.
 Ausgenommen sind Gestecke, die kein Wasser (mehr) benötigen.

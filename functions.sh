@@ -951,19 +951,19 @@ function check_VehiclePosition {
  if ! $JQBIN -e '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
   iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current|tonumber' $FARMDATAFILE)
   if [ "$iCurrentVehiclePos" = "1" ]; then
-   echo "on farm 1, sending it to farm $iFarm"
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
+   echo "on farm 1"
+   check_SendGoodsOffMainFarm $iVehicle $iFarm $iRoute
   else
    echo "on farm $iCurrentVehiclePos"
    # check if sending a fully loaded vehicle is possible
-   check_VehicleFullLoad $iVehicle $iFarm $iRoute
+   check_SendGoodsToMainFarm $iVehicle $iFarm $iRoute
   fi
  else
   echo "en route"
  fi
 }
 
-function check_VehicleFullLoad {
+function check_SendGoodsToMainFarm {
  local iVehicle=$1
  local iFarm=$2
  local iRoute=$3
@@ -974,14 +974,20 @@ function check_VehicleFullLoad {
  local sCart=
  local iTransportCount=0
  local iVehicleSlotsUsed=0
+ local -a aItemsFarm5=( 351 352 353 354 355 356 357 358 359 360 361 )
+ local -a aItemsFarm6=( 700 701 702 703 704 705 706 707 708 709 )
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
  local iFieldsOnFarmNum=$(get_FieldsOnFarmNum $iFarm)
- # this will fail if more than one rack is in use on farms 5 or 6
+ # this will fail if more than one rack is in use on farm 5 or 6
  local iItemCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]|keys|length' $FARMDATAFILE)
  # You know, somehow, "I told you so" just doesn't quite say it. ;)
  for iCount in $(seq 1 $iItemCount); do
   iProduct=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["pid"]|tonumber' $FARMDATAFILE)
+  if ! check_ValueInArray aItemsFarm${iFarm} $iProduct; then
+   # only transport items that can be grown on farm 5 / 6
+   continue
+  fi
   iProductCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["amount"]|tonumber' $FARMDATAFILE)
   iSafetyCount=$(get_ProductCountFittingOnField $iProduct)
   # do we have multiple fields on the current farm?
@@ -1039,6 +1045,67 @@ function get_FieldsOnFarmNum {
  echo $iFieldsOnFarm
 }
 
+function check_ValueInArray {
+ local -n aProducts=$1
+ local iProduct=$2
+ local iValue
+ for iValue in "${aProducts[@]}"; do
+  if [ $iValue -eq $iProduct ]; then
+   return 0
+  fi
+ done
+ return 1
+}
+
+function check_SendGoodsOffMainFarm {
+ local iVehicle=$1
+ # this is the destination farm
+ local iFarm=$2
+ local iRoute=$3
+ local iProduct
+ local iProductCount
+ local sCart=
+ local iTransportCount=0
+ local iVehicleSlotsUsed=0
+ local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
+ local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
+ local iPosition=trans2${iFarm}
+ # ugly static coding... :)
+ while (true); do
+  if check_QueueSleep city2/${iPosition}/0; then
+   echo "Sending $iTransportCount items to farm ${iFarm}..."
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   return
+  fi
+  local aParams=$(sed '2q;d' city2/${iPosition}/0)
+  IFS=,
+  set -- $aParams
+  unset IFS
+  iProduct=$1
+  iProductCount=$2
+  iTransportCount=$((iTransportCount+iProductCount))
+  if [ $iTransportCount -gt $iVehicleCapacity ]; then
+   echo "Transport to farm ${iFarm} stopped due to vehicle overload."
+   return
+  fi
+  iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
+  sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
+  if [ $iTransportCount -eq $iVehicleCapacity ]; then
+   echo "Sending $iTransportCount items to farm ${iFarm}..."
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   update_queue city2 ${iPosition} 0
+   return
+  fi
+  if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
+   echo "Sending partially loaded vehicle to farm ${iFarm} (no slots left)..."
+   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   update_queue city2 ${iPosition} 0
+   return
+  fi
+  update_queue city2 ${iPosition} 0
+ done
+}
+
 function update_queue {
  local iFarm=$1
  local iPosition=$2
@@ -1063,7 +1130,7 @@ function check_QueueSleep {
  if [ "$sQueueItem" = "sleep" ]; then
   return 0
  fi
-  return 1
+ return 1
 }
 
 function check_RunningMegaFieldJob {

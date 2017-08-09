@@ -27,29 +27,29 @@ include_once 'farmdata.php';
 include_once 'header.php';
 include_once 'buttons.php';
 
-$position = [ "windmill" ];
+$position = [0 => ["windmill", $strings['mill']], 1 => ["trans25", $strings['trans25']], 2 => ["trans26", $strings['trans26']]];
 
-for ($pc = 0; $pc < 1; $pc++) {
- $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc]);
- print "<table id=\"t" . $position[$pc] . "\" class=\"queuetable\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . $strings['mill'] . "</th>";
+for ($pc = 0; $pc < 3; $pc++) {
+ $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][0]);
+ print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
- CreateSelectionsForBuildingID($position[$pc], $position[$pc]);
+ print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][0]);
  print "</form></td>";
  print "</tr><tr>";
  for ($i = 1; $i <= $iNumQueues; $i++) {
   print "<td align=\"center\">\n";
   print "<form action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
-  PlaceQueueButtons($position[$pc], $i);
+  PlaceQueueButtons($position[$pc][0], $i);
   print "</form></td>";
  }
  print "</tr><tr>";
 // queues
  print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
- print "<form name=\"queue" . $position[$pc] . "\" id=\"queue" . $position[$pc] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
-  PlaceQueues($gamepath, $farm, $position[$pc], $i);
+  PlaceQueues($gamepath, $farm, $position[$pc][0], $i);
  print "</form></td>";
  print "</tr></table>";
 }

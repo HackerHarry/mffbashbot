@@ -185,7 +185,7 @@ switch (sFarm) {
   if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
   if (sFarm == "city2")
-    var fmpos = ["windmill"];
+    var fmpos = ["windmill", "trans25", "trans26"];
 
 for (k = 0; k <= (fmpos.length - 1); k++) {
 // old (fmpos.length > 3 ? 3 : 2)

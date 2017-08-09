@@ -266,6 +266,14 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateWindMillOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35);
         print "</select>\n";
         break;
+  case "trans25":
+  case "trans26":
+        // Transport -> Farm 5 / 6
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(114, 126, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
+        print "</select>\n";
+        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
+        break;
   default:
         // nicht unterstuetzte auswahl
         print "<option value=\"sleep\">Sleep</option></select>\n";
@@ -305,6 +313,10 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "forestry":
 	$buildingType = "Tree";
+	break;
+  case "trans25":
+  case "trans26":
+	$buildingType = "AutoTrans";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -409,6 +421,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    $queueItemFriendlyName = $productlist[intval($queueItem)];
    break;
    case "Stable":
+   case "AutoTrans":
    // first the item, then the amount
    $queueItemParts = explode(",", $queueItem);
    $queueItemFriendlyName = $queueItemParts[1] . " " . $productlist[$queueItemParts[0]];

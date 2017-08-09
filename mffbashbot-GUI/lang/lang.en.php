@@ -30,8 +30,8 @@ $strings['atv'] = 'ATV';
 $strings['snowgroomer'] = 'Snow Groomer';
 $strings['helicopter'] = 'Helicopter';
 $strings['hotairballoon'] = 'Hot Air Balloon';
-$strings['autotransport5'] = 'Transport goods off farm 5';
-$strings['autotransport6'] = 'Transport goods off farm 6';
+$strings['autotransport5'] = 'Transport goods off/to farm 5';
+$strings['autotransport6'] = 'Transport goods off/to farm 6';
 $strings['satisfyfoodneed'] = 'Satisfy food need';
 $strings['satisfytoyneed'] = 'Satisfy toy need';
 $strings['satisfyplushyneed'] = 'Satisfy plushy need';
@@ -53,5 +53,7 @@ $strings['saynotoflowerfarmies'] = 'Answer "No" to all Flower Farmies';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Version history</a>';
 $strings['correctqueuenumber'] = 'Correct queue numbers once';
 $strings['useponyenergybar'] = 'Use pony energy bars on pony farm hacks';
+$strings['trans25'] = 'Transport to Farm 5';
+$strings['trans26'] = 'Transport to Farm 6';
 // $strings[''] = '';
 ?>
