@@ -89,4 +89,3 @@ echo
 echo "Fertig!"
 echo "Done!"
 sleep 5
-# BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA BETA

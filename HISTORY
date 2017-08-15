@@ -2,6 +2,7 @@ This file contains the history of
 Harrys My Free Farm Bash Bot
 
 who  when            what
+HB 15.08.2017 v1.89 automated cygwin- and bot installer for win32, wizard driven bot setup during installation
 HB 09.08.2017 v1.88 added auto-transport to farms 5/6, minor changes
 HB 01.07.2017 v1.87 small change in harvest_MegaField, fixed typos in HISTORY
 HB 13.06.2017 v1.86 bugfix in queue correction routine, cosmetic changes

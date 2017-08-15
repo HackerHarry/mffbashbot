@@ -25,32 +25,19 @@ Nun das Skript als "ausführbar" markieren:
 Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
 "./install.sh" und ENTER.
 
-Nun kann der dummy ordner bereits umbenannt werden. Der neue Name hängt vom
-Spielernamen bei My Free Farm ab. Wenn Du Dich als Benutzer 'hanswurst' bei MFF
-anmeldest, benennst Du den dummy Ordner in hanswurst um:
-harry@testbox:~$ cd ~/mffbashbot
-harry@testbox:~/mffbashbot$ mv dummy hanswurst
+Ein Assistent führt durch die Ersteinrichtung des Bots.
 
-Wenn wir schonmal dabei sind: Auch die Servernummer, das Passwort und die
-Sprache muss einmalig angepasst werden. Es ist darauf zu achten, dass die
+Solltest Du die config.ini von Hand anpassen ist darauf zu achten, dass die
 Leerschritte vor und nach dem Gleichheitszeichen erhalten bleiben. Das erste
 Zeichen des Passwortes darf kein Ausrufezeichen (!) sein! Auch das Hochkomma (')
-sollte _innerhalb_ des Passwortes vermieden werden.
-Wir passen also mit
-harry@testbox:~/mffbashbot$ nano hanswurst/config.ini
-die u.a. daten auf die eigene Farm an.
---- schnipp ---
-lang = 'de'
-server = 2
-password = 's3cRet!'
---- schnapp ---
+sollte innerhalb des Passwortes vermieden werden.
 
 Im Prinzip ist der Bot nun fertig installiert.
 Wie man den Bot startet, steht in der MANUAL_DE Datei.
 
 Die GUI zum steuern des Bots erreichst Du dort, wo Dein lighttpd Webserver
-läuft. Dort unter http://IP-oder-Hostname/mffbashbot oder wenn er auf Deinem
-lokalen Rechner läuft http://localhost/mffbashbot
+läuft. Dort unter http://IP-oder-Hostname/mffbashbot/ oder wenn er auf Deinem
+lokalen Rechner läuft http://localhost/mffbashbot/
 
 Wenn Du mehr als eine Farm betreiben möchtest, kannst Du das selbstverständlich
 tun. Dazu kopierst Du einfach eine vorhandene Farm als Vorlage für die neue
@@ -62,66 +49,27 @@ harry@testbox:~/mffbashbot$ cp -a dummy/ inge05
 B)
 Getestet unter Windows 7 SP1 x64
 
-Wir arbeiten hier mit der x86 Variante von Cygwin, da diese den Grossteil der
-Windows-Versionen abdeckt. Wer unbedingt 64bit installieren will, möge die
-notwendigen Anpassungen bitte selbst vornehmen.
+Lade das Setup-Programm herunter
+https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/mffbashbot-setup-win32/mffbashbot-setup.exe
+und starte es.
+Im Verlauf der Installation wird Cygwin heruntergeladen und installiert.
+Anschliessend wird der Bot innerhalb Cygwin installiert dann führt ein Assistent
+durch die Ersteinrichtung des Bots.
 
-Alle folgenden Befehle werden OHNE Anführungszeichen eingegeben.
-
-https://cygwin.com/setup-x86.exe herunterladen (und MERKEN wo's gespeichert ist)
-Windows-Taste drücken, dann "cmd" eingeben, dann ENTER (Eingabetaste) drücken.
-"cd <Ordner wohin setup-x86.exe heruntergeladen wurde>" eingeben, ENTER
-Wenn setup-x86.exe nach C:\Users\Harry\Downloads heruntergeladen wurde,
-lautet der Befehl "cd c:\Users\Harry\Downloads".
-Jetzt folgendes eingeben, oder per kopieren-und-einfügen ins CMD Fenster einsetzen:
-"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base,procps-ng"
-mit ENTER bestätigen, die erweiterten Rechte abnicken, und dann dem Setup-Prozess zuschauen :)
-Hier werden ca. 71MB aus dem Internet geladen.
-Irgendwann isser dann fertig und das Setup-Fenster schliesst sich automatisch.
-Das CMD Fenster kannst auch zumachen, wenn'd willst.
-Auf Deiner Arbeitsoberfläche (dem Desktop) findest Du nun eine neue Ikone namens
-"Cygwin Terminal" - da einen Doppelklick drauf machen, dann öffnet sich ein
-neues Fenster.
-
-Mir war der Text viel zu klein, also klickte ich auf das schwarz-grüne
-Eck-Symbol, dann auf "Options", dann "Text" und wählte dort über den "Select..."
-Knopf eine grössere Schriftart. Für mich war das Courier New / bold / 18.
-Übrigens: Willkommen in der Unix-Welt! :-)
-
-Tipp: Im Cygwin Fenster kann man komfortabel copy and paste über die rechte
-Mausstaste erledigen.
-Noch immer in dem neuen, "fremden" Fenster gibst nu folgendes ein:
-"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
-Nun das Skript als "ausführbar" markieren:
-"chmod +x install-cygwin.sh"
-Ab hier erledigt das heruntergeladene Skript einige Arbeit. Starte das Skript:
-"./install-cygwin.sh" und ENTER naklar.
-Am Ende könnte eure Firewall über den lighttpd prozess meckern; falls Dir eine
-Ausnahme angeboten wird, musst Du diese naklar annehmen.
-
-Jetzt müssen wir einen Ordner umbenennen. Unter *nix macht man
-das mit "mv". Der neue Name richtet sich nach Deinem ANMELDENAMEN
-bei My Free Farm. Wenn Du Dich mit "susi0815" anmeldest, lauten Deine Befehle
-"cd ~/mffbashbot", dann
-"mv dummy susi0815" und mit der Eingabetaste bestätigen.
-
-Zum Einstellen von Passwort, Servernummer, etc. siehe Linux-Installations-
-bereich.
-
-Wie der Bot gestartet wird, steht in der MANUAL_DE Datei.
-
+Über die passenden Ikonen im Startmenü oder auf dem Desktop kann der Bot
+gestartet und gesteuert werden.
 Deinen Bot kannst Du nun mit Deinem Browser (unterstützt wird meinerseits nur
-Firefox) konfigurieren. Die Adresse lautet http://localhost/mffbashbot
+Firefox) konfigurieren. Die Adresse lautet http://localhost/mffbashbot/
+
+Zum manuellen Einstellen von Passwort, Servernummer, etc. siehe Hinweise im
+Linux-Installationsbereich.
+
+Hinweise zum Starten des Bots stehen in der MANUAL_DE Datei.
 
 Wer mehrere Farmen betreiben will, findet in der MANUAL_DE Datei wertvolle Infos.
-
-Wenn Du Deinen Rechner neu startest, wirst Du auch den Webserver und Deinen
-Bot neu starten müssen!
-Im "Cygwin Terminal" mit "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
-den Webserver, und den Bot wie in MANUAL_DE beschrieben neu starten.
 --------------------------------------------------------------------------------
 C)
-Getestet mit Windows 10 x64 Version 1703 Build 15063.0
+Getestet unter Windows 10 x64 Version 1703 Build 15063.0
 
 Die Installation der Bash wird hier nicht erklärt.
 Es gibt zahlreiche Anleitungen im Internet, welche die Installation

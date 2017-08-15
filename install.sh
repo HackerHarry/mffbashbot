@@ -73,6 +73,51 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
         delaycompress
         compress
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
+
+echo "If you don't wish for automatic bot setup, press CTRL-C now"
+echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
+while (true); do
+ echo
+ echo "Please enter your farm name:"
+ read -p "Bitte gib Deinen Farmnamen ein: " FARMNAME
+ echo "Please enter your server number:"
+ read -p "Jetzt die Servernummer: " SERVER
+ echo "Please enter your password for farm $FARMNAME on server #${SERVER}:"
+ read -p "Und nun das Passwort der Farm $FARMNAME auf Server ${SERVER}: " PASSWORD
+ echo
+ echo "This script will now set up your farm using this information:"
+ echo "Dieses Skript wird Deine Farm mit diesen Informationen anlegen: "
+ echo "Farm name: $FARMNAME"
+ echo "Server: ${SERVER}"
+ echo "Password: $PASSWORD"
+ echo
+ echo "Is this info correct? (Y/N):"
+ read -p "Sind die Infos korrekt? (J/N):" CONFIRM
+ [[ "$CONFIRM" != "Y" ]] || break
+ [[ "$CONFIRM" != "y" ]] || break
+ [[ "$CONFIRM" != "J" ]] || break
+ [[ "$CONFIRM" != "j" ]] || break
+done
+
+CFGFILE=config.ini
+echo "Setting up farm..."
+cd
+mv mffbashbot/dummy mffbashbot/$FARMNAME
+sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
+sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
+echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
+echo "The preset language for this farm is GERMAN!"
+sleep 5
+echo
+echo "Creating bot start script..."
+echo '#!/bin/bash
+cd
+/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+cd mffbashbot
+./mffbashbot.sh '$FARMNAME >startallbots.sh
+chmod +x startallbots.sh
+
+echo
+echo "Fertig!"
 echo "Done!"
-echo "Don't forget configuring your bot. Keep in mind jq v1.5 or higher is needed!"
-echo "Nicht vergessen, den Bot zu konfigurieren und dass mind. jq v1.5 benoetigt wird!"
+sleep 5

@@ -25,32 +25,19 @@ Change it to "executable":
 This script does most of the work for you. Just enter:
 "./install.sh" and hit ENTER.
 
-The newly created 'dummy' folder can be renamed now. The new name depends on
-how you log on to the My Free Farm website. If you log on as 'hanswurst', simply
-rename the 'dummy' folder to 'hanswurst':
-harry@testbox:~$ cd ~/mffbashbot
-harry@testbox:~/mffbashbot$ mv dummy hanswurst
+A wizard will guide you through the initial bot setup.
 
-While we're at it: The server-no., password and language need to be set once
-per farm. Make sure to leave the white spaces in front and behind the equal
-sign. Make also sure you don't use the exclamation mark (!) for your first
-character of your password. Please also don't use the single quote (') _within_
-your password.
-Edit the config.ini:
-harry@testbox:~/mffbashbot$ nano hanswurst/config.ini
-to reflect your account settings.
---- snip ---
-lang = 'en'
-server = 2
-password = 's3cRet!'
---- snip ---
+If you need to make manual changes to the config.ini, make sure to leave the
+white spaces in front and behind the equal sign. Make also sure you don't use
+the exclamation mark (!) for your first character of your password. Please also
+don't use the single quote (') _within_ your password.
 
 Congrats: The bot is now installed.
 Find info on how to start the bot in the MANUAL file.
 
 You can access the bots GUI where you've installed your web server.
-Just use http://IP-or-Hostname/mffbashbot or, if it runs locally,
-http://localhost/mffbashbot
+Just use http://IP-or-Hostname/mffbashbot/ or, if it runs locally,
+http://localhost/mffbashbot/
 
 If you want to operate more than one farm, you can use an existing farm as a
 template. The new farm's name in the example is 'inge05' :
@@ -61,64 +48,25 @@ harry@testbox:~/mffbashbot$ cp -a dummy/ inge05
 B)
 Tested on Windows 7 SP1 x64
 
-We'll be working with the x86 variant of Cygwin, since this should work with
-most Windows versions. If you must use Cygwin x64, you'll be on your own.
+Donwload and start the setup program
+https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/mffbashbot-setup-win32/mffbashbot-setup.exe
 
-Enter all following commands WITHOUT double quotes.
+Cygwin will be downloaded and installed during setup.
+After that, the bot will be installed within Cygwin then a wizard will guide you
+through the initial bot setup.
 
-Download https://cygwin.com/setup-x86.exe and remember where you put it.
-Press the Windows key, enter "cmd" then press ENTER.
-"cd <to where you've downloaded setup-x86.exe to>", ENTER
-If you saved setup-x86.exe in C:\Users\Harry\Downloads, your command would be
-"cd c:\Users\Harry\Downloads".
-Now copy and paste the following command into your CMD Window:
-"setup-x86.exe -q -s http://linux.rz.ruhr-uni-bochum.de/cygwin/ -a x86 -l C:\cygtemp -R C:\cygwin -P nano,jq,php,php-jsonc,wget,lighttpd,unzip,screen,perl_base,procps-ng"
-hit ENTER, confirm the elevated rights, and watch the progress bar :)
-Download size will be around 71MB.
-After setup completes, the setup window should close automagically.
-Close the CMD window, if you wish.
-On your deskop you'll find an icon labelled "Cygwin Terminal" - double click it,
-and a new window opens.
+You can start or control the bot using the appropriate icons on your desktop
+or the start menu.
+Configure the bot using your web browser (I only support Mozilla Firefox).
+The address is http://localhost/mffbashbot/
 
-To me, the font was way too small. So i changed the font size by clicking the
-black and green symbol (top left corner), then "Options", then "Text", finally
-chose via the "Select..." button a larger font. In my case
-Courier New / bold / 18.
-By the way: Welcome to the Unix-World! :-)
-
-Tip: You can copy n paste stuff to the Cygwin window using the right mouse
-button.
-Still in that new and "strange" window, enter:
-"wget https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/install-cygwin.sh"
-Change it to "executable":
-"chmod +x install-cygwin.sh"
-This script does most of the work for you. Just enter:
-"./install-cygwin.sh" and hit ENTER.
-If your firewall complains at the end, you'll want to approve an exception
-for the web servers process.
-
-Now, we need to rename a folder. This can be done using the "mv" command.
-The new name depends on how you log on to the My Free Farm website.
-If you log on as 'susi0815', just enter
-"cd ~/mffbashbot", then
-"mv dummy susi0815" and finally ENTER.
-
-You also need to configure the password, server-no. and language. See the
-Linux-install section for details.
+For manual configuration of the password, server-no. and language, see the
+notes in the Linux-install section.
 
 The MANUAL file gives you an insight on how to start the bot.
 
-Configure your bot using your web browser (I only support Mozilla Firefox).
-The address is http://localhost/mffbashbot
-
 If you want to operate more than one farm, find some info on that in the
 MANUAL file.
-
-Important:
-If you restart your computer, you'll have to restart the web servers process
-as well! 
-In "Cygwin Terminal" use "/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf"
-to start the web server. The bot is (re)started as explained in the MANUAL.
 --------------------------------------------------------------------------------
 C)
 Tested on Windows 10 x64 Version 1703 Build 15063.0
