@@ -59,6 +59,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"puzzlepartstoggle\" name=\"puzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['puzzlepartpurchase'];
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"redeempuzzlepartstoggle\" name=\"redeempuzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['puzzlepartredeem'];
+print "</td></tr>";
+print "<tr><td>";
 print "<input type=\"checkbox\" id=\"farmiestoggle\" name=\"farmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotofarmies'];
 print "</td></tr>";
 print "<tr><td>";
@@ -164,5 +167,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['useponyenergybar'];
 if ($savedValue == '1')
  print "document.getElementById('ponyenergybartoggle').checked = true;\n";
+$savedValue = $configContents['redeempuzzlepacks'];
+if ($savedValue == '1')
+ print "document.getElementById('redeempuzzlepartstoggle').checked = true;\n";
 print "</script>\n";
 ?>

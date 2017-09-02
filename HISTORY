@@ -2,6 +2,7 @@ This file contains the history of
 Harrys My Free Farm Bash Bot
 
 who  when            what
+HB 02.09.2017 v1.90 option to redeem all puzzle part packs
 HB 15.08.2017 v1.89 automated cygwin- and bot installer for win32, wizard driven bot setup during installation
 HB 09.08.2017 v1.88 added auto-transport to farms 5/6, minor changes
 HB 01.07.2017 v1.87 small change in harvest_MegaField, fixed typos in HISTORY
@@ -82,8 +83,7 @@ HB 30.11.2015 v0.985a new function iFieldsOnFarmNum() and minor bug fixes
 HB 26.11.2015 v0.985 fully load vehicle on farm 5 and send it back to main farm. this WILL FAIL as soon as more farms show up in 'tempstock'
 HB 25.11.2015 v0.984a automatically send transport vehicle back to farm 5
 HB 21.11.2015 v0.984 increased slots handled on farms 1-5 to three
-HB 10.11.2015 v0.983 save function for wind mill
-              re-try interval (failed login) set from 2 to 5 mins, wind mill handling (no full GUI yet), optimised CreateOptionForQueueList()
+HB 10.11.2015 v0.983 save function for wind mill, re-try interval (failed login) set from 2 to 5 mins, wind mill handling (no full GUI yet), optimised CreateOptionForQueueList()
 HB 09.11.2015 using version.txt and history.txt from now on, display version in running bot, renamed functions to functions.sh,
 HB 08.11.2015 changed calculation formula in start_FuelStation()
 HB 02.11.2015 GUI elements for daily dog and lottery, AJAX bot status update :)

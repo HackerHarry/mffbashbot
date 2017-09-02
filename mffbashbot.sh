@@ -160,6 +160,8 @@ while (true); do
      echo "Reducing position $POSITION to $QGAME Queue(s)..."
      reduce_QueuesOnPosition $FARM $POSITION $QGAME
     fi
+    # reset queue correction flag
+    sed -i 's/correctqueuenum = 1/correctqueuenum = 0/' $CFGFILE
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field
@@ -194,8 +196,6 @@ while (true); do
    done
   done
  done
- # reset queue correction flag if set
- sed -i 's/correctqueuenum = 1/correctqueuenum = 0/' $CFGFILE
 
  # work farmers market
  echo "Checking for pending tasks on farmers market..."
@@ -365,6 +365,11 @@ while (true); do
   else
    echo "already bought"
   fi
+ fi
+
+ if grep -q "redeempuzzlepacks = 1" $CFGFILE; then
+  redeemPuzzlePartsPacks
+  sed -i 's/redeempuzzlepacks = 1/redeempuzzlepacks = 0/' $CFGFILE
  fi
 
  # contents of FARMDATAFILE change from here !

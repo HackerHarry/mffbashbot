@@ -38,6 +38,7 @@ $configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
 $configContents['sendflowerfarmiesaway'] = $_POST["flowerfarmiestoggle"];
 $configContents['correctqueuenum'] = $_POST["correctqueuenumtoggle"];
 $configContents['useponyenergybar'] = $_POST["ponyenergybartoggle"];
+$configContents['redeempuzzlepacks'] = $_POST["redeempuzzlepartstoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

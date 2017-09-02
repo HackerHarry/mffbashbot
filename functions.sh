@@ -1608,6 +1608,24 @@ function add_QueuesToPosition {
  fi
 }
 
+function redeemPuzzlePartsPacks {
+ local iNumPacks
+ local iCount
+ local iCount2
+ local iType
+ iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs|length' $FARMDATAFILE)
+ if [ $iNumPacks -gt 0 ]; then
+  for iCount in $(seq 0 $((iNumPacks-1))); do
+   iType=$($JQBIN '.updateblock.farmersmarket.pets.packs|keys['$iCount']|tonumber' $FARMDATAFILE)
+   iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"]|tonumber' $FARMDATAFILE)
+   echo "Redeeming $iNumPacks puzzle parts pack(s) of type $iType..."
+   for iCount2 in $(seq 1 $iNumPacks); do
+    SendAJAXFarmRequest "mode=pets_open_pack&type=$iType"
+   done
+  done
+ fi
+}
+
 function SendAJAXFarmRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}
