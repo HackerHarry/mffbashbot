@@ -29,6 +29,7 @@ echo '
 server.modules += ( "mod_cgi" )
 cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
+mkdir -p /var/log/lighttpd 2>/dev/null
 
 echo "Moving GUI files..."
 mkdir -p /var/www/html 2>/dev/null
@@ -38,10 +39,7 @@ chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeuptheb
 echo "Patching GUI files..."
 sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
 
-#echo "Starting webserver lighttpd..."
-#mkdir -p /var/log/lighttpd 2>/dev/null
-#/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
-
+echo
 echo "If you don't wish for automatic bot setup, press CTRL-C now"
 echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
 while (true); do

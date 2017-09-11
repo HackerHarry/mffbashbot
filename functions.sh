@@ -1618,9 +1618,9 @@ function redeemPuzzlePartsPacks {
   for iCount in $(seq 0 $((iNumPacks-1))); do
    iType=$($JQBIN '.updateblock.farmersmarket.pets.packs|keys['$iCount']|tonumber' $FARMDATAFILE)
    iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"]|tonumber' $FARMDATAFILE)
-   echo "Redeeming $iNumPacks puzzle parts pack(s) of type $iType..."
+   echo "Redeeming $iNumPacks puzzle parts pack(s) of type ${iType}..."
    for iCount2 in $(seq 1 $iNumPacks); do
-    SendAJAXFarmRequest "mode=pets_open_pack&type=$iType"
+    SendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
  fi

@@ -74,6 +74,7 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
         compress
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
 
+echo
 echo "If you don't wish for automatic bot setup, press CTRL-C now"
 echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
 while (true); do

@@ -307,11 +307,11 @@ while (true); do
  fi
 
  # transport vehicle handling
- if ! grep vehiclemgmt5 $CFGFILE | grep -q 0; then
+ if ! grep -q "vehiclemgmt5 = 0" $CFGFILE; then
   # parameters are farm no. and route no.
   check_VehiclePosition 5 1
  fi
- if ! grep vehiclemgmt6 $CFGFILE | grep -q 0; then
+ if ! grep -q "vehiclemgmt6 = 0" $CFGFILE; then
   check_VehiclePosition 6 2
  fi
 
@@ -342,7 +342,7 @@ while (true); do
  fi
 
  # daily actions
- if ! grep dodog $CFGFILE | grep -q 0; then
+ if ! grep -q "dodog = 0" $CFGFILE; then
   echo -n "Checking for daily dog bonus..."
   DOGEXISTS=$($JQBIN '.updateblock.menue.farmdog?' $FARMDATAFILE)
   DOGSTATUS=$($JQBIN '.updateblock.menue.farmdog_harvest?' $FARMDATAFILE)
@@ -373,7 +373,7 @@ while (true); do
  fi
 
  # contents of FARMDATAFILE change from here !
- if ! grep dolot $CFGFILE | grep -q 0; then
+ if ! grep -q "dolot = 0" $CFGFILE; then
    echo -n "Checking for daily lottery bonus..."
    GetLotteryData "$FARMDATAFILE"
    LOTSTATUS=$($JQBIN '.datablock[2]' $FARMDATAFILE)
