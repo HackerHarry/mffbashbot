@@ -49,7 +49,7 @@ B)
 Tested on Windows 7 SP1 x64
 
 Donwload and start the setup program
-https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/mffbashbot-setup-win32/mffbashbot-setup.exe
+https://github.com/HackerHarry/mffbashbot/raw/master/mffbashbot-setup.exe
 
 Cygwin will be downloaded and installed during setup.
 After that, the bot will be installed within Cygwin then a wizard will guide you
