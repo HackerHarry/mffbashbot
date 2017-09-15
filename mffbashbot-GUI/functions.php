@@ -270,7 +270,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans26":
         // Transport -> Farm 5 / 6
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(114, 126, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 92, 93, 108, 109, 114, 126, 153, 154, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
