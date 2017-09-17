@@ -6,8 +6,8 @@ README
 
 Deutschsprachige: Schaut bitte in die README_DE Datei.
 
-These files contain a Bash bot for the "My Free Farm" game.
-This software needs (among other things) PHP >=v5.4 and jq >=v1.5
+These files contain a bot for the browsergame "My Free Farm".
+This software needs (among other things) PHP >=v5.4, jq >=v1.5 and Bash >=v4.3.
 
 Be advised, that the use of bots is against the game providers' terms and
 conditions. Your game account may be suspended by using this bot.

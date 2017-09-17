@@ -106,6 +106,8 @@ Eine Warteschlange, die aus zwei oder mehr Elementen besteht, wiederholt sich
 ebenfalls; wobei das oberste Element nach Abarbeitung ganz nach unten in die
 Warteschlange verschoben wird. Verbleibende Elemente rücken eins nach oben.
 
+Äcker können erst ab Level vier vom Bot bedient werden.
+
 Der Ponyhof wird von nur einer Warteschlange bedient. Nach einem Ausritt wird
 versucht, den Futterspender komplett zu füllen. Pony-Kraftriegel können über die
 Optionen zugeschaltet werden. Hierbei wird immer die maximale Anzahl an Kraft-

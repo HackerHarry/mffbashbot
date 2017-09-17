@@ -4,8 +4,8 @@ Harrys My Free Farm Bash Bot (MFF Bash Bot)
 README
 ------
 
-Diese Dateien beinhalten einen Bash Bot, der das Spiel "My Free Farm"
-Diese Software benötigt u.a. PHP >=v5.4 sowie jq >=v1.5
+Diese Dateien beinhalten einen Bot für das Browser-Spiel "My Free Farm".
+Diese Software benötigt u.a. PHP >=v5.4, jq >=v1.5 sowie Bash >=v4.3.
 
 Es sei an dieser Stelle DEUTLICHST darauf hingewiesen, dass der Gebrauch
 dieser Skripte gegen die AGB des Betreibers verstösst und u.a. eine Löschung

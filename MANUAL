@@ -98,6 +98,8 @@ Two or more elements in a queue also get repeated. After the topmost element
 has been served, it moves to the bottom of the queue while the remaining items
 all move one up.
 
+You need to reach level four before fields can be cultivated by the bot.
+
 The pony farm is controlled by only one queue. The bot will try to refill the
 feeder after a hack. You can control pony energy bar usage via the options.
 Mind that the max. number of pony energy bars will be added.
