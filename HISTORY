@@ -2,6 +2,7 @@ This file contains the history of
 Harrys My Free Farm Bash Bot
 
 who  when            what
+HB 20.09.2017 v1.93 corrected stupid bug that kept the queue number correction from working properly
 HB 15.09.2017 v1.92 added more goods for transport to farms 5/6
 HB 11.09.2017 v1.91 code cosmetics, fixed missing lighttpd log dir under cygwin
 HB 02.09.2017 v1.90 option to redeem all puzzle parts packs
