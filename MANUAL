@@ -132,6 +132,10 @@ Animals treated at the veterinary clinic, will be cured automagically.
 Only those tinctures are used, that don't cost coins and heal the quickest.
 The veterinary clinic can NOT be auto-started.
 
+Butterflies are fed automagically. Make sure you have enough food for the
+animals, 'cause the bot won't. The feeding stops by you sending the butterfly
+to the larger compound. Eggs are NOT bought automatically.
+
 If you want to help produce stuff for a guild job, you first need to feed
 or provide the proper goods from the guilds' stock to a position. After that,
 the bot will notice that circumstance and treat that position as a guild job.

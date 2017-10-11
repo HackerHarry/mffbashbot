@@ -143,6 +143,11 @@ zyklus automatisch geheilt. Hierbei werden nur die Tinkturen verwendet, die
 die schnellste Heilung bringen und keine Coins kosten.
 Ein Autostart der Praxis erfolgt NICHT.
 
+Schmetterlinge werden automatisch gefüttert. Stelle sicher, dass genug Futter
+vorhanden ist; den Bot kümmert's nämlich nicht. Die Fütterung wird durch
+Überführung des Tieres ins Aussengehege beendet. Eier werden NICHT automatisch
+gekauft.
+
 Material, das für Klub-Aufträge hergestellt werden soll, wird vom Bot dann als
 Klub-Auftrag behandelt, wenn vom Spieler zuvor Material für den Klub-Auftrag
 produziert wurde. Der Bot erkennt dann den "Klub-Auftragsstatus".

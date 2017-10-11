@@ -305,6 +305,13 @@ while (true); do
    fi
   done
  fi
+ # butterfly house
+ for SLOT in 1 2 3 4 5 6; do
+  if $JQBIN '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+  echo "Doing butterfly house slot ${SLOT}..."
+  SendAJAXFarmRequest "slot=${SLOT}&mode=butterfly_carebreed"
+  fi
+ done
 
  # transport vehicle handling
  if ! grep -q "vehiclemgmt5 = 0" $CFGFILE; then
