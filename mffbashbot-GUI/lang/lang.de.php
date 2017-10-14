@@ -56,5 +56,6 @@ $strings['useponyenergybar'] = 'Pony-Kraftriegel auf Ausritte der Ponyfarm anwen
 $strings['trans25'] = 'Transport zur Farm 5';
 $strings['trans26'] = 'Transport zur Farm 6';
 $strings['puzzlepartredeem'] = 'Alle vorhandenen Puzzlezeile-Pakete einmalig einl&ouml;sen';
+$strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
 // $strings[''] = '';
 ?>

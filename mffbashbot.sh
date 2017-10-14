@@ -83,7 +83,7 @@ while (true); do
  NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
  LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/55.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
@@ -377,6 +377,11 @@ while (true); do
  if grep -q "redeempuzzlepacks = 1" $CFGFILE; then
   redeemPuzzlePartsPacks
   sed -i 's/redeempuzzlepacks = 1/redeempuzzlepacks = 0/' $CFGFILE
+ fi
+
+ if grep -q "dobutterflies = 1" $CFGFILE; then
+  echo "Checking for butterfly points bonus..."
+  CheckButterflyBonus
  fi
 
  # contents of FARMDATAFILE change from here !

@@ -1626,6 +1626,30 @@ function redeemPuzzlePartsPacks {
  fi
 }
 
+function CheckButterflyBonus {
+ local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
+ local iNumKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free|length' $FARMDATAFILE)
+ local iCount
+ local iLast
+ local iKey
+ if [ $iNumKeys -gt 0 ]; then
+  for iCount in $(seq 0 $((iNumKeys-1))); do
+   iKey=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free|keys['$iCount']|tonumber' $FARMDATAFILE)
+   iLast=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free["'$iKey'"].last?' $FARMDATAFILE)
+   if [ "iLast" = "null" ] || [ $iLast -lt $iToday ]; then
+    if [ "$NONPREMIUM" != "NP" ]; then
+     # butterfly can give a bonus (premium)
+     echo "Collecting butterfly points bonus..."
+     SendAJAXFarmRequest "mode=butterfly_click_all"
+     return
+    fi
+    echo "Collecting points bonus from butterfly type ${iKey}..."
+    SendAJAXFarmRequest "id=${iKey}&mode=butterfly_click"
+   fi
+  done
+ fi
+}
+
 function SendAJAXFarmRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}

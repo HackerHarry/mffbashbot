@@ -78,6 +78,8 @@ print "<input type=\"checkbox\" id=\"correctqueuenumtoggle\" name=\"correctqueue
 print "</td></tr>";
 print "<tr><td>";
 print "<input type=\"checkbox\" id=\"ponyenergybartoggle\" name=\"ponyenergybartoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['useponyenergybar'];
+print "<tr><td>";
+print "<input type=\"checkbox\" id=\"butterflytoggle\" name=\"butterflytoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['butterflypointbonus'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
@@ -170,5 +172,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['redeempuzzlepacks'];
 if ($savedValue == '1')
  print "document.getElementById('redeempuzzlepartstoggle').checked = true;\n";
+$savedValue = $configContents['dobutterflies'];
+if ($savedValue == '1')
+ print "document.getElementById('butterflytoggle').checked = true;\n";
 print "</script>\n";
 ?>
