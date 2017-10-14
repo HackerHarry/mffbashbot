@@ -1636,7 +1636,7 @@ function CheckButterflyBonus {
   for iCount in $(seq 0 $((iNumKeys-1))); do
    iKey=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free|keys['$iCount']|tonumber' $FARMDATAFILE)
    iLast=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free["'$iKey'"].last?' $FARMDATAFILE)
-   if [ "iLast" = "null" ] || [ $iLast -lt $iToday ]; then
+   if [ "$iLast" = "null" ] || [ $iLast -lt $iToday ] 2>/dev/null; then
     if [ "$NONPREMIUM" != "NP" ]; then
      # butterfly can give a bonus (premium)
      echo "Collecting butterfly points bonus..."
