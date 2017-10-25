@@ -55,7 +55,7 @@ $strings['correctqueuenumber'] = 'Correct queue numbers once';
 $strings['useponyenergybar'] = 'Use pony energy bars on pony farm hacks';
 $strings['trans25'] = 'Transport to Farm 5';
 $strings['trans26'] = 'Transport to Farm 6';
-$strings['puzzlepartredeem'] = 'Redeem all puzzle parts packs once';
+$strings['puzzlepartredeem'] = 'Redeem puzzle parts packs';
 $strings['butterflypointbonus'] = 'Pick up butterfly points bonus';
 // $strings[''] = '';
 ?>

@@ -307,7 +307,7 @@ while (true); do
  fi
  # butterfly house
  for SLOT in 1 2 3 4 5 6; do
-  if $JQBIN '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"].remain?' $FARMDATAFILE | grep -q '-' ; then
+  if $JQBIN '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
   echo "Doing butterfly house slot ${SLOT}..."
   SendAJAXFarmRequest "slot=${SLOT}&mode=butterfly_carebreed"
   fi
@@ -376,7 +376,6 @@ while (true); do
 
  if grep -q "redeempuzzlepacks = 1" $CFGFILE; then
   redeemPuzzlePartsPacks
-  sed -i 's/redeempuzzlepacks = 1/redeempuzzlepacks = 0/' $CFGFILE
  fi
 
  if grep -q "dobutterflies = 1" $CFGFILE; then
