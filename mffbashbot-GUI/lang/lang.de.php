@@ -57,5 +57,6 @@ $strings['trans25'] = 'Transport zur Farm 5';
 $strings['trans26'] = 'Transport zur Farm 6';
 $strings['puzzlepartredeem'] = 'Vorhandene Puzzlezeile-Pakete einl&ouml;sen';
 $strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
+$strings['megafieldplantafterharvest'] = 'Schnelles Anpflanzen auf dem G&uuml;terhof';
 // $strings[''] = '';
 ?>

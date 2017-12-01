@@ -82,6 +82,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"butterflytoggle\" name=\"butterflytoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['butterflypointbonus'];
 print "</td></tr>";
 print "<tr><td>";
+print "<input type=\"checkbox\" id=\"megafieldplanttoggle\" name=\"megafieldplanttoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['megafieldplantafterharvest'];
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"lot1\">" . $strings['lot'] . "</option>\n";
@@ -175,5 +178,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['dobutterflies'];
 if ($savedValue == '1')
  print "document.getElementById('butterflytoggle').checked = true;\n";
+ $savedValue = $configContents['megafieldinstantplant'];
+if ($savedValue == '1')
+ print "document.getElementById('megafieldplanttoggle').checked = true;\n";
 print "</script>\n";
 ?>
