@@ -746,6 +746,9 @@ function harvest_MegaField {
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
    sleep ${iHarvestDelay}s
+   if grep -q "megafieldinstantplant = 1" $CFGFILE; then
+    start_MegaField${NONPREMIUM}
+   fi
    iPlot=$((iPlot+1))
    continue
   fi
@@ -1314,6 +1317,9 @@ function harvest_MegaField2x2 {
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
+      if grep -q "megafieldinstantplant = 1" $CFGFILE; then
+       start_MegaField${NONPREMIUM}
+      fi
       iPlot=$((iPlot+2))
       continue
      else
@@ -1351,7 +1357,7 @@ function get_AnimalsFastestCureForDisease {
       # Humpeln
       ;;
    4) echo 303
-      # Röhrhusten
+      # RÃ¶hrhusten
       ;;
    5) echo 303
       # Fieber
@@ -1363,13 +1369,13 @@ function get_AnimalsFastestCureForDisease {
       # Magengrummeln
       ;;
    8) echo 307
-      # Sehschwäche
+      # SehschwÃ¤che
       ;;
    9) echo 307
       # Rote Augen
       ;;
    10) echo 309
-      # Grüner Schnupfen
+      # GrÃ¼ner Schnupfen
       ;;
    11) echo 309
       # Kopfschmerz
@@ -1390,7 +1396,7 @@ function get_AnimalsFastestCureForDisease {
       # Appetitlosigkeit
       ;;
    17) echo 315
-      # Hörschwäche
+      # HÃ¶rschwÃ¤che
       ;;
    18) echo 315
       # Juckende Haut
@@ -1432,7 +1438,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbares Fieber
       ;;
    31) echo 328
-      # Furchtbarer Röhrhusten
+      # Furchtbarer RÃ¶hrhusten
       ;;
    32) echo 329
       # Furchtbares Magengrummeln
@@ -1447,7 +1453,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Rote Augen
       ;;
    36) echo 333
-      # Furchtbare Sehschwäche
+      # Furchtbare SehschwÃ¤che
       ;;
    37) echo 335
       # Furchtbar Wacklige Beine
@@ -1456,13 +1462,13 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbarer Kopfschmerz
       ;;
    39) echo 336
-      # Furchtbar Grüner Schnupfen
+      # Furchtbar GrÃ¼ner Schnupfen
       ;;
    40) echo 338
       # Furchtbare Magenverstimmung
       ;;
    41) echo 338
-      # Furchtbar Weißer Schnupfen
+      # Furchtbar WeiÃŸer Schnupfen
       ;;
    42) echo 338
       # Furchtbar Rote Flecken
@@ -1477,7 +1483,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Juckende Haut
       ;;
    46) echo 342
-      # Furchtbare Hörschwäche
+      # Furchtbare HÃ¶rschwÃ¤che
       ;;
    47) echo 345
       # Furchtbarer Haarausfall

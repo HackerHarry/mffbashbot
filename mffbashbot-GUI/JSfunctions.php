@@ -158,7 +158,8 @@ function saveMisc() {
  document.getElementById('correctqueuenumtoggle').checked ? sData += "1&ponyenergybartoggle=" : sData += "0&ponyenergybartoggle=";
  document.getElementById('ponyenergybartoggle').checked ? sData += "1&redeempuzzlepartstoggle=" : sData += "0&redeempuzzlepartstoggle=";
  document.getElementById('redeempuzzlepartstoggle').checked ? sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
- document.getElementById('butterflytoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('butterflytoggle').checked ? sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
+ document.getElementById('megafieldplanttoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);
