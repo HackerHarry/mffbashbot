@@ -1,6 +1,6 @@
 <?php
 // Buttons file for Harrys My Free Farm Bash Bot (front end)
-// Copyright 2016 Harun "Harry" Basalamah
+// Copyright 2016-17 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
@@ -80,6 +80,9 @@ print "<tr><td>";
 print "<input type=\"checkbox\" id=\"ponyenergybartoggle\" name=\"ponyenergybartoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['useponyenergybar'];
 print "<tr><td>";
 print "<input type=\"checkbox\" id=\"butterflytoggle\" name=\"butterflytoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['butterflypointbonus'];
+print "</td></tr>";
+print "<tr><td>";
+print "<input type=\"checkbox\" id=\"deliveryeventtoggle\" name=\"deliveryeventtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['onehourdelivery'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
@@ -175,5 +178,8 @@ if ($savedValue == '1')
 $savedValue = $configContents['dobutterflies'];
 if ($savedValue == '1')
  print "document.getElementById('butterflytoggle').checked = true;\n";
+$savedValue = $configContents['dodeliveryevent'];
+if ($savedValue == '1')
+ print "document.getElementById('deliveryeventtoggle').checked = true;\n";
 print "</script>\n";
 ?>

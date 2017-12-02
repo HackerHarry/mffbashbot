@@ -1,5 +1,5 @@
 # Functions file for Harrys My Free Farm Bash Bot
-# Copyright 2016 Harun "Harry" Basalamah
+# Copyright 2016-17 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -270,6 +270,7 @@ function start_FarmNP {
   GetFarmData $FARMDATAFILE
   return
   fi
+ # don't plant on last coloumn if x-dim is 2
  if ! ((iPlot % 12)); then
   if [ $iProductDim_x -eq 2 ]; then
    iPlot=$((iPlot+1))
@@ -669,6 +670,13 @@ function start_Vet {
 
 function DoFarmersMarketAnimalTreatment {
  local iSlot=$1
+ local iCount
+ local iAnimalStatus
+ local iAnimalID
+ local iQueueLength
+ local sTreatmentSet=
+ local iDiseaseID
+ local iFastestCure
  # echo "Finishing animal treatment in slot ${iSlot}..."
  SendAJAXFarmRequest "mode=vet_endtreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}"
  if get_AnimalQueueLength ; then
@@ -676,18 +684,17 @@ function DoFarmersMarketAnimalTreatment {
   return
  fi
  # get animal ID from queue holding status 0
- local iCount=0
- local iAnimalStatus=1
+ iCount=0
+ iAnimalStatus=1
  while [ "$iAnimalStatus" -eq 1 ]; do 
-  local iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue|keys['${iCount}']|tonumber' $FARMDATAFILE)
+  iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue|keys['${iCount}']|tonumber' $FARMDATAFILE)
   iAnimalStatus=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].status|tonumber' $FARMDATAFILE)
   iCount=$((iCount+1))
  done
  # place it in slot
  SendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
  # isolate deseases for animal ID
- local iQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases|length' $FARMDATAFILE)
- local sTreatmentSet=
+ iQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases|length' $FARMDATAFILE)
  for iCount in $(seq 0 $((iQueueLength-1))); do
   iDiseaseID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases['${iCount}'].id' $FARMDATAFILE)
   # find fastest cure for disease
@@ -756,6 +763,9 @@ function harvest_MegaField {
 function start_MegaField {
  local iProductSlot
  local iSafetyCount=$1
+ local iPID
+ local amountToGo
+ local iFreePlots
  if [ $iSafetyCount -gt 4 ] 2>/dev/null; then
   echo "Exiting start_MegaField after four cycles! (Not enough crop in stock?)"
   return
@@ -765,13 +775,13 @@ function start_MegaField {
    continue
   fi
   # here we've got a product that is harvestable
-  local iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
-  local amountToGo=$(get_MegaFieldAmountToGoInSlot $iProductSlot)
+  iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
+  amountToGo=$(get_MegaFieldAmountToGoInSlot $iProductSlot)
   if [ "$amountToGo" = "0" ]; then
    continue
    # no need to plant more
   fi
-  local iFreePlots=$(get_MegaFieldFreePlotsNum)
+  iFreePlots=$(get_MegaFieldFreePlotsNum)
   if [ $iFreePlots -eq 0 ]; then
    # no free plots, no need to plant
    return
@@ -1626,7 +1636,7 @@ function redeemPuzzlePartsPacks {
  fi
 }
 
-function CheckButterflyBonus {
+function check_ButterflyBonus {
  local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
  local iNumKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free|length' $FARMDATAFILE)
  local iCount
@@ -1647,6 +1657,24 @@ function CheckButterflyBonus {
     SendAJAXFarmRequest "id=${iKey}&mode=butterfly_click"
    fi
   done
+ fi
+}
+
+function check_DeliveryEvent {
+ local iPointsNeeded=200
+ local iPointsAvailable
+ local iDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent' $FARMDATAFILE)
+ if [ "$iDeliveryEventRunning" = "0" ]; then
+  return
+ fi
+ if $JQBIN '.updateblock.menue.deliveryevent.data.tour.remain' $FARMDATAFILE | grep -q '-' ; then
+  iPointsAvailable=$($JQBIN '.updateblock.menue.deliveryevent.data["points"]' $FARMDATAFILE)
+  if [ $iPointsAvailable -ge $iPointsNeeded ] 2>/dev/null; then
+   echo "Starting one-hour delivery tour..."
+   SendAJAXFarmRequest "spot=playground&mode=deliveryevent_starttour"
+  else
+   echo "Not enough points to start delivery tour"
+  fi
  fi
 }
 

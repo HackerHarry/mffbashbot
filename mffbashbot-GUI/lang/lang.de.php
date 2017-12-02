@@ -52,10 +52,11 @@ $strings['botisupdating'] = 'am aktualisieren';
 $strings['saynotoflowerfarmies'] = 'Alle Blumenfarmis mit "Nein" beantworten';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Versionshistorie (Nur in Englisch)</a>';
 $strings['correctqueuenumber'] = 'Anzahl Warteschlangen einmalig korrigieren';
-$strings['useponyenergybar'] = 'Pony-Kraftriegel auf Ausritte der Ponyfarm anwenden';
+$strings['useponyenergybar'] = 'Pony-Kraftriegel auf Ausritte anwenden';
 $strings['trans25'] = 'Transport zur Farm 5';
 $strings['trans26'] = 'Transport zur Farm 6';
 $strings['puzzlepartredeem'] = 'Vorhandene Puzzlezeile-Pakete einl&ouml;sen';
 $strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
+$strings['onehourdelivery'] = 'Liefer-event: Einstundenfahrt durchführen';
 // $strings[''] = '';
 ?>

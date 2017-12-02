@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for Harrys My Free Farm Bash Bot (front end)
-// Copyright 2016 Harun "Harry" Basalamah
+// Copyright 2016-17 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -158,7 +158,8 @@ function saveMisc() {
  document.getElementById('correctqueuenumtoggle').checked ? sData += "1&ponyenergybartoggle=" : sData += "0&ponyenergybartoggle=";
  document.getElementById('ponyenergybartoggle').checked ? sData += "1&redeempuzzlepartstoggle=" : sData += "0&redeempuzzlepartstoggle=";
  document.getElementById('redeempuzzlepartstoggle').checked ? sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
- document.getElementById('butterflytoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('butterflytoggle').checked ? sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
+ document.getElementById('deliveryeventtoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);

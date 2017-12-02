@@ -1,6 +1,6 @@
 #!/bin/bash
 # Harrys My Free Farm Bash Bot
-# Copyright 2016 Harun "Harry" Basalamah
+# Copyright 2016-17 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,7 +76,12 @@ while (true); do
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
- PAUSETIME=$(shuf -i8-10 -n1)
+ PAUSETIME=$(shuf -i7-10 -n1)
+ if [ -f dontrunbot ]; then
+  echo "Run blocker detected. Pausing $PAUSETIME mins..."
+  sleep ${PAUSETIME}m
+  continue
+ fi
  touch "$STATUSFILE"
  # remove lingering cookies
  rm $COOKIEFILE 2>/dev/null
@@ -380,7 +385,12 @@ while (true); do
 
  if grep -q "dobutterflies = 1" $CFGFILE; then
   echo "Checking for butterfly points bonus..."
-  CheckButterflyBonus
+  check_ButterflyBonus
+ fi
+
+ if grep -q "dodeliveryevent = 1" $CFGFILE; then
+  echo "Checking for running delivery event..."
+  check_DeliveryEvent
  fi
 
  # contents of FARMDATAFILE change from here !
