@@ -2,6 +2,7 @@ This file contains the history of
 Harrys My Free Farm Bash Bot
 
 who  when            what
+HB 03.12.2017 v1.98 plant immediately after harvesting on mega field, thanks to jbond47 for the code
 HB 02.12.2017 v1.97 code cosmetics, changed dynamic pause time to 7-10 mins., basic handling of delivery event
 HB 22.10.2017 v1.96 don't reset option to redeem all puzzle parts packs after usage, fixed bug in config.ini handling
 HB 14.10.2017 v1.95 new option: collect butterfly points bonus

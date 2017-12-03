@@ -753,6 +753,9 @@ function harvest_MegaField {
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
    sleep ${iHarvestDelay}s
+   if grep -q "megafieldinstantplant = 1" $CFGFILE; then
+    start_MegaField${NONPREMIUM}
+   fi
    iPlot=$((iPlot+1))
    continue
   fi
@@ -1324,6 +1327,9 @@ function harvest_MegaField2x2 {
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
+      if grep -q "megafieldinstantplant = 1" $CFGFILE; then
+       start_MegaField${NONPREMIUM}
+      fi
       iPlot=$((iPlot+2))
       continue
      else

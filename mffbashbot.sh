@@ -78,7 +78,10 @@ while (true); do
  fi
  PAUSETIME=$(shuf -i7-10 -n1)
  if [ -f dontrunbot ]; then
+  echo -n "Time stamp: "
+  date "+%A, %d. %B %Y - %H:%Mh"
   echo "Run blocker detected. Pausing $PAUSETIME mins..."
+  echo "---"
   sleep ${PAUSETIME}m
   continue
  fi
