@@ -59,5 +59,6 @@ $strings['puzzlepartredeem'] = 'Vorhandene Puzzlezeile-Pakete einl&ouml;sen';
 $strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
 $strings['onehourdelivery'] = 'Liefer-Event: Einstundenfahrt durchführen';
 $strings['megafieldplantafterharvest'] = 'Schnelles Anpflanzen auf dem Güterhof';
+$strings['powerups'] = 'Power-Ups';
 // $strings[''] = '';
 ?>

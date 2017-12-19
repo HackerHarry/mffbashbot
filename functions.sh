@@ -1119,6 +1119,38 @@ function check_SendGoodsOffMainFarm {
  done
 }
 
+function check_PowerUps {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+  echo "Set to sleep."
+  return
+ fi
+ local iActivePowerUp
+ local iCount
+ local iPowerUp=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iActivePowerUps=$($JQBIN '.updateblock.farms.powerups.active|keys|length' $FARMDATAFILE)
+ if [ $iActivePowerUps -eq 0 ]; then
+  echo "Activating power-up #${iPowerUp}..."
+  SendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
+  update_queue ${iFarm} ${iPosition} ${iSlot}
+  return
+ else
+  # there are active powerups
+  for iCount in $(seq 0 $((iActivePowerUps-1))); do
+   iActivePowerUp=$($JQBIN '.updateblock.farms.powerups.active|keys['$iCount']|tonumber' $FARMDATAFILE)
+   if [ $iActivePowerUp -eq $iPowerUp ]; then
+    echo "Requested power-up #${iPowerUp} is already in use"
+    return
+   fi
+  done
+  echo "Activating power-up #${iPowerUp}..."
+  SendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
+  update_queue ${iFarm} ${iPosition} ${iSlot}
+ fi
+}
+
 function update_queue {
  local iFarm=$1
  local iPosition=$2

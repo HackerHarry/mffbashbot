@@ -261,7 +261,8 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "</select>\n";
         break;
   case "windmill":
-        // Mühle
+  case "powerups":
+        // Mühle/Power-Ups
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateWindMillOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35);
         print "</select>\n";
@@ -317,6 +318,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "trans25":
   case "trans26":
 	$buildingType = "AutoTrans";
+	break;
+  case "powerups":
+	$buildingType = "PowerUps";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -440,6 +444,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    $queueItemFriendlyName = $megafieldvehicleslist[intval($queueItem)];
    break;
    case "WindMill":
+   case "PowerUps":
    $queueItemFriendlyName = $windmillproductlist[intval($queueItem)];
    break;
    case "PonyFarm":

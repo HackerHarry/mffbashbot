@@ -80,10 +80,16 @@ while (true); do
  if [ -f dontrunbot ]; then
   echo -n "Time stamp: "
   date "+%A, %d. %B %Y - %H:%Mh"
-  echo "Run blocker detected. Pausing $PAUSETIME mins..."
+  echo "Run blocker detected, pausing $PAUSETIME mins..."
   echo "---"
   sleep ${PAUSETIME}m
   continue
+ fi
+ if [ -f restartbot ]; then
+  echo "Restart flag detected, restarting bot..."
+  rm -f restartbot
+  cd ..
+  exec /bin/bash mffbashbot.sh $MFFUSER
  fi
  touch "$STATUSFILE"
  # remove lingering cookies
@@ -91,7 +97,7 @@ while (true); do
  NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
  LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/55.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
@@ -129,6 +135,11 @@ while (true); do
   unset NONPREMIUM
  fi
  echo "premium account"
+
+ # power up handling
+ echo "Checking for pending power-ups..."
+ check_PowerUps city2 powerups 0
+ check_PowerUps city2 powerups 1
 
  for FARM in 1 2 3 4 5 6; do
   echo "Checking for pending tasks on farm ${FARM}..."

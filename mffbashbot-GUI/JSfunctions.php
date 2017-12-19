@@ -189,10 +189,9 @@ switch (sFarm) {
   if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
   if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups"];
 
 for (k = 0; k <= (fmpos.length - 1); k++) {
-// old (fmpos.length > 3 ? 3 : 2)
  var i = fmpos[k];
  sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
  sData += document.getElementById("queue" + i)[1].value + " "; // building type

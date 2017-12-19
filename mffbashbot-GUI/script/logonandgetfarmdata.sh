@@ -45,7 +45,7 @@ rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
 LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
-AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:54.0) Gecko/20100101 Firefox/55.0"
+AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
 

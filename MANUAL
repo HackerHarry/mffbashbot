@@ -152,6 +152,8 @@ The bot determines plucking-readiness of trees only by one single tree:
 The top left one. That's why you can not have the bot plant different trees
 in one go.
 
+You may activate power-ups in Pondsville using two queues.
+
 The farm name has to be unique. This means server independently unique.
 
 The update handler only looks for a new version upon login from the GUI.

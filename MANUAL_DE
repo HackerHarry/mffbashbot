@@ -163,6 +163,8 @@ Ob die Bäume in der Bäumerei fertig sind, stellt der Bot an nur einem einzigen
 Baum fest - An dem in der oberen linken Ecke. Misch-Anpflanzungen kann der Bot
 also nicht abhandeln.
 
+Power-Ups können in Teichlingen über zwei Warteschlangen aktiviert werden.
+
 Ein Farmname muss für den Bot eindeutig sein; auch über Servergrenzen hinweg.
 
 Die Update-Funktion schaut _nur_ bei Anmeldung an die GUI nach einer neuen
