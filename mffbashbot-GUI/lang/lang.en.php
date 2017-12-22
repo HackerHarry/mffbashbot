@@ -60,5 +60,6 @@ $strings['butterflypointbonus'] = 'Collect butterfly points bonus';
 $strings['onehourdelivery'] = 'Delivery event: do the hour drive';
 $strings['megafieldplantafterharvest'] = 'Fast planting on mega field';
 $strings['powerups'] = 'Power-Ups';
+$strings['refillolympiaenergy'] = 'Olympic/Winter-Event: Refill energy';
 // $strings[''] = '';
 ?>

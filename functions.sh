@@ -24,6 +24,7 @@ AJAXFARM="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&"
 AJAXFOREST="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&"
 AJAXFOOD="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?rid=${RID}&"
 AJAXCITY="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&"
+AJAXMAIN="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/main.php?rid=${RID}&"
 
 function ctrl_c {
  echo "Caught CTRL-C - Trying to log off..."
@@ -67,6 +68,11 @@ function GetInnerInfoData {
  local iFarm=$2
  local iPosition=$3
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=innerinfos&farm=${iFarm}&position=${iPosition}"
+}
+
+function GetOlympiaData {
+ sFile=$1
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/main.php?rid=${RID}&action=olympia_init"
 }
 
 function DoFarm {
@@ -1716,6 +1722,22 @@ function check_DeliveryEvent {
  fi
 }
 
+function check_OlympiaEvent {
+ GetOlympiaData $FARMDATAFILE
+ local iBerriesNeeded=20
+ local iBerriesAvailable
+ local iEnergy
+ local iOlympiayEventRemain=$($JQBIN '.datablock.remain?' $FARMDATAFILE)
+ if [ $iOlympiayEventRemain -gt 0 ] 2>/dev/null; then
+  iBerriesAvailable=$($JQBIN '.datablock.data.berries' $FARMDATAFILE)
+  iEnergy=$($JQBIN '.datablock.energy' $FARMDATAFILE)
+  if [ $iEnergy -lt 100 ] && [ $iBerriesAvailable -ge $iBerriesNeeded ]; then
+   echo "Re-filling 10% energy..."
+   SendAJAXMainRequest "amount=10&action=olympia_entry"
+  fi
+ fi
+}
+
 function SendAJAXFarmRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}
@@ -1740,4 +1762,9 @@ function SendAJAXFoodworldRequest {
 function SendAJAXCityRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXCITY}${sAJAXSuffix}
+}
+
+function SendAJAXMainRequest {
+ local sAJAXSuffix=$1
+ WGETREQ ${AJAXMAIN}${sAJAXSuffix}
 }

@@ -42,6 +42,8 @@ $configContents['redeempuzzlepacks'] = $_POST["redeempuzzlepartstoggle"];
 $configContents['dobutterflies'] = $_POST["butterflytoggle"];
 $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
 $configContents['megafieldinstantplant'] = $_POST["megafieldplanttoggle"];
+$configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
+
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

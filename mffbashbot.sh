@@ -408,6 +408,13 @@ while (true); do
  fi
 
  # contents of FARMDATAFILE change from here !
+
+ # olympia / winter sports event
+ if grep -q "doolympiaevent = 1" $CFGFILE; then
+  echo "Checking for running olympia / winter sports event..."
+  check_OlympiaEvent
+ fi
+
  if ! grep -q "dolot = 0" $CFGFILE; then
    echo -n "Checking for daily lottery bonus..."
    GetLotteryData "$FARMDATAFILE"

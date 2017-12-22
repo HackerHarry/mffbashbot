@@ -25,6 +25,38 @@ if ($farm == "runbot") {
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
 print "<small>" . $botver . " - " . $username . "</small>";
+$togglesarray = [
+"dodog" => "dogtoggle",
+"dopuzzleparts" => "puzzlepartstoggle",
+"redeempuzzlepacks" => "redeempuzzlepartstoggle",
+"sendfarmiesaway" => "farmiestoggle",
+"sendforestryfarmiesaway" => "forestryfarmiestoggle",
+"sendmunchiesaway" => "munchiestoggle",
+"sendflowerfarmiesaway" => "flowerfarmiestoggle",
+"correctqueuenum" => "correctqueuenumtoggle",
+"useponyenergybar" => "ponyenergybartoggle",
+"dobutterflies" => "butterflytoggle",
+"dodeliveryevent" => "deliveryeventtoggle",
+"doolympiaevent" => "olympiaeventtoggle",
+"megafieldinstantplant" => "megafieldplanttoggle"
+];
+
+$toggledesc = [
+$strings['ben'],
+$strings['puzzlepartpurchase'],
+$strings['puzzlepartredeem'],
+$strings['saynotofarmies'],
+$strings['saynotoforestryfarmies'],
+$strings['saynotomunchies'],
+$strings['saynotoflowerfarmies'],
+$strings['correctqueuenumber'],
+$strings['useponyenergybar'],
+$strings['butterflypointbonus'],
+$strings['onehourdelivery'],
+$strings['refillolympiaenergy'],
+$strings['megafieldplantafterharvest']
+];
+
 if (version_compare($botver, $versionavailable) == -1) {
  print " -- ";
  print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
@@ -52,41 +84,14 @@ print "<br>";
 print "<div id=\"optionspane\" style=\"display:none;\">";
 print "<table id=\"opttbl\" style=\"float:left;\" border=\"1\">";
 print "<tr><th>" . $strings['options'] . "</th></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"dogtoggle\" name=\"dogtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['ben'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"puzzlepartstoggle\" name=\"puzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['puzzlepartpurchase'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"redeempuzzlepartstoggle\" name=\"redeempuzzlepartstoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['puzzlepartredeem'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"farmiestoggle\" name=\"farmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotofarmies'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"forestryfarmiestoggle\" name=\"forestryfarmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotoforestryfarmies'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"munchiestoggle\" name=\"munchiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotomunchies'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"flowerfarmiestoggle\" name=\"flowerfarmiestoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['saynotoflowerfarmies'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"correctqueuenumtoggle\" name=\"correctqueuenumtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['correctqueuenumber'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"ponyenergybartoggle\" name=\"ponyenergybartoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['useponyenergybar'];
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"butterflytoggle\" name=\"butterflytoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['butterflypointbonus'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"deliveryeventtoggle\" name=\"deliveryeventtoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['onehourdelivery'];
-print "</td></tr>";
-print "<tr><td>";
-print "<input type=\"checkbox\" id=\"megafieldplanttoggle\" name=\"megafieldplanttoggle\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $strings['megafieldplantafterharvest'];
-print "</td></tr>";
+for ($i = 0; $i < count($togglesarray); $i++) {
+ $savedkey=key($togglesarray);
+ $toggle=$togglesarray[$savedkey];
+ print "<tr><td>\n";
+ print "<input type=\"checkbox\" id=\"" . $toggle . "\" name=\"" . $toggle . "\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $toggledesc[$i] . "\n";
+ print "</td></tr>\n";
+ next($togglesarray);
+}
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
@@ -151,41 +156,15 @@ print "document.getElementById('vehiclemgmt6').selectedIndex = document.getEleme
 $savedValue = $configContents['dolot'];
 $savedValue = "lot" . $savedValue;
 print "document.getElementById('lottoggle').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
-$savedValue = $configContents['dodog'];
-if ($savedValue == '1')
- print "document.getElementById('dogtoggle').checked = true;\n";
-$savedValue = $configContents['dopuzzleparts'];
-if ($savedValue == '1')
- print "document.getElementById('puzzlepartstoggle').checked = true;\n";
-$savedValue = $configContents['sendfarmiesaway'];
-if ($savedValue == '1')
- print "document.getElementById('farmiestoggle').checked = true;\n";
-$savedValue = $configContents['sendforestryfarmiesaway'];
-if ($savedValue == '1')
- print "document.getElementById('forestryfarmiestoggle').checked = true;\n";
-$savedValue = $configContents['sendmunchiesaway'];
-if ($savedValue == '1')
- print "document.getElementById('munchiestoggle').checked = true;\n";
-$savedValue = $configContents['sendflowerfarmiesaway'];
-if ($savedValue == '1')
- print "document.getElementById('flowerfarmiestoggle').checked = true;\n";
-$savedValue = $configContents['correctqueuenum'];
-if ($savedValue == '1')
- print "document.getElementById('correctqueuenumtoggle').checked = true;\n";
-$savedValue = $configContents['useponyenergybar'];
-if ($savedValue == '1')
- print "document.getElementById('ponyenergybartoggle').checked = true;\n";
-$savedValue = $configContents['redeempuzzlepacks'];
-if ($savedValue == '1')
- print "document.getElementById('redeempuzzlepartstoggle').checked = true;\n";
-$savedValue = $configContents['dobutterflies'];
-if ($savedValue == '1')
- print "document.getElementById('butterflytoggle').checked = true;\n";
-$savedValue = $configContents['dodeliveryevent'];
-if ($savedValue == '1')
- print "document.getElementById('deliveryeventtoggle').checked = true;\n";
-$savedValue = $configContents['megafieldinstantplant'];
-if ($savedValue == '1')
- print "document.getElementById('megafieldplanttoggle').checked = true;\n";
+
+reset($togglesarray);
+for ($i = 0; $i < count($togglesarray); $i++) {
+ $savedkey=key($togglesarray);
+ $toggle=$togglesarray[$savedkey];
+ $savedValue = $configContents[$savedkey];
+ if ($savedValue == '1')
+  print "document.getElementById('" . $toggle . "').checked = true;\n";
+ next($togglesarray);
+}
 print "</script>\n";
 ?>
