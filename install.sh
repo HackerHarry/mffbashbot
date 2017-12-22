@@ -19,11 +19,12 @@ case $DVER in
 esac
 
 echo "Installing needed packages..."
+sudo apt-get update
 sudo apt-get install jq lighttpd $PHPV screen logrotate cron unzip nano
 
 cd
 echo "Downloading Harrys MFF Bash Bot..."
-wget --no-check-certificate "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
+wget "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
 echo "Unpacking the archive..."
 unzip -q master.zip
@@ -38,8 +39,9 @@ chmod +x *.sh
 echo "Configuring lighttpd..."
 HTTPUSER=$(grep server.username /etc/lighttpd/lighttpd.conf | sed -e 's/.*= \"\(.*\)\"/\1/')
 if [ -z "$HTTPUSER" ]; then
- echo "Webserver user could not be determined. Please set it manually."
- echo "Der Webserver-Benutzer konnte nicht ermittelt werden. Bitte manuell anpassen."
+ echo "Webserver user could not be determined. Cannot continue."
+ echo "Der Webserver-Benutzer konnte nicht ermittelt werden. Hier endet alles."
+ exit 1
 fi
 sudo usermod -a -G $USER $HTTPUSER 2>/dev/null
 echo '
@@ -113,7 +115,7 @@ echo
 echo "Creating bot start script..."
 echo '#!/bin/bash
 cd
-/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+sudo /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
 cd mffbashbot
 ./mffbashbot.sh '$FARMNAME >startallbots.sh
 chmod +x startallbots.sh

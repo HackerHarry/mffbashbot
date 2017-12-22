@@ -38,9 +38,13 @@ mffbashbot.sh farm-logon-name
 Password, server-no. & language have to be set in config.ini within your
 farm folder.
 
-A start procedure may look like this:
+A start procedure might look like this:
 harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ ./mffbashbot.sh farm0815
+
+Or like this:
+harry@testbox:~$ cd
+harry@testbox:~$ ./startallbots.sh
 
 The bot can handle multiple farms. The 'screen' program can help you operate
 multiple farms on one screen. Find info on what 'screen' is and how to use it

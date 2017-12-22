@@ -49,6 +49,10 @@ Der Start könnte etwa so aussehen:
 harry@testbox:~$ cd ~/mffbashbot
 harry@testbox:~/mffbashbot$ ./mffbashbot.sh farm0815
 
+Oder so:
+harry@testbox:~$ cd
+harry@testbox:~$ ./startallbots.sh
+
 Der Bot kann mehrfach für verschiedene Farmen gestartet werden. Hierfür hat
 sich der Einsatz des 'screen' Programms bewährt. Was screen genau ist, kannst
 Du im Netz nachlesen.
