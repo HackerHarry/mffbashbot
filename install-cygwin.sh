@@ -78,7 +78,7 @@ echo
 echo "Creating bot start script..."
 echo '#!/bin/bash
 cd
-/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+/usr/sbin/lighttpd -f '$LCONF'
 cd mffbashbot
 ./mffbashbot.sh '$FARMNAME >startallbots.sh
 chmod +x startallbots.sh

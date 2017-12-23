@@ -161,7 +161,8 @@ function saveMisc() {
  document.getElementById('butterflytoggle').checked ? sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
  document.getElementById('deliveryeventtoggle').checked ? sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
  document.getElementById('megafieldplanttoggle').checked ? sData += "1&olympiaeventtoggle=" : sData += "0&olympiaeventtoggle=";
- document.getElementById('olympiaeventtoggle').checked ? sData += "1" : sData += "0";
+ document.getElementById('olympiaeventtoggle').checked ? sData += "1&redeemdailyseedboxtoggle=" : sData += "0&redeemdailyseedboxtoggle=";
+ document.getElementById('redeemdailyseedboxtoggle').checked ? sData += "1" : sData += "0";
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);

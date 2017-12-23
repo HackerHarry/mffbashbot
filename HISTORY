@@ -2,6 +2,7 @@ This file contains the history of
 Harrys My Free Farm Bash Bot
 
 who  when            what
+HB 23.12.2017 v2.01 new option: collect bonuses from seed box (thanks to jbond47 for the code), minor changes
 HB 22.12.2017 v2.00 new option: basic handling of olympia / winter sport event
 HB 19.12.2017 v1.99 new feature: activation of power-ups
 HB 03.12.2017 v1.98 plant immediately after harvesting on mega field, thanks to jbond47 for the code

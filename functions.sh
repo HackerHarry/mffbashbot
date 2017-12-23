@@ -63,6 +63,11 @@ function GetWindMillData {
  wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
+function GetPanData {
+ local sFile=$1
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=showpan&farm=1&position=0"
+}
+
 function GetInnerInfoData {
  local sFile=$1
  local iFarm=$2
@@ -1677,6 +1682,62 @@ function redeemPuzzlePartsPacks {
     SendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
+ fi
+}
+
+function check_PanBonus {
+ # function by jbond47, adapted by HB to reflect coding style
+ GetPanData "$FARMDATAFILE"
+ local iToday=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
+ local iNumSheep=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
+ local iLastBonus
+ local bValue
+ # Hero Sheep Bonus
+ if [ $iNumSheep -eq 12 ]; then # requires all 12 super sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
+  echo -n "Hero sheep..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
+   SendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Horror Sheep Bonus
+ iNumSheep=$($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE)
+ if [ $iNumSheep -eq 9 ]; then # requires all 9 horror sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
+  echo -n "Horror sheep..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
+   SendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Portal Rabbit Points
+ bValue=$($JQBIN '.datablock[1].gifts | has("289")' $FARMDATAFILE)
+ if [ "$bValue" = "true" ]; then
+  echo -n "Portal rabbit..."
+  bValue=$($JQBIN '.datablock[1].gifts."289" | has("giver")' $FARMDATAFILE)
+  if [ "$bValue" = "true" ]; then
+   echo "available, claiming it..."
+   SendAJAXCityRequest "city=0&mode=giverpresent&id=289"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Bug Rogers Points
+ bValue=$($JQBIN '.datablock[1].gifts | has("410")' $FARMDATAFILE)
+ if [ "$bValue" = "true" ]; then
+  echo -n "Bug Rogers..."
+  bValue=$($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE)
+  if [ "$bValue" = "true" ]; then
+   echo "available, redeem it..."
+   SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
+  else
+   echo "already claimed"
+  fi
  fi
 }
 

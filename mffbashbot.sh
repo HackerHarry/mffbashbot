@@ -71,7 +71,7 @@ while (true); do
   exec /bin/bash mffbashbot.sh $MFFUSER
  fi
  if [ "$VERSION" != "$(cat ../version.txt)" ]; then
-  echo "Version change detected, restarting bot..."
+  echo "Version change detected. Restarting bot..."
   sleep 3
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
@@ -80,13 +80,13 @@ while (true); do
  if [ -f dontrunbot ]; then
   echo -n "Time stamp: "
   date "+%A, %d. %B %Y - %H:%Mh"
-  echo "Run blocker detected, pausing $PAUSETIME mins..."
+  echo "Run blocker detected. Pausing $PAUSETIME mins..."
   echo "---"
   sleep ${PAUSETIME}m
   continue
  fi
  if [ -f restartbot ]; then
-  echo "Restart flag detected, restarting bot..."
+  echo "Restart flag detected. Restarting bot..."
   rm -f restartbot
   cd ..
   exec /bin/bash mffbashbot.sh $MFFUSER
@@ -413,6 +413,11 @@ while (true); do
  if grep -q "doolympiaevent = 1" $CFGFILE; then
   echo "Checking for running olympia / winter sports event..."
   check_OlympiaEvent
+ fi
+
+ if grep -q "doseedbox = 1" $CFGFILE; then
+  echo "Checking for points bonus from seed box..."
+  check_PanBonus
  fi
 
  if ! grep -q "dolot = 0" $CFGFILE; then

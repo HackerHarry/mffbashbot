@@ -17,6 +17,7 @@ case $DVER in
   PHPV=php-cgi
   ;;
 esac
+LCONF=/etc/lighttpd/lighttpd.conf
 
 echo "Installing needed packages..."
 sudo apt-get update
@@ -37,7 +38,11 @@ find . -type f -exec chmod 664 {} +
 chmod +x *.sh
 
 echo "Configuring lighttpd..."
-HTTPUSER=$(grep server.username /etc/lighttpd/lighttpd.conf | sed -e 's/.*= \"\(.*\)\"/\1/')
+if grep -q 'server\.document-root\s\+=\s\+"/var/www"' $LCONF; then
+ sed -i 's/server\.document-root\s\+=\s\+\"\/var\/www\"/server\.document-root = \"\/var\/www\/html\"/' $LCONF
+ mkdir -p /var/www/html
+fi
+HTTPUSER=$(grep server.username $LCONF | sed -e 's/.*= \"\(.*\)\"/\1/')
 if [ -z "$HTTPUSER" ]; then
  echo "Webserver user could not be determined. Cannot continue."
  echo "Der Webserver-Benutzer konnte nicht ermittelt werden. Hier endet alles."
@@ -50,7 +55,7 @@ fastcgi.server = ( ".php" => ((
                      "socket" => "/tmp/php.socket"
                  )))
 # source of all modification in order to make php5 run under
-# lighttpd http://www.howtoforge.com/lighttpd_mysql_php_debian_etch ' | sudo tee --append /etc/lighttpd/lighttpd.conf > /dev/null
+# lighttpd http://www.howtoforge.com/lighttpd_mysql_php_debian_etch ' | sudo tee --append $LCONF > /dev/null
 
 cd /etc/lighttpd/conf-enabled/
 sudo ln -s ../conf-available/10-accesslog.conf 10-accesslog.conf
@@ -115,12 +120,12 @@ echo
 echo "Creating bot start script..."
 echo '#!/bin/bash
 cd
-sudo /usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+sudo /usr/sbin/lighttpd -f '$LCONF'
 cd mffbashbot
 ./mffbashbot.sh '$FARMNAME >startallbots.sh
 chmod +x startallbots.sh
 
 echo
-echo "Fertig!"
-echo "Done!"
+echo "Fertig! Starte Deinen Bot mit ./startallbots.sh"
+echo "Done! Start your Bot with ./startallbots.sh"
 sleep 5
