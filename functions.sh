@@ -1733,7 +1733,7 @@ function check_PanBonus {
   echo -n "Bug Rogers..."
   bValue=$($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE)
   if [ "$bValue" = "true" ]; then
-   echo "available, redeem it..."
+   echo "available, claiming it..."
    SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
   else
    echo "already claimed"

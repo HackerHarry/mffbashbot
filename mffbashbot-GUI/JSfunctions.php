@@ -128,41 +128,24 @@ function updateBotStatus() {
 }
 
 function saveMisc() {
+ var i, v;
+ var aOptions = ['lottoggle', 'vehiclemgmt5', 'vehiclemgmt6', 'carefood',
+ 'caretoy', 'careplushy'];
+ var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
+ 'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
+ 'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
+ 'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
+ 'redeemdailyseedboxtoggle', 'dogtoggle'];
  var sUser = document.venueselect.username.value;
- var sData = "username=" + sUser + "&dogtoggle=";
- document.getElementById('dogtoggle').checked ? sData += "1&lottoggle=" : sData += "0&lottoggle=";
+ var sData = "username=" + sUser;
 
- var v = document.getElementById("lottoggle");
- sData += v.options[v.selectedIndex].value + "&vehiclemgmt5=";
- 
- var v = document.getElementById("vehiclemgmt5");
- sData += v.options[v.selectedIndex].value + "&vehiclemgmt6=";
- 
- var v = document.getElementById("vehiclemgmt6");
- sData += v.options[v.selectedIndex].value + "&carefood=";
-
- var v = document.getElementById("carefood");
- sData += v.options[v.selectedIndex].value + "&caretoy=";
-
- var v = document.getElementById("caretoy");
- sData += v.options[v.selectedIndex].value + "&careplushy=";
-
- var v = document.getElementById("careplushy");
- sData += v.options[v.selectedIndex].value + "&puzzlepartstoggle=";
-
- document.getElementById('puzzlepartstoggle').checked ? sData += "1&farmiestoggle=" : sData += "0&farmiestoggle=";
- document.getElementById('farmiestoggle').checked ? sData += "1&forestryfarmiestoggle=" : sData += "0&forestryfarmiestoggle=";
- document.getElementById('forestryfarmiestoggle').checked ? sData += "1&munchiestoggle=" : sData += "0&munchiestoggle=";
- document.getElementById('munchiestoggle').checked ? sData += "1&flowerfarmiestoggle=" : sData += "0&flowerfarmiestoggle=";
- document.getElementById('flowerfarmiestoggle').checked ? sData += "1&correctqueuenumtoggle=" : sData += "0&correctqueuenumtoggle=";
- document.getElementById('correctqueuenumtoggle').checked ? sData += "1&ponyenergybartoggle=" : sData += "0&ponyenergybartoggle=";
- document.getElementById('ponyenergybartoggle').checked ? sData += "1&redeempuzzlepartstoggle=" : sData += "0&redeempuzzlepartstoggle=";
- document.getElementById('redeempuzzlepartstoggle').checked ? sData += "1&butterflytoggle=" : sData += "0&butterflytoggle=";
- document.getElementById('butterflytoggle').checked ? sData += "1&deliveryeventtoggle=" : sData += "0&deliveryeventtoggle=";
- document.getElementById('deliveryeventtoggle').checked ? sData += "1&megafieldplanttoggle=" : sData += "0&megafieldplanttoggle=";
- document.getElementById('megafieldplanttoggle').checked ? sData += "1&olympiaeventtoggle=" : sData += "0&olympiaeventtoggle=";
- document.getElementById('olympiaeventtoggle').checked ? sData += "1&redeemdailyseedboxtoggle=" : sData += "0&redeemdailyseedboxtoggle=";
- document.getElementById('redeemdailyseedboxtoggle').checked ? sData += "1" : sData += "0";
+ for (i = 0; i < aOptions.length; i++) {
+  v = document.getElementById(aOptions[i]);
+  sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
+ }
+ for (i = 0; i < aToggles.length; i++) {
+  document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
+ }
 
  xhttp = new XMLHttpRequest();
  xhttp.open("POST", "saveMisc.php", false);
@@ -174,7 +157,6 @@ function saveMisc() {
 }
 
 function saveConfig() {
-
 var sUser = document.venueselect.username.value;
 var sFarm = document.venueselect.farm.value;
 var sData = "username=" + sUser + "&farm=" + sFarm + "&queueContent=";
