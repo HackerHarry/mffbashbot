@@ -1135,7 +1135,7 @@ function check_PowerUps {
  local iPosition=$2
  local iSlot=$3
  if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
-  echo "Set to sleep."
+  echo "Slot ${iSlot} is set to sleep."
   return
  fi
  local iActivePowerUp
