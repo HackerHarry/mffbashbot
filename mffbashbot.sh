@@ -101,7 +101,7 @@ while (true); do
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
- echo "Running Harrys My Free Farm Bash Bot $VERSION"
+ echo "Running Harry's My Free Farm Bash Bot $VERSION"
  echo "Getting a token to MFF server ${MFFSERVER}"
  MFFTOKEN=$(wget -nv -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"

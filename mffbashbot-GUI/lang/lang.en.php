@@ -50,7 +50,7 @@ $strings['updateto'] = 'Update to';
 $strings['confirmupdate'] = 'This will trigger an update, which should only take a few seconds.\nMake sure the bot is pausing when you click OK.\n15 seconds after you click OK you will be sent to the logon screen.\n\nDo you wish to continue?';
 $strings['botisupdating'] = 'updating';
 $strings['saynotoflowerfarmies'] = 'Answer "No" to all Flower Farmies';
-$strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/blob/master/HISTORY" target="_blank">Version history</a>';
+$strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/wiki/History" target="_blank">Version history</a>';
 $strings['correctqueuenumber'] = 'Correct queue numbers once';
 $strings['useponyenergybar'] = 'Use energy bars on pony hacks';
 $strings['trans25'] = 'Transport to Farm 5';
