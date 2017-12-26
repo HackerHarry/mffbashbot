@@ -1,5 +1,5 @@
 <?php
-// Buttons file for Harrys My Free Farm Bash Bot (front end)
+// Buttons file for Harry's My Free Farm Bash Bot (front end)
 // Copyright 2016-17 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //

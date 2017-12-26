@@ -1,5 +1,5 @@
 <?php
-// Triggers an update for Harrys My Free Farm Bash Bot
+// Triggers an update for Harry's My Free Farm Bash Bot
 // Copyright 2016-17 Harun "Harry" Basalamah
 //
 // This program is free software: you can redistribute it and/or modify

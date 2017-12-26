@@ -1,5 +1,5 @@
 #!/bin/bash
-# Harrys My Free Farm Bash Bot
+# Harry's My Free Farm Bash Bot
 # Copyright 2016-17 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify

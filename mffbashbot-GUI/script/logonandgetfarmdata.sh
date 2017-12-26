@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script is part of Harrys My Free Farm Bash Bot (front end)
+# This script is part of Harry's My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
 # Copyright 2016-17 Harun "Harry" Basalamah
 #

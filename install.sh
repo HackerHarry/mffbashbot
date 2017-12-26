@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install script for Harrys My Free Farm Bash Bot on GNU/Linux
+# Install script for Harry's My Free Farm Bash Bot on GNU/Linux
 # Tested on Debian Jessie, Stretch, Ubuntu 16.04.1 LTS
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 

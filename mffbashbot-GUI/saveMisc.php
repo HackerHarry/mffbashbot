@@ -1,5 +1,5 @@
 <?php
-// Save misc stuff file for Harrys My Free Farm Bash Bot (front end)
+// Save misc stuff file for Harry's My Free Farm Bash Bot (front end)
 // Copyright 2016-17 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
