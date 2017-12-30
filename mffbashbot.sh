@@ -126,6 +126,7 @@ while (true); do
 
  echo "Getting farm status..."
  GetFarmData $FARMDATAFILE
+ PLAYERLEVELNUM=$($JQBIN -r '.updateblock.menue.levelnum' $FARMDATAFILE)
  PREMIUM=$($JQBIN '.updateblock.menue.premium' $FARMDATAFILE 2>/dev/null)
  echo -n "This is a "
  if [ $PREMIUM -eq 0 ]; then
@@ -142,15 +143,28 @@ while (true); do
  check_PowerUps city2 powerups 1
 
  for FARM in 1 2 3 4 5 6; do
+  FARMEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
+  if [ "$FARMEXISTS" = "false" ]; then
+   continue
+  fi
   echo "Checking for pending tasks on farm ${FARM}..."
   for POSITION in 1 2 3 4 5 6; do
-   BUILDINGID=$($JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].buildingid|tonumber' $FARMDATAFILE 2>/dev/null)
+   BUILDINGID=$($JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].buildingid | tonumber' $FARMDATAFILE 2>/dev/null)
    # skip premium fields for non-premium users
    if [ "$NONPREMIUM" = "NP" ]; then
     if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].premium?' $FARMDATAFILE | grep -q '1' ; then
      echo "Skipping farm ${FARM}, position ${POSITION}"
      continue
     fi
+   fi
+   # skip empty position
+   if [ "$BUILDINGID" = "0" ]; then
+    continue
+   fi
+   # Skip fields if playerlevel <4
+   if [ $PLAYERLEVELNUM -lt 4 ] && [ "$BUILDINGID" = "1" ]; then
+    echo "Skipping farm ${FARM}, position ${POSITION}"
+    continue
    fi
    # add/remove queues on demand
    if grep -q "correctqueuenum = 1" $CFGFILE; then
@@ -194,7 +208,7 @@ while (true); do
    for SLOT in 0 1 2; do
      if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
        echo "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
-       if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild|tonumber' $FARMDATAFILE 2>/dev/null | grep -q '1' ; then
+       if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild | tonumber' $FARMDATAFILE 2>/dev/null | grep -q '1' ; then
         echo "(as a Guild job)"
         GUILDJOB=true
        fi
@@ -231,13 +245,13 @@ while (true); do
    fi
  done
  # see if flower pots need water...
- NUMPOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots|length' $FARMDATAFILE)
+ NUMPOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | length' $FARMDATAFILE)
  if [ $NUMPOTS -gt 0 ]; then
   NUMPOTS=$((NUMPOTS-1))
   for SLOTINDEX in $(seq 0 $NUMPOTS); do
-   SLOT=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots|keys['$SLOTINDEX']|tonumber' $FARMDATAFILE)
+   SLOT=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | keys['$SLOTINDEX'] | tonumber' $FARMDATAFILE)
    if ! $JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-    POTTED=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid|tonumber' $FARMDATAFILE 2>/dev/null)
+    POTTED=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid | tonumber' $FARMDATAFILE 2>/dev/null)
     # skip watering of special flowers
     if [ $POTTED -ne 220 ] && [ $POTTED -ne 221 ]; then
      # skip plants that don't need water anymore
@@ -315,7 +329,7 @@ while (true); do
  done
  # animal treatment
  # check for running treatment job
- VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role|tonumber' $FARMDATAFILE 2>/dev/null)
+ VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role | tonumber' $FARMDATAFILE 2>/dev/null)
  if [ "$VETJOBSTATUS" != "0" ] && [ "$VETJOBSTATUS" != "" ]; then
   for SLOT in 1 2 3; do
    if $JQBIN '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"].remain' $FARMDATAFILE | grep -q '-' ; then
@@ -343,11 +357,11 @@ while (true); do
 
  if grep -q "sendfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting farmies..."
-  NUMFARMIES=$($JQBIN '.updateblock.farmis[0]|length' $FARMDATAFILE)
+  NUMFARMIES=$($JQBIN '.updateblock.farmis[0] | length' $FARMDATAFILE)
   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
    NUMFARMIES=$((NUMFARMIES-1))
    for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+    ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id | tonumber' $FARMDATAFILE)
     echo "Sending farmie no. $((FARMIE+1)) (ID ${ID}) away..."
     SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
    done
@@ -356,11 +370,11 @@ while (true); do
 
  if grep -q "sendflowerfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting flower farmies..."
-  NUMFARMIES=$($JQBIN '.updateblock.farmersmarket.farmis|length' $FARMDATAFILE)
+  NUMFARMIES=$($JQBIN '.updateblock.farmersmarket.farmis | length' $FARMDATAFILE)
   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
    NUMFARMIES=$((NUMFARMIES-1))
    for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.updateblock.farmersmarket.farmis['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+    ID=$($JQBIN '.updateblock.farmersmarket.farmis['${FARMIE}'].id | tonumber' $FARMDATAFILE)
     echo "Sending flower farmie no. $((FARMIE+1)) (ID ${ID}) away..."
     SendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
    done
@@ -465,11 +479,11 @@ while (true); do
  # finally the forestry farmies
  if grep -q "sendforestryfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting forestry farmies..."
-  NUMFARMIES=$($JQBIN '.datablock[5]|length' $FARMDATAFILE)
+  NUMFARMIES=$($JQBIN '.datablock[5] | length' $FARMDATAFILE)
   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
    NUMFARMIES=$((NUMFARMIES-1))
    for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.datablock[5]['${FARMIE}'].farmiid|tonumber' $FARMDATAFILE)
+    ID=$($JQBIN '.datablock[5]['${FARMIE}'].farmiid | tonumber' $FARMDATAFILE)
     echo "Sending forestry farmie no. $((FARMIE+1)) (ID ${ID}) away..."
     SendAJAXForestryRequest "action=kickfarmi&productid=${ID}"
    done
@@ -492,11 +506,11 @@ while (true); do
  # munchies
  if grep -q "sendmunchiesaway = 1" $CFGFILE; then
   echo "Checking for waiting munchies..."
-  NUMFARMIES=$($JQBIN '.datablock.farmis|length' $FARMDATAFILE)
+  NUMFARMIES=$($JQBIN '.datablock.farmis | length' $FARMDATAFILE)
   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
    NUMFARMIES=$((NUMFARMIES-1))
    for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.datablock.farmis['${FARMIE}'].id|tonumber' $FARMDATAFILE)
+    ID=$($JQBIN '.datablock.farmis['${FARMIE}'].id | tonumber' $FARMDATAFILE)
     echo "Sending munchie no. $((FARMIE+1)) (ID ${ID}) away..."
     SendAJAXFoodworldRequest "action=kick&id=${ID}&table=0&chair=0"
    done
