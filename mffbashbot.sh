@@ -145,6 +145,7 @@ while (true); do
  for FARM in 1 2 3 4 5 6; do
   FARMEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
   if [ "$FARMEXISTS" = "false" ]; then
+   echo "Skipping farm ${FARM}"
    continue
   fi
   echo "Checking for pending tasks on farm ${FARM}..."
@@ -157,12 +158,8 @@ while (true); do
      continue
     fi
    fi
-   # skip empty position
-   if [ "$BUILDINGID" = "0" ]; then
-    continue
-   fi
-   # Skip fields if playerlevel <4
-   if [ $PLAYERLEVELNUM -lt 4 ] && [ "$BUILDINGID" = "1" ]; then
+   # skip empty position or fields if playerlevel <4
+   if [ "$BUILDINGID" = "0" ] || [[ $PLAYERLEVELNUM -lt 4 && "$BUILDINGID" = "1" ]]; then
     echo "Skipping farm ${FARM}, position ${POSITION}"
     continue
    fi
