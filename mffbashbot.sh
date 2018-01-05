@@ -513,6 +513,17 @@ while (true); do
    done
   fi
  fi
+ echo "Checking for munchies sitting at tables..."
+ for TABLE in 0 1 2 3 4; do
+  # Munchies on unleased tables can still be claimed, do not skip TABLE loop
+  for CHAIR in 1 2; do
+   MUNCHIEREADY=$($JQBIN '.datablock.tables."'${TABLE}'"."chairs"."'${CHAIR}'".ready == 1' $FARMDATAFILE 2>/dev/null)
+   if [ "$MUNCHIEREADY" = "true" ]; then
+    echo "Munchie available on table $((TABLE+1)), chair ${CHAIR}, claiming it..."
+    SendAJAXFoodworldRequest "action=cash&id=0&table=${TABLE}&chair=${CHAIR}&rid=${RID}"
+   fi
+  done
+ done
  # this is the only building with a queue in city 2, and it's unlikely for this
  # to ever change, hence static coding
  echo "Getting wind mill status..."
