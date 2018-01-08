@@ -514,10 +514,10 @@ while (true); do
   fi
  fi
  echo "Checking for munchies sitting at tables..."
+ # JSON data uses different data types when you bought further tables on food world
+ JSONDATATYPE=$($JQBIN '.datablock.tables | type' $FARMDATAFILE)
  for TABLE in 0 1 2 3 4; do
   # Munchies on unleased tables can still be claimed, do not skip TABLE loop
-  # JSON data uses different data types when you bought further tables on food world
-  JSONDATATYPE=$($JQBIN '.datablock.tables | type' $FARMDATAFILE)
   for CHAIR in 1 2; do
    if [ "$JSONDATATYPE" = '"object"' ]; then
     MUNCHIEREADY=$($JQBIN '.datablock.tables."'${TABLE}'"."chairs"."'${CHAIR}'".ready == 1' $FARMDATAFILE 2>/dev/null)
