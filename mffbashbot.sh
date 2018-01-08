@@ -302,7 +302,7 @@ while (true); do
  if [ "$PETBREEDING" != "0" ]; then
   for SLOT in food toy plushy; do
    CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
-   if [ "$CAREREMAIN" == "null" ] || [ "$CAREREMAIN" == "[]" ]; then
+   if [ "$CAREREMAIN" = "null" ] || [ "$CAREREMAIN" = "[]" ]; then
     echo "Taking care of pet using ${SLOT}..."
     DoFarmersMarketPetCare ${SLOT}
    fi
