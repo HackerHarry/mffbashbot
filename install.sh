@@ -39,8 +39,8 @@ chmod +x *.sh
 
 echo "Configuring lighttpd..."
 if grep -q 'server\.document-root\s\+=\s\+"/var/www"' $LCONF; then
- sed -i 's/server\.document-root\s\+=\s\+\"\/var\/www\"/server\.document-root = \"\/var\/www\/html\"/' $LCONF
- mkdir -p /var/www/html
+ sudo sed -i 's/server\.document-root\s\+=\s\+\"\/var\/www\"/server\.document-root = \"\/var\/www\/html\"/' $LCONF
+ sudo mkdir -p /var/www/html
 fi
 HTTPUSER=$(grep server.username $LCONF | sed -e 's/.*= \"\(.*\)\"/\1/')
 if [ -z "$HTTPUSER" ]; then
