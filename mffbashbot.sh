@@ -513,6 +513,26 @@ while (true); do
    done
   fi
  fi
+ echo "Checking for munchies sitting at tables..."
+ for TABLE in 0 1 2 3 4; do
+  # Munchies on unleased tables can still be claimed, do not skip TABLE loop
+  # JSON data uses different data types when you bought further tables on food world
+  JSONDATATYPE=$($JQBIN '.datablock.tables | type' $FARMDATAFILE)
+  for CHAIR in 1 2; do
+   if [ "$JSONDATATYPE" = '"object"' ]; then
+    MUNCHIEREADY=$($JQBIN '.datablock.tables."'${TABLE}'"."chairs"."'${CHAIR}'".ready == 1' $FARMDATAFILE 2>/dev/null)
+   elif [ "$JSONDATATYPE" = '"array"' ]; then
+    MUNCHIEREADY=$($JQBIN '.datablock.tables['${TABLE}']."chairs"."'${CHAIR}'".ready == 1' $FARMDATAFILE 2>/dev/null)
+   else
+    echo "Error: Unknown JSON datatype: ${JSONDATATYPE}"
+    break 2
+   fi
+   if [ "$MUNCHIEREADY" = "true" ]; then
+    echo "Munchie available on table $((TABLE+1)), chair ${CHAIR}, claiming it..."
+    SendAJAXFoodworldRequest "action=cash&id=0&table=${TABLE}&chair=${CHAIR}&rid=${RID}"
+   fi
+  done
+ done
  # this is the only building with a queue in city 2, and it's unlikely for this
  # to ever change, hence static coding
  echo "Getting wind mill status..."
