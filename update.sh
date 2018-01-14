@@ -35,8 +35,107 @@ unzip -q master.zip
 
 echo "Updating bot files..."
 cp -f mffbashbot-master/* mffbashbot
+DIRS=( 1/1
+1/2
+1/3
+1/4
+1/5
+1/6
+2/1
+2/2
+2/3
+2/4
+2/5
+2/6
+3/1
+3/2
+3/3
+3/4
+3/5
+3/6
+4/1
+4/2
+4/3
+4/4
+4/5
+4/6
+5/1
+5/2
+5/3
+5/4
+5/5
+5/6
+6/1
+6/2
+6/3
+6/4
+6/5
+6/6
+city2/powerups
+city2/trans25
+city2/trans26
+city2/windmill
+farmersmarket/flowerarea
+farmersmarket/monsterfruit
+farmersmarket/nursery
+farmersmarket/pets
+farmersmarket/vet
+farmersmarket2
+foodworld/1
+foodworld/2
+foodworld/3
+foodworld/4
+forestry/1
+forestry/2
+forestry/forestry )
+NUMDIRS=${#DIRS[*]}
 # just in case...
 chmod 775 mffbashbot
+if [ -d ~/mffbashbot ]; then
+ cd ~/mffbashbot
+ for FARMNAME in $(ls -d */ | tr -d '/'); do
+  INDEX=0
+  cd $FARMNAME
+  echo "Checking farm $FARMNAME for missing directories..."
+  while [ $INDEX -lt $NUMDIRS ]; do
+   if ! [ -d "${DIRS[$INDEX]}" ]; then
+    echo "Creating directory ${DIRS[$INDEX]}"
+    mkdir -p "${DIRS[$INDEX]}"
+    case "${DIRS[$INDEX]}" in
+     *powerups)
+       touch ${DIRS[$INDEX]}/0
+       touch ${DIRS[$INDEX]}/1
+       ;;
+     *windmill | *nursery | foodworld/1 | foodworld/2 | foodworld/3 | foodworld/4 | forestry/1 | forestry/2)
+       touch ${DIRS[$INDEX]}/1
+       touch ${DIRS[$INDEX]}/2
+       ;;
+     *monsterfruit)
+       touch ${DIRS[$INDEX]}/fertilize
+       touch ${DIRS[$INDEX]}/light
+       touch ${DIRS[$INDEX]}/water
+       ;;
+     *pets | *vet)
+       touch ${DIRS[$INDEX]}/1
+       touch ${DIRS[$INDEX]}/2
+       touch ${DIRS[$INDEX]}/3
+       ;;
+     forestry/forestry)
+       touch ${DIRS[$INDEX]}/forestry
+       ;;
+     farmersmarket2)
+       ;;
+     *)
+       touch ${DIRS[$INDEX]}/0
+       ;;
+    esac
+   fi
+   INDEX=$((INDEX+1))
+  done
+  cd ..
+ done
+fi
+
 cd ~/mffbashbot
 
 echo "(Re)Setting permissions..."
