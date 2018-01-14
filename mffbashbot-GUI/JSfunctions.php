@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for Harry's My Free Farm Bash Bot (front end)
-// Copyright 2016-17 Harun "Harry" Basalamah
+// Copyright 2016-18 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."

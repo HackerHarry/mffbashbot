@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of Harry's My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
-# Copyright 2016-17 Harun "Harry" Basalamah
+# Copyright 2016-18 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,10 +28,15 @@
 MFFUSER=$1
 MFFPASS=$2
 MFFSERVER=$3
-TLD=$4
-if [ "$TLD" = "en" ]; then
- TLD=com
-fi
+MFFLANG=$4
+case "$MFFLANG" in
+ en) DOMAIN=myfreefarm.com
+         ;;
+ bg) DOMAIN=veselaferma.com
+         ;;
+  *) DOMAIN=myfreefarm.de
+         ;;
+esac
 LOGFILE=/tmp/mffbot-$$.log
 OUTFILE=/tmp/mffbottemp-$$.html
 COOKIEFILE=/tmp/mffcookies-$$.txt
@@ -43,8 +48,8 @@ VERSIONAVAILABLE=/tmp/mffbot-version-available.txt
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
-LOGOFFURL="http://s${MFFSERVER}.myfreefarm.${TLD}/main.php?page=logout&logoutbutton=1"
-POSTURL="https://www.myfreefarm.${TLD}/ajax/createtoken2.php?n=${NANOVALUE}"
+LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
+POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
 AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
@@ -56,9 +61,9 @@ wget -v -o $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-sess
 RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
 
 # get farm status
-wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
-wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&action=initforestry"
-wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?action=init&id=0&table=0&chair=0&rid=${RID}"
+wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
+wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=init&id=0&table=0&chair=0&rid=${RID}"
 
 # logoff
 # i don't really care, if all this succeeds or not

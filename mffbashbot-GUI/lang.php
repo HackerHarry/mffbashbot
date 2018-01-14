@@ -1,6 +1,6 @@
 <?php
 // Language file for Harry's My Free Farm Bash Bot (front end)
-// Copyright 2016-17 Harun "Harry" Basalamah
+// Copyright 2016-18 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 $configContents = parse_ini_file($gamepath . "/config.ini");
-$translations_available = ['de', 'en'];
+$translations_available = ['de', 'en', 'bg'];
 $lang=$configContents['lang'];
 // fallback to german if lang is unsupported or missing
 if (!in_array($lang, $translations_available))
