@@ -45,6 +45,7 @@ fi
 HTTPUSER=$(grep server.username $LCONF | sed -e 's/.*= \"\(.*\)\"/\1/')
 if [ -z "$HTTPUSER" ]; then
  echo "Webserver user could not be determined. Cannot continue."
+ echo "Потребителят на уеб сървър не можа да бъде определен. Не известна грешка!"
  echo "Der Webserver-Benutzer konnte nicht ermittelt werden. Hier endet alles."
  exit 1
 fi
@@ -83,28 +84,36 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
 
 echo
 echo "If you don't wish for automatic bot setup, press CTRL-C now"
+echo "Ако не желаете автоматична настройка на бота, натиснете CTRL-C"
 echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
 while (true); do
  echo
  echo "Please enter your farm name:"
+ echo "Въведете име на ферма:"
  read -p "Bitte gib Deinen Farmnamen ein: " FARMNAME
  echo "Please enter your server number:"
+ echo "Моля, изберете номер на сървър:"
  read -p "Jetzt die Servernummer: " SERVER
  echo "Please enter your password for farm $FARMNAME on server #${SERVER}:"
+ echo "Моля въведете парола за ферма $FARMNAME на сървър #${SERVER}:"
  read -p "Und nun das Passwort der Farm $FARMNAME auf Server ${SERVER}: " PASSWORD
  echo
  echo "This script will now set up your farm using this information:"
+ echo "Този скрипт ще настрои вашата ферма със следната информация:"
  echo "Dieses Skript wird Deine Farm mit diesen Informationen anlegen: "
  echo "Farm name: $FARMNAME"
  echo "Server: ${SERVER}"
  echo "Password: $PASSWORD"
  echo
  echo "Is this info correct? (Y/N):"
+ echo "Вярна ли е информацията ? (Д/Н):"
  read -p "Sind die Infos korrekt? (J/N):" CONFIRM
  [[ "$CONFIRM" != "Y" ]] || break
  [[ "$CONFIRM" != "y" ]] || break
  [[ "$CONFIRM" != "J" ]] || break
  [[ "$CONFIRM" != "j" ]] || break
+ [[ "$CONFIRM" != "Д" ]] || break
+ [[ "$CONFIRM" != "д" ]] || break
 done
 
 CFGFILE=config.ini
@@ -113,8 +122,9 @@ cd
 mv mffbashbot/dummy mffbashbot/$FARMNAME
 sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
 sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
-echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
 echo "The preset language for this farm is GERMAN!"
+echo "Предварителният език за тази ферма е БЪЛГАРСКИ!"
+echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
 sleep 5
 echo
 echo "Creating bot start script..."
@@ -126,6 +136,7 @@ cd mffbashbot
 chmod +x startallbots.sh
 
 echo
-echo "Fertig! Starte Deinen Bot mit ./startallbots.sh"
 echo "Done! Start your Bot with ./startallbots.sh"
+echo "Готово! Стартирайте вашият бот със : ./startallbots.sh"
+echo "Fertig! Starte Deinen Bot mit ./startallbots.sh"
 sleep 5

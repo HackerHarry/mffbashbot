@@ -1,6 +1,6 @@
 <?php
 // Triggers an update for Harry's My Free Farm Bash Bot
-// Copyright 2016-17 Harun "Harry" Basalamah
+// Copyright 2016-18 Harun "Harry" Basalamah
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

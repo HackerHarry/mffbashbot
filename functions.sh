@@ -1,5 +1,5 @@
 # Functions file for Harry's My Free Farm Bash Bot
-# Copyright 2016-17 Harun "Harry" Basalamah
+# Copyright 2016-18 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,17 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# WGETREQ="wget -nv -a $LOGFILE --output-document=/dev/null --user-agent=\"$AGENT\" --load-cookies $COOKIEFILE"
-# quoting within a variable are never a good idea...
 function WGETREQ {
  sHTTPReq=$1
  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq
 }
-AJAXFARM="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&"
-AJAXFOREST="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&"
-AJAXFOOD="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?rid=${RID}&"
-AJAXCITY="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&"
-AJAXMAIN="http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/main.php?rid=${RID}&"
+AJAXFARM="http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&"
+AJAXFOREST="http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&"
+AJAXFOOD="http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?rid=${RID}&"
+AJAXCITY="http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&"
+AJAXMAIN="http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&"
 
 function ctrl_c {
  echo "Caught CTRL-C - Trying to log off..."
@@ -35,49 +33,49 @@ function ctrl_c {
 
 function GetFarmData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
 }
 
 function GetForestryData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/forestry.php?rid=${RID}&action=initforestry"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
 }
 
 function GetFoodWorldData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
 }
 
 #function GetMenuUpdateData {
 # local sFile=$1
-# wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/menu-update.php"
+# wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/menu-update.php"
 #}
 
 function GetLotteryData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=initlottery"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&city=2&mode=initlottery"
 }
 
 function GetWindMillData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
 }
 
 function GetPanData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=showpan&farm=1&position=0"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=showpan&farm=1&position=0"
 }
 
 function GetInnerInfoData {
  local sFile=$1
  local iFarm=$2
  local iPosition=$3
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/farm.php?rid=${RID}&mode=innerinfos&farm=${iFarm}&position=${iPosition}"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=innerinfos&farm=${iFarm}&position=${iPosition}"
 }
 
 function GetOlympiaData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.myfreefarm.${TLD}/ajax/main.php?rid=${RID}&action=olympia_init"
+ wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&action=olympia_init"
 }
 
 function DoFarm {
@@ -697,7 +695,7 @@ function DoFarmersMarketAnimalTreatment {
  # get animal ID from queue holding status 0
  iCount=0
  iAnimalStatus=1
- while [ "$iAnimalStatus" -eq 1 ]; do 
+ while [ $iAnimalStatus -eq 1 ]; do
   iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | keys['${iCount}'] | tonumber' $FARMDATAFILE)
   iAnimalStatus=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].status | tonumber' $FARMDATAFILE)
   iCount=$((iCount+1))
@@ -1183,7 +1181,7 @@ function update_queue {
 function check_QueueSleep {
  local sFile=$1
  local sQueueItem=$(sed '2q;d' $sFile)
- if [ "$sQueueItem" = "sleep" ]; then
+ if [ "$sQueueItem" = "sleep" ] || [ -z "$sQueueItem" ] ; then
   return 0
  fi
  return 1
