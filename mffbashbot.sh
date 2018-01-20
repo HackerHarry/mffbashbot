@@ -31,6 +31,7 @@ CFGFILE=config.ini
 PIDFILE=bashpid.txt
 JQBIN=/usr/bin/jq
 USCRIPTURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/update.sh"
+UTMPFILE=/tmp/mffbot-update.sh
 MFFUSER=$1
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
@@ -80,7 +81,14 @@ while (true); do
     chmod +x ../update.sh
    fi
   fi
-  /bin/bash ../update.sh
+  cp -f ../update.sh $UTMPFILE
+  if [ -x $UTMPFILE ] && [ -O $UTMPFILE ]; then
+   /bin/bash $UTMPFILE
+  else
+   echo "Something's wrong with ${UTMPFILE}! Running update script from game folder, this might cause problems."
+   /bin/bash ../update.sh
+  fi
+  rm -f $UTMPFILE
   echo "Restarting bot..."
   sleep 3
   cd ..
@@ -576,10 +584,15 @@ while (true); do
    echo "Doing wind mill, slot 1..."
    DoFarm city2 windmill 1
   fi
-  if $JQBIN '.datablock[2]["2"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-   echo "Doing wind mill, slot 2..."
-   DoFarm city2 windmill 2
+  SLOTREMAIN=$($JQBIN '.datablock[3]' $FARMDATAFILE)
+  if [ $SLOTREMAIN -gt 0 ]; then
+   if $JQBIN '.datablock[2]["2"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+    echo "Doing wind mill, slot 2..."
+    DoFarm city2 windmill 2
+   fi
   fi
+  unset -v SLOTREMAIN
+  # do we need to sanitise memory? hmm..
  fi
 
  echo "Logging off..."
