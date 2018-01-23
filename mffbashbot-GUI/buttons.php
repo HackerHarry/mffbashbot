@@ -39,7 +39,8 @@ $togglesarray = [
 "dodeliveryevent" => "deliveryeventtoggle",
 "doolympiaevent" => "olympiaeventtoggle",
 "megafieldinstantplant" => "megafieldplanttoggle",
-"doseedbox" => "redeemdailyseedboxtoggle"
+"doseedbox" => "redeemdailyseedboxtoggle",
+"dodonkey" => "donkeytoggle"
 ];
 
 $toggledesc = [
@@ -56,7 +57,8 @@ $strings['butterflypointbonus'],
 $strings['onehourdelivery'],
 $strings['refillolympiaenergy'],
 $strings['megafieldplantafterharvest'],
-$strings['dailyseedboxredeem']
+$strings['dailyseedboxredeem'],
+$strings['waltraud']
 ];
 
 if (version_compare($botver, $versionavailable) == -1) {

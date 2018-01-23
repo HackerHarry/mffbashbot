@@ -32,6 +32,7 @@ PIDFILE=bashpid.txt
 JQBIN=/usr/bin/jq
 USCRIPTURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/update.sh"
 UTMPFILE=/tmp/mffbot-update.sh
+DONKEYCLAIMED=0
 MFFUSER=$1
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
@@ -425,6 +426,21 @@ while (true); do
    PAUSETIME=$((PAUSETIME-5))
   else
    echo "already claimed"
+  fi
+ fi
+
+ if grep -q "dodonkey = 1" $CFGFILE; then
+  DONKEYEXISTS=$($JQBIN '.updateblock.menue.donkey?' $FARMDATAFILE)
+  if [ "$DONKEYEXISTS" = "1" ]; then
+   echo -n "Checking if it's time for the daily donkey bonus..."
+   if [ $SECONDS -gt 86400 ] || [ $DONKEYCLAIMED -eq 0 ]; then
+    echo "it is, claiming it..."
+    SendAJAXFarmRequest "mode=dailydonkey&farm=1&position=1"
+    SECONDS=0
+    DONKEYCLAIMED=1
+   else
+    echo "it's not"
+   fi
   fi
  fi
 

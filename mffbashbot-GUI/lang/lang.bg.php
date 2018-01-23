@@ -62,5 +62,6 @@ $strings['megafieldplantafterharvest'] = 'Бързо засаждане на м�
 $strings['powerups'] = 'Ъпгрейди';
 $strings['refillolympiaenergy'] = 'Олимпийско / Зимно събитие: Зареждане на енергия';
 $strings['dailyseedboxredeem'] = 'Съберете дневните бонуси за семена';
+$strings['waltraud'] = 'BG TRANSLATION MISSING Activate Luke on a regular basis';
 // $strings[''] = '';
 ?>

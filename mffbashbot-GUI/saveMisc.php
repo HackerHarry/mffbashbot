@@ -44,6 +44,7 @@ $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
 $configContents['megafieldinstantplant'] = $_POST["megafieldplanttoggle"];
 $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
 $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
+$configContents['dodonkey'] = $_POST["donkeytoggle"];
 
 $filename = $gamepath . "/config.ini";
 writeINI($configContents, $filename);

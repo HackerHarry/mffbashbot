@@ -135,7 +135,7 @@ function saveMisc() {
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
  'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
- 'redeemdailyseedboxtoggle', 'dogtoggle'];
+ 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser;
 
