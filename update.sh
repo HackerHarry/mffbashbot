@@ -17,24 +17,6 @@
 
 #variables
 BOTGUIROOT=/var/www/html/mffbashbot
-if ! uname -a | grep -qi "cygwin"; then
- SUDO=sudo
-fi
-
-cd
-touch mffbashbot/updateInProgress
-rm -f mffbashbot/updateTrigger
-
-echo "Updating Harrys MFF Bash Bot..."
-rm -f master.zip 2>/dev/null
-rm -rf mffbashbot-master 2>/dev/null
-wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
-
-echo "Unpacking the archive..."
-unzip -q master.zip
-
-echo "Updating bot files..."
-cp -f mffbashbot-master/* mffbashbot
 DIRS=( 1/1
 1/2
 1/3
@@ -89,6 +71,24 @@ forestry/1
 forestry/2
 forestry/forestry )
 NUMDIRS=${#DIRS[*]}
+if ! uname -a | grep -qi "cygwin"; then
+ SUDO=sudo
+fi
+
+cd
+touch mffbashbot/updateInProgress
+rm -f mffbashbot/updateTrigger
+
+echo "Updating Harrys MFF Bash Bot..."
+rm -f master.zip 2>/dev/null
+rm -rf mffbashbot-master 2>/dev/null
+wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
+
+echo "Unpacking the archive..."
+unzip -q master.zip
+
+echo "Updating bot files..."
+cp -f mffbashbot-master/* mffbashbot
 # just in case...
 chmod 775 mffbashbot
 if [ -d ~/mffbashbot ]; then

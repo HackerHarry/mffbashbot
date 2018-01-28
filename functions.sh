@@ -735,6 +735,7 @@ function harvest_MegaField {
  local iSlot=$3
  local iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  local iPlot=1
+ local iVehicleBought=0
  # check for 2x2 harvest device
  case "$iHarvestDevice" in
   5|7|9|10) harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
@@ -756,7 +757,7 @@ function harvest_MegaField {
    # there's more to harvest...
    iPlot=1
   fi
-  check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
    echo -n "Harvesting Mega Field plot ${iPlot}..."
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
@@ -1255,13 +1256,23 @@ function get_MegaFieldHarvesterDelay {
 
 function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
+ local iVehicleBought=$2
  local iDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability' $FARMDATAFILE 2>/dev/null)
  if [ "$iDurability" = "null" ] || [ -z "$iDurability" ]; then
-  # buy a brand new one if empty
-  echo "Buying new vehicle #${iHarvestDevice}..."
-  SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
-  # update farm data in order to prevent permanent re-buy during harvest phase
-  GetFarmData $FARMDATAFILE
+  if [ $iVehicleBought -eq 0 ]; then
+   # buy a brand new one if empty
+   echo "Buying new vehicle #${iHarvestDevice}..." >&2
+   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
+   echo 1
+   return
+  else
+   # sending to STDERR...not the best way to do it
+   echo "Not buying new vehicle since it's already been bought this iteration" >&2
+   echo 1
+   return
+  fi
+ else
+  echo 0
  fi
 }
 
@@ -1350,12 +1361,13 @@ function harvest_MegaField2x2 {
  local iSlot=$3
  local iHarvestDevice=$4
  local iPlot=1
+ local iVehicleBought=0
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
  while (true); do
   if [ $iPlot -gt 87 ]; then
    return
   fi
-  check_MegaFieldEmptyHarvestDevice $iHarvestDevice
+  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if ! ((iPlot % 11)); then
    iPlot=$((iPlot+1))
    # prevent harvesting of last column
