@@ -71,6 +71,11 @@ forestry/1
 forestry/2
 forestry/forestry )
 NUMDIRS=${#DIRS[*]}
+STATUSFILE=isactive.txt
+SPIN[0]="-"
+SPIN[1]="\\"
+SPIN[2]="|"
+SPIN[3]="/"
 if ! uname -a | grep -qi "cygwin"; then
  SUDO=sudo
 fi
@@ -79,6 +84,23 @@ cd
 touch mffbashbot/updateInProgress
 rm -f mffbashbot/updateTrigger
 
+if [ -d ~/mffbashbot ]; then
+ cd ~/mffbashbot
+ for FARMNAME in $(ls -d */ | tr -d '/'); do
+  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
+   echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
+   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
+    for S in "${SPIN[@]}"; do
+     echo -ne "\b$S"
+     sleep 0.25
+    done
+   done
+  echo -ne "\bdone\n"
+  fi
+ done
+fi
+
+cd
 echo "Updating Harrys MFF Bash Bot..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null

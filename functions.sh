@@ -25,9 +25,13 @@ AJAXCITY="http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&"
 AJAXMAIN="http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&"
 
 function ctrl_c {
- echo "Caught CTRL-C - Trying to log off..."
- wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE"
+ echo "Caught CTRL-C"
+ if [ -e "$STATUSFILE" ]; then
+  echo "Logging off..."
+  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  rm -f "$STATUSFILE"
+ fi
+ echo "Exiting..."
  exit 1
 }
 
@@ -1134,7 +1138,7 @@ function check_PowerUps {
  local iPosition=$2
  local iSlot=$3
  if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
-  echo "Slot ${iSlot} is set to sleep."
+  echo "Slot ${iSlot} is set to sleep"
   return
  fi
  local iActivePowerUp

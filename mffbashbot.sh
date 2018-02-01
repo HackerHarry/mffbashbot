@@ -138,6 +138,7 @@ while (true); do
   echo "FATAL: RID could not be retrieved. Pausing 5 minutes before next attempt..."
   # try and logoff.. just in case
   wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  rm -f "$STATUSFILE"
   sleep 5m
   continue
  fi
