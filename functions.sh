@@ -864,6 +864,10 @@ function harvest_WindMill {
  SendAJAXCityRequest "city=2&mode=windmillcrop&slot=${iSlot}"
 }
 
+function start_WindMillNP {
+ start_WindMill $1 $2 $3
+}
+
 function start_WindMill {
  local iFarm=$1
  local iPosition=$2
