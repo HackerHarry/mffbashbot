@@ -16,19 +16,21 @@
 
 function WGETREQ {
  sHTTPReq=$1
- wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq
+ wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq
 }
-AJAXFARM="http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&"
-AJAXFOREST="http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&"
-AJAXFOOD="http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?rid=${RID}&"
-AJAXCITY="http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&"
-AJAXMAIN="http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&"
+AJAXURL="http://s${MFFSERVER}.${DOMAIN}/ajax/"
+AJAXFARM="${AJAXURL}farm.php?rid=${RID}&"
+AJAXFOREST="${AJAXURL}forestry.php?rid=${RID}&"
+AJAXFOOD="${AJAXURL}foodworld.php?rid=${RID}&"
+AJAXCITY="${AJAXURL}city.php?rid=${RID}&"
+AJAXMAIN="${AJAXURL}main.php?rid=${RID}&"
+AJAXGUILD="${AJAXURL}guild.php?rid=${RID}&"
 
 function ctrl_c {
  echo "Caught CTRL-C"
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
-  wget -nv -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
+  WGETREQ "$LOGOFFURL"
   rm -f "$STATUSFILE"
  fi
  echo "Exiting..."
@@ -37,49 +39,44 @@ function ctrl_c {
 
 function GetFarmData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=getfarms&farm=1&position=0"
 }
 
 function GetForestryData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOREST}action=initforestry"
 }
 
 function GetFoodWorldData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOOD}action=foodworld_init&id=0&table=0&chair=0"
 }
-
-#function GetMenuUpdateData {
-# local sFile=$1
-# wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/menu-update.php"
-#}
 
 function GetLotteryData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&city=2&mode=initlottery"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=initlottery"
 }
 
 function GetWindMillData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/city.php?rid=${RID}&city=2&mode=windmillinit"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=windmillinit"
 }
 
 function GetPanData {
  local sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=showpan&farm=1&position=0"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=showpan&farm=1&position=0"
 }
 
 function GetInnerInfoData {
  local sFile=$1
  local iFarm=$2
  local iPosition=$3
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=innerinfos&farm=${iFarm}&position=${iPosition}"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=innerinfos&farm=${iFarm}&position=${iPosition}"
 }
 
 function GetOlympiaData {
  sFile=$1
- wget -nv -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&action=olympia_init"
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXMAIN}action=olympia_init"
 }
 
 function DoFarm {
@@ -89,7 +86,7 @@ function DoFarm {
  local iPosition=$2
  local iSlot=$3
  if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
-  echo "Set to sleep."
+  echo "Set to sleep"
   return
  fi
  local sFunction=$(head -1 ${iFarm}/${iPosition}/${iSlot})
@@ -482,7 +479,7 @@ function DoForestry {
  local sFile=$1
  local sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
  if check_QueueSleep ${sFile}/${sFile}/${sFile}; then
-  echo "Set to sleep."
+  echo "Set to sleep"
   return
  fi
  harvest_${sFunction}
@@ -551,7 +548,7 @@ function DoFarmersMarket {
  local sPosition=$2
  local iSlot=$3
  if check_QueueSleep ${sFarm}/${sPosition}/${iSlot}; then
-  echo "Set to sleep."
+  echo "Set to sleep"
   return
  fi
  local sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
@@ -746,7 +743,7 @@ function harvest_MegaField {
   update_queue ${iFarm} ${iPosition} ${iSlot}
   iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
   case "$iHarvestDevice" in
-   5|7|9|10) echo "You need a 1x1 device after the 2x2 one. Cannot continue."
+   5|7|9|10) echo "You need a 1x1 device after the 2x2 one - cannot continue"
    return
    ;;
   esac
@@ -811,7 +808,6 @@ function start_MegaField {
   fi
   MegaFieldPlant${NONPREMIUM} $iPID $amountToGo
   # call function again since there are still free plots
-  # GetFarmData $FARMDATAFILE ... still needed?
   if [ "$iSafetyCount" = "" ]; then
    start_MegaField 2
   else
@@ -1116,7 +1112,7 @@ function check_SendGoodsOffMainFarm {
   iProductCount=$2
   iTransportCount=$((iTransportCount+iProductCount))
   if [ $iTransportCount -gt $iVehicleCapacity ]; then
-   echo "Transport to farm ${iFarm} stopped due to vehicle overload."
+   echo "Transport to farm ${iFarm} stopped due to vehicle overload"
    return
   fi
   iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
@@ -1142,7 +1138,6 @@ function check_PowerUps {
  local iPosition=$2
  local iSlot=$3
  if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
-  echo "Slot ${iSlot} is set to sleep"
   return
  fi
  local iActivePowerUp
@@ -1166,6 +1161,31 @@ function check_PowerUps {
   echo "Activating power-up #${iPowerUp}..."
   SendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
   update_queue ${iFarm} ${iPosition} ${iSlot}
+ fi
+}
+
+ function check_Tools {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+  return
+ fi
+ local iActiveTool
+ local iActiveGuildJob=$($JQBIN '.updateblock.job.guild_job_data | length' $FARMDATAFILE)
+ local iTool=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ if [ $iActiveGuildJob -gt 0 ]; then
+  # job is running and player is taking part
+  iActiveTool=$($JQBIN '.updateblock.job.tool.remain' $FARMDATAFILE)
+  if [ $iActiveTool -gt 0 ]; then
+   echo "Requested tool #${iTool} is already in use"
+   return
+  else
+   echo "Activating tool #${iTool}..."
+   SendAJAXGuildRequest "mode=job_set_tool&pid=${iTool}"
+   update_queue ${iFarm} ${iPosition} ${iSlot}
+   return
+  fi
  fi
 }
 
@@ -1428,7 +1448,7 @@ function get_AnimalsFastestCureForDisease {
       # Humpeln
       ;;
    4) echo 303
-      # Röhrhusten
+      # Roehrhusten
       ;;
    5) echo 303
       # Fieber
@@ -1440,13 +1460,13 @@ function get_AnimalsFastestCureForDisease {
       # Magengrummeln
       ;;
    8) echo 307
-      # Sehschwäche
+      # Sehschwaeche
       ;;
    9) echo 307
       # Rote Augen
       ;;
    10) echo 309
-      # Grüner Schnupfen
+      # Gruener Schnupfen
       ;;
    11) echo 309
       # Kopfschmerz
@@ -1467,7 +1487,7 @@ function get_AnimalsFastestCureForDisease {
       # Appetitlosigkeit
       ;;
    17) echo 315
-      # Hörschwäche
+      # Hoerschwaeche
       ;;
    18) echo 315
       # Juckende Haut
@@ -1509,7 +1529,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbares Fieber
       ;;
    31) echo 328
-      # Furchtbarer Röhrhusten
+      # Furchtbarer Roehrhusten
       ;;
    32) echo 329
       # Furchtbares Magengrummeln
@@ -1524,7 +1544,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Rote Augen
       ;;
    36) echo 333
-      # Furchtbare Sehschwäche
+      # Furchtbare Sehschwaeche
       ;;
    37) echo 335
       # Furchtbar Wacklige Beine
@@ -1533,7 +1553,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbarer Kopfschmerz
       ;;
    39) echo 336
-      # Furchtbar Grüner Schnupfen
+      # Furchtbar Gruener Schnupfen
       ;;
    40) echo 338
       # Furchtbare Magenverstimmung
@@ -1554,7 +1574,7 @@ function get_AnimalsFastestCureForDisease {
       # Furchtbar Juckende Haut
       ;;
    46) echo 342
-      # Furchtbare Hörschwäche
+      # Furchtbare Hoerschwaeche
       ;;
    47) echo 345
       # Furchtbarer Haarausfall
@@ -1830,7 +1850,7 @@ function SendAJAXFarmRequest {
 
 function SendAJAXFarmRequestOverwrite {
  local sAJAXSuffix=$1
- wget -nv -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix}
+ wget -nv -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix}
  # need to keep farm data file up to date here
 }
 
@@ -1852,4 +1872,9 @@ function SendAJAXCityRequest {
 function SendAJAXMainRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXMAIN}${sAJAXSuffix}
+}
+
+function SendAJAXGuildRequest {
+ local sAJAXSuffix=$1
+ WGETREQ ${AJAXGUILD}${sAJAXSuffix}
 }

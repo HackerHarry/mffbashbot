@@ -63,5 +63,6 @@ $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympic/Winter-Event: Refill energy';
 $strings['dailyseedboxredeem'] = 'Collect daily seed box bonuses';
 $strings['waltraud'] = 'Activate Lucky Donkey Luke on a regular basis';
+$strings['tools'] = 'Tools';
 // $strings[''] = '';
 ?>

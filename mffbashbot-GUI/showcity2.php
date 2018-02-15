@@ -27,7 +27,7 @@ include_once 'farmdata.php';
 include_once 'header.php';
 include_once 'buttons.php';
 
-$position = [0 => ["windmill", $strings['mill']], 1 => ["trans25", $strings['trans25']], 2 => ["trans26", $strings['trans26']], 3 => ["powerups", $strings['powerups']]];
+$position = [0 => ["windmill", $strings['mill']], 1 => ["trans25", $strings['trans25']], 2 => ["trans26", $strings['trans26']], 3 => ["powerups", $strings['powerups']], 4 => ["tools", $strings['tools']]];
 
 for ($pc = 0; $pc < 3; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][0]);
@@ -59,7 +59,7 @@ print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"
 print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
 print "</form><br>\n";
 
-for ($pc = 3; $pc < 4; $pc++) {
+for ($pc = 3; $pc < 5; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][0]);
  print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
  print "<tr><th colspan=\"" . $iNumQueues . "\">" . $position[$pc][1] . "</th>";

@@ -275,6 +275,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
+  case "tools":
+        // Werkzeuge
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
+        print "</select>\n";
+        break;
   default:
         // nicht unterstuetzte auswahl
         print "<option value=\"sleep\">Sleep</option></select>\n";
@@ -321,6 +327,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "powerups":
 	$buildingType = "PowerUps";
+	break;
+  case "tools":
+	$buildingType = "Tools";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -435,6 +444,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "ForestryBuilding":
    case "Tree":
+   case "Tools":
    $queueItemFriendlyName = $forestryproductlist[intval($queueItem)];
    break;
    case "FoodWorldBuilding":

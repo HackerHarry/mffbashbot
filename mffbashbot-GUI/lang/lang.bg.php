@@ -63,5 +63,6 @@ $strings['powerups'] = 'Ъпгрейди';
 $strings['refillolympiaenergy'] = 'Олимпийско / Зимно събитие: Зареждане на енергия';
 $strings['dailyseedboxredeem'] = 'Съберете дневните бонуси за семена';
 $strings['waltraud'] = 'Активиране на късметлийското магаре Люк ежедневно';
+$strings['tools'] = 'MISSING TRANSLATION: Tools';
 // $strings[''] = '';
 ?>

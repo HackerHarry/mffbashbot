@@ -63,5 +63,6 @@ $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympia/Winter-Event: Energie auffüllen';
 $strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';
 $strings['waltraud'] = 'Waltraud regelmässig aktivieren';
+$strings['tools'] = 'Werkzeuge';
 // $strings[''] = '';
 ?>
