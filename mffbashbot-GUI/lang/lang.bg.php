@@ -64,5 +64,8 @@ $strings['refillolympiaenergy'] = 'Олимпийско / Зимно събит�
 $strings['dailyseedboxredeem'] = 'Съберете дневните бонуси за семена';
 $strings['waltraud'] = 'Активиране на късметлийското магаре Люк ежедневно';
 $strings['tools'] = 'Инструменти';
+$strings['placebefore'] = 'MISSING TRANSLATION: Insert item before selection';
+$strings['deletequeueitem'] = 'MISSING TRANSLATION: Delete selected item(s) from queue';
+$strings['placeatend'] = 'MISSING TRANSLATION: Insert item at the end of the queue';
 // $strings[''] = '';
 ?>

@@ -56,7 +56,7 @@ for ($position = 1; $position <= 3; $position++) {
 print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
-print "<input type=\"submit\" name=\"save\" value=\"" . $strings['save'] . "\" onclick=\"return saveConfig()\">";
+print "<button class=\"btn btn-success btn-sm\" name=\"save\" onclick=\"return saveConfig()\">" . $strings['save'] . "</button>";
 print "</form><br>\n";
 
 for ($position = 4; $position <= 6; $position++) {

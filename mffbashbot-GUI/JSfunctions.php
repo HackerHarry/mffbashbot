@@ -67,9 +67,11 @@ function insertOptionBefore(elSel, elSelDest, amountpos)
   var elOptOld = elSelDest.options[elSelDest.selectedIndex];
   try {
    elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+   return false;
   }
   catch(ex) {
    elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
+   return false;
   }
  }
 }
@@ -88,9 +90,11 @@ function appendOptionLast(elSel, elSelDest, amountpos)
  }
  try {
   elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
+  return false;
  }
  catch(ex) {
   elSelDest.add(elOptNew); // IE only
+  return false;
  }
 }
 
@@ -101,6 +105,7 @@ function removeOptionSelected(elSelDest)
    elSelDest.remove(i);
   }
  }
+ return false;
 }
 
 function updateBotStatus() {

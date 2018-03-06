@@ -64,5 +64,8 @@ $strings['refillolympiaenergy'] = 'Olympic/Winter-Event: Refill energy';
 $strings['dailyseedboxredeem'] = 'Collect daily seed box bonuses';
 $strings['waltraud'] = 'Activate Lucky Donkey Luke on a regular basis';
 $strings['tools'] = 'Tools';
+$strings['placebefore'] = 'Insert item before selection';
+$strings['deletequeueitem'] = 'Delete selected item(s) from queue';
+$strings['placeatend'] = 'Insert item at the end of the queue';
 // $strings[''] = '';
 ?>

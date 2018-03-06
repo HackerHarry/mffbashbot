@@ -64,5 +64,8 @@ $strings['refillolympiaenergy'] = 'Olympia/Winter-Event: Energie auffüllen';
 $strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';
 $strings['waltraud'] = 'Waltraud regelmässig aktivieren';
 $strings['tools'] = 'Werkzeuge';
+$strings['placebefore'] = 'Auswahl vor markiertes Element in die Warteschlange setzen';
+$strings['deletequeueitem'] = 'Markierte(s) Element(e) aus der Warteschlange löschen';
+$strings['placeatend'] = 'Auswahl ans Ende der Warteschlange setzen';
 // $strings[''] = '';
 ?>

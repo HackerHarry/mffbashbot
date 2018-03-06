@@ -16,15 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-if (!isset($farm))
- $farm = 1;
-if ($farm == "runbot") {
- exec("script/wakeupthebot.sh " . $gamepath);
- $farm = 1;
-}
-include 'JSfunctions.php';
-$botver = file_get_contents($gamepath . "/../version.txt");
-print "<small>" . $botver . " - " . $username . "</small>";
+
 $togglesarray = [
 "dodog" => "dogtoggle",
 "dopuzzleparts" => "puzzlepartstoggle",
@@ -61,18 +53,8 @@ $strings['dailyseedboxredeem'],
 $strings['waltraud']
 ];
 
-if (version_compare($botver, $versionavailable) == -1) {
- print " -- ";
- print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
- print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
- print "<small> -- " . $strings['historyishere'] . "</small></div>";
-}
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
-print $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
-system("cat " . $gamepath . "/lastrun.txt");
-print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
-include 'getbotstatus.php';
-print "</div><form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
+print "<form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
 for ($i = 1; $i < 7; $i++)
@@ -81,8 +63,8 @@ print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" 
 print "<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"" . $farmFriendlyName['forestry'] . "\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showforestry.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"" . $farmFriendlyName['foodworld'] . "\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showfoodworld.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['city2'] . "\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showcity2.php'; this.form.submit()\">\n";
-print "<input type=\"button\" name=\"runbot\" value=\"BOT&#13;&#10;START\" title=\"" . $strings['forcebotstart'] . "\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\" style=\"text-align:center;\">&nbsp;\n";
-print "<input type=\"button\" name=\"logon\" value=\"" . $strings['logon'] . "\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/runbot.png\" class=\"navilink\" name=\"runbot\" title=\"" . $strings['forcebotstart'] . "\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\">&nbsp;\n";
+print "<input type=\"button\" name=\"logon\" class=\"btn btn-warning btn-sm logonbtn\" value=\"" . $strings['logon'] . "\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
 print "<br>";
 // misc options
 print "<div id=\"optionspane\" style=\"display:none;\">";
@@ -92,7 +74,9 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  $savedkey=key($togglesarray);
  $toggle=$togglesarray[$savedkey];
  print "<tr><td>\n";
- print "<input type=\"checkbox\" id=\"" . $toggle . "\" name=\"" . $toggle . "\" onchange=\"saveMisc();\" value=\"1\">&nbsp;" . $toggledesc[$i] . "\n";
+ print "<label class=\"switch\">\n";
+ print "<input type=\"checkbox\" id=\"" . $toggle . "\" name=\"" . $toggle . "\" onchange=\"saveMisc();\" value=\"1\">\n";
+ print "<span class=\"slider round\"></span></label>$toggledesc[$i]\n";
  print "</td></tr>\n";
  next($togglesarray);
 }
@@ -140,7 +124,7 @@ CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
 print "</td></tr></table>\n";
 print "</div>\n";
-print "</form><button id=\"optbtn\" onclick=\"showHideOptions();\">" . $strings['options'] . "...</button>\n";
+print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions();\">" . $strings['options'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";

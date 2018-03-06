@@ -142,7 +142,7 @@ while (true); do
   sleep 5m
   continue
  fi
- echo "Our RID is $RID"
+ echo "Your RID is $RID"
 
  # source functions
  . ../functions.sh

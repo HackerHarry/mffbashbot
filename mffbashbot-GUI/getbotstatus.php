@@ -24,7 +24,7 @@ if (file_exists($gamepath . "/../updateInProgress"))
  print "<font color=\"yellow\">" . $strings['botisupdating'] . "</font>";
 else
  if (file_exists($gamepath . "/isactive.txt"))
-  print "<font color=\"darkred\">" . $strings['botisactive'] . "</font>";
+  print "<font color=\"red\">" . $strings['botisactive'] . "</font>";
  else
   print "<font color=\"lime\">" . $strings['botisidle'] . "</font>";
 ?>

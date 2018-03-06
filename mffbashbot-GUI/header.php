@@ -21,7 +21,30 @@ print "<html>\n";
 print "<head>\n";
 print "<title>Harrys MFF Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
+print "<link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "<link href=\"css/mffbot.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "</head>\n";
 print "<body id=\"main_body\" class=\"main_body\" onload=\"window.setTimeout(updateBotStatus, 30000)\">\n";
+
+if (!isset($farm))
+ $farm = 1;
+if ($farm == "runbot") {
+ exec("script/wakeupthebot.sh " . $gamepath);
+ $farm = 1;
+}
+include 'JSfunctions.php';
+$botver = file_get_contents($gamepath . "/../version.txt");
+print "<nav class=\"navbar btn-dark bg-dark fixed-top\">\n";
+print $botver . " -- " . $username . " -- " . $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
+system("cat " . $gamepath . "/lastrun.txt");
+print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
+include 'getbotstatus.php';
+print "</div>\n";
+if (version_compare($botver, $versionavailable) == -1) {
+ print " -- ";
+ print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
+ print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
+ print "<small> -- " . $strings['historyishere'] . "</small></div>";
+}
+print "</nav><br><br>\n";
 ?>

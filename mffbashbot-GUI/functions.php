@@ -167,13 +167,13 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         // Ponyhof
         print "<option value=\"sleep\">Sleep</option>\n";
         CreatePonyFarmOptions(2, 4, 8);
-        print "/select>\n";
+        print "</select>\n";
         break;
   case 19:
         // Fahrzeughalle
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateMegaFieldOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-        print "/select>\n";
+        print "</select>\n";
         break;
   case 20:
         // Biosprit-Anlage
@@ -292,9 +292,10 @@ function GetQueueCount($gamepath, $farm, $position) {
  return $retval;
 }
 function PlaceQueueButtons($position, $QueueNum) {
- print "<input type=\"button\" value=\"&lt;&lt;\" onclick=\"insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl vor die Markierung in der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
- print "<input type=\"button\" value=\"X\" onclick=\"removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"Markiertes Element in Warteschlange l&ouml;schen\" style=\"height:20px; width:22px; margin-left:3px; margin-right:3px\">\n";
- print "<input type=\"button\" value=\"&gt;&gt;\" onclick=\"appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"Auswahl ans Ende der Warteschlange setzen\" style=\"height:20px; width:22px; padding:0px\">\n";
+ global $strings;
+ print "<input type=\"image\" src=\"image/rewind.png\" class=\"queuebtn\" onclick=\"return insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placebefore'] . "\">\n";
+ print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"" . $strings['deletequeueitem'] . "\">\n";
+ print "<input type=\"image\" src=\"image/fastforward.png\" class=\"queuebtn\" onclick=\"return appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placeatend'] . "\">\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  global $farmdata;
