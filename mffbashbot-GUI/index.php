@@ -78,7 +78,7 @@ unset($username);
      <input class="form-control" type="password" name="password" placeholder="Password">
     </div>
    </div>
-   <button type="submit" class="btn btn-lg btn-primary">Start !</button>
+   <button type="submit" class="btn btn-lg btn-primary" onclick="document.forms.logon.server.disabled=0;">Start !</button>
   </form>
  </body>
 </html>
