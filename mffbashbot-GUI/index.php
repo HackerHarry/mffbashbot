@@ -36,7 +36,8 @@ include 'gamepath.php';
 system('cd ' . $gamepath . ' ; for farm in $(ls -d */ | tr -d \'/\'); do echo -n "   farmno[\"$farm\"] = "; grep server $farm/config.ini | awk \'{ printf "%i", $3 }\'; echo ";"; done');
 unset($username);
 ?>
-   document.forms.logon.server.options[farmno[farmname]].selected = true;
+   document.forms.logon.serverdummy.options[farmno[farmname]].selected = true;
+   document.forms.logon.server.value = farmno[farmname];
    }
   </script>
   <h1>Harry's My Free Farm Bash Bot</h1>
@@ -49,7 +50,7 @@ unset($username);
   <form name="logon" method="post" action="validate.php">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
-     <select name="server" class="form-control" disabled><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
+     <select name="serverdummy" class="form-control" disabled><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
      <option value="3">3</option><option value="4">4</option><option value="5">5</option>
      <option value="6">6</option><option value="7">7</option><option value="8">8</option>
      <option value="9">9</option><option value="10">10</option><option value="11">11</option>
@@ -60,6 +61,7 @@ unset($username);
      <option value="24">24</option><option value="25">25</option></select>
     </div>
    </div>
+   <input type="hidden" name="server" value="0">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
      <select name="username" class="form-control" onchange="return setFarmNo(document.forms.logon.username.options[document.forms.logon.username.options.selectedIndex].value);">
@@ -78,7 +80,7 @@ unset($username);
      <input class="form-control" type="password" name="password" placeholder="Password">
     </div>
    </div>
-   <button type="submit" class="btn btn-lg btn-primary" onclick="document.forms.logon.server.disabled=0;">Start !</button>
+   <button type="submit" class="btn btn-lg btn-primary" value="submit">Start !</button>
   </form>
  </body>
 </html>
