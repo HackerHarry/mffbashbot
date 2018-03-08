@@ -25,7 +25,7 @@ include_once 'lang.php';
 
 print "<html>\n";
 print "<head>\n";
-print "<title>Harrys MFF Bash Bot - " . $strings['validation'] . "</title>\n";
+print "<title>Harry's MFF Bash Bot - " . $strings['validation'] . "</title>\n";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
 print "</head><body bgcolor=\"#4E7AB1\"\n>";
 print "<h1>" . $strings['pleasewait'] . "</h1>";

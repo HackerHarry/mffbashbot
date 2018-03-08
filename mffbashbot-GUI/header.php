@@ -19,7 +19,7 @@
 print "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 print "<html>\n";
 print "<head>\n";
-print "<title>Harrys MFF Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
+print "<title>Harry's MFF Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
 print "<link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "<link href=\"css/mffbot.css\" rel=\"stylesheet\" type=\"text/css\">\n";

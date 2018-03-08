@@ -108,7 +108,7 @@ switch ($farm) {
  break;
  
  default:
-  print "<html><head><title>Harrys MFF Bash Bot</title>";
+  print "<html><head><title>Harry's MFF Bash Bot</title>";
   print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
   print "</head><body bgcolor=\"#FE2A21\"><h1>" . $strings['errorsavinggamedata'] . "</h1></body></html>";
 }

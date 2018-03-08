@@ -102,7 +102,7 @@ if [ -d ~/mffbashbot ]; then
 fi
 
 cd
-echo "Updating Harrys MFF Bash Bot..."
+echo "Updating Harry's MFF Bash Bot..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null
 wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
