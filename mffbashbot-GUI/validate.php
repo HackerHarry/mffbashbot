@@ -30,26 +30,21 @@ print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n"
 print "</head><body bgcolor=\"#4E7AB1\"\n>";
 print "<h1>" . $strings['pleasewait'] . "</h1>";
 print ("<br>");
-// logon and get farm data
-system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang);
-$JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
-$JSONforestdata = file_get_contents("/tmp/forestdata-" . $username . ".txt");
-$JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
-
-system("grep -q 'datablock' /tmp/fooddata-" . $username . ".txt", $retval);
+system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang, $retval);
 if ( $retval == 0 ) {
-//        header("Location: showfarm.php");
-//        die();
-	print "<form name=\"jump2farm\" method=\"post\" action='showfarm.php'>";
-	print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
-	print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
-  print "<input type=\"hidden\" name=\"lang\" value=\"" . $lang . "\">";
-	print "</form>"; 
-	print "<script type=\"text/javascript\">";
-	print "document.jump2farm.submit();";
-	print "</script>"; }
+ $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
+ $JSONforestdata = file_get_contents("/tmp/forestdata-" . $username . ".txt");
+ $JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
+ print "<form name=\"jump2farm\" method=\"post\" action='showfarm.php'>";
+ print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
+ print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
+ print "<input type=\"hidden\" name=\"lang\" value=\"" . $lang . "\">";
+ print "</form>";
+ print "<script type=\"text/javascript\">";
+ print "document.jump2farm.submit();";
+ print "</script>"; }
 else
-	print "<big>" . $strings['logonfailed'] . "</big>";
+ print "<h2>" . $strings['logonfailed'] . "</h2>";
 ?>
  </body>
 </html>

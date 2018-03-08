@@ -59,11 +59,14 @@ MFFTOKEN=$(wget -v -o $LOGFILE --output-document=- --user-agent="$AGENT" --post-
 wget -v -o $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
 # get our RID
 RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
-
+if [ -z "$RID" ]; then
+ # alert PHP...
+ exit 1
+fi
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
 wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
-wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=init&id=0&table=0&chair=0&rid=${RID}"
+wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
 
 # logoff
 # i don't really care, if all this succeeds or not
@@ -73,3 +76,4 @@ rm $COOKIEFILE $OUTFILE $LOGFILE
 
 # get latest version number from repository
 wget -v -o "$LOGFILE" --output-document="$VERSIONAVAILABLE" --user-agent="$AGENT" "$VERURL"
+exit 0
