@@ -28,6 +28,35 @@ include 'functions.php';
  </head>
  <body id="main_body" class="main_body text-center">
   <script type="text/javascript">
+   function validateLogon() {
+    var sUser = document.forms.logon.username.value;
+    var sPass = document.forms.logon.password.value;
+    var iServer = document.forms.logon.server.value;
+    var sData = "username=" + sUser + "&server=" + iServer + "&password=" + sPass;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+     if (xhttp.readyState != null && (xhttp.readyState < 3 || xhttp.status != 200))
+      return
+     parts = xhttp.responseText.split(";");
+     if (parts[2])
+      if (parts[2] == 0) {
+       document.getElementById("logonstatus").innerHTML = parts[3] + parts[4];
+       document.forms.jump2farm.submit();
+       return;
+      }
+      else if (parts[2] == 1) {
+       document.getElementById("logonstatus").innerHTML = parts[3];
+       return;
+      }
+     if (parts[0] == 1)
+      document.getElementById("logonstatus").innerHTML = parts[1];
+    }
+    xhttp.open("POST", "validate.php", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send(sData);
+    return false;
+   }
+
    function setFarmNo(farmname) {
    var farmno = [];
 <?php
@@ -38,6 +67,7 @@ unset($username);
 ?>
    document.forms.logon.serverdummy.options[farmno[farmname]].selected = true;
    document.forms.logon.server.value = farmno[farmname];
+   return true;
    }
   </script>
   <h1>Harry's My Free Farm Bash Bot</h1>
@@ -46,8 +76,8 @@ unset($username);
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15" role="button">Forum</a>
    </div>
   </div>
-  <br><br>
-  <form name="logon" method="post" action="validate.php">
+  <div id="logonstatus"><br></div>
+  <form name="logon" method="post" action="">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
      <select name="serverdummy" class="form-control" disabled><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
@@ -80,7 +110,7 @@ unset($username);
      <input class="form-control" type="password" name="password" placeholder="Password">
     </div>
    </div>
-   <button type="submit" class="btn btn-lg btn-primary" value="submit">Start !</button>
+   <button type="submit" class="btn btn-lg btn-danger" value="submit" onclick="return validateLogon();">Start !</button>
   </form>
  </body>
 </html>

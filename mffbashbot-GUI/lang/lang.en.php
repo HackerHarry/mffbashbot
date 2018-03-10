@@ -4,7 +4,6 @@ $farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => '
 $forestryBuildingFriendlyName = ['Saw mill', 'Carpentry', 'Forestry'];
 $foodworldBuildingFriendlyName = ['Soda stall', 'Snack booth', 'Pastry shop', 'Ice cream parlour' ];
 $strings['mill'] = 'Wind mill';
-$strings['validation'] = 'Validating credentials...';
 $strings['pleasewait'] = 'Please hold...';
 $strings['logonfailed'] = 'Logon failed!';
 $strings['save'] = 'Save';
@@ -67,5 +66,8 @@ $strings['tools'] = 'Tools';
 $strings['placebefore'] = 'Insert item before selection';
 $strings['deletequeueitem'] = 'Delete selected item(s) from queue';
 $strings['placeatend'] = 'Insert item at the end of the queue';
+$strings['selectserver'] = 'Please select a server';
+$strings['enterpw'] = 'Please enter a valid password';
+$strings['logonsuccess'] = 'Logon succeeded, loading control interface...';
 // $strings[''] = '';
 ?>

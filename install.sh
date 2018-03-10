@@ -61,6 +61,10 @@ fastcgi.server = ( ".php" => ((
 cd /etc/lighttpd/conf-enabled/
 sudo ln -s ../conf-available/10-accesslog.conf 10-accesslog.conf
 sudo ln -s ../conf-available/10-fastcgi.conf 10-fastcgi.conf
+if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
+ echo "server.stream-response-body = 1" | sudo tee --append $LCONF > /dev/null
+fi
+
 sudo /etc/init.d/lighttpd restart
 
 echo "Setting up GUI files..."

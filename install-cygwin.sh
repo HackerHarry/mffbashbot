@@ -30,6 +30,9 @@ server.modules += ( "mod_cgi" )
 cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
 mkdir -p /var/log/lighttpd 2>/dev/null
+if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
+ echo "server.stream-response-body = 1" >>$LCONF
+fi
 
 echo "Moving GUI files..."
 mkdir -p /var/www/html 2>/dev/null

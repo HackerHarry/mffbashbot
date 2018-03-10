@@ -16,35 +16,43 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+@ini_set('zlib.output_compression', 0);
+@ini_set('implicit_flush', 1);
+for ($i = 0; $i < ob_get_level(); $i++)
+ ob_end_flush();
+ob_implicit_flush(1);
+if (empty($_POST["username"])) {
+ print "1;<h4><font color=\"darkred\">Please select a farm</font></h4>\n";
+ exit(1);
+}
 $username=$_POST["username"];
-$password=$_POST["password"];
-$server=$_POST["server"];
 include_once 'functions.php';
 include_once 'gamepath.php';
 include_once 'lang.php';
-
-print "<html>\n";
-print "<head>\n";
-print "<title>Harry's MFF Bash Bot - " . $strings['validation'] . "</title>\n";
-print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
-print "</head><body bgcolor=\"#4E7AB1\"\n>";
-print "<h1>" . $strings['pleasewait'] . "</h1>";
-print ("<br>");
+if (empty($_POST["server"])) {
+ print "1;<h4><font color=\"darkred\">" . $strings['selectserver'] . "</font></h4>\n";
+ exit(1);
+}
+$server=$_POST["server"];
+if (empty($_POST["password"])) {
+ print "1;<h4><font color=\"darkred\">" . $strings['enterpw'] . "</font></h4>\n";
+ exit(1);
+}
+$password=$_POST["password"];
+echo "1;<h4><font color=\"yellow\">" . $strings['pleasewait'] . "</font></h4>;";
+ob_flush();
+flush();
 system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang, $retval);
 if ( $retval == 0 ) {
- $JSONfarmdata = file_get_contents("/tmp/farmdata-" . $username . ".txt");
- $JSONforestdata = file_get_contents("/tmp/forestdata-" . $username . ".txt");
- $JSONfooddata = file_get_contents("/tmp/fooddata-" . $username . ".txt");
+ print "0;<h4><font color=\"lime\">" . $strings['logonsuccess'] . "</font></h4>;";
+ ob_flush();
+ flush();
  print "<form name=\"jump2farm\" method=\"post\" action='showfarm.php'>";
  print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
  print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
  print "<input type=\"hidden\" name=\"lang\" value=\"" . $lang . "\">";
  print "</form>";
- print "<script type=\"text/javascript\">";
- print "document.jump2farm.submit();";
- print "</script>"; }
+}
 else
- print "<h2>" . $strings['logonfailed'] . "</h2>";
+ print "1;<h4><font color=\"darkred\">" . $strings['logonfailed'] . "</font></h4>\n";
 ?>
- </body>
-</html>

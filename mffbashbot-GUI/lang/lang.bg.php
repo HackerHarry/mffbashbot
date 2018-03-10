@@ -4,7 +4,6 @@ $farmFriendlyName = ['1' => 'Ферма 1', '2' => 'Ферма 2', '3' => 'Фе�
 $forestryBuildingFriendlyName = ['Дъскорезница', 'Дърводелство', 'Лесовъдство'];
 $foodworldBuildingFriendlyName = ['Щанд за сода', 'Щанд за бързо хранене', 'Магазин за сладки', 'Салон за сладолед' ];
 $strings['mill'] = 'Мелница';
-$strings['validation'] = 'Потвърждаване на самоличност...';
 $strings['pleasewait'] = 'Моля изчакайте...';
 $strings['logonfailed'] = 'Входът неуспешен!';
 $strings['save'] = 'Запис';
@@ -67,5 +66,8 @@ $strings['tools'] = 'Инструменти';
 $strings['placebefore'] = 'MISSING TRANSLATION: Insert item before selection';
 $strings['deletequeueitem'] = 'MISSING TRANSLATION: Delete selected item(s) from queue';
 $strings['placeatend'] = 'MISSING TRANSLATION: Insert item at the end of the queue';
+$strings['selectserver'] = 'MISSING TRANSLATION: Please select a server';
+$strings['enterpw'] = 'MISSING TRANSLATION: Please enter a valid password';
+$strings['logonsuccess'] = 'MISSING TRANSLATION: Logon succeeded, loading control interface...';
 // $strings[''] = '';
 ?>

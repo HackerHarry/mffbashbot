@@ -17,6 +17,7 @@
 
 #variables
 BOTGUIROOT=/var/www/html/mffbashbot
+LCONF=/etc/lighttpd/lighttpd.conf
 DIRS=( 1/1
 1/2
 1/3
@@ -172,6 +173,20 @@ $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
 $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+
+# see if lighttpd.conf needs patching
+if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
+ echo "Configuring lighttpd..."
+ $SUDO echo "server.stream-response-body = 1" >>$LCONF
+ if [ -n "$SUDO" ]; then
+  $SUDO /etc/init.d/lighttpd restart
+ else
+  echo "Restarting lighttpd..."
+  pkill lighttpd
+  sleep 3
+  /usr/sbin/lighttpd -f '$LCONF'
+ fi
+fi
 
 echo "Done!"
 cd
