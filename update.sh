@@ -177,7 +177,7 @@ $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
 # see if lighttpd.conf needs patching
 if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
  echo "Configuring lighttpd..."
- $SUDO echo "server.stream-response-body = 1" >>$LCONF
+ echo "server.stream-response-body = 1" | $SUDO tee --append $LCONF > /dev/null
  if [ -n "$SUDO" ]; then
   $SUDO /etc/init.d/lighttpd restart
  else
