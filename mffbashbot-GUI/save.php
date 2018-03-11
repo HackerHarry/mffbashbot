@@ -40,21 +40,26 @@ switch ($farm) {
     if (isset($slots[2]))
      $slot3 = explode(" ", $slots[2]);
     $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot1);
-    saveConfig($filename, $slot1); // feed it filename and data to write
+    $retval = saveConfig($filename, $slot1);
+    if ($retval === false || $retval == 0) exit("1");
     if ($slot2) { // this should not be needed since we have at least 2 slots here
      $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot2);
-     saveConfig($filename, $slot2);
+     $retval = saveConfig($filename, $slot2);
+     if ($retval === false || $retval == 0) exit("1");
     }
     if (isset($slot3)) {
      $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot3);
-     saveConfig($filename, $slot3);
+     $retval = saveConfig($filename, $slot3);
+     if ($retval === false || $retval == 0) exit("1");
     }
     continue;
    }
   $slot1 = explode(" ", $queue[$position - 1]);
   $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot1);
-  saveConfig($filename, $slot1);
+  $retval = saveConfig($filename, $slot1);
+  if ($retval === false || $retval == 0) exit("1");
   }
+ echo "0";
  break;
 
  case "farmersmarket":
@@ -71,12 +76,15 @@ switch ($farm) {
     if (isset($slots[2]))
      $slot3 = explode(" ", $slots[2]);
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-    saveConfig($filename, $slot1);
+    $retval = saveConfig($filename, $slot1);
+    if ($retval === false || $retval == 0) exit("1");
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
-    saveConfig($filename, $slot2);
+    $retval = saveConfig($filename, $slot2);
+    if ($retval === false || $retval == 0) exit("1");
     if (isset($slot3)) {
      $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot3);
-     saveConfig($filename, $slot3);
+     $retval = saveConfig($filename, $slot3);
+     if ($retval === false || $retval == 0) exit("1");
      unset($slot3);
      unset($slots[2]); // in case we have a 2- or 1-slotter behind a 3-slotter
     }
@@ -84,8 +92,10 @@ switch ($farm) {
    }
    $slot1 = explode(" ", $queue[$poscount]);
    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-   saveConfig($filename, $slot1);
+   $retval = saveConfig($filename, $slot1);
+   if ($retval === false || $retval == 0) exit("1");
   }
+ echo "0";
  break;
 
  case "city2":
@@ -96,20 +106,22 @@ switch ($farm) {
     $slot1 = explode(" ", $slots[0]);
     $slot2 = explode(" ", $slots[1]);
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-    saveConfig($filename, $slot1); // feed it filename and data to write
+    $retval = saveConfig($filename, $slot1);
+    if ($retval === false || $retval == 0) exit("1");
     $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot2);
-    saveConfig($filename, $slot2);
+    $retval = saveConfig($filename, $slot2);
+    if ($retval === false || $retval == 0) exit("1");
     continue;
    }
    $slot1 = explode(" ", $queue[$poscount]);
    $filename = $gamepath . "/" . $farm . "/" . $position[$poscount] . "/" . array_shift($slot1);
-   saveConfig($filename, $slot1);
+   $retval = saveConfig($filename, $slot1);
+   if ($retval === false || $retval == 0) exit("1");
   }
+ echo "0";
  break;
  
  default:
-  print "<html><head><title>Harry's MFF Bash Bot</title>";
-  print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">";
-  print "</head><body bgcolor=\"#FE2A21\"><h1>" . $strings['errorsavinggamedata'] . "</h1></body></html>";
+  exit("1");
 }
 ?>

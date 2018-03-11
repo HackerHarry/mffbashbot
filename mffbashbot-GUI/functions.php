@@ -470,13 +470,13 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  print "<option value=\"" . $queueItem . "\">" . $queueItemFriendlyName . "</option>\n";
 }
 function saveConfig($filename, $queueData) {
- $fh = fopen($filename, "w");
+ if (!$handle = fopen($filename, 'w'))
+  return false;
  // skip first entry, we're using live data building type
- if ($fh)
-  for ($itemcount = 1; $itemcount <= count($queueData); $itemcount++)
-   fwrite($fh, $queueData[$itemcount - 1] . "\n");
-// chmod($filename, 0775);
- fclose($fh);
+ for ($itemcount = 1; $itemcount <= count($queueData); $itemcount++)
+  $result = fwrite($handle, $queueData[$itemcount - 1] . "\n");
+ fclose($handle);
+ return $result;
 }
 function writeINI($configData, $filename) {
  $data2write = "";
@@ -484,7 +484,8 @@ function writeINI($configData, $filename) {
   $data2write .= $configItem . " = " . (is_numeric($iValue) ? $iValue : "'" . $iValue . "'") . "\n";
  if (!$handle = fopen($filename, 'w'))
   return false;
- fwrite($handle, $data2write);
+ $result = fwrite($handle, $data2write);
  fclose($handle);
+ return $result;
 }
 ?>

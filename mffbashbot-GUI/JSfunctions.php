@@ -153,11 +153,17 @@ function saveMisc() {
  }
 
  xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+  if (xhttp.readyState == 4 && xhttp.status == 200)
+   if (xhttp.responseText == 0)
+    displayNotification("{$strings['saveOK']}", "", false, "saveOK");
+   else
+    displayNotification("{$strings['error']}", "{$strings['saveNOK']}", true, "saveNOK");
+ }
  xhttp.open("POST", "saveMisc.php", false);
  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
  xhttp.send(sData);
 
- displaySavedNote();
  return false;
 }
 
@@ -237,24 +243,33 @@ for (i = 1; i <= 6; i++) {
 sData = sData.substring(0, sData.length - 1);
 // save data via AJAX
 xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+ if (xhttp.readyState == 4 && xhttp.status == 200)
+  if (xhttp.responseText == 0)
+   displayNotification("{$strings['saveOK']}", "", false, "saveOK");
+  else
+   displayNotification("{$strings['error']}", "{$strings['saveNOK']}", true, "saveNOK");
+ }
 xhttp.open("POST", "save.php", false);
 xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 xhttp.send(sData);
-// display notification
-displaySavedNote();
+
 return false;
 }
 
-function displaySavedNote() {
- var options = {icon: 'image/mffbot.png'}
+function displayNotification(sTitle, sBody, bConfirm, sTag) {
+ var options = { icon: 'image/mffbot.png',
+                body: sBody,
+                requireInteraction: bConfirm,
+                tag: sTag };
  if (!("Notification" in window))
-  alert("{$strings['saved']}");
+  alert(sTitle);
  else if (Notification.permission === "granted")
-  var notification = new Notification("{$strings['saved']}", options);
- else if (Notification.permission !== 'denied') {
+  var notification = new Notification(sTitle, options);
+ else if (Notification.permission !== "denied") {
   Notification.requestPermission(function (permission) {
  if (permission === "granted")
-  var notification = new Notification("{$strings['saved']}", options);
+  var notification = new Notification(sTitle, options);
   });
  }
 }

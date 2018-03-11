@@ -47,5 +47,9 @@ $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
 $configContents['dodonkey'] = $_POST["donkeytoggle"];
 
 $filename = $gamepath . "/config.ini";
-writeINI($configContents, $filename);
+$retval = writeINI($configContents, $filename);
+if ($retval === false || $retval == 0)
+ exit("1");
+else
+ exit("0");
 ?>
