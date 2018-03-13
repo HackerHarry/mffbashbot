@@ -59,10 +59,10 @@ print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
 for ($i = 1; $i < 7; $i++)
  print "<input type=\"image\" src=\"image/navi_farm" . $i . ".png\" class=\"navilink\" title=\"" . $farmFriendlyName[$i] . "\" name=\"" . $i . "\" onclick=\"document.venueselect.farm.value = '" . $i . "'; this.form.submit();\">\n";
-print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket'] . "\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showfarmersmarket.php'; this.form.submit()\">\n";
-print "<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"" . $farmFriendlyName['forestry'] . "\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showforestry.php'; this.form.submit()\">\n";
-print "<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"" . $farmFriendlyName['foodworld'] . "\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showfoodworld.php'; this.form.submit()\">\n";
-print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['city2'] . "\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showcity2.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket'] . "\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"" . $farmFriendlyName['forestry'] . "\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showvenue.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"" . $farmFriendlyName['foodworld'] . "\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showvenue.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['city2'] . "\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/runbot.png\" class=\"navilink\" name=\"runbot\" title=\"" . $strings['forcebotstart'] . "\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\">&nbsp;\n";
 print "<input type=\"button\" name=\"logon\" class=\"btn btn-warning btn-sm logonbtn\" value=\"" . $strings['logon'] . "\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
 print "<br>";

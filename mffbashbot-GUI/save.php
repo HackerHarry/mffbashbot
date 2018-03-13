@@ -59,7 +59,7 @@ switch ($farm) {
   $retval = saveConfig($filename, $slot1);
   if ($retval === false || $retval == 0) exit("1");
   }
- echo "0";
+ exit("0");
  break;
 
  case "farmersmarket":
@@ -95,7 +95,7 @@ switch ($farm) {
    $retval = saveConfig($filename, $slot1);
    if ($retval === false || $retval == 0) exit("1");
   }
- echo "0";
+ exit("0");
  break;
 
  case "city2":
@@ -118,9 +118,43 @@ switch ($farm) {
    $retval = saveConfig($filename, $slot1);
    if ($retval === false || $retval == 0) exit("1");
   }
- echo "0";
+ exit("0");
  break;
- 
+
+ case "savemisc":
+  include 'farmdata.php';
+  global $configContents;
+  // langugage, password and server-no. must be set manually in config.ini
+  $configContents['carefood'] = $_POST["carefood"];
+  $configContents['caretoy'] = $_POST["caretoy"];
+  $configContents['careplushy'] = $_POST["careplushy"];
+  $configContents['dodog'] = $_POST["dogtoggle"];
+  $configContents['dolot'] = $_POST["lottoggle"];
+  $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
+  $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
+  $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
+  $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
+  $configContents['sendforestryfarmiesaway'] = $_POST["forestryfarmiestoggle"];
+  $configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
+  $configContents['sendflowerfarmiesaway'] = $_POST["flowerfarmiestoggle"];
+  $configContents['correctqueuenum'] = $_POST["correctqueuenumtoggle"];
+  $configContents['useponyenergybar'] = $_POST["ponyenergybartoggle"];
+  $configContents['redeempuzzlepacks'] = $_POST["redeempuzzlepartstoggle"];
+  $configContents['dobutterflies'] = $_POST["butterflytoggle"];
+  $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
+  $configContents['megafieldinstantplant'] = $_POST["megafieldplanttoggle"];
+  $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
+  $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
+  $configContents['dodonkey'] = $_POST["donkeytoggle"];
+
+  $filename = $gamepath . "/config.ini";
+  $retval = writeINI($configContents, $filename);
+  if ($retval === false || $retval == 0)
+   exit("1");
+  else
+   exit("0");
+  break;
+
  default:
   exit("1");
 }

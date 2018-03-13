@@ -110,22 +110,23 @@ function removeOptionSelected(elSelDest)
 
 function updateBotStatus() {
  var sUser = document.venueselect.username.value;
- var sData = "username=" + sUser;
+ var sData = "username=" + sUser + "&action=getbotstatus";
  xhttp = new XMLHttpRequest();
  xhttp.onreadystatechange = function() {
   if (xhttp.readyState == 4 && xhttp.status == 200)
    document.getElementById("botstatus").innerHTML = xhttp.responseText;
  }
- xhttp.open("POST", "getbotstatus.php", true);
+ xhttp.open("POST", "botaction.php", true);
  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
  xhttp.send(sData);
- 
+
+ sData = "username=" + sUser + "&action=getlastruntime";
  xhttp2 = new XMLHttpRequest();
  xhttp2.onreadystatechange = function() {
   if (xhttp2.readyState == 4 && xhttp.status == 200)
    document.getElementById("lastruntime").innerHTML = xhttp2.responseText;
  }
- xhttp2.open("POST", "getlastruntime.php", true);
+ xhttp2.open("POST", "botaction.php", true);
  xhttp2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
  xhttp2.send(sData);
  
@@ -142,8 +143,8 @@ function saveMisc() {
  'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
  'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle'];
  var sUser = document.venueselect.username.value;
- var sData = "username=" + sUser;
-
+ var sData = "username=" + sUser + "&farm=savemisc";
+// abusing farm parameter :)
  for (i = 0; i < aOptions.length; i++) {
   v = document.getElementById(aOptions[i]);
   sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
@@ -151,110 +152,87 @@ function saveMisc() {
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }
-
- xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function() {
-  if (xhttp.readyState == 4 && xhttp.status == 200)
-   if (xhttp.responseText == 0)
-    displayNotification("{$strings['saveOK']}", "", false, "saveOK");
-   else
-    displayNotification("{$strings['error']}", "{$strings['saveNOK']}", true, "saveNOK");
- }
- xhttp.open("POST", "saveMisc.php", false);
- xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- xhttp.send(sData);
-
+ AJAXsave(sData);
  return false;
 }
 
 function saveConfig() {
-var sUser = document.venueselect.username.value;
-var sFarm = document.venueselect.farm.value;
-var sData = "username=" + sUser + "&farm=" + sFarm + "&queueContent=";
+ var sUser = document.venueselect.username.value;
+ var sFarm = document.venueselect.farm.value;
+ var sData = "username=" + sUser + "&farm=" + sFarm + "&queueContent=";
 
-switch (sFarm) {
+ switch (sFarm) {
   case "forestry":
   case "farmersmarket":
   case "foodworld":
   case "city2":
-  if (sFarm == "farmersmarket")
+   if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
-  if (sFarm == "forestry")
+   if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
-  if (sFarm == "foodworld")
+   if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
-  if (sFarm == "city2")
+   if (sFarm == "city2")
     var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools"];
 
-for (k = 0; k <= (fmpos.length - 1); k++) {
- var i = fmpos[k];
- sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
- sData += document.getElementById("queue" + i)[1].value + " "; // building type
- for (j = 0; j < document.getElementById("queue" + i)[2].options.length; j++)
-  sData += document.getElementById("queue" + i)[2][j].value + " "; // fill with queue items
- if (document.getElementById("queue" + i)[3] !== undefined) { // do we have a second queue?
-  sData = sData.substring(0, sData.length - 1);
-  sData += "-"; // mark the 2nd queue
-  sData += document.getElementById("queue" + i)[3].value + " ";
-  sData += document.getElementById("queue" + i)[4].value + " ";
-  for (j = 0; j < document.getElementById("queue" + i)[5].options.length; j++)
-   sData += document.getElementById("queue" + i)[5][j].value + " ";
- }
- if (document.getElementById("queue" + i)[6] !== undefined) { // do we have a third queue?
-  sData = sData.substring(0, sData.length - 1);
-  sData += "-"; // mark the 3rd queue
-  sData += document.getElementById("queue" + i)[6].value + " ";
-  sData += document.getElementById("queue" + i)[7].value + " ";
-  for (j = 0; j < document.getElementById("queue" + i)[8].options.length; j++)
-   sData += document.getElementById("queue" + i)[8][j].value + " ";
- }
- sData = sData.substring(0, sData.length - 1);
- sData += "#"; // exchange last space
-}
+   for (k = 0; k <= (fmpos.length - 1); k++) {
+    var i = fmpos[k];
+    sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
+    sData += document.getElementById("queue" + i)[1].value + " "; // building type
+    for (j = 0; j < document.getElementById("queue" + i)[2].options.length; j++)
+     sData += document.getElementById("queue" + i)[2][j].value + " "; // fill with queue items
+    if (document.getElementById("queue" + i)[3] !== undefined) { // do we have a second queue?
+     sData = sData.substring(0, sData.length - 1);
+     sData += "-"; // mark the 2nd queue
+     sData += document.getElementById("queue" + i)[3].value + " ";
+     sData += document.getElementById("queue" + i)[4].value + " ";
+     for (j = 0; j < document.getElementById("queue" + i)[5].options.length; j++)
+      sData += document.getElementById("queue" + i)[5][j].value + " ";
+    }
+    if (document.getElementById("queue" + i)[6] !== undefined) { // do we have a third queue?
+     sData = sData.substring(0, sData.length - 1);
+     sData += "-"; // mark the 3rd queue
+     sData += document.getElementById("queue" + i)[6].value + " ";
+     sData += document.getElementById("queue" + i)[7].value + " ";
+     for (j = 0; j < document.getElementById("queue" + i)[8].options.length; j++)
+      sData += document.getElementById("queue" + i)[8][j].value + " ";
+    }
+    sData = sData.substring(0, sData.length - 1);
+    sData += "#"; // replace last space
+   }
   break;
 
-default:
-for (i = 1; i <= 6; i++) {
- sData += document.getElementById("queue" + i)[0].value + " "; // queue file name
- sData += document.getElementById("queue" + i)[1].value + " "; // building type
- for (j = 0; j < document.getElementById("queue" + i)[2].options.length; j++)
-  sData += document.getElementById("queue" + i)[2][j].value + " "; // fill with queue items
- if (document.getElementById("queue" + i)[3] !== undefined) { // do we have a second queue?
-  sData = sData.substring(0, sData.length - 1);
-  sData += "-"; // mark the 2nd queue
-  sData += document.getElementById("queue" + i)[3].value + " ";
-  sData += document.getElementById("queue" + i)[4].value + " ";
-  for (j = 0; j < document.getElementById("queue" + i)[5].options.length; j++)
-   sData += document.getElementById("queue" + i)[5][j].value + " ";
+  default:
+   for (i = 1; i <= 6; i++) {
+    sData += document.getElementById("queue" + i)[0].value + " ";
+    sData += document.getElementById("queue" + i)[1].value + " ";
+    for (j = 0; j < document.getElementById("queue" + i)[2].options.length; j++)
+     sData += document.getElementById("queue" + i)[2][j].value + " ";
+    if (document.getElementById("queue" + i)[3] !== undefined) {
+     sData = sData.substring(0, sData.length - 1);
+     sData += "-";
+     sData += document.getElementById("queue" + i)[3].value + " ";
+     sData += document.getElementById("queue" + i)[4].value + " ";
+     for (j = 0; j < document.getElementById("queue" + i)[5].options.length; j++)
+      sData += document.getElementById("queue" + i)[5][j].value + " ";
+    }
+    if (document.getElementById("queue" + i)[6] !== undefined) {
+     sData = sData.substring(0, sData.length - 1);
+     sData += "-";
+     sData += document.getElementById("queue" + i)[6].value + " ";
+     sData += document.getElementById("queue" + i)[7].value + " ";
+     for (j = 0; j < document.getElementById("queue" + i)[8].options.length; j++)
+      sData += document.getElementById("queue" + i)[8][j].value + " ";
+    }
+    sData = sData.substring(0, sData.length - 1);
+    sData += "#";
+   }
  }
- if (document.getElementById("queue" + i)[6] !== undefined) { // do we have a third queue?
-  sData = sData.substring(0, sData.length - 1);
-  sData += "-"; // mark the 3rd queue
-  sData += document.getElementById("queue" + i)[6].value + " ";
-  sData += document.getElementById("queue" + i)[7].value + " ";
-  for (j = 0; j < document.getElementById("queue" + i)[8].options.length; j++)
-   sData += document.getElementById("queue" + i)[8][j].value + " ";
- }
+// strip last char
  sData = sData.substring(0, sData.length - 1);
- sData += "#"; // exchange last space
- }
-}
-// strip lasat char
-sData = sData.substring(0, sData.length - 1);
 // save data via AJAX
-xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
- if (xhttp.readyState == 4 && xhttp.status == 200)
-  if (xhttp.responseText == 0)
-   displayNotification("{$strings['saveOK']}", "", false, "saveOK");
-  else
-   displayNotification("{$strings['error']}", "{$strings['saveNOK']}", true, "saveNOK");
- }
-xhttp.open("POST", "save.php", false);
-xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-xhttp.send(sData);
-
-return false;
+ AJAXsave(sData);
+ return false;
 }
 
 function displayNotification(sTitle, sBody, bConfirm, sTag) {
@@ -289,9 +267,9 @@ function showHideOptions() {
 function confirmUpdate() {
  var cu = confirm("{$strings['confirmupdate']}");
  if (cu == true) {
-  var sData = "username=" + document.venueselect.username.value;
+  var sData = "username=" + document.venueselect.username.value + "&action=triggerupdate";
   xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "triggerUpdate.php", true);
+  xhttp.open("POST", "botaction.php", true);
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.send(sData);
   window.setTimeout(showCountdown, 250, 15);
@@ -308,6 +286,20 @@ function showCountdown(counter) {
   document.getElementById("updatenotification").innerHTML = "Countdown: " + counter + " ";
   window.setTimeout(showCountdown, 1000, --counter);
  }
+}
+
+function AJAXsave(sData) {
+ xhttp = new XMLHttpRequest();
+ xhttp.onreadystatechange = function() {
+ if (xhttp.readyState == 4 && xhttp.status == 200)
+  if (xhttp.responseText == 0)
+   displayNotification("{$strings['saveOK']}", "", false, "saveOK");
+  else
+   displayNotification("{$strings['error']}", "{$strings['saveNOK']}", true, "saveNOK");
+ }
+ xhttp.open("POST", "save.php", false);
+ xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+ xhttp.send(sData);
 }
 </script>
 

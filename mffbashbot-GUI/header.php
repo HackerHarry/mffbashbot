@@ -24,7 +24,7 @@ print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n"
 print "<link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "<link href=\"css/mffbot.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "</head>\n";
-print "<body id=\"main_body\" class=\"main_body\" onload=\"window.setTimeout(updateBotStatus, 30000)\">\n";
+print "<body id=\"main_body\" class=\"main_body\" onload=\"updateBotStatus()\">\n";
 
 if (!isset($farm))
  $farm = 1;
@@ -38,7 +38,6 @@ print "<nav class=\"navbar btn-dark bg-dark fixed-top\">\n";
 print $botver . " -- " . $username . " -- " . $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
 system("cat " . $gamepath . "/lastrun.txt");
 print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
-include 'getbotstatus.php';
 print "</div>\n";
 if (version_compare($botver, $versionavailable) == -1) {
  print " -- ";

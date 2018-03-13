@@ -32,10 +32,6 @@ if ($JSONfooddata === false)
 $fooddata = (json_decode($JSONfooddata, true));
 $JSONwindmillproductlist = file_get_contents("data/" . $lang . "/formulas.txt");
 $windmillproductlist = (json_decode($JSONwindmillproductlist, true));
-include_once 'data/' . $lang . '/monsterlist.php';
-include_once 'data/' . $lang . '/foodworldproductlist.php';
-include_once 'data/' . $lang . '/megafieldvehicleslist.php';
-include_once 'data/' . $lang . '/hackdurations.php';
 // might be redundant
 $configContents = parse_ini_file($gamepath . "/config.ini");
 ?>
