@@ -5,18 +5,44 @@ LCONF=/etc/lighttpd/lighttpd.conf
 LMODS=/etc/lighttpd/modules.conf
 LCGICONF=/etc/lighttpd/conf.d/cgi.conf
 BOTGUIROOT=/var/www/html/mffbashbot
+STRINGS_en='{"strings":{"downloadingbot":{"text":"Downloading Harrys MFF Bash Bot..."},"unpackarc":{"text":"Unpacking the archive..."},"conflighttpd":{"text":"Configuring lighttpd..."},"movegui":{"text":"Moving GUI files..."},"patchgui":{"text":"Patching GUI files..."},"wannasetup":{"text":"If you do not wish for automatic bot setup, press CTRL-C now"},"enterfarm":{"text":"Please enter your farm name: "},"enterserver":{"text":"Please enter your server number: "},"enterpass":{"text":"Please enter your password for that farm: "},"gonnadothis":{"text":"This script will now set up your farm using this information:"},"farmname":{"text":"Farm name: "},"password":{"text":"Password: "},"isinfocorrect":{"text":"Is this info correct? (Y/N): "},"settingupfarm":{"text":"Setting up farm..."},"adjustini":{"text":"The preset language for this farm is GERMAN! Adjust it in config.ini."},"creatingscript":{"text":"Creating bot start script..."},"done":{"text":"Done!"}}}'
+STRINGS_de='{"strings":{"downloadingbot":{"text":"Harrys MFF Bash Bot herunterladen..."},"unpackarc":{"text":"Archiv auspacken..."},"conflighttpd":{"text":"lighttpd konfigurieren..."},"movegui":{"text":"GUI Dateien verschieben..."},"patchgui":{"text":"GUI Dateien patchen..."},"wannasetup":{"text":"Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"},"enterfarm":{"text":"Bitte gib Deinen Farmnamen ein: "},"enterserver":{"text":"Bitte die passende Servernummer eingeben: "},"enterpass":{"text":"Bitte das Passwort für diese Farm eingeben: "},"gonnadothis":{"text":"Deine Farm wird mit diesen Daten angelegt:"},"farmname":{"text":"Farmname: "},"password":{"text":"Passwort: "},"isinfocorrect":{"text":"Sind die Infos korrekt? (J/N): "},"settingupfarm":{"text":"Farm einrichten..."},"adjustini":{"text":"Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"},"creatingscript":{"text":"Bot-Startskript erstellen..."},"done":{"text":"Fertig!"}}}'
+STRINGS_bg='{"strings":{"downloadingbot":{"text":"missing translation"},"unpackarc":{"text":"missing translation"},"conflighttpd":{"text":"missing translation"},"movegui":{"text":"missing translation"},"patchgui":{"text":"missing translation"},"wannasetup":{"text":"Ако не искате автоматична настройка на бота, натиснете CTRL+C"},"enterfarm":{"text":"Въведете името на вашата ферма: "},"enterserver":{"text":"Моля, въведете сървъра в който е вашата ферма: "},"enterpass":{"text":"missing translation"},"gonnadothis":{"text":"Този скрипт ще настрои вашата ферма използвайки:"},"farmname":{"text":"ферма: "},"password":{"text":"Password: "},"isinfocorrect":{"text":"Вярна ли е информацията? (Д/Н): "},"settingupfarm":{"text":"missing translation"},"adjustini":{"text":"Предварителният език за тази ферма е НЕМСКИ!"},"creatingscript":{"text":"missing translation"},"done":{"text":"Готово!"}}}'
+
+# jq should be available if mffbashbot-setup.exe was used
+if ! which jq >/dev/null 2>&1; then
+ echo -e "jq could not be found. Cannot continue.\njq konnte nicht gefunden werden. Fortfahren nicht möglich."
+ exit 1
+fi
+JQBIN="$(which jq) -r"
+
+while (true); do
+ echo -e "\nInstallions-Sprache wählen"
+ echo "Choose your install language"
+ read -p "de = Deutsch, en = English, bg = Bulgarian -> " IL
+ [[ "$IL" != "de" ]] || break
+ [[ "$IL" != "en" ]] || break
+ [[ "$IL" != "bg" ]] || break
+done
+
+TEXT=STRINGS_$IL
+function getString {
+ # 1 = text, 2 = parameter
+ # indirect parameter expansion
+ echo ${!TEXT} | $JQBIN $2 '.strings.'$1'.text'
+}
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
+getString downloadingbot
 rm -f master.zip 2>/dev/null
 wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
-echo "Unpacking the archive..."
+getString unpackarc
 unzip -q master.zip
 mv mffbashbot-master mffbashbot
 chmod +x mffbashbot/*.sh
 
-echo "Configuring lighttpd..."
+getString conflighttpd
 sed -i 's/var\.server_root = \"\/srv\/www\"/var\.server_root = \"\/var\/www\/html\"/' $LCONF
 sed -i 's/server_root + \"\/htdocs\"/server_root/' $LCONF
 sed -i 's/server\.username/#server\.username/' $LCONF
@@ -34,40 +60,35 @@ if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
  echo "server.stream-response-body = 1" >>$LCONF
 fi
 
-echo "Moving GUI files..."
+getString movegui
 mkdir -p /var/www/html 2>/dev/null
 mv mffbashbot/mffbashbot-GUI $BOTGUIROOT
 chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeupthebot.sh
 
-echo "Patching GUI files..."
+getString patchgui
 sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
 
 echo
-echo "If you don't wish for automatic bot setup, press CTRL-C now"
-echo "Ако не искате автоматична настройка на бота, натиснете CTRL+C"
-echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
+getString wannasetup
 while (true); do
  echo
- echo "Please enter your farm name:"
- echo "Въведете името на вашата ферма:"
- read -p "Bitte gib Deinen Farmnamen ein: " FARMNAME
- echo "Please enter your server number:"
- echo "Моля, въведете сървъра в който е вашата ферма:"
- read -p "Jetzt die Servernummer: " SERVER
- echo "Please enter your password for farm $FARMNAME on server #${SERVER}:"
- echo "Моля въведете паролата за ферма $FARMNAME на сървър #${SERVER}:"
- read -p "Und nun das Passwort der Farm $FARMNAME auf Server ${SERVER}: " PASSWORD
+ # -j suppresses new line
+ getString enterfarm -j
+ read FARMNAME
+ getString enterserver -j
+ read SERVER
+ getString enterpass -j
+ read PASSWORD
  echo
- echo "This script will now set up your farm using this information:"
- echo "Този скрипт ще настрои вашата ферма използвайки:"
- echo "Dieses Skript wird Deine Farm mit diesen Informationen anlegen: "
- echo "Farm name: $FARMNAME"
+ getString gonnadothis
+ getString farmname -j
+ echo $FARMNAME
  echo "Server: ${SERVER}"
- echo "Password: $PASSWORD"
+ getString password -j
+ echo $PASSWORD
  echo
- echo "Is this info correct? (Y/N):"
- echo "Вярна ли е информацията? (Д/Н):"
- read -p "Sind die Infos korrekt? (J/N):" CONFIRM
+ getString isinfocorrect -j
+ read CONFIRM
  [[ "$CONFIRM" != "Y" ]] || break
  [[ "$CONFIRM" != "y" ]] || break
  [[ "$CONFIRM" != "J" ]] || break
@@ -77,17 +98,15 @@ while (true); do
 done
 
 CFGFILE=config.ini
-echo "Setting up farm..."
+getString settingupfarm
 cd
 mv mffbashbot/dummy mffbashbot/$FARMNAME
 sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
 sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
-echo "The preset language for this farm is GERMAN!"
-echo "Предварителният език за тази ферма е НЕМСКИ!"
-echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
+getString adjustini
 sleep 5
 echo
-echo "Creating bot start script..."
+getString creatingscript
 echo '#!/bin/bash
 cd
 /usr/sbin/lighttpd -f '$LCONF'
@@ -96,7 +115,5 @@ cd mffbashbot
 chmod +x startallbots.sh
 
 echo
-echo "Done!"
-echo "Готово!"
-echo "Fertig!"
+getString done
 sleep 5

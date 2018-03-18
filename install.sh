@@ -3,10 +3,40 @@
 # Tested on Debian Jessie, Stretch, Ubuntu 16.04.1 LTS
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 
+STRINGS_en='{"strings":{"osnotsupported":{"text":"Sorry, only Debian Jessie and Stretch are supported for the time being. Bailing out."},"instpackages":{"text":"Installing needed packages..."},"downloadingbot":{"text":"Downloading Harrys MFF Bash Bot..."},"unpackarc":{"text":"Unpacking the archive..."},"settingpermissions":{"text":"Setting permissions..."},"conflighttpd":{"text":"Configuring lighttpd..."},"nowebserveruser":{"text":"Webserver user could not be determined. Cannot continue."},"settingupgui":{"text":"Setting up GUI files..."},"settinguplogrotate":{"text":"Setting up logrotate..."},"wannasetup":{"text":"If you do not wish for automatic bot setup, press CTRL-C now"},"enterfarm":{"text":"Please enter your farm name: "},"enterserver":{"text":"Please enter your server number: "},"enterpass":{"text":"Please enter your password for that farm: "},"gonnadothis":{"text":"This script will now set up your farm using this information:"},"farmname":{"text":"Farm name: "},"password":{"text":"Password: "},"isinfocorrect":{"text":"Is this info correct? (Y/N): "},"settingupfarm":{"text":"Setting up farm..."},"adjustini":{"text":"The preset language for this farm is GERMAN! Adjust it in config.ini."},"creatingscript":{"text":"Creating bot start script..."},"done":{"text":"Done! Start your Bot with ./startallbots.sh"}}}'
+STRINGS_de='{"strings":{"osnotsupported":{"text":"Nur Debian Jessie and Stretch werden momentan unterstüzt. Abbruch."},"instpackages":{"text":"Benötigte Pakete installieren..."},"downloadingbot":{"text":"Harrys MFF Bash Bot herunterladen..."},"unpackarc":{"text":"Archiv auspacken..."},"settingpermissions":{"text":"Dateirechte setzen..."},"conflighttpd":{"text":"lighttpd konfigurieren..."},"nowebserveruser":{"text":"Der Webserver-Benutzer konnte nicht ermittelt werden. Hier endet alles."},"settingupgui":{"text":"GUI Dateien verarbeiten..."},"settinguplogrotate":{"text":"logrotate einrichten..."},"wannasetup":{"text":"Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"},"enterfarm":{"text":"Bitte gib Deinen Farmnamen ein: "},"enterserver":{"text":"Bitte die passende Servernummer eingeben: "},"enterpass":{"text":"Bitte das Passwort für diese Farm eingeben: "},"gonnadothis":{"text":"Deine Farm wird mit diesen Daten angelegt:"},"farmname":{"text":"Farmname: "},"password":{"text":"Passwort: "},"isinfocorrect":{"text":"Sind die Infos korrekt? (J/N): "},"settingupfarm":{"text":"Farm einrichten..."},"adjustini":{"text":"Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"},"creatingscript":{"text":"Bot-Startskript erstellen..."},"done":{"text":"Fertig! Starte Deinen Bot mit ./startallbots.sh"}}}'
+STRINGS_bg='{"strings":{"osnotsupported":{"text":"missing translation"},"instpackages":{"text":"missing translation"},"downloadingbot":{"text":"missing translation"},"unpackarc":{"text":"missing translation"},"settingpermissions":{"text":"missing translation"},"conflighttpd":{"text":"missing translation"},"nowebserveruser":{"text":"Потребителят на уеб сървър не можа да бъде определен. Не известна грешка!"},"settingupgui":{"text":"missing translation"},"settinguplogrotate":{"text":"missing translation"},"wannasetup":{"text":"Ако не желаете автоматична настройка на бота, натиснете CTRL-C"},"enterfarm":{"text":"Въведете име на ферма:"},"enterserver":{"text":"Моля, изберете номер на сървър:"},"enterpass":{"text":"missing translation"},"gonnadothis":{"text":"Този скрипт ще настрои вашата ферма използвайки:"},"farmname":{"text":"ферма: "},"password":{"text":"Password: "},"isinfocorrect":{"text":"Вярна ли е информацията? (Д/Н): "},"settingupfarm":{"text":"missing translation"},"adjustini":{"text":"Предварителният език за тази ферма е НЕМСКИ!"},"creatingscript":{"text":"missing translation"},"done":{"text":"Готово! missing translation"}}}'
+
+if ! which jq >/dev/null 2>&1; then
+ echo "Installing jq..."
+ sudo apt-get install jq
+ if ! which jq >/dev/null 2>&1; then
+  echo -e "jq could not be found. Cannot continue.\njq konnte nicht gefunden werden. Fortfahren nicht möglich."
+  exit 1
+ fi
+fi
+JQBIN="$(which jq) -r"
+
+while (true); do
+ echo -e "\nInstallions-Sprache wählen"
+ echo "Choose your install language"
+ read -p "de = Deutsch, en = English, bg = Bulgarian -> " IL
+ [[ "$IL" != "de" ]] || break
+ [[ "$IL" != "en" ]] || break
+ [[ "$IL" != "bg" ]] || break
+done
+
+TEXT=STRINGS_$IL
+function getString {
+ # 1 = text, 2 = parameter
+ # indirect parameter expansion
+ echo ${!TEXT} | $JQBIN $2 '.strings.'$1'.text'
+}
+
 if [ -f /etc/debian_version ]; then
  DVER=$(cat /etc/debian_version)
 else
- echo "Sorry, only Debian Jessie and Stretch are supported for the time being. Bailing out."
+ getString osnotsupported
  exit 1
 fi
 case $DVER in
@@ -19,34 +49,32 @@ case $DVER in
 esac
 LCONF=/etc/lighttpd/lighttpd.conf
 
-echo "Installing needed packages..."
+getString instpackages
 sudo apt-get update
-sudo apt-get install jq lighttpd $PHPV screen logrotate cron unzip nano
+sudo apt-get install lighttpd $PHPV screen logrotate cron unzip nano
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
+getString downloadingbot
 wget "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
-echo "Unpacking the archive..."
+getString unpackarc
 unzip -q master.zip
 mv mffbashbot-master mffbashbot
 chmod 775 mffbashbot
 cd ~/mffbashbot
-echo "Setting permissions..."
+getString settingpermissions
 find . -type d -exec chmod 775 {} +
 find . -type f -exec chmod 664 {} +
 chmod +x *.sh
 
-echo "Configuring lighttpd..."
+getString conflighttpd
 if grep -q 'server\.document-root\s\+=\s\+"/var/www"' $LCONF; then
  sudo sed -i 's/server\.document-root\s\+=\s\+\"\/var\/www\"/server\.document-root = \"\/var\/www\/html\"/' $LCONF
  sudo mkdir -p /var/www/html
 fi
 HTTPUSER=$(grep server.username $LCONF | sed -e 's/.*= \"\(.*\)\"/\1/')
 if [ -z "$HTTPUSER" ]; then
- echo "Webserver user could not be determined. Cannot continue."
- echo "Потребителят на уеб сървър не можа да бъде определен. Не известна грешка!"
- echo "Der Webserver-Benutzer konnte nicht ermittelt werden. Hier endet alles."
+ getString nowebserveruser
  exit 1
 fi
 sudo usermod -a -G $USER $HTTPUSER 2>/dev/null
@@ -67,14 +95,14 @@ fi
 
 sudo /etc/init.d/lighttpd restart
 
-echo "Setting up GUI files..."
+getString settingupgui
 cd ~/mffbashbot
 sudo mv mffbashbot-GUI /var/www/html/mffbashbot
 sudo chmod +x /var/www/html/mffbashbot/script/*.sh
 sudo sed -i 's/\/pi\//\/'$USER'\//' /var/www/html/mffbashbot/gamepath.php
 echo $HTTPUSER' ALL=(ALL) NOPASSWD: /bin/kill' | sudo tee /etc/sudoers.d/www-data-kill-cmd > /dev/null
 
-echo "Setting up logrotate..."
+getString settinguplogrotate
 echo '/home/'$USER'/mffbashbot/*/mffbot.log
 {
         rotate 6
@@ -87,31 +115,26 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
 
 echo
-echo "If you don't wish for automatic bot setup, press CTRL-C now"
-echo "Ако не желаете автоматична настройка на бота, натиснете CTRL-C"
-echo "Falls du keine automatische Bot-Einrichtung wuenschst, druecke jetzt STRG-C"
+getString wannasetup
 while (true); do
  echo
- echo "Please enter your farm name:"
- echo "Въведете име на ферма:"
- read -p "Bitte gib Deinen Farmnamen ein: " FARMNAME
- echo "Please enter your server number:"
- echo "Моля, изберете номер на сървър:"
- read -p "Jetzt die Servernummer: " SERVER
- echo "Please enter your password for farm $FARMNAME on server #${SERVER}:"
- echo "Моля въведете парола за ферма $FARMNAME на сървър #${SERVER}:"
- read -p "Und nun das Passwort der Farm $FARMNAME auf Server ${SERVER}: " PASSWORD
+ # -j suppresses new line
+ getString enterfarm -j
+ read FARMNAME
+ getString enterserver -j
+ read SERVER
+ getString enterpass -j
+ read PASSWORD
  echo
- echo "This script will now set up your farm using this information:"
- echo "Този скрипт ще настрои вашата ферма със следната информация:"
- echo "Dieses Skript wird Deine Farm mit diesen Informationen anlegen: "
- echo "Farm name: $FARMNAME"
+ getString gonnadothis
+ getString farmname -j
+ echo $FARMNAME
  echo "Server: ${SERVER}"
- echo "Password: $PASSWORD"
+ getString password -j
+ echo $PASSWORD
  echo
- echo "Is this info correct? (Y/N):"
- echo "Вярна ли е информацията ? (Д/Н):"
- read -p "Sind die Infos korrekt? (J/N):" CONFIRM
+ getString isinfocorrect -j
+ read CONFIRM
  [[ "$CONFIRM" != "Y" ]] || break
  [[ "$CONFIRM" != "y" ]] || break
  [[ "$CONFIRM" != "J" ]] || break
@@ -121,26 +144,22 @@ while (true); do
 done
 
 CFGFILE=config.ini
-echo "Setting up farm..."
+getString settingupfarm
 cd
 mv mffbashbot/dummy mffbashbot/$FARMNAME
 sed -i 's/server = 2/server = '$SERVER'/' mffbashbot/$FARMNAME/$CFGFILE
 sed -i 's/password = \x27s3cRet!\x27/password = \x27'$PASSWORD'\x27/' mffbashbot/$FARMNAME/$CFGFILE
-echo "The preset language for this farm is GERMAN!"
-echo "Предварителният език за тази ферма е НЕМСКИ!"
-echo "Die voreingestellte Sprache fuer diese Farm ist DEUTSCH!"
+getString adjustini
 sleep 5
 echo
-echo "Creating bot start script..."
+getString creatingscript
 echo '#!/bin/bash
 cd
-sudo /usr/sbin/lighttpd -f '$LCONF'
+sudo /etc/init.d/lighttpd start
 cd mffbashbot
 ./mffbashbot.sh '$FARMNAME >startallbots.sh
 chmod +x startallbots.sh
 
 echo
-echo "Done! Start your Bot with ./startallbots.sh"
-echo "Готово! Стартирайте вашият бот със : ./startallbots.sh"
-echo "Fertig! Starte Deinen Bot mit ./startallbots.sh"
+getString done
 sleep 5
