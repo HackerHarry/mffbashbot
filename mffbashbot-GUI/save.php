@@ -18,7 +18,7 @@
 //
 include 'functions.php';
 $farm = $_POST["farm"];
-$username = $_POST["username"];
+strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 include 'gamepath.php';
 include 'lang.php';
 $farmQueue = $_POST["queueContent"];

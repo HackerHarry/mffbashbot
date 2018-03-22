@@ -17,8 +17,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 if (!isset($username))
- $username = $_POST["username"];
-$action =  $_POST["action"];
+ strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
+$action = $_POST["action"];
 include_once 'gamepath.php';
 include_once 'lang.php';
 
@@ -42,7 +42,7 @@ switch ($action) {
   touch($filename);
   // force bot iteration
   unset ($username);
-  $username = $_POST["username"];
+  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = awurlencode($_POST["username"]);
   $gamepath .= $username;
   exec("script/wakeupthebot.sh " . $gamepath);
  default:

@@ -315,6 +315,7 @@ function start_FarmNP {
    # CID is some water interval ID .. screw it.
    SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
+   sleep 1
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+1))

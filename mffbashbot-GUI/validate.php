@@ -25,7 +25,7 @@ if (empty($_POST["username"])) {
  print "1;<h4><font color=\"darkred\">Please select a farm</font></h4>\n";
  exit(1);
 }
-$username=$_POST["username"];
+strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 include_once 'functions.php';
 include_once 'gamepath.php';
 include_once 'lang.php';
@@ -33,12 +33,12 @@ if (empty($_POST["server"])) {
  print "1;<h4><font color=\"darkred\">" . $strings['selectserver'] . "</font></h4>\n";
  exit(1);
 }
-$server=$_POST["server"];
+$server = $_POST["server"];
 if (empty($_POST["password"])) {
  print "1;<h4><font color=\"darkred\">" . $strings['enterpw'] . "</font></h4>\n";
  exit(1);
 }
-$password=$_POST["password"];
+$password = $_POST["password"];
 echo "1;<h4><font color=\"yellow\">" . $strings['pleasewait'] . "</font></h4>;";
 ob_flush();
 flush();
