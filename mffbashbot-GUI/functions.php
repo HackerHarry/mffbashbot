@@ -221,19 +221,19 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "sawmill":
         // Sägewerk
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateForestryOptions(41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64);
+        CreateForestryOptions(41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67);
         print "</select>\n";
         break;
   case "carpentry":
         // Schreinerei
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateForestryOptions(101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 143, 144, 146, 148, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
+        CreateForestryOptions(101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 143, 144, 146, 148, 149, 150, 151, 152, 153, 154, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
         print "</select>\n";
         break;
   case "forestry":
         // Bäumerei
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateForestryOptions(1, 2, 3, 4, 5, 7, 8, 9);
+        CreateForestryOptions(1, 2, 3, 4, 5, 7, 8, 9, 10);
         print "</select>\n";
         break;
   case "sodastall":
