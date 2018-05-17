@@ -44,6 +44,9 @@ FARMDATAFILE=/tmp/farmdata-${MFFUSER}.txt
 FOREDATAFILE=/tmp/forestdata-${MFFUSER}.txt
 FOODDATAFILE=/tmp/fooddata-${MFFUSER}.txt
 VERSIONAVAILABLE=/tmp/mffbot-version-available.txt
+PRODUCTS=/tmp/products-${MFFLANG}.txt
+FORESTRYPRODUCTS=/tmp/forestryproducts-${MFFLANG}.txt
+FORMULAS=/tmp/formulas-${MFFLANG}.txt
 
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -63,6 +66,22 @@ if [ -z "$RID" ]; then
  # alert PHP...
  exit 1
 fi
+# create list of available products
+grep 'var produkt_name =' $OUTFILE | sed  's/\tvar produkt_name = //' | sed 's/,};/,\"998\":\"Bonus\"}/' | tr -d ['\\'] >$PRODUCTS
+# create list of available forestry products
+grep 'var produkt_name_forestry =' $OUTFILE | sed  's/\tvar produkt_name_forestry = //' | sed 's/,};/}/' | tr -d ['\\'] >$FORESTRYPRODUCTS
+# create list of available formulas abusing FARMDATAFILE ;)
+grep 'var formulas = eval' $OUTFILE | sed "s/\tvar formulas = eval('\[//" | sed "s/\]');//" >$FARMDATAFILE
+echo -n "{" >$FORMULAS
+for iCount in {1..35}; do
+ echo -n "\"${iCount}\":\"" >>$FORMULAS
+ jq -j '."'$iCount'"["2"]' $FARMDATAFILE >>$FORMULAS
+ echo -n "\"," >>$FORMULAS
+done
+echo "}" >>$FORMULAS
+# PHP is allergic to that last comma...
+sed -i 's/,}/}/' $FORMULAS
+
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
 wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
@@ -72,8 +91,8 @@ wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --
 # i don't really care, if all this succeeds or not
 # user will notice if something goes wrong.
 wget -v -o "$LOGFILE" --output-document=/dev/null --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "$LOGOFFURL"
-rm $COOKIEFILE $OUTFILE $LOGFILE
 
 # get latest version number from repository
 wget -v -o "$LOGFILE" --output-document="$VERSIONAVAILABLE" --user-agent="$AGENT" "$VERURL"
+rm $COOKIEFILE $OUTFILE $LOGFILE
 exit 0

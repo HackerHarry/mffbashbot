@@ -18,9 +18,9 @@
 //
 $configContents = parse_ini_file($gamepath . "/config.ini");
 $translations_available = ['de', 'en', 'bg'];
-$lang=$configContents['lang'];
+$lang = $configContents['lang'];
 // fallback to german if lang is unsupported or missing
 if (!in_array($lang, $translations_available))
- $lang='de';
+ $lang = 'de';
 include_once 'lang/lang.' . $lang . '.php';
 ?>

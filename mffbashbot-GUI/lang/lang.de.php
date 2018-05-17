@@ -1,5 +1,6 @@
 <?php
-// Die meissten Gebäudenamen kommen aus den LIVE Daten und stehen ergo NICHT hier
+// Die meissten Werte kommen aus den LIVE Daten und stehen ergo NICHT hier
+// most values are extracted from live data. that's why they can't be found here.
 $farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', 'farmersmarket' => 'Bauernmarkt', 'forestry' => 'B&auml;umerei', 'foodworld' => 'Picknickarea', 'city2' => 'Teichlingen'];
 $forestryBuildingFriendlyName = ['S&auml;gewerk', 'Schreinerei', 'B&auml;umerei'];
 $foodworldBuildingFriendlyName = ['Getr&auml;nkebude', 'Imbissbude', 'Konditorei', 'Eisdiele' ];
