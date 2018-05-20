@@ -16,28 +16,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-include_once 'lang.php';
 $versionavailable = file_get_contents("/tmp/mffbot-version-available.txt");
-$JSON = file_get_contents("/tmp/farmdata-" . $username . ".txt");
-if ($JSON === false)
- header("Location: index.php");
-$farmdata = (json_decode($JSON, true));
-$JSON = file_get_contents("/tmp/products-" . $lang . ".txt");
-if ($JSON === false)
- header("Location: index.php");
-$productlist = (json_decode($JSON, true));
-$JSON = file_get_contents("/tmp/forestryproducts-" . $lang . ".txt");
-if ($JSON === false)
- header("Location: index.php");
-$forestryproductlist = (json_decode($JSON, true));
-$JSON = file_get_contents("/tmp/fooddata-" . $username . ".txt");
-if ($JSON === false)
- header("Location: index.php");
-$fooddata = (json_decode($JSON, true));
-$JSON = file_get_contents("/tmp/formulas-" . $lang . ".txt");
-if ($JSON === false)
- header("Location: index.php");
-$windmillproductlist = (json_decode($JSON, true));
-// might be redundant
-$configContents = parse_ini_file($gamepath . "/config.ini");
+($JSON = file_get_contents("/tmp/farmdata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $farmdata = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/products-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $productlist = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/forestryproducts-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $forestryproductlist = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/fooddata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $fooddata = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/formulas-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $windmillproductlist = (json_decode($JSON, true));
 ?>

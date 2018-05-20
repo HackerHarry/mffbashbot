@@ -19,8 +19,8 @@
 if (!isset($username))
  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 $action = $_POST["action"];
-include_once 'gamepath.php';
-include_once 'lang.php';
+include 'gamepath.php';
+include 'lang.php';
 
 switch ($action) {
  case "getbotstatus":

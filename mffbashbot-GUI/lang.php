@@ -22,5 +22,5 @@ $lang = $configContents['lang'];
 // fallback to german if lang is unsupported or missing
 if (!in_array($lang, $translations_available))
  $lang = 'de';
-include_once 'lang/lang.' . $lang . '.php';
+include 'lang/lang.' . $lang . '.php';
 ?>

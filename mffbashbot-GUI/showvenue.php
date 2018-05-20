@@ -20,12 +20,12 @@ if (!isset($_POST["farm"]))
  header("Location: index.php");
 $farm = $_POST["farm"];
 strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
-include_once 'gamepath.php';
-include_once 'lang.php';
-include_once 'functions.php';
-include_once 'farmdata.php';
-include_once 'header.php';
-include_once 'buttons.php';
+include 'gamepath.php';
+include 'lang.php';
+include 'functions.php';
+include 'farmdata.php';
+include 'header.php';
+include 'buttons.php';
 
 switch ($farm) {
  case "city2":
