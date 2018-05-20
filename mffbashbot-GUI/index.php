@@ -36,12 +36,12 @@ include 'functions.php';
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
      if (xhttp.readyState != null && (xhttp.readyState < 3 || xhttp.status != 200))
-      return
+      return;
      parts = xhttp.responseText.split(";");
      if (parts[2])
       if (parts[2] == 0) {
        document.getElementById("logonstatus").innerHTML = parts[3] + parts[4];
-       document.forms.jump2farm.submit();
+       setTimeout(function(){ document.forms.jump2farm.submit(); }, 3000);
        return;
       }
       else if (parts[2] == 1) {
