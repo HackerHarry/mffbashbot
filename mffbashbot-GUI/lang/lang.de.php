@@ -75,5 +75,9 @@ $strings['selectserver'] = 'Bitte einen Server auswählen';
 $strings['enterpw'] = 'Bitte ein gültiges Passwort eingeben';
 $strings['logonsuccess'] = 'Anmeldung erfolgreich, Steueroberfläche wird geladen...';
 $strings['error'] = 'FEHLER';
+$strings['vetjobeasy'] = 'Einfach';
+$strings['vetjobmedium'] = 'Mittel';
+$strings['vetjobhard'] = 'Schwer';
+$strings['restartvetjob'] = 'Tierarztpraxis nachstarten';
 // $strings[''] = '';
 ?>

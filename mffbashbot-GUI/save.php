@@ -21,8 +21,11 @@ $farm = $_POST["farm"];
 strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 include 'gamepath.php';
 include 'lang.php';
-$farmQueue = $_POST["queueContent"];
-$queue = explode("#", $farmQueue);
+
+if (isset($_POST["queueContent"])) {
+ $farmQueue = $_POST["queueContent"];
+ $queue = explode("#", $farmQueue);
+}
 
 switch ($farm) {
  case 1:
@@ -51,6 +54,8 @@ switch ($farm) {
      $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot3);
      $retval = saveConfig($filename, $slot3);
      if ($retval === false || $retval == 0) exit("1");
+     unset($slot3);
+     unset($slots[2]); // what was i thinking?
     }
     continue;
    }
@@ -132,6 +137,7 @@ switch ($farm) {
   $configContents['dolot'] = $_POST["lottoggle"];
   $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
+  $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
   $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
   $configContents['sendforestryfarmiesaway'] = $_POST["forestryfarmiestoggle"];

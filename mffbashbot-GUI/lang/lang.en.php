@@ -74,5 +74,9 @@ $strings['selectserver'] = 'Please select a server';
 $strings['enterpw'] = 'Please enter a valid password';
 $strings['logonsuccess'] = 'Logon succeeded, loading control interface...';
 $strings['error'] = 'ERROR';
+$strings['vetjobeasy'] = 'Easy';
+$strings['vetjobmedium'] = 'Medium';
+$strings['vetjobhard'] = 'Hard';
+$strings['restartvetjob'] = 'Restart vets\' treatment';
 // $strings[''] = '';
 ?>

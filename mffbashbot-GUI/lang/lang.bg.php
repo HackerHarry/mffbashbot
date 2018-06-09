@@ -74,5 +74,9 @@ $strings['selectserver'] = 'Моля, изберете сървър';
 $strings['enterpw'] = 'Моля, въведете валидна парола.';
 $strings['logonsuccess'] = 'Вход УСПЕШЕН. Зареждане на контролният панел';
 $strings['error'] = 'Грешка!';
+$strings['vetjobeasy'] = 'просто';
+$strings['vetjobmedium'] = 'средства';
+$strings['vetjobhard'] = 'труден';
+$strings['restartvetjob'] = 'ветеринарна практика стартиране';
 // $strings[''] = '';
 ?>

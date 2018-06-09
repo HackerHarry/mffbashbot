@@ -688,8 +688,10 @@ function DoFarmersMarketAnimalTreatment {
  local sTreatmentSet=
  local iDiseaseID
  local iFastestCure
- # echo "Finishing animal treatment in slot ${iSlot}..."
  SendAJAXFarmRequest "mode=vet_endtreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}"
+ if ! grep -q "restartvetjob = 0" $CFGFILE && grep -q "restartvetjob = " $CFGFILE; then
+  check_VetJobDone
+ fi
  if get_AnimalQueueLength ; then
   # queue is empty, return
   return
@@ -713,9 +715,24 @@ function DoFarmersMarketAnimalTreatment {
   sTreatmentSet=${sTreatmentSet}${iDiseaseID}_${iFastestCure},
  done
  # start treatment
- # echo "Starting new animal treatment in slot ${iSlot}..."
  SendAJAXFarmRequest "mode=vet_starttreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}&set=${sTreatmentSet}"
  GetFarmData $FARMDATAFILE
+}
+
+function check_VetJobDone {
+ local iNumAnimalsHealed=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count | tonumber' $FARMDATAFILE)
+ local iNumAnimals2Heal=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
+ # we're not using updated farm data at this point, but a treatment has just been finished
+ # that's why we're calculating with one less treatment
+ iNumAnimals2Heal=$((iNumAnimals2Heal-1))
+ if [ $iNumAnimals2Heal -eq $iNumAnimalsHealed ]; then
+  CFGLINE=$(grep restartvetjob $CFGFILE)
+  TOKENS=( $CFGLINE )
+  local iVetJob=${TOKENS[2]}
+  echo "Restarting vets' treatment with difficulty ${iVetJob}..."
+  sleep 2
+  SendAJAXFarmRequest "mode=vet_setrole&farm=1&position=1&id=${iVetJob}&role=${iVetJob}"
+ fi
 }
 
 function DoFarmersMarketPetCare {
