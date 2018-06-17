@@ -1,0 +1,4 @@
+# exclude devel-only related stuff
+/mffbashbot-misc
+/mffbashbot-setup-win32
+/mffbashbot-setup-win64

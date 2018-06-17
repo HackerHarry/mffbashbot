@@ -34,11 +34,18 @@ function getString {
 
 cd
 getString downloadingbot
-rm -f master.zip 2>/dev/null
+# just in case...
+rm -f master.zip
+rm -rf mffbashbot-master
 wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"
 
 getString unpackarc
 unzip -q master.zip
+# make sure to preserve an existing directory at least once
+if [ -d "mffbashbot" ]; then
+ rm -rf mffbashbot.old
+ mv mffbashbot mffbashbot.old
+fi
 mv mffbashbot-master mffbashbot
 chmod +x mffbashbot/*.sh
 
@@ -51,10 +58,12 @@ sed -i 's/server\.event-handler/#server\.event-handler/' $LCONF
 sed -i 's/server\.use-ipv6 = \"enable\"/server\.use-ipv6 = \"disable\"/' $LCONF
 sed -i 's/server\.network-backend/#server\.network-backend/' $LCONF
 sed -i 's/#include \"conf\.d\/cgi.conf\"/include \"conf\.d\/cgi.conf\"/' $LMODS
-echo '
+if ! grep -qe 'cgi\.assign\s\+=\s\+("\.php"' $LCGICONF; then
+ echo '
 server.modules += ( "mod_cgi" )
 cgi.assign = (".php"=>"/usr/bin/php-cgi")
 ' >$LCGICONF
+fi
 mkdir -p /var/log/lighttpd 2>/dev/null
 if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
  echo "server.stream-response-body = 1" >>$LCONF
@@ -63,7 +72,7 @@ fi
 getString movegui
 mkdir -p /var/www/html 2>/dev/null
 mv mffbashbot/mffbashbot-GUI $BOTGUIROOT
-chmod +x $BOTGUIROOT/script/logonandgetfarmdata.sh $BOTGUIROOT/script/wakeupthebot.sh
+chmod +x $BOTGUIROOT/script/*.sh
 
 getString patchgui
 sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
