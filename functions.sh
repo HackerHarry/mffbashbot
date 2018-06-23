@@ -26,15 +26,15 @@ AJAXCITY="${AJAXURL}city.php?rid=${RID}&"
 AJAXMAIN="${AJAXURL}main.php?rid=${RID}&"
 AJAXGUILD="${AJAXURL}guild.php?rid=${RID}&"
 
-function ctrl_c {
- echo "Caught CTRL-C"
+function exitBot {
+ echo "Caught an exit signal"
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
-  rm -f "$STATUSFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE"
  fi
  echo "Exiting..."
- exit 1
+ exit 0
 }
 
 function GetFarmData {

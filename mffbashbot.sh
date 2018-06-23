@@ -156,7 +156,7 @@ while (true); do
  NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
  LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:60.0) Gecko/20100101 Firefox/60.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
@@ -178,11 +178,10 @@ while (true); do
  fi
  echo "Your RID is $RID"
 
- # source functions
- . ../functions.sh
+ source ../functions.sh
 
- # trap CTRL-C to call ctrl_c (in functions) for clean logoff in case bot is active
- trap ctrl_c INT
+ # trap signals for clean logoff and file system cleanup
+ trap exitBot SIGINT SIGTERM
 
  echo "Getting farm status..."
  GetFarmData $FARMDATAFILE
@@ -229,7 +228,7 @@ while (true); do
      continue
     fi
    fi
-   # skip empty position or fields if playerlevel <4
+   # skip empty position or fields if playerlevel < 4
    if [ "$BUILDINGID" = "0" ] || [[ $PLAYERLEVELNUM -lt 4 && "$BUILDINGID" = "1" ]]; then
     echo "Skipping farm ${FARM}, position ${POSITION}"
     continue
