@@ -31,7 +31,7 @@ function exitBot {
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE"
  fi
  echo "Exiting..."
  exit 0
@@ -328,7 +328,7 @@ function start_FarmNP {
   fi
  fi
  # x dim is 2
- if ! get_FieldPlotReadiness $((iPlot+1)) ; then
+ if ! get_FieldPlotReadiness $((iPlot+1)); then
   iPlot=$((iPlot+2))
   continue
  fi
@@ -353,11 +353,11 @@ function start_FarmNP {
   fi
  fi
  # y dim is 2
- if ! get_FieldPlotReadiness $((iPlot+12)) ; then
+ if ! get_FieldPlotReadiness $((iPlot+12)); then
   iPlot=$((iPlot+1))
   continue
  fi
- if ! get_FieldPlotReadiness $((iPlot+13)) ; then
+ if ! get_FieldPlotReadiness $((iPlot+13)); then
   iPlot=$((iPlot+1))
   continue
  fi
@@ -777,7 +777,7 @@ function harvest_MegaField {
    iPlot=1
   fi
   iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
-  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"].remain?'; then
    echo -n "Harvesting Mega Field plot ${iPlot}..."
    SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
    echo "delaying ${iHarvestDelay} seconds"
@@ -902,7 +902,7 @@ function harvest_PonyFarm {
   if [ "$sBlocked" = "null" ] || [ "$sBlocked" = "0" ]; then
    iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
    if [ "$iFarmie" != "null" ]; then
-    if $JQBIN '.datablock[1].farmis["'$iFarmie'"].data.remain?' $TMPFILE | grep -q '-' ; then
+    if $JQBIN '.datablock[1].farmis["'$iFarmie'"].data.remain?' $TMPFILE | grep -q '-'; then
      SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
     fi
    fi
@@ -1221,14 +1221,14 @@ function update_queue {
   sed -n '3,'$iLines'p' $sInfile >>$sTmpfile
   head -2 $sInfile | tail -1 >>$sTmpfile
   mv $sTmpfile $sInfile
-  unset sInfile sTmpfile
+  unset sInfile sTmpfile # unset a local variable??
  fi
 }
 
 function check_QueueSleep {
  local sFile=$1
  local sQueueItem=$(sed '2q;d' $sFile)
- if [ "$sQueueItem" = "sleep" ] || [ -z "$sQueueItem" ] ; then
+ if [ "$sQueueItem" = "sleep" ] || [ -z "$sQueueItem" ]; then
   return 0
  fi
  return 1
@@ -1245,17 +1245,11 @@ function check_RunningMegaFieldJob {
 
 function check_RipePlotOnMegaField {
  # returns true if a plot shows a negative remainder
- local iBusyPlots=$($JQBIN '.updateblock.megafield.area | length' $FARMDATAFILE)
- local iPlot=0
- local sPlotName
- while [ "$iPlot" -lt "$iBusyPlots" ]; do
-  sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
-  if $JQBIN '.updateblock.megafield.area['${sPlotName}'].remain' $FARMDATAFILE | grep -q '-' ; then
-   return 0
-  fi
-  iPlot=$((iPlot+1))
- done
- return 1
+ local bHasNegatives=$($JQBIN '.updateblock.megafield.area | .[] | select(.remain < 0)' $FARMDATAFILE)
+ if [ -z "$bHasNegatives" ]; then
+  return 1
+ fi
+ return 0
 }
 
 function get_UnlockedMegaFieldPlotNum {
@@ -1345,7 +1339,7 @@ function get_MegaFieldAmountToGoInSlot {
  fi
  # look at mega field, see if theres still busy plots with needed PID
  iBusyPlots=$($JQBIN '.updateblock.megafield.area | length' $FARMDATAFILE)
- if [ $iBusyPlots -eq 0 ] ; then
+ if [ $iBusyPlots -eq 0 ]; then
   # no busy plots at all... return needed products
   echo $iSeeminglyNeeded
   return
@@ -1418,10 +1412,10 @@ function harvest_MegaField2x2 {
    iPlot=$((iPlot+1))
    # prevent harvesting of last column
   fi
-  if $JQBIN '.updateblock.megafield.area["'$iPlot'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-   if $JQBIN '.updateblock.megafield.area["'$((iPlot+1))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-    if $JQBIN '.updateblock.megafield.area["'$((iPlot+11))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
-     if $JQBIN '.updateblock.megafield.area["'$((iPlot+12))'"].remain?' $FARMDATAFILE 2>/dev/null | grep -q '-' ; then
+  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"].remain?'; then
+   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+1))'"].remain?'; then
+    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+11))'"].remain?'; then
+     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+12))'"].remain?'; then
       echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot+1)), $((iPlot+11)), $((iPlot+12))..."
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
@@ -1641,7 +1635,7 @@ function get_FieldPlotReadiness {
   # structure changes after planting once
   sResult=$($JQBIN '.datablock[3][1] | to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
  fi
- if ! echo $sResult | grep -q '"'${iPlot}'"' ; then
+ if ! echo $sResult | grep -q '"'${iPlot}'"'; then
   return 0
  else
   return 1
@@ -1834,7 +1828,7 @@ function check_DeliveryEvent {
  if [ "$iDeliveryEventRunning" = "0" ]; then
   return
  fi
- if $JQBIN '.updateblock.menue.deliveryevent.data.tour.remain' $FARMDATAFILE | grep -q '-' ; then
+ if check_TimeRemaining '.updateblock.menue.deliveryevent.data.tour.remain'; then
   iPointsAvailable=$($JQBIN '.updateblock.menue.deliveryevent.data["points"]' $FARMDATAFILE)
   if [ $iPointsAvailable -ge $iPointsNeeded ] 2>/dev/null; then
    echo "Starting one-hour delivery tour..."
@@ -1859,6 +1853,26 @@ function check_OlympiaEvent {
    SendAJAXMainRequest "amount=10&action=olympia_entry"
   fi
  fi
+}
+
+function check_TimeRemaining {
+ # returns true if a zero or negative timer is found
+ # and sets new PAUSETIME if applicable
+ local sFilter=$1
+ local iRemaining=$($JQBIN $sFilter $FARMDATAFILE 2>/dev/null)
+ if ! [ $iRemaining -eq $iRemaining ] 2>/dev/null || [ -z "$iRemaining" ]; then
+  # value is not an integer or empty
+  return 1
+ fi
+ if [ $iRemaining -le 0 ]; then
+  return 0
+ else
+  if [ $iRemaining -gt 0 ] && [ $iRemaining -lt $PAUSETIME ]; then
+   PAUSETIME=$iRemaining
+   PAUSECORRECTEDAT=$(date +"%s")
+  fi
+ fi
+ return 1
 }
 
 function SendAJAXFarmRequest {
