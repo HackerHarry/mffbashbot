@@ -61,7 +61,7 @@ include 'functions.php';
    var farmno = [];
 <?php
 $username = "./";
-include 'gamepath.php';
+include 'config.php';
 system('cd ' . $gamepath . ' ; for farm in $(ls -d */ | tr -d \'/\'); do echo -n "   farmno[\"$farm\"] = "; grep server $farm/config.ini | awk \'{ printf "%i", $3 }\'; echo ";"; done');
 unset($username);
 ?>
@@ -98,7 +98,7 @@ unset($username);
      <option value="0" selected>Farm</option>
 <?php
 $username = "./";
-include 'gamepath.php';
+include 'config.php';
 system("cd " . $gamepath . " ; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/     <option>\\1<\\/option>/'");
 unset($username);
 ?>

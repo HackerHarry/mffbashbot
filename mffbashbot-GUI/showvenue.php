@@ -20,7 +20,7 @@ if (!isset($_POST["farm"]))
  header("Location: index.php");
 $farm = $_POST["farm"];
 strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
-include 'gamepath.php';
+include 'config.php';
 include 'lang.php';
 include 'functions.php';
 include 'farmdata.php';

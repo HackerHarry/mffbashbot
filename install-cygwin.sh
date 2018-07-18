@@ -79,7 +79,7 @@ mv mffbashbot/mffbashbot-GUI $BOTGUIROOT
 chmod +x $BOTGUIROOT/script/*.sh
 
 getString patchgui
-sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 
 echo
 getString wannasetup

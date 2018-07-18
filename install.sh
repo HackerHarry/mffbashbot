@@ -122,7 +122,7 @@ if [ -d "$BOTGUIROOT" ]; then
 fi
 sudo mv mffbashbot-GUI $BOTGUIROOT
 sudo chmod +x $BOTGUIROOT/script/*.sh
-sudo sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+sudo sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 echo $HTTPUSER' ALL=(ALL) NOPASSWD: /bin/kill' | sudo tee /etc/sudoers.d/www-data-kill-cmd > /dev/null
 
 getString settinguplogrotate

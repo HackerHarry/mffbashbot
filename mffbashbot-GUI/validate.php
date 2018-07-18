@@ -27,7 +27,7 @@ if (empty($_POST["username"])) {
 }
 strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 include 'functions.php';
-include 'gamepath.php';
+include 'config.php';
 include 'lang.php';
 if (empty($_POST["server"])) {
  print "1;<h4><font color=\"darkred\">" . $strings['selectserver'] . "</font></h4>\n";

@@ -31,7 +31,7 @@ function exitBot {
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE"
  fi
  echo "Exiting..."
  exit 0
@@ -572,7 +572,7 @@ function harvest_FlowerAreaNP {
  local iPID=$($JQBIN '.updateblock.farmersmarket.flower_area["1"].pid | tonumber' $FARMDATAFILE)
  local iCount
  local sData="mode=flowerarea_harvest&farm=1&position=1&set="
- for iCount in $(seq 1 36); do
+ for iCount in {1..36}; do
   sData=${sData}${iCount}:${iPID},
  done
  SendAJAXFarmRequest $sData
@@ -601,7 +601,7 @@ function start_FlowerAreaNP {
  local iCount
  local sData="mode=flowerarea_plant&farm=1&position=1&set="
  local sDataWater="mode=flowerarea_water&farm=1&position=1&set="
- for iCount in $(seq 1 36); do
+ for iCount in {1..36}; do
   sData=${sData}${iCount}:${iPID},
   sDataWater=${sDataWater}${iCount}:${iPID},
  done

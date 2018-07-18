@@ -172,7 +172,7 @@ cd ~/mffbashbot-master
 $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
-$SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/gamepath.php
+$SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 
 # see if lighttpd.conf needs patching
 if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then

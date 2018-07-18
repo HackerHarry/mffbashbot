@@ -19,7 +19,7 @@
 if (!isset($username))
  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 $action = $_POST["action"];
-include 'gamepath.php';
+include 'config.php';
 include 'lang.php';
 
 switch ($action) {
@@ -37,7 +37,7 @@ switch ($action) {
   break;
  case "triggerupdate":
   $username = "./";
-  include 'gamepath.php';
+  include 'config.php';
   $filename = $gamepath . "updateTrigger";
   touch($filename);
   // force bot iteration
