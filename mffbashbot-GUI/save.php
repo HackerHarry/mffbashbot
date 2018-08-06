@@ -68,11 +68,13 @@ switch ($farm) {
  break;
 
  case "farmersmarket":
+ case "farmersmarket2":
  case "foodworld":
  case "forestry":
   $position = ["1", "2", "forestry"];
   $farm == "foodworld" ? $position = ["1", "2", "3", "4"] : '';
   $farm == "farmersmarket" ? $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"] : '';
+  $farm == "farmersmarket2" ? $position = ["cowracing"] : '';
   for ($poscount = 0; $poscount <= (count($position) - 1); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 3 slots
@@ -152,6 +154,8 @@ switch ($farm) {
   $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
+  $configContents['racecowfood'] = $_POST["racecowfood"];
+  $configContents['crslots2feed'] = $_POST["crslots2feed"];
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

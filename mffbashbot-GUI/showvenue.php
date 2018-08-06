@@ -40,14 +40,19 @@ switch ($farm) {
  case "farmersmarket":
   $position = [0 => ["flowerarea", "", "flowerarea"], 1 => ["nursery", "", "nursery"], 2 => ["monsterfruit", "", "monsterfruit"], 3 => ["pets", "", "pets"], 4 => ["vet", "", "vet"]];
   break;
+ case "farmersmarket2":
+  $position = [0 => ["cowracing", "", "cowracing"]];
+  break;
  default:
   exit("1");
 }
 
 for ($pc = 0; $pc < 3; $pc++) {
+ if (!isset($position[$pc]))
+  continue;
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
  print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . ($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]) . "</th>";
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);
@@ -77,8 +82,8 @@ print "</form><br>\n";
 for ($pc = 3; $pc < count($position); $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
  print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
- // farmers market uses a different source for its friendly name
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . ($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]) . "</th>";
+ // farmers' market uses a different source for its friendly name
+ print "<tr><th colspan=\"" . $iNumQueues . "\">" . (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
  print "</tr><tr>";
  print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);

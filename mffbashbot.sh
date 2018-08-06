@@ -380,8 +380,8 @@ while (true); do
    PETBREEDING=$($JQBIN '.updateblock.farmersmarket.pets.breed' $FARMDATAFILE 2>/dev/null)
    if [ "$PETBREEDING" != "0" ]; then
     for SLOT in food toy plushy; do
-     CAREREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
-     if [ "$CAREREMAIN" = "null" ] || [ "$CAREREMAIN" = "[]" ]; then
+     SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]' $FARMDATAFILE 2>/dev/null)
+     if [ "$SLOTREMAIN" = "null" ] || [ "$SLOTREMAIN" = "[]" ]; then
       echo "Taking care of pet using ${SLOT}..."
       DoFarmersMarketPetCare ${SLOT}
      fi
@@ -389,8 +389,8 @@ while (true); do
    fi
    # stuff for pets production
    for SLOT in 1 2 3; do
-    PETSREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
-     if [ "$PETSREMAIN" = "0" ]; then
+    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
+     if [ "$SLOTREMAIN" = "0" ]; then
        echo "Doing pets stuff production slot ${SLOT}..."
        DoFarmersMarket farmersmarket pets ${SLOT}
      fi
@@ -425,6 +425,22 @@ while (true); do
    SendAJAXFarmRequest "slot=${SLOT}&mode=butterfly_carebreed"
    fi
   done
+ fi
+ # cow racing production
+ if [ $PLAYERLEVELNUM -ge 42 ]; then
+  CRBARNEXISTS=$($JQBIN '.updateblock.farmersmarket.cowracing?' $FARMDATAFILE 2>/dev/null)
+  if [ "$CRBARNEXISTS" != "0" ] && [ "$CRBARNEXISTS" != "null" ]; then
+   for SLOT in 1 2 3; do
+    if check_TimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]["1"].remain'; then
+     echo "Doing cow racing production slot ${SLOT}..."
+     DoFarmersMarket farmersmarket2 cowracing ${SLOT}
+    fi
+   done
+   # race cow feeding
+   if ! grep -q "racecowfood = 0" $CFGFILE && grep -q "racecowfood = " $CFGFILE && ! grep -q "crslots2feed = 0" $CFGFILE && grep -q "crslots2feed = " $CFGFILE; then
+    check_RaceCowFeeding
+   fi
+  fi
  fi
 
  # transport vehicle handling
@@ -674,8 +690,8 @@ while (true); do
  TIMEDELTA=0
  PAUSECORRECTEDAT=0
  fi
- if [ $PAUSETIME -le 0 ]; then
-  PAUSETIME=5
+ if [ $PAUSETIME -lt 10 ]; then # allow a slight jitter
+  PAUSETIME=10
  fi
  echo "Pausing $PAUSETIME secs..."
  echo "---"

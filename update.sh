@@ -64,7 +64,7 @@ farmersmarket/monsterfruit
 farmersmarket/nursery
 farmersmarket/pets
 farmersmarket/vet
-farmersmarket2
+farmersmarket2/cowracing
 foodworld/1
 foodworld/2
 foodworld/3
@@ -139,15 +139,13 @@ if [ -d ~/mffbashbot ]; then
        touch ${DIRS[$INDEX]}/light
        touch ${DIRS[$INDEX]}/water
        ;;
-     *pets | *vet)
+     *pets | *vet | *cowracing)
        touch ${DIRS[$INDEX]}/1
        touch ${DIRS[$INDEX]}/2
        touch ${DIRS[$INDEX]}/3
        ;;
      forestry/forestry)
        touch ${DIRS[$INDEX]}/forestry
-       ;;
-     farmersmarket2)
        ;;
      *)
        touch ${DIRS[$INDEX]}/0

@@ -134,9 +134,9 @@ function updateBotStatus() {
 }
 
 function saveMisc() {
- var i, v;
+ var i, v, crslots2feed = 0;
  var aOptions = ['lottoggle', 'vehiclemgmt5', 'vehiclemgmt6', 'vetjobdifficulty',
- 'carefood', 'caretoy', 'careplushy'];
+ 'carefood', 'caretoy', 'careplushy', 'racecowfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
@@ -152,6 +152,12 @@ function saveMisc() {
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }
+ for (i = 1; i <= 13; i++) {
+  if (document.getElementById("crslot" + i).checked == true)
+   crslots2feed += parseInt(document.getElementById("crslot" + i).value);
+ }
+ sData += "&crslots2feed=" + crslots2feed;
+
  AJAXsave(sData);
  return false;
 }
@@ -164,10 +170,13 @@ function saveConfig() {
  switch (sFarm) {
   case "forestry":
   case "farmersmarket":
+  case "farmersmarket2":
   case "foodworld":
   case "city2":
    if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
+   if (sFarm == "farmersmarket2")
+    var fmpos = ["cowracing"];
    if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
    if (sFarm == "foodworld")
@@ -260,7 +269,7 @@ function showHideOptions() {
   }
  else {
   div.style.display = "inline-block";
-  return false
+  return false;
   }
 }
 

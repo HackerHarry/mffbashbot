@@ -60,6 +60,7 @@ print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
 for ($i = 1; $i < 7; $i++)
  print "<input type=\"image\" src=\"image/navi_farm" . $i . ".png\" class=\"navilink\" title=\"" . $farmFriendlyName[$i] . "\" name=\"" . $i . "\" onclick=\"document.venueselect.farm.value = '" . $i . "'; this.form.submit();\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket'] . "\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
+print "<input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket2'] . "\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"" . $farmFriendlyName['forestry'] . "\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"" . $farmFriendlyName['foodworld'] . "\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['city2'] . "\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showvenue.php'; this.form.submit()\">\n";
@@ -129,19 +130,46 @@ print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"careplushy0\">Sleep</option>\n";
 CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
+print "</td></tr>\n";
+print "<tr><td>";
+print "<select id=\"racecowfood\" name=\"racecowfood\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"racecowfood0\">Sleep</option>\n";
+CreateOptionsWithID(800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
+print "</select>&nbsp;" . $strings['racecowfood'];
+print "</td></tr>\n";
+print "<tr><td>\n";
+for ($i = 1; $i <= 13; $i++)
+ print $i . "<input type=\"checkbox\" id=\"crslot" . $i . "\" name=\"crslot" . $i . "\" value=\"" . 2 ** ($i - 1) . "\" onchange=\"saveMisc();\">\n";
+print $strings['feedracecowinslots'];
 print "</td></tr></table>\n";
 print "</div>\n";
 print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions();\">" . $strings['options'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
+
 global $configContents;
+$expectedKeys = [ 'carefood', 'caretoy', 'careplushy',
+'dodog', 'dolot', 'vehiclemgmt5',
+'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
+'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
+'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
+'dobutterflies', 'dodeliveryevent', 'megafieldinstantplant',
+'doolympiaevent', 'doseedbox', 'dodonkey',
+'restartvetjob', 'racecowfood', 'crslots2feed' ];
+// make sure missing options don't mess up the options' display
+for ($i = 0; $i < count($expectedKeys); $i++)
+ if (!isset($configContents[$expectedKeys[$i]]))
+  $configContents[$expectedKeys[$i]] = '0';
+
 $savedValue = $configContents['carefood'];
 print "document.getElementById('carefood').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['caretoy'];
 print "document.getElementById('caretoy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['careplushy'];
 print "document.getElementById('careplushy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
+$savedValue = $configContents['racecowfood'];
+print "document.getElementById('racecowfood').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['vehiclemgmt5'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt5').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
@@ -163,6 +191,13 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  if ($savedValue == '1')
   print "document.getElementById('" . $toggle . "').checked = true;\n";
  next($togglesarray);
+}
+
+$savedValue = $configContents['crslots2feed'];
+for ($i = 1; $i <= 13; $i++) {
+ if ($savedValue & 1)
+  print "document.getElementById('crslot" . $i . "').checked = true;\n";
+ $savedValue = $savedValue >> 1;
 }
 print "</script>\n";
 ?>

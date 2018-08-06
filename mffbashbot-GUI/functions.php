@@ -212,6 +212,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateOptions(300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336, 337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 400, 401, 402, 403);
         print "</select>\n";
         break;
+  case "cowracing":
+        // Kuh-Rennstall
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
+        print "</select>\n";
+        break;
   case "pets":
         // Tieraufzucht
         print "<option value=\"sleep\">Sleep</option>\n";
@@ -315,6 +321,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "pets":
 	$buildingType = "Pets";
+	break;
+  case "cowracing":
+	$buildingType = "CowRacing";
 	break;
   case "windmill":
 	$buildingType = "WindMill";
@@ -428,6 +437,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "Nursery":
    case "Pets":
    case "Vet":
+   case "CowRacing":
    case "FuelStation":
    case "TeaFactory":
    case "KnittingMill":

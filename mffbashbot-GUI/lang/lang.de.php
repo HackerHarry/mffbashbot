@@ -1,7 +1,7 @@
 <?php
 // Die meissten Werte kommen aus den LIVE Daten und stehen ergo NICHT hier
 // most values are extracted from live data. that's why they can't be found here.
-$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', 'farmersmarket' => 'Bauernmarkt', 'forestry' => 'B&auml;umerei', 'foodworld' => 'Picknickarea', 'city2' => 'Teichlingen'];
+$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', 'farmersmarket' => 'Bauernmarkt', 'farmersmarket2' => 'Bauernmarkt 2', 'forestry' => 'B&auml;umerei', 'foodworld' => 'Picknickarea', 'city2' => 'Teichlingen'];
 $forestryBuildingFriendlyName = ['S&auml;gewerk', 'Schreinerei', 'B&auml;umerei'];
 $foodworldBuildingFriendlyName = ['Getr&auml;nkebude', 'Imbissbude', 'Konditorei', 'Eisdiele' ];
 $monsterlist = [1 => "Wassereimer", 2 => "Gießkanne", 3 => "Gartenschlauch", 4 => "Sprenkler", 5 => "Automatische Gießanlage", 6 => "Quellwasser", 7 => "Solar-Bew&auml;sserung", 10 => "Gl&uuml;hlampe", 11 => "Kronleuchter", 12 => "Halogenstrahler", 13 => "UV-Lampe", 14 => "Tageslichtlampe", 15 => "Biolampe", 16=> "LED Pflanzenlampe", 20 => "Einfacher D&uuml;nger", 21 => "Kraftd&uuml;nger", 22 => "Speziald&uuml;nger", 23 => "Wachstumsverst&auml;rker", 24 => "Extremd&uuml;nger", 25 => "Deluxed&uuml;nger", 26 => "Biod&uuml;nger"];
@@ -79,5 +79,7 @@ $strings['vetjobeasy'] = 'Einfach';
 $strings['vetjobmedium'] = 'Mittel';
 $strings['vetjobhard'] = 'Schwer';
 $strings['restartvetjob'] = 'Tierarztpraxis nachstarten';
+$strings['feedracecowinslots'] = ' Rennkuh in Stallplätzen füttern';
+$strings['racecowfood'] = 'Futter für Rennkuh';
 // $strings[''] = '';
 ?>

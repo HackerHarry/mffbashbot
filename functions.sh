@@ -748,6 +748,49 @@ function DoFarmersMarketPetCare {
  fi
 }
 
+function harvest_CowRacing {
+ local iSlot=$3
+ SendAJAXFarmRequest "slot=${iSlot}&position=1&mode=cowracing_harvestproduction"
+}
+
+function start_CowRacing {
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ SendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=cowracing_startproduction"
+}
+
+function check_RaceCowFeeding {
+ CFGLINE=$(grep crslots2feed $CFGFILE)
+ TOKENS=( $CFGLINE )
+ local iSlots=${TOKENS[2]}
+ local sSlots2Feed=$(get_RaceCowSlots2Process $iSlots)
+ CFGLINE=$(grep racecowfood $CFGFILE)
+ TOKENS=( $CFGLINE )
+ local iPID=${TOKENS[2]}
+ local iNumCowSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | length' $FARMDATAFILE 2>/dev/null)
+ local iCowSlot
+ local iCounter
+ local iCowKey
+ for SLOT in $sSlots2Feed; do
+ # desired globbing :)
+  for iCounter in $(seq 0 $((iNumCowSlots - 1))); do
+   iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys['$iCounter']' $FARMDATAFILE 2>/dev/null)
+   iCowSlot=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].slot | tonumber' $FARMDATAFILE 2>/dev/null)
+   if [ $iCowSlot -eq $SLOT ]; then
+    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].feed_remain?' $FARMDATAFILE 2>/dev/null)
+    if [ "$SLOTREMAIN" = "null" ]; then
+     echo "Feeding race cow in slot ${iCowSlot}..."
+     SendAJAXFarmRequest "pid=${iPID}&slot=${SLOT}&mode=cowracing_feedCow"
+    fi
+   else
+    continue
+   fi
+  done
+ done
+}
+
 function harvest_MegaField {
  local iFarm=$1
  local iPosition=$2
@@ -1873,6 +1916,20 @@ function check_TimeRemaining {
   fi
  fi
  return 1
+}
+
+function get_RaceCowSlots2Process {
+ local n=$1
+ local sSlots2Process=""
+ local iBit=0
+ while [ $iBit -lt 13 ]; do
+  if [ $((n & 1)) -eq 1 ]; then
+   sSlots2Process="$sSlots2Process $((iBit + 1))"
+  fi
+  n=$((n >> 1))
+  iBit=$((++iBit))
+ done
+ echo "$sSlots2Process"
 }
 
 function SendAJAXFarmRequest {

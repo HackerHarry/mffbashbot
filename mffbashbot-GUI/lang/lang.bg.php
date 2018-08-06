@@ -1,6 +1,6 @@
 <?php
 // Most buildings names are extracted from LIVE DATA and can hence not be found here
-$farmFriendlyName = ['1' => 'Ферма 1', '2' => 'Ферма 2', '3' => 'Ферма 3', '4' => 'Ферма 4', '5' => 'Ферма 5', '6' => 'Ферма 6', 'farmersmarket' => 'Фермерски пазар', 'forestry' => 'Лесовъдство', 'foodworld' => 'Пикник Област', 'city2' => 'Подингтън'];
+$farmFriendlyName = ['1' => 'Ферма 1', '2' => 'Ферма 2', '3' => 'Ферма 3', '4' => 'Ферма 4', '5' => 'Ферма 5', '6' => 'Ферма 6', 'farmersmarket' => 'Фермерски пазар', 'farmersmarket2' => 'Фермерски пазар 2', 'forestry' => 'Лесовъдство', 'foodworld' => 'Пикник Област', 'city2' => 'Подингтън'];
 $forestryBuildingFriendlyName = ['Дъскорезница', 'Дърводелство', 'Лесовъдство'];
 $foodworldBuildingFriendlyName = ['Щанд за сода', 'Щанд за бързо хранене', 'Магазин за сладки', 'Салон за сладолед' ];
 $ponyfarmproductlist = [2 => "2-часов хак", 4 => "4-часов хак", 8 => "8-часов хак"];
@@ -78,5 +78,7 @@ $strings['vetjobeasy'] = 'просто';
 $strings['vetjobmedium'] = 'средства';
 $strings['vetjobhard'] = 'труден';
 $strings['restartvetjob'] = 'ветеринарна практика стартиране';
+$strings['feedracecowinslots'] = ' Feed race cow in slots';
+$strings['racecowfood'] = 'Food for race cow';
 // $strings[''] = '';
 ?>
