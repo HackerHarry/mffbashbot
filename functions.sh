@@ -341,6 +341,7 @@ function start_FarmNP {
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
+   sleep 1
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+2))
@@ -368,6 +369,7 @@ function start_FarmNP {
  if [ $iCache -eq 5 ]; then
   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
   SendAJAXFarmRequest "${sDataWater}"
+  sleep 1
   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot+2))
@@ -428,6 +430,7 @@ function start_FarmNP {
   iCache=$((iCache+1))
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequest "${sDataWater}"
+   sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+1))
    iCacheFlag=0
@@ -446,6 +449,7 @@ function start_FarmNP {
   iCache=$((iCache+1))
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequest "${sDataWater}"
+   sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+2))
    iCacheFlag=0
@@ -462,6 +466,7 @@ function start_FarmNP {
  iCache=$((iCache+1))
  if [ $iCache -eq 5 ]; then
   SendAJAXFarmRequest "${sDataWater}"
+  sleep 1
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot+2))
   iCacheFlag=0
@@ -1865,7 +1870,7 @@ function check_ButterflyBonus {
 }
 
 function check_DeliveryEvent {
- local iPointsNeeded=200
+ local iPointsNeeded=250
  local iPointsAvailable
  local iDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent' $FARMDATAFILE)
  if [ "$iDeliveryEventRunning" = "0" ]; then
