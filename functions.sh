@@ -776,12 +776,12 @@ function check_RaceCowFeeding {
  local iPID=${TOKENS[2]}
  local iNumCowSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | length' $FARMDATAFILE 2>/dev/null)
  local iCowSlot
- local iCounter
+ local iCount
  local iCowKey
  for SLOT in $sSlots2Feed; do
  # desired globbing :)
-  for iCounter in $(seq 0 $((iNumCowSlots - 1))); do
-   iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys['$iCounter']' $FARMDATAFILE 2>/dev/null)
+  for iCount in $(seq 0 $((iNumCowSlots - 1))); do
+   iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys['$iCount']' $FARMDATAFILE 2>/dev/null)
    iCowSlot=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].slot | tonumber' $FARMDATAFILE 2>/dev/null)
    if [ $iCowSlot -eq $SLOT ]; then
     SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].feed_remain?' $FARMDATAFILE 2>/dev/null)
@@ -794,6 +794,117 @@ function check_RaceCowFeeding {
    fi
   done
  done
+}
+
+function check_CowRace {
+ local iSlot
+ local iCount
+ local iKey
+ local sEnvironment
+ local sBodyPart
+ local iEquipmentID
+ local iNumSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | keys | length' $FARMDATAFILE 2>/dev/null)
+ for iCount in $(seq 0 $((iNumSlots - 1))); do
+  iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | keys['$iCount']' $FARMDATAFILE 2>/dev/null)
+  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].race_remain'; then
+   iSlot=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].slot | tonumber' $FARMDATAFILE 2>/dev/null)
+   # remove all equipment from cow
+   SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+   SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+   SendAJAXFarmRequest "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+   GetFarmData $FARMDATAFILE
+   sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].lanestatus' $FARMDATAFILE 2>/dev/null)
+   for sBodyPart in head body foot; do
+    # find best equipment for the cow
+    iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
+    if [ "$iEquipmentID" = "-1" ]; then
+     continue
+    fi
+    # equip it
+    SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iSlot}&mode=cowracing_equipitem"
+   done
+  # start the race
+  sleep 1
+  echo "Starting cow race in slot ${iSlot}..."
+  SendAJAXFarmRequest "type=pve&slot=${iSlot}&mode=cowracing_startrace"
+  fi
+ done
+}
+
+function get_CowEquipmentID {
+ local sBodyPart=$1
+ local sEnvironment=$2
+ local iEquipmentID=-1
+ case "$sBodyPart:$sEnvironment" in
+  head:normal)
+     iEquipmentID=$(check_CowEquipmentAvailability "1 4")
+     ;;
+  head:rain)
+     iEquipmentID=$(check_CowEquipmentAvailability "2 1")
+     ;;
+  head:cold)
+     iEquipmentID=$(check_CowEquipmentAvailability "4 2")
+     ;;
+  head:heat)
+     iEquipmentID=$(check_CowEquipmentAvailability "5 3")
+     ;;
+  head:mud)
+     iEquipmentID=$(check_CowEquipmentAvailability "3 5")
+     ;;
+  body:normal)
+     iEquipmentID=$(check_CowEquipmentAvailability "11 13")
+     ;;
+  body:rain)
+     iEquipmentID=$(check_CowEquipmentAvailability "14 15")
+     ;;
+  body:cold)
+     iEquipmentID=$(check_CowEquipmentAvailability "13 11")
+     ;;
+  body:heat)
+     iEquipmentID=$(check_CowEquipmentAvailability "12 14")
+     ;;
+  body:mud)
+     iEquipmentID=$(check_CowEquipmentAvailability "15 14")
+     ;;
+  foot:normal)
+     iEquipmentID=$(check_CowEquipmentAvailability "6 8")
+     ;;
+  foot:rain)
+     iEquipmentID=$(check_CowEquipmentAvailability "9 6")
+     ;;
+  foot:cold)
+     iEquipmentID=$(check_CowEquipmentAvailability "10 7")
+     ;;
+  foot:heat)
+     iEquipmentID=$(check_CowEquipmentAvailability "8 7")
+     ;;
+  foot:mud)
+     iEquipmentID=$(check_CowEquipmentAvailability "7 9")
+     ;;
+ esac
+ echo "$iEquipmentID"
+}
+
+function check_CowEquipmentAvailability {
+ local iSearchPattern="$1"
+ local iItem
+ local iNumKeys
+ local iKey
+ local iCount
+ local iType
+ iNumKeys=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | keys | length' $FARMDATAFILE 2>/dev/null)
+ # desired globbing
+ for iItem in $iSearchPattern; do
+  for iCount in $(seq 0 $((iNumKeys - 1))); do
+   iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | keys['$iCount'] | tonumber' $FARMDATAFILE 2>/dev/null)
+   iType=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items["'$iKey'"].type | tonumber' $FARMDATAFILE 2>/dev/null)
+   if [ $iType -eq $iItem ]; then
+    echo $iKey
+    return
+   fi
+  done
+ done
+ echo "-1"
 }
 
 function harvest_MegaField {
@@ -1784,7 +1895,7 @@ function redeemPuzzlePartsPacks {
 }
 
 function check_PanBonus {
- # function by jbond47, adapted by HB to reflect coding style
+ # function by jbond47, update by maiblume & jbond47
  GetPanData "$FARMDATAFILE"
  local iToday=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
  local iNumSheep=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
@@ -1815,6 +1926,51 @@ function check_PanBonus {
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
    SendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Sport Sheep Bonus
+ iNumSheep=$($JQBIN '.datablock[11].collections.sport | length' $FARMDATAFILE)
+ if [ $iNumSheep -eq 9 ]; then # requires all 9 sport sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.sport' $FARMDATAFILE)
+  if [ $iLastBonus = "null" ]; then
+   iLastBonus=0
+  fi
+  echo -n "Sport sheep..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
+   SendAJAXFarmRequest "type=sport&mode=paymentitemcollection_bonus"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Beach Sheep Bonus
+ iNumSheep=$($JQBIN '.datablock[11].collections.beach | length' $FARMDATAFILE)
+ if [ $iNumSheep -eq 9 ]; then # requires all 9 beach sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.beach' $FARMDATAFILE)
+  if [ $iLastBonus = "null" ]; then
+   iLastBonus=0
+  fi
+  echo -n "Beach sheep..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
+   SendAJAXFarmRequest "type=beach&mode=paymentitemcollection_bonus"
+  else
+   echo "already claimed"
+  fi
+ fi
+ # Fantasy Sheep Bonus
+ iNumSheep=$($JQBIN '.datablock[11].collections.fantasy | length' $FARMDATAFILE)
+ if [ $iNumSheep -eq 9 ]; then # requires all 9 fantasy sheep
+  iLastBonus=$($JQBIN '.datablock[11].lastbonus.fantasy' $FARMDATAFILE)
+  if [ $iLastBonus = "null" ]; then
+   iLastBonus=0
+  fi
+  echo -n "Fantasy sheep..."
+  if [ $iToday -gt $iLastBonus ]; then
+   echo "available, claiming it..."
+   SendAJAXFarmRequest "type=fantasy&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi

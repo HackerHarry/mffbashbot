@@ -440,6 +440,10 @@ while (true); do
    if ! grep -q "racecowfood = 0" $CFGFILE && grep -q "racecowfood = " $CFGFILE && ! grep -q "crslots2feed = 0" $CFGFILE && grep -q "crslots2feed = " $CFGFILE; then
     check_RaceCowFeeding
    fi
+   # start cow race
+   if grep -q "docowrace = 1" $CFGFILE; then
+    check_CowRace
+   fi
   fi
  fi
 

@@ -32,7 +32,8 @@ $togglesarray = [
 "doolympiaevent" => "olympiaeventtoggle",
 "megafieldinstantplant" => "megafieldplanttoggle",
 "doseedbox" => "redeemdailyseedboxtoggle",
-"dodonkey" => "donkeytoggle"
+"dodonkey" => "donkeytoggle",
+"docowrace" => "cowracetoggle"
 ];
 
 $toggledesc = [
@@ -50,7 +51,8 @@ $strings['onehourdelivery'],
 $strings['refillolympiaenergy'],
 $strings['megafieldplantafterharvest'],
 $strings['dailyseedboxredeem'],
-$strings['waltraud']
+$strings['waltraud'],
+$strings['startcowrace']
 ];
 
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
@@ -155,7 +157,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy',
 'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
 'dobutterflies', 'dodeliveryevent', 'megafieldinstantplant',
-'doolympiaevent', 'doseedbox', 'dodonkey',
+'doolympiaevent', 'doseedbox', 'dodonkey', 'docowrace',
 'restartvetjob', 'racecowfood', 'crslots2feed' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
