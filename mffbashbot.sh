@@ -369,10 +369,12 @@ while (true); do
        fi
       done
      done
-     # feed the contestant if needed
-     if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.current.feedremain'; then
-      echo "Feeding contestant..."
-      DoFoodContestFeeding
+     # feed the contestant if needed & desired
+     if grep -q "dofoodcontest = 1" $CFGFILE; then
+      if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.current.feedremain'; then
+       echo "Feeding speed eating contestant..."
+       DoFoodContestFeeding
+      fi
      fi
     fi
    fi
@@ -428,8 +430,8 @@ while (true); do
  fi
  # cow racing production
  if [ $PLAYERLEVELNUM -ge 42 ]; then
-  CRBARNEXISTS=$($JQBIN '.updateblock.farmersmarket.cowracing?' $FARMDATAFILE 2>/dev/null)
-  if [ "$CRBARNEXISTS" != "0" ] && [ "$CRBARNEXISTS" != "null" ]; then
+  CRBARNEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$CRBARNEXISTS" != "number" ] && [ "$CRBARNEXISTS" != "null" ]; then
    for SLOT in 1 2 3; do
     if check_TimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]["1"].remain'; then
      echo "Doing cow racing production slot ${SLOT}..."
@@ -646,7 +648,7 @@ while (true); do
     elif [ "$JSONDATATYPE" = '"array"' ]; then
      MUNCHIEREADY=$($JQBIN '.datablock.tables['${TABLE}']."chairs"."'${CHAIR}'".ready == 1' $FARMDATAFILE 2>/dev/null)
     else
-     echo "Error: Unknown JSON datatype: ${JSONDATATYPE}"
+     echo "Error: Unknown JSON datatype: ${JSONDATATYPE}" >&2
      break 2
     fi
     if [ "$MUNCHIEREADY" = "true" ]; then

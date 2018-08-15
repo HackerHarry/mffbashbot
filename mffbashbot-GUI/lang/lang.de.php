@@ -82,5 +82,6 @@ $strings['restartvetjob'] = 'Tierarztpraxis nachstarten';
 $strings['feedracecowinslots'] = ' Rennkuh in Stallplätzen füttern';
 $strings['racecowfood'] = 'Futter für Rennkuh';
 $strings['startcowrace'] = 'Kuhrennen in allen Stallplätzen starten';
+$strings['feedsecontestant'] = 'Wettesser füttern';
 // $strings[''] = '';
 ?>

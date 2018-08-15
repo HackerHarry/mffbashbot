@@ -71,7 +71,8 @@ function GetInnerInfoData {
  local sFile=$1
  local iFarm=$2
  local iPosition=$3
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=innerinfos&farm=${iFarm}&position=${iPosition}"
+ local sMode=$4
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=${sMode}&farm=${iFarm}&position=${iPosition}"
 }
 
 function GetOlympiaData {
@@ -258,9 +259,8 @@ function start_FarmNP {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- # fetch garden data overwriting $FARMDATAFILE
- # TO DO: use $TMPFILE if possible
- SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
+ # fetch garden data
+ GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
  local iProduct=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'" | tonumber')
  local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'" | tonumber')
@@ -274,31 +274,39 @@ function start_FarmNP {
    if [ $iCacheFlag -eq 1 ]; then
     SendAJAXFarmRequest "${sData}cid=${iPosition}"
     SendAJAXFarmRequest "${sDataWater}"
+    iCacheFlag=0
+    iCache=0
+   fi
+   if ! check_RipePlotOnField $iFarm $iPosition; then
     GetFarmData $FARMDATAFILE
     return
    fi
-  GetFarmData $FARMDATAFILE
-  return
+   # there's more to harvest on this very field
+   harvest_Farm $iFarm $iPosition $iSlot
+   GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+   iPlot=1
   fi
- # don't plant on last coloumn if x-dim is 2
+ # don't plant on last column if x-dim is 2
  if ! ((iPlot % 12)); then
   if [ $iProductDim_x -eq 2 ]; then
    iPlot=$((iPlot+1))
    continue
   fi
  fi
- if [ $iPlot -ge 109 ]; then
-  if [ $iProductDim_y -eq 2 ]; then
-   if [ $iCacheFlag -eq 1 ]; then
-    SendAJAXFarmRequest "${sData}cid=${iPosition}"
-    SendAJAXFarmRequest "${sDataWater}"
-    GetFarmData $FARMDATAFILE
-    return
-   else
-    GetFarmData $FARMDATAFILE
-    return
-   fi
+ if [ $iPlot -ge 109 ] && [ $iProductDim_y -eq 2 ]; then
+  if [ $iCacheFlag -eq 1 ]; then
+   SendAJAXFarmRequest "${sData}cid=${iPosition}"
+   SendAJAXFarmRequest "${sDataWater}"
+   iCacheFlag=0
+   iCache=0
   fi
+  if ! check_RipePlotOnField $iFarm $iPosition; then
+   GetFarmData $FARMDATAFILE
+   return
+  fi
+  harvest_Farm $iFarm $iPosition $iSlot
+  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+  iPlot=1
  fi
  if ! get_FieldPlotReadiness $iPlot ; then
   iPlot=$((iPlot+1))
@@ -313,9 +321,8 @@ function start_FarmNP {
   iCache=$((iCache+1))
   if [ $iCache -eq 5 ]; then
    # CID is some water interval ID .. screw it.
-   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+   SendAJAXFarmRequest "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
-   sleep 1
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+1))
@@ -339,9 +346,8 @@ function start_FarmNP {
   iCacheFlag=1
   iCache=$((iCache+1))
   if [ $iCache -eq 5 ]; then
-   SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+   SendAJAXFarmRequest "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
-   sleep 1
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot+2))
@@ -367,9 +373,8 @@ function start_FarmNP {
  iCacheFlag=1
  iCache=$((iCache+1))
  if [ $iCache -eq 5 ]; then
-  SendAJAXFarmRequestOverwrite "${sData}cid=${iPosition}"
+  SendAJAXFarmRequest "${sData}cid=${iPosition}"
   SendAJAXFarmRequest "${sDataWater}"
-  sleep 1
   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot+2))
@@ -1055,7 +1060,7 @@ function harvest_PonyFarm {
  local iSlot
  local sBlocked
  local iFarmie
- GetInnerInfoData $TMPFILE $iFarm $iPosition
+ GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
  for iSlot in 1 2 3; do
   sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
   if [ "$sBlocked" = "null" ] || [ "$sBlocked" = "0" ]; then
@@ -1084,7 +1089,7 @@ function start_PonyFarm {
  local iFood
  local iEnergyBarCount
  for iSlot in 1 2 3; do
-  GetInnerInfoData $TMPFILE $iFarm $iPosition
+  GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
   sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
   if [ "$sBlocked" = "null" ]; then
    iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
@@ -1391,6 +1396,18 @@ function check_QueueSleep {
   return 0
  fi
  return 1
+}
+
+function check_RipePlotOnField {
+ # returns true if at least one plot is ripe
+ local iFarm=$1
+ local iPosition=$2
+ GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+ local bHasRipePlots=$($JQBIN '.datablock[1] | .[] | select(.phase? == 4)' $TMPFILE)
+ if [ -z "$bHasRipePlots" ]; then
+  return 1
+ fi
+ return 0
 }
 
 function check_RunningMegaFieldJob {
@@ -1789,12 +1806,8 @@ function get_RealSlotName {
 function get_FieldPlotReadiness {
  # returns 0 if a plot is not occupied in any way
  local iPlot=$1
- local sResult=$($JQBIN '.datablock[1] | to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
+ local sResult=$($JQBIN '.datablock[1] | .[] | select(.teil_nr? == "'$iPlot'")' $TMPFILE 2>/dev/null)
  if [ -z "$sResult" ]; then
-  # structure changes after planting once
-  sResult=$($JQBIN '.datablock[3][1] | to_entries[]["value"]["teil_nr"?]' $FARMDATAFILE 2>/dev/null)
- fi
- if ! echo $sResult | grep -q '"'${iPlot}'"'; then
   return 0
  else
   return 1
@@ -1834,7 +1847,7 @@ function get_QueueCountFromInnerInfo {
  local iCount
  local iSlots=1
  local iBlocked
- GetInnerInfoData $TMPFILE $iFarm $iPosition
+ GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
  # these buildings always have at least one slot. we'll check slots 2 and 3...
  for iCount in 2 3; do
   iBlocked=$($JQBIN '.datablock[1]["slots"]["'${iCount}'"].block?' $TMPFILE 2>/dev/null)

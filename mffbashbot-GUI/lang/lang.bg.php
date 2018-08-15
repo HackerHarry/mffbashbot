@@ -81,5 +81,6 @@ $strings['restartvetjob'] = 'ветеринарна практика старт�
 $strings['feedracecowinslots'] = ' Feed race cow in slots';
 $strings['racecowfood'] = 'Food for race cow';
 $strings['startcowrace'] = 'Start cow race in all slots';
+$strings['feedsecontestant'] = 'Feed the speed eating contestant';
 // $strings[''] = '';
 ?>

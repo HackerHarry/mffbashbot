@@ -155,6 +155,7 @@ switch ($farm) {
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['docowrace'] = $_POST["cowracetoggle"];
+  $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   $configContents['racecowfood'] = $_POST["racecowfood"];
   $configContents['crslots2feed'] = $_POST["crslots2feed"];
 
