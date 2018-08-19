@@ -134,9 +134,9 @@ function updateBotStatus() {
 }
 
 function saveMisc() {
- var i, v, crslots2feed = 0;
+ var i, v;
  var aOptions = ['lottoggle', 'vehiclemgmt5', 'vehiclemgmt6', 'vetjobdifficulty',
- 'carefood', 'caretoy', 'careplushy', 'racecowfood'];
+ 'carefood', 'caretoy', 'careplushy'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
@@ -154,11 +154,9 @@ function saveMisc() {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }
  for (i = 1; i <= 13; i++) {
-  if (document.getElementById("crslot" + i).checked == true)
-   crslots2feed += parseInt(document.getElementById("crslot" + i).value);
+  v = document.getElementById("racecowslot" + i);
+  sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;
  }
- sData += "&crslots2feed=" + crslots2feed;
-
  AJAXsave(sData);
  return false;
 }
@@ -262,8 +260,8 @@ function displayNotification(sTitle, sBody, bConfirm, sTag) {
  }
 }
 
-function showHideOptions() {
- var div = document.getElementById("optionspane");
+function showHideOptions(element) {
+ var div = document.getElementById(element);
  if (div.style.display !== "none") {
   div.style.display = "none";
   return false;

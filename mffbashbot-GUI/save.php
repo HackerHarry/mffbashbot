@@ -156,8 +156,11 @@ switch ($farm) {
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['docowrace'] = $_POST["cowracetoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
-  $configContents['racecowfood'] = $_POST["racecowfood"];
-  $configContents['crslots2feed'] = $_POST["crslots2feed"];
+  // clean up deprecated variables
+  if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);
+  if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
+  for ($i = 1; $i <= 13; $i++)
+   $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

@@ -79,9 +79,9 @@ $strings['vetjobeasy'] = 'Einfach';
 $strings['vetjobmedium'] = 'Mittel';
 $strings['vetjobhard'] = 'Schwer';
 $strings['restartvetjob'] = 'Tierarztpraxis nachstarten';
-$strings['feedracecowinslots'] = ' Rennkuh in Stallplätzen füttern';
-$strings['racecowfood'] = 'Futter für Rennkuh';
 $strings['startcowrace'] = 'Kuhrennen in allen Stallplätzen starten';
 $strings['feedsecontestant'] = 'Wettesser füttern';
+$strings['racecowslots'] = 'Rennkuh-Ställe';
+$strings['slot'] = 'Slot';
 // $strings[''] = '';
 ?>

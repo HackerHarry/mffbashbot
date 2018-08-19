@@ -772,33 +772,20 @@ function start_CowRacing {
 }
 
 function check_RaceCowFeeding {
- CFGLINE=$(grep crslots2feed $CFGFILE)
- TOKENS=( $CFGLINE )
- local iSlots=${TOKENS[2]}
- local sSlots2Feed=$(get_RaceCowSlots2Process $iSlots)
- CFGLINE=$(grep racecowfood $CFGFILE)
+ local iSlot=$1
+ CFGLINE=$(grep racecowslot${iSlot} $CFGFILE)
  TOKENS=( $CFGLINE )
  local iPID=${TOKENS[2]}
- local iNumCowSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | length' $FARMDATAFILE 2>/dev/null)
- local iCowSlot
- local iCount
- local iCowKey
- for SLOT in $sSlots2Feed; do
- # desired globbing :)
-  for iCount in $(seq 0 $((iNumCowSlots - 1))); do
-   iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys['$iCount']' $FARMDATAFILE 2>/dev/null)
-   iCowSlot=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].slot | tonumber' $FARMDATAFILE 2>/dev/null)
-   if [ $iCowSlot -eq $SLOT ]; then
-    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].feed_remain?' $FARMDATAFILE 2>/dev/null)
-    if [ "$SLOTREMAIN" = "null" ]; then
-     echo "Feeding race cow in slot ${iCowSlot}..."
-     SendAJAXFarmRequest "pid=${iPID}&slot=${SLOT}&mode=cowracing_feedCow"
-    fi
-   else
-    continue
-   fi
-  done
- done
+ local iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | tostream | select(length == 2) as [$key,$value] | if $value == '${iSlot}' then $key[-1] else empty end' $FARMDATAFILE 2>/dev/null)
+ if [ -n "$iCowKey" ]; then
+  SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].feed_remain?' $FARMDATAFILE 2>/dev/null)
+  if [ "$SLOTREMAIN" = "null" ]; then
+   echo "Feeding race cow in slot ${iSlot}..."
+   SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
+  fi
+ else
+  echo "There seems to be no cow in slot ${iSlot}!"
+ fi
 }
 
 function check_CowRace {
@@ -893,21 +880,14 @@ function get_CowEquipmentID {
 function check_CowEquipmentAvailability {
  local iSearchPattern="$1"
  local iItem
- local iNumKeys
  local iKey
- local iCount
- local iType
- iNumKeys=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | keys | length' $FARMDATAFILE 2>/dev/null)
  # desired globbing
  for iItem in $iSearchPattern; do
-  for iCount in $(seq 0 $((iNumKeys - 1))); do
-   iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | keys['$iCount'] | tonumber' $FARMDATAFILE 2>/dev/null)
-   iType=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items["'$iKey'"].type | tonumber' $FARMDATAFILE 2>/dev/null)
-   if [ $iType -eq $iItem ]; then
-    echo $iKey
-    return
-   fi
-  done
+  iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "type" and $value == "'${iItem}'" then ($key[-2] | tonumber) else empty end' $FARMDATAFILE | head -1)
+  if [ -n "$iKey" ]; then
+   echo $iKey
+   return
+  fi
  done
  echo "-1"
 }
@@ -2090,20 +2070,6 @@ function check_TimeRemaining {
   fi
  fi
  return 1
-}
-
-function get_RaceCowSlots2Process {
- local n=$1
- local sSlots2Process=""
- local iBit=0
- while [ $iBit -lt 13 ]; do
-  if [ $((n & 1)) -eq 1 ]; then
-   sSlots2Process="$sSlots2Process $((iBit + 1))"
-  fi
-  n=$((n >> 1))
-  iBit=$((++iBit))
- done
- echo "$sSlots2Process"
 }
 
 function SendAJAXFarmRequest {

@@ -439,9 +439,11 @@ while (true); do
     fi
    done
    # race cow feeding
-   if ! grep -q "racecowfood = 0" $CFGFILE && grep -q "racecowfood = " $CFGFILE && ! grep -q "crslots2feed = 0" $CFGFILE && grep -q "crslots2feed = " $CFGFILE; then
-    check_RaceCowFeeding
-   fi
+   for SLOT in {1..13}; do
+    if ! grep -q "racecowslot${SLOT} = 0" $CFGFILE && grep -q "racecowslot${SLOT} = " $CFGFILE; then
+     check_RaceCowFeeding ${SLOT}
+    fi
+   done
    # start cow race
    if grep -q "docowrace = 1" $CFGFILE; then
     check_CowRace

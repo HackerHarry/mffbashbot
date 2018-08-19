@@ -134,33 +134,39 @@ print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"careplushy0\">Sleep</option>\n";
 CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
-print "</td></tr>\n";
-print "<tr><td>";
-print "<select id=\"racecowfood\" name=\"racecowfood\" onchange=\"saveMisc();\">";
-print "<option value=\"0\" id=\"racecowfood0\">Sleep</option>\n";
-CreateOptionsWithID(800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
-print "</select>&nbsp;" . $strings['racecowfood'];
-print "</td></tr>\n";
-print "<tr><td>\n";
-for ($i = 1; $i <= 13; $i++)
- print $i . "<input type=\"checkbox\" id=\"crslot" . $i . "\" name=\"crslot" . $i . "\" value=\"" . 2 ** ($i - 1) . "\" onchange=\"saveMisc();\">\n";
-print $strings['feedracecowinslots'];
 print "</td></tr></table>\n";
 print "</div>\n";
-print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions();\">" . $strings['options'] . "...</button>\n";
+// race cow slots
+print "<div id=\"racecowslotspane\" style=\"display:none;\">";
+print "<table id=\"racecowslotstbl\" style=\"float:left;\" border=\"1\">";
+print "<tr><th>" . $strings['racecowslots'] . "</th></tr>\n";
+for ($i = 1; $i <= 13; $i++) {
+ print "<tr><td>";
+ print "<select id=\"racecowslot" . $i . "\" name=\"racecowslot" . $i . "\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"racecowslot0\">Sleep</option>\n";
+ CreateOptionsWithID(800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
+ print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
+ print "</td></tr>";
+}
+print "</table>\n";
+print "</div>\n";
+
+print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
 
 global $configContents;
-$expectedKeys = [ 'carefood', 'caretoy', 'careplushy',
-'dodog', 'dolot', 'vehiclemgmt5',
-'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
+$expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dolot',
+'vehiclemgmt5', 'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
 'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
-'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
-'dobutterflies', 'dodeliveryevent', 'megafieldinstantplant',
-'doolympiaevent', 'doseedbox', 'dodonkey', 'docowrace', 'dofoodcontest',
-'restartvetjob', 'racecowfood', 'crslots2feed' ];
+'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
+'dodeliveryevent', 'megafieldinstantplant', 'doolympiaevent', 'doseedbox',
+'dodonkey', 'docowrace', 'dofoodcontest', 'restartvetjob', 'racecowslot1',
+'racecowslot2', 'racecowslot3', 'racecowslot4', 'racecowslot5', 'racecowslot6',
+'racecowslot7', 'racecowslot8', 'racecowslot9', 'racecowslot10', 'racecowslot11',
+'racecowslot12', 'racecowslot13' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -172,8 +178,6 @@ $savedValue = $configContents['caretoy'];
 print "document.getElementById('caretoy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['careplushy'];
 print "document.getElementById('careplushy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
-$savedValue = $configContents['racecowfood'];
-print "document.getElementById('racecowfood').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['vehiclemgmt5'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt5').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
@@ -197,11 +201,10 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  next($togglesarray);
 }
 
-$savedValue = $configContents['crslots2feed'];
 for ($i = 1; $i <= 13; $i++) {
- if ($savedValue & 1)
-  print "document.getElementById('crslot" . $i . "').checked = true;\n";
- $savedValue = $savedValue >> 1;
+$savedValue = $configContents['racecowslot' . $i];
+print "document.getElementById('racecowslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
+
 print "</script>\n";
 ?>
