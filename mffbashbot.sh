@@ -364,7 +364,7 @@ while (true); do
      for BLOCK in 1 2 3 4; do
       for PINTYPE in fame money points products; do
        if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain'; then
-        echo "Picking up ${PINTYPE} from block ${BLOCK}..."
+        echo "Picking up ${PINTYPE} from audience block ${BLOCK}..."
         DoFoodContestAudience ${BLOCK} ${PINTYPE}
        fi
       done

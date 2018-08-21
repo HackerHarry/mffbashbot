@@ -691,10 +691,8 @@ function start_Vet {
 
 function DoFarmersMarketAnimalTreatment {
  local iSlot=$1
- local iCount
- local iAnimalStatus
  local iAnimalID
- local iQueueLength
+ local aQueue
  local sTreatmentSet=
  local iDiseaseID
  local iFastestCure
@@ -707,19 +705,12 @@ function DoFarmersMarketAnimalTreatment {
   return
  fi
  # get animal ID from queue holding status 0
- iCount=0
- iAnimalStatus=1
- while [ $iAnimalStatus -eq 1 ]; do
-  iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | keys['${iCount}'] | tonumber' $FARMDATAFILE)
-  iAnimalStatus=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].status | tonumber' $FARMDATAFILE)
-  iCount=$((iCount+1))
- done
+ iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "status" and $value == "0" then ($key[-2] | tonumber) else empty end' $FARMDATAFILE | head -1)
  # place it in slot
  SendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
  # isolate deseases for animal ID
- iQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases | length' $FARMDATAFILE)
- for iCount in $(seq 0 $((iQueueLength-1))); do
-  iDiseaseID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases['${iCount}'].id' $FARMDATAFILE)
+ aQueue=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases | .[] | .id?' $FARMDATAFILE)
+ for iDiseaseID in $aQueue; do
   # find fastest cure for disease
   iFastestCure=$(get_AnimalsFastestCureForDisease $iDiseaseID)
   sTreatmentSet=${sTreatmentSet}${iDiseaseID}_${iFastestCure},
@@ -776,9 +767,9 @@ function check_RaceCowFeeding {
  CFGLINE=$(grep racecowslot${iSlot} $CFGFILE)
  TOKENS=( $CFGLINE )
  local iPID=${TOKENS[2]}
- local iCowKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | tostream | select(length == 2) as [$key,$value] | if $value == '${iSlot}' then $key[-1] else empty end' $FARMDATAFILE 2>/dev/null)
- if [ -n "$iCowKey" ]; then
-  SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iCowKey'].feed_remain?' $FARMDATAFILE 2>/dev/null)
+ local sSlotType=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cowslots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
+ if [ "$sSlotType" = "number" ]; then
+  SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?' $FARMDATAFILE 2>/dev/null)
   if [ "$SLOTREMAIN" = "null" ]; then
    echo "Feeding race cow in slot ${iSlot}..."
    SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
@@ -790,22 +781,18 @@ function check_RaceCowFeeding {
 
 function check_CowRace {
  local iSlot
- local iCount
- local iKey
  local sEnvironment
  local sBodyPart
  local iEquipmentID
- local iNumSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | keys | length' $FARMDATAFILE 2>/dev/null)
- for iCount in $(seq 0 $((iNumSlots - 1))); do
-  iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | keys['$iCount']' $FARMDATAFILE 2>/dev/null)
-  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].race_remain'; then
-   iSlot=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].slot | tonumber' $FARMDATAFILE 2>/dev/null)
+ local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
+ for iSlot in $aSlots; do
+  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].race_remain'; then
    # remove all equipment from cow
    SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
    SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
    SendAJAXFarmRequest "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
    GetFarmData $FARMDATAFILE
-   sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows['$iKey'].lanestatus' $FARMDATAFILE 2>/dev/null)
+   sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
    for sBodyPart in head body foot; do
     # find best equipment for the cow
     iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
