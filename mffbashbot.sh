@@ -156,7 +156,7 @@ while (true); do
  touch "$STATUSFILE"
  # remove lingering cookies
  rm $COOKIEFILE 2>/dev/null
- NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
+ NANOVALUE=$(echo $(($(date +%s%N) / 1000000)))
  LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
  AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:57.0b) Gecko/20100101 Firefox/57.0b"
@@ -255,7 +255,7 @@ while (true); do
          ;;
     esac
     if [ "$QFS" -lt "$QGAME" ]; then
-     echo "Adding $((QGAME-QFS)) Queue(s) to position $POSITION..."
+     echo "Adding $((QGAME - QFS)) Queue(s) to position $POSITION..."
      add_QueuesToPosition $FARM $POSITION $QFS $QGAME
     fi
     if [ "$QFS" -gt "$QGAME" ]; then
@@ -320,24 +320,18 @@ while (true); do
     fi
   done
   # see if flower pots need water...
-  NUMPOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | length' $FARMDATAFILE)
-  if [ $NUMPOTS -gt 0 ]; then
-   NUMPOTS=$((NUMPOTS-1))
-   for SLOTINDEX in $(seq 0 $NUMPOTS); do
-    SLOT=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | keys['$SLOTINDEX'] | tonumber' $FARMDATAFILE)
-    if ! $JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE 2>/dev/null | grep -q '-'; then
-     POTTED=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid | tonumber' $FARMDATAFILE 2>/dev/null)
-     # skip watering of special flowers
-     if [ $POTTED -ne 220 ] && [ $POTTED -ne 221 ]; then
-      # skip plants that don't need water anymore
-      if [ "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].remain' $FARMDATAFILE)" != "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].waterremain' $FARMDATAFILE)" ]; then
-       echo "Watering flower pot ${SLOT}..."
-       DoFarmersMarketFlowerPots ${SLOT}
-      fi
-     fi
+  aSLOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+  for SLOT in $aSLOTS; do
+   PID=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid | tonumber' $FARMDATAFILE)
+   # skip watering of special flowers (214 and up)
+   if [ $PID -le 213 ]; then
+    # skip plants that don't need water anymore
+    if [ -n "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"] | select(.remain != .waterremain)' $FARMDATAFILE)" ]; then
+     echo "Watering flower pot ${SLOT}..."
+     DoFarmersMarketFlowerPots ${SLOT}
     fi
-   done
-  fi
+   fi
+  done
   # monster fruit
   if [ $PLAYERLEVELNUM -ge 31 ]; then
    RUNCHK=$($JQBIN '.updateblock.farmersmarket.megafruit.current' $FARMDATAFILE)
@@ -462,28 +456,20 @@ while (true); do
 
  if grep -q "sendfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting farmies..."
-  NUMFARMIES=$($JQBIN '.updateblock.farmis[0] | length' $FARMDATAFILE)
-  if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
-   NUMFARMIES=$((NUMFARMIES-1))
-   for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.updateblock.farmis[0]['${FARMIE}'].id | tonumber' $FARMDATAFILE)
-    echo "Sending farmie no. $((FARMIE+1)) (ID ${ID}) away..."
-    SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
-   done
-  fi
+  FARMIES=$($JQBIN '.updateblock.farmis[0] | .[] | .id | tonumber' $FARMDATAFILE)
+  for ID in $FARMIES; do
+   echo "Sending farmie with ID ${ID} away..."
+   SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
+  done
  fi
 
  if grep -q "sendflowerfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting flower farmies..."
-  NUMFARMIES=$($JQBIN '.updateblock.farmersmarket.farmis | length' $FARMDATAFILE)
-  if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
-   NUMFARMIES=$((NUMFARMIES-1))
-   for FARMIE in $(seq 0 $NUMFARMIES); do
-    ID=$($JQBIN '.updateblock.farmersmarket.farmis['${FARMIE}'].id | tonumber' $FARMDATAFILE)
-    echo "Sending flower farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+  FARMIES=$($JQBIN '.updateblock.farmersmarket.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+   for ID in $FARMIES; do
+    echo "Sending flower farmie with ID ${ID} away..."
     SendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${ID}&farmi=${ID}&status=2"
    done
-  fi
  fi
 
  # daily actions
@@ -495,7 +481,7 @@ while (true); do
    echo "not yet claimed, activating it..."
    SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
    # reduce pause time by 300 secs after claiming the dogs' time bonus
-   PAUSETIME=$((PAUSETIME-300))
+   PAUSETIME=$((PAUSETIME - 300))
   else
    echo "already claimed"
   fi
@@ -600,15 +586,11 @@ while (true); do
   # finally the forestry farmies
   if grep -q "sendforestryfarmiesaway = 1" $CFGFILE; then
    echo "Checking for waiting forestry farmies..."
-   NUMFARMIES=$($JQBIN '.datablock[5] | length' $FARMDATAFILE)
-   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
-    NUMFARMIES=$((NUMFARMIES-1))
-    for FARMIE in $(seq 0 $NUMFARMIES); do
-     ID=$($JQBIN '.datablock[5]['${FARMIE}'].farmiid | tonumber' $FARMDATAFILE)
-     echo "Sending forestry farmie no. $((FARMIE+1)) (ID ${ID}) away..."
+   FARMIES=$($JQBIN '.datablock[5] | .[] | .farmiid | tonumber' $FARMDATAFILE)
+    for ID in $FARMIES; do
+     echo "Sending forestry farmie with ID ${ID} away..."
      SendAJAXForestryRequest "action=kickfarmi&productid=${ID}"
     done
-   fi
   fi
  fi
 
@@ -629,15 +611,11 @@ while (true); do
   # munchies
   if grep -q "sendmunchiesaway = 1" $CFGFILE; then
    echo "Checking for waiting munchies..."
-   NUMFARMIES=$($JQBIN '.datablock.farmis | length' $FARMDATAFILE)
-   if [ $NUMFARMIES -gt 0 ] 2>/dev/null; then
-    NUMFARMIES=$((NUMFARMIES-1))
-    for FARMIE in $(seq 0 $NUMFARMIES); do
-     ID=$($JQBIN '.datablock.farmis['${FARMIE}'].id | tonumber' $FARMDATAFILE)
-     echo "Sending munchie no. $((FARMIE+1)) (ID ${ID}) away..."
-     SendAJAXFoodworldRequest "action=kick&id=${ID}&table=0&chair=0"
-    done
-   fi
+   FARMIES=$($JQBIN '.datablock.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+   for ID in $FARMIES; do
+    echo "Sending munchie with ID ${ID} away..."
+    SendAJAXFoodworldRequest "action=kick&id=${ID}&table=0&chair=0"
+   done
   fi
   echo "Checking for munchies sitting at tables..."
   # JSON data uses different data types when you bought further tables on food world
@@ -654,7 +632,7 @@ while (true); do
      break 2
     fi
     if [ "$MUNCHIEREADY" = "true" ]; then
-     echo "Munchie available at table $((TABLE+1)), chair ${CHAIR}, claiming it..."
+     echo "Munchie available at table $((TABLE + 1)), chair ${CHAIR}, claiming it..."
      SendAJAXFoodworldRequest "action=cash&id=0&table=${TABLE}&chair=${CHAIR}&rid=${RID}"
     fi
    done
@@ -693,8 +671,8 @@ while (true); do
  # consider time delta
  if [ $PAUSECORRECTEDAT -ne 0 ]; then
   CURRENTEPOCH=$(date +"%s")
-  TIMEDELTA=$((CURRENTEPOCH-PAUSECORRECTEDAT))
-  PAUSETIME=$((PAUSETIME-TIMEDELTA))
+  TIMEDELTA=$((CURRENTEPOCH - PAUSECORRECTEDAT))
+  PAUSETIME=$((PAUSETIME - TIMEDELTA))
  TIMEDELTA=0
  PAUSECORRECTEDAT=0
  fi

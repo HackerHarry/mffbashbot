@@ -144,7 +144,7 @@ function start_KnittingMill {
  # Knitting Mill takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # PIDs start at 1 for this building type
- iPID=$((iPID-154))
+ iPID=$((iPID - 154))
  local sAJAXSuffix="position=${iPosition}&item=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
  if [ "$GUILDJOB" = true ]; then
   local sAJAXSuffix="${sAJAXSuffix}&guildjob=1"
@@ -176,7 +176,7 @@ function start_OilMill {
  # Special Oil Mill takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # PIDs start at 1 for this building type
- iPID=$((iPID-115))
+ iPID=$((iPID - 115))
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  # do the mill
  SendAJAXFarmRequest "position=${iPosition}&oil=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
@@ -200,7 +200,7 @@ function start_TeaFactory {
  local iSlot=$3
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # PIDs start at 1 for this building type
- iPID=$((iPID-749))
+ iPID=$((iPID - 749))
  # this only works cuz the farm data isn't updated in between harvesting and planting (!)
  local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
  SendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
@@ -289,7 +289,7 @@ function start_FarmNP {
  # don't plant on last column if x-dim is 2
  if ! ((iPlot % 12)); then
   if [ $iProductDim_x -eq 2 ]; then
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    continue
   fi
  fi
@@ -309,7 +309,7 @@ function start_FarmNP {
   iPlot=1
  fi
  if ! get_FieldPlotReadiness $iPlot ; then
-  iPlot=$((iPlot+1))
+  iPlot=$((iPlot + 1))
   continue
  fi
  # plot can be used
@@ -318,71 +318,71 @@ function start_FarmNP {
   sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot}&"
   sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
   iCacheFlag=1
-  iCache=$((iCache+1))
+  iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
    # CID is some water interval ID .. screw it.
    SendAJAXFarmRequest "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    iCacheFlag=0
    iCache=0
    continue
   else
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    continue
   fi
  fi
  # x dim is 2
- if ! get_FieldPlotReadiness $((iPlot+1)); then
-  iPlot=$((iPlot+2))
+ if ! get_FieldPlotReadiness $((iPlot + 1)); then
+  iPlot=$((iPlot + 2))
   continue
  fi
  if [ $iProductDim_y -eq 1 ]; then
   # product dimensions is 1 x 2
-  sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
-  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
+  sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1))&"
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1))&"
   iCacheFlag=1
-  iCache=$((iCache+1))
+  iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequest "${sData}cid=${iPosition}"
    SendAJAXFarmRequest "${sDataWater}"
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-   iPlot=$((iPlot+2))
+   iPlot=$((iPlot + 2))
    iCacheFlag=0
    iCache=0
    continue
   else
-   iPlot=$((iPlot+2))
+   iPlot=$((iPlot + 2))
    continue
   fi
  fi
  # y dim is 2
- if ! get_FieldPlotReadiness $((iPlot+12)); then
-  iPlot=$((iPlot+1))
+ if ! get_FieldPlotReadiness $((iPlot + 12)); then
+  iPlot=$((iPlot + 1))
   continue
  fi
- if ! get_FieldPlotReadiness $((iPlot+13)); then
-  iPlot=$((iPlot+1))
+ if ! get_FieldPlotReadiness $((iPlot + 13)); then
+  iPlot=$((iPlot + 1))
   continue
  fi
- sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
- sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
+ sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1)),$((iPlot + 12)),$((iPlot + 13))&"
+ sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1)),$((iPlot + 12)),$((iPlot + 13))&"
  iCacheFlag=1
- iCache=$((iCache+1))
+ iCache=$((iCache + 1))
  if [ $iCache -eq 5 ]; then
   SendAJAXFarmRequest "${sData}cid=${iPosition}"
   SendAJAXFarmRequest "${sDataWater}"
   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-  iPlot=$((iPlot+2))
+  iPlot=$((iPlot + 2))
   iCacheFlag=0
   iCache=0
   continue
  else
-  iPlot=$((iPlot+2))
+  iPlot=$((iPlot + 2))
   continue
  fi
 # you should not get here :)
@@ -412,7 +412,7 @@ function start_FarmNP {
   fi
  if ! ((iPlot % 12)); then
   if [ $iProductDim_x -eq 2 ]; then
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    continue
   fi
  fi
@@ -432,53 +432,53 @@ function start_FarmNP {
   # product dimensions is 1 x 1
   sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot}&"
   iCacheFlag=1
-  iCache=$((iCache+1))
+  iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequest "${sDataWater}"
    sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    iCacheFlag=0
    iCache=0
    continue
   else
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    continue
   fi
  fi
  # x dim is 2
  if [ $iProductDim_y -eq 1 ]; then
   # product dimensions is 1 x 2
-  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1))&"
+  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1))&"
   iCacheFlag=1
-  iCache=$((iCache+1))
+  iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
    SendAJAXFarmRequest "${sDataWater}"
    sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-   iPlot=$((iPlot+2))
+   iPlot=$((iPlot + 2))
    iCacheFlag=0
    iCache=0
    continue
   else
-   iPlot=$((iPlot+2))
+   iPlot=$((iPlot + 2))
    continue
   fi
  fi
  # y dim is 2
- sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot+1)),$((iPlot+12)),$((iPlot+13))&"
+ sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1)),$((iPlot + 12)),$((iPlot + 13))&"
  iCacheFlag=1
- iCache=$((iCache+1))
+ iCache=$((iCache + 1))
  if [ $iCache -eq 5 ]; then
   SendAJAXFarmRequest "${sDataWater}"
   sleep 1
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
-  iPlot=$((iPlot+2))
+  iPlot=$((iPlot + 2))
   iCacheFlag=0
   iCache=0
   continue
  else
-  iPlot=$((iPlot+2))
+  iPlot=$((iPlot + 2))
   continue
  fi
  done
@@ -725,7 +725,7 @@ function check_VetJobDone {
  local iNumAnimals2Heal=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
  # we're not using updated farm data at this point, but a treatment has just been finished
  # that's why we're calculating with one less treatment
- iNumAnimals2Heal=$((iNumAnimals2Heal-1))
+ iNumAnimals2Heal=$((iNumAnimals2Heal - 1))
  if [ $iNumAnimals2Heal -eq $iNumAnimalsHealed ]; then
   CFGLINE=$(grep restartvetjob $CFGFILE)
   TOKENS=( $CFGLINE )
@@ -916,10 +916,10 @@ function harvest_MegaField {
    if grep -q "megafieldinstantplant = 1" $CFGFILE; then
     start_MegaField${NONPREMIUM}
    fi
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    continue
   fi
-  iPlot=$((iPlot+1))
+  iPlot=$((iPlot + 1))
  done
 }
 
@@ -960,7 +960,7 @@ function start_MegaField {
   if [ "$iSafetyCount" = "" ]; then
    start_MegaField 2
   else
-   iSafetyCount=$((iSafetyCount+1))
+   iSafetyCount=$((iSafetyCount + 1))
    start_MegaField $iSafetyCount
   fi
  done
@@ -991,10 +991,10 @@ function start_FuelStation {
  # it's defined as constants in .updateblock.farms.farms[FARM][POSITION].data.constants.slot_level[LEVEL].limit
  # and devided by the points we get per good
  local iSlotLevel=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iSlot}'"].level' $FARMDATAFILE)
- local iPointsNeededToStart=$((iSlotLevel*1000000))
+ local iPointsNeededToStart=$((iSlotLevel * 1000000))
  # amount needs to be calculated using "round to nearest"
  # changed to "round up" 08.11.2015 (old foobar/2, new foobar-1)
- local iAmount=$(((iPointsNeededToStart+(iPointsPerGood-1))/iPointsPerGood))
+ local iAmount=$(((iPointsNeededToStart + (iPointsPerGood - 1)) / iPointsPerGood))
  # force 3 second delay, cuz upjers server can't handle too quick a re-start
  sleep 3
  SendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iPID}"
@@ -1025,19 +1025,12 @@ function harvest_PonyFarm {
  local iFarm=$1
  local iPosition=$2
  local iSlot
- local sBlocked
- local iFarmie
+ local iAnimalID
  GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
- for iSlot in 1 2 3; do
-  sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
-  if [ "$sBlocked" = "null" ] || [ "$sBlocked" = "0" ]; then
-   iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
-   if [ "$iFarmie" != "null" ]; then
-    if $JQBIN '.datablock[1].farmis["'$iFarmie'"].data.remain?' $TMPFILE | grep -q '-'; then
-     SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
-    fi
-   fi
-  fi
+ local aAnimalIDs=$($JQBIN '.datablock[1].farmis | .[] | select(.data.remain < 0 and .data.remain != null).data.animalid' $TMPFILE)
+ for iAnimalID in $aAnimalIDs; do
+  iSlot=$($JQBIN '.datablock[1].ponys | .[] | select(.animalid == "'$iAnimalID'").data.position' $TMPFILE)
+  SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
  done
 }
 
@@ -1057,62 +1050,33 @@ function start_PonyFarm {
  local iEnergyBarCount
  for iSlot in 1 2 3; do
   GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
-  sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].block?' $TMPFILE)
-  if [ "$sBlocked" = "null" ]; then
-   iFarmie=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.farmi?' $TMPFILE)
-   if [ "$iFarmie" = "null" ]; then
-    # slot is unblocked and idle...
-    iPony=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].animalid | tonumber' $TMPFILE)
-    # refill food dispenser
-    iFood=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.feed' $TMPFILE)
-    iFood=$((iMaxFood-iFood))
-    SendAJAXFarmRequest "mode=pony_feed&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iFood}"
-    # find a farmie
-    if [ $iSlot -ge 2 ]; then
-     update_queue ${iFarm} ${iPosition} 0
-    fi
-    iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
-    iFarmie=$(get_Farmie4Pony $iDuration)
-    if [ "$iFarmie" = "-1" ]; then
-     # something went wrong. bail out.
-     return
-    fi
-    SendAJAXFarmRequest "mode=pony_setfarmi&farm=${iFarm}&position=${iPosition}&farmi=${iFarmie}&pony=${iPony}"
-    # check for pony energy bar...
-    if grep -q "useponyenergybar = 1" $CFGFILE; then
-     iEnergyBarCount=$((iDuration/2))
-     sleep 2
-     SendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
-    fi
+  sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"] | select(.block == null and .data.farmi == null).data.position' $TMPFILE)
+  if [ -n "$sBlocked" ]; then
+   # slot is unblocked and idle...
+   iPony=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].animalid | tonumber' $TMPFILE)
+   # refill food dispenser
+   iFood=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.feed' $TMPFILE)
+   iFood=$((iMaxFood - iFood))
+   SendAJAXFarmRequest "mode=pony_feed&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iFood}"
+   # find a farmie
+   if [ $iSlot -ge 2 ]; then
+    update_queue ${iFarm} ${iPosition} 0
    fi
-  fi
- done
-}
-
-function get_Farmie4Pony {
- local iDuration=$1
- local iFarmiesCount
- local iFarmie
- local iCount
- local iStatus
- local iType
- iFarmiesCount=$($JQBIN '.datablock[1].farmis | length' $TMPFILE)
- for iCount in $(seq 0 $((iFarmiesCount-1))); do
-  iFarmie=$($JQBIN '.datablock[1].farmis | keys['${iCount}'] | tonumber' $TMPFILE)
-  iStatus=$($JQBIN '.datablock[1].farmis["'${iFarmie}'"].status | tonumber' $TMPFILE)
-  if [ $iStatus -eq 0 ]; then
-   # farmie is not in use
-   iType=$($JQBIN '.datablock[1].farmis["'${iFarmie}'"].type | tonumber' $TMPFILE)
-   if [ $iType -eq $iDuration ]; then
-    # this is "the one"
-    echo $iFarmie
+   iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
+   iFarmie=$($JQBIN '.datablock[1].farmis | .[] | select(.status == "0" and .type == "'$iDuration'").id | tonumber' $TMPFILE)
+   if [ -z "$iFarmie" ]; then
+    # something went wrong. bail out.
     return
    fi
+   SendAJAXFarmRequest "mode=pony_setfarmi&farm=${iFarm}&position=${iPosition}&farmi=${iFarmie}&pony=${iPony}"
+   # check for pony energy bar...
+   if grep -q "useponyenergybar = 1" $CFGFILE; then
+    iEnergyBarCount=$((iDuration / 2))
+    sleep 2
+    SendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
+   fi
   fi
  done
- # ideally, you don't get here
- echo "-1"
- return
 }
 
 function check_VehiclePosition {
@@ -1167,22 +1131,22 @@ function check_SendGoodsToMainFarm {
   iProductCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["amount"] | tonumber' $FARMDATAFILE)
   iSafetyCount=$(get_ProductCountFittingOnField $iProduct)
   # do we have multiple fields on the current farm?
-  iSafetyCount=$((iSafetyCount*iFieldsOnFarmNum))
-  iProductCount=$((iProductCount-iSafetyCount))
+  iSafetyCount=$((iSafetyCount * iFieldsOnFarmNum))
+  iProductCount=$((iProductCount - iSafetyCount))
   if [ $iProductCount -le 0 ]; then
    continue
   fi
-  iTransportCount=$((iTransportCount+iProductCount))
+  iTransportCount=$((iTransportCount + iProductCount))
   if [ $iTransportCount -ge $iVehicleCapacity ]; then
-   local iCropValue=$((iTransportCount-iVehicleCapacity))
-   iProductCount=$((iProductCount-iCropValue))
-   iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
+   local iCropValue=$((iTransportCount - iVehicleCapacity))
+   iProductCount=$((iProductCount - iCropValue))
+   iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
    sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
-   echo "Sending $((iTransportCount-iCropValue)) items to main farm..."
+   echo "Sending $((iTransportCount - iCropValue)) items to main farm..."
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
-  iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
+  iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
   sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
    echo "Sending partially loaded vehicle to main farm (no slots left)..."
@@ -1200,24 +1164,14 @@ function get_ProductCountFittingOnField {
  local iProduct=$1
  local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'" | tonumber')
  local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'" | tonumber')
- local iProductDim=$((iProductDim_x*iProductDim_y))
- local iProductCountFittingOnField=$((120/iProductDim))
+ local iProductDim=$((iProductDim_x * iProductDim_y))
+ local iProductCountFittingOnField=$((120 / iProductDim))
  echo $iProductCountFittingOnField
 }
 
 function get_FieldsOnFarmNum {
  local iFarm=$1
- local iFieldsOnFarm=0
- local iBuildingID
- local bStatus
- for iCount in {1..6}; do
-  iBuildingID=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iCount}'"].buildingid | tonumber' $FARMDATAFILE)
-  bStatus=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iCount}'"].status | tonumber' $FARMDATAFILE)
-  if [ $iBuildingID -eq 1 ] && [ $bStatus -eq 1 ]; then
-   # building is a field and is active
-   iFieldsOnFarm=$((iFieldsOnFarm+1))
-  fi
- done
+ local iFieldsOnFarm=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE | wc -l)
  echo $iFieldsOnFarm
 }
 
@@ -1259,12 +1213,12 @@ function check_SendGoodsOffMainFarm {
   unset IFS
   iProduct=$1
   iProductCount=$2
-  iTransportCount=$((iTransportCount+iProductCount))
+  iTransportCount=$((iTransportCount + iProductCount))
   if [ $iTransportCount -gt $iVehicleCapacity ]; then
    echo "Transport to farm ${iFarm} stopped due to vehicle overload"
    return
   fi
-  iVehicleSlotsUsed=$((iVehicleSlotsUsed+1))
+  iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
   sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
   if [ $iTransportCount -eq $iVehicleCapacity ]; then
    echo "Sending $iTransportCount items to farm ${iFarm}..."
@@ -1300,7 +1254,7 @@ function check_PowerUps {
   return
  else
   # there are active powerups
-  for iCount in $(seq 0 $((iActivePowerUps-1))); do
+  for iCount in $(seq 0 $((iActivePowerUps - 1))); do
    iActivePowerUp=$($JQBIN '.updateblock.farms.powerups.active | keys['$iCount'] | tonumber' $FARMDATAFILE)
    if [ $iActivePowerUp -eq $iPowerUp ]; then
     echo "Requested power-up #${iPowerUp} is already in use"
@@ -1401,12 +1355,6 @@ function get_UnlockedMegaFieldPlotNum {
  echo $iUnlockedPlots
 }
 
-function get_BusyMegaFieldPlotName {
- local iPlotIndex=$1
- local sPlotName=$($JQBIN '.updateblock.megafield.area | keys | .['$iPlotIndex']' $FARMDATAFILE)
- echo $sPlotName
-}
-
 function get_MegaFieldHarvesterDelay {
  local iHarvestDevice=$1
  # taken from here: .updateblock.megafield.vehicle_slots["nn"].duration
@@ -1470,11 +1418,12 @@ function check_MegaFieldProductIsHarvestable {
 
 function get_MegaFieldAmountToGoInSlot {
  local iBusyPlots
+ local iPIDOnBusyPlots
  local iProductSlot=$1
  local iNeededPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].need' $FARMDATAFILE)
  local iHavePID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].have' $FARMDATAFILE)
  local iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
- local iSeeminglyNeeded=$(($iNeededPID-$iHavePID))
+ local iSeeminglyNeeded=$(($iNeededPID - $iHavePID))
  if [ "$iSeeminglyNeeded" = "0" ]; then
   # no more products needed in this slot
   echo 0
@@ -1487,23 +1436,15 @@ function get_MegaFieldAmountToGoInSlot {
   echo $iSeeminglyNeeded
   return
  fi
- local iPIDOnBusyPlots=0
- for iPlot in $(seq 0 $((iBusyPlots-1))); do
-  sPlotName=$(get_BusyMegaFieldPlotName $iPlot)
-  local iBusyPID=$($JQBIN '.updateblock.megafield.area['${sPlotName}'].pid' $FARMDATAFILE)
-  if [ "$iBusyPID" = "$iPID" ]; then
-   iPIDOnBusyPlots=$((iPIDOnBusyPlots+1))
-  fi
- done
- echo $(($iSeeminglyNeeded-$iPIDOnBusyPlots))
+ iPIDOnBusyPlots=$($JQBIN '.updateblock.megafield.area | .[] | select(.pid == '$iPID').pid' $FARMDATAFILE | wc -l)
+ echo $(($iSeeminglyNeeded - $iPIDOnBusyPlots))
  # in theory, this amount can't be less than zero
 }
 
 function get_MegaFieldFreePlotsNum {
  local iTotalPlots=$($JQBIN '.updateblock.megafield.area_free | length' $FARMDATAFILE)
  local iBusyPlots=$($JQBIN '.updateblock.megafield.area | length' $FARMDATAFILE)
- local iFreePlots=$((iTotalPlots-iBusyPlots))
- echo $iFreePlots
+ echo $((iTotalPlots - iBusyPlots))
 }
 
 function MegaFieldPlantNP {
@@ -1521,12 +1462,12 @@ function MegaFieldPlantNP {
      # plot is free, plant stuff on it
      echo "Planting item ${iPID} on Mega Field plot ${sUnlockedPlotName}..."
      SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
-     iCount2=$((iCount2+1))
+     iCount2=$((iCount2 + 1))
      break
     fi
-    iCount2=$((iCount2+1))
+    iCount2=$((iCount2 + 1))
    done
-  iCount=$((iCount+1))
+  iCount=$((iCount + 1))
  done
 }
 
@@ -1552,41 +1493,41 @@ function harvest_MegaField2x2 {
   fi
   iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if ! ((iPlot % 11)); then
-   iPlot=$((iPlot+1))
+   iPlot=$((iPlot + 1))
    # prevent harvesting of last column
   fi
   if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"].remain?'; then
-   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+1))'"].remain?'; then
-    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+11))'"].remain?'; then
-     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot+12))'"].remain?'; then
-      echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot+1)), $((iPlot+11)), $((iPlot+12))..."
-      SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot+1)),$((iPlot+11)),$((iPlot+12)),|&vid=${iHarvestDevice}"
+   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 1))'"].remain?'; then
+    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 11))'"].remain?'; then
+     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 12))'"].remain?'; then
+      echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot + 1)), $((iPlot + 11)), $((iPlot + 12))..."
+      SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot + 1)),$((iPlot + 11)),$((iPlot + 12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
       if grep -q "megafieldinstantplant = 1" $CFGFILE; then
        start_MegaField${NONPREMIUM}
       fi
-      iPlot=$((iPlot+2))
+      iPlot=$((iPlot + 2))
       continue
      else
-      iPlot=$((iPlot+1))
+      iPlot=$((iPlot + 1))
       continue
      fi
     else
-     iPlot=$((iPlot+1))
+     iPlot=$((iPlot + 1))
      continue
     fi
    else
-    iPlot=$((iPlot+2))
+    iPlot=$((iPlot + 2))
     continue
    fi
   fi
- iPlot=$((iPlot+1))
+ iPlot=$((iPlot + 1))
  done
 }
 
 function get_AnimalQueueLength {
- local iAnimalQueueLength=($($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE))
+ local iAnimalQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE)
  return $iAnimalQueueLength
 }
 
@@ -1804,7 +1745,7 @@ function reduce_QueuesOnPosition {
  local iPosition=$2
  local iMaxQ=$3
  local iQueueNum=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
- local iQDel=$((iQueueNum-iMaxQ))
+ local iQDel=$((iQueueNum - iMaxQ))
  rm $(ls -d1 ${iFarm}/${iPosition}/* | tail -${iQDel})
 }
 
@@ -1819,7 +1760,7 @@ function get_QueueCountFromInnerInfo {
  for iCount in 2 3; do
   iBlocked=$($JQBIN '.datablock[1]["slots"]["'${iCount}'"].block?' $TMPFILE 2>/dev/null)
   if [ $iBlocked -eq 0 ]; then
-   iSlots=$((iSlots+1))
+   iSlots=$((iSlots + 1))
   fi
  done
  echo $iSlots
@@ -1835,7 +1776,7 @@ function get_QueueCount20 {
  for iCount in 2 3; do
   sBlocked=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
   if [ "$sBlocked" = "null" ]; then
-   iSlots=$((iSlots+1))
+   iSlots=$((iSlots + 1))
   fi
  done
  echo $iSlots
@@ -1846,7 +1787,7 @@ function add_QueuesToPosition {
  local iPosition=$2
  local iQueuesInFS=$3
  local iQueuesInGame=$4
- local iQueuesToAdd=$((iQueuesInGame-iQueuesInFS))
+ local iQueuesToAdd=$((iQueuesInGame - iQueuesInFS))
  # we'll assume queue '0' already exists
  if [ $iQueuesToAdd -eq 2 ] || ([ $iQueuesInFS -eq 2 ] && [ $iQueuesToAdd -eq 1 ]); then
   echo -e "sleep\nsleep" > ${iFarm}/${iPosition}/2
@@ -1863,7 +1804,7 @@ function redeemPuzzlePartsPacks {
  local iType
  iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs | length' $FARMDATAFILE)
  if [ $iNumPacks -gt 0 ]; then
-  for iCount in $(seq 0 $((iNumPacks-1))); do
+  for iCount in $(seq 0 $((iNumPacks - 1))); do
    iType=$($JQBIN '.updateblock.farmersmarket.pets.packs | keys['$iCount'] | tonumber' $FARMDATAFILE)
    iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"] | tonumber' $FARMDATAFILE)
    echo "Redeeming $iNumPacks puzzle parts pack(s) of type ${iType}..."
@@ -1983,25 +1924,22 @@ function check_PanBonus {
 
 function check_ButterflyBonus {
  local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
- local iNumKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | length' $FARMDATAFILE)
- local iCount
- local iLast
+ local aKeys
  local iKey
- if [ $iNumKeys -gt 0 ]; then
-  for iCount in $(seq 0 $((iNumKeys-1))); do
-   iKey=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | keys['$iCount'] | tonumber' $FARMDATAFILE)
-   iLast=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free["'$iKey'"].last?' $FARMDATAFILE)
-   if [ "$iLast" = "null" ] || [ $iLast -lt $iToday ] 2>/dev/null; then
-    if [ "$NONPREMIUM" != "NP" ]; then
-     # butterfly can give a bonus (premium)
-     echo "Collecting butterfly points bonus..."
-     SendAJAXFarmRequest "mode=butterfly_click_all"
-     return
-    fi
+ aKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "last" and ($value < '$iToday' or $value == null) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ if [ -n "$aKeys" ]; then
+  if [ "$NONPREMIUM" != "NP" ]; then
+   # premium
+   echo "Collecting butterfly points bonus..."
+   SendAJAXFarmRequest "mode=butterfly_click_all"
+   return
+  else
+   # non-premium
+   for iKey in $aKeys; do
     echo "Collecting points bonus from butterfly type ${iKey}..."
     SendAJAXFarmRequest "id=${iKey}&mode=butterfly_click"
-   fi
-  done
+   done
+  fi
  fi
 }
 
