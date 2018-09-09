@@ -27,7 +27,7 @@ AJAXMAIN="${AJAXURL}main.php?rid=${RID}&"
 AJAXGUILD="${AJAXURL}guild.php?rid=${RID}&"
 
 function exitBot {
- echo "Caught an exit signal"
+ echo -e "\nCaught an exit signal"
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
@@ -1061,6 +1061,10 @@ function start_PonyFarm {
    # find a farmie
    if [ $iSlot -ge 2 ]; then
     update_queue ${iFarm} ${iPosition} 0
+    if check_QueueSleep ${iFarm}/${iPosition}/0; then
+     echo "Set to sleep"
+     return
+    fi
    fi
    iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
    iFarmie=$($JQBIN '.datablock[1].farmis | .[] | select(.status == "0" and .type == "'$iDuration'").id | tonumber' $TMPFILE)
@@ -1107,47 +1111,50 @@ function check_SendGoodsToMainFarm {
  local iVehicle=$1
  local iFarm=$2
  local iRoute=$3
- local iProduct
- local iProductCount
+ local iPID
+ local iPIDCount
  local iSafetyCount
- local iCount
+ local iCropValue
  local sCart=
  local iTransportCount=0
  local iVehicleSlotsUsed=0
- local -a aItemsFarm5=( 351 352 353 354 355 356 357 358 359 360 361 )
- local -a aItemsFarm6=( 700 701 702 703 704 705 706 707 708 709 )
+ local iPIDMin
+ local iPIDMax
+ local aPIDs
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
  local iFieldsOnFarmNum=$(get_FieldsOnFarmNum $iFarm)
+ case $iFarm in
+  5) iPIDMin=351
+     iPIDMax=361
+     ;;
+  6) iPIDMin=700
+     iPIDMax=709
+     ;;
+ esac
  # this will fail if more than one rack is in use on farm 5 or 6
- local iItemCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | keys | length' $FARMDATAFILE)
- # You know, somehow, "I told you so" just doesn't quite say it. ;)
- for iCount in $(seq 1 $iItemCount); do
-  iProduct=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["pid"] | tonumber' $FARMDATAFILE)
-  if ! check_ValueInArray aItemsFarm${iFarm} $iProduct; then
-   # only transport items that can be grown on farm 5 / 6
-   continue
-  fi
-  iProductCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"]["'${iCount}'"]["amount"] | tonumber' $FARMDATAFILE)
-  iSafetyCount=$(get_ProductCountFittingOnField $iProduct)
+ aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid >= "'${iPIDMin}'" and .pid <= "'${iPIDMax}'").pid | tonumber' $FARMDATAFILE)
+ for iPID in $aPIDs; do
+  iPIDCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid == "'${iPID}'").amount | tonumber' $FARMDATAFILE)
+  iSafetyCount=$(get_ProductCountFittingOnField $iPID)
   # do we have multiple fields on the current farm?
   iSafetyCount=$((iSafetyCount * iFieldsOnFarmNum))
-  iProductCount=$((iProductCount - iSafetyCount))
-  if [ $iProductCount -le 0 ]; then
+  iPIDCount=$((iPIDCount - iSafetyCount))
+  if [ $iPIDCount -le 0 ]; then
    continue
   fi
-  iTransportCount=$((iTransportCount + iProductCount))
+  iTransportCount=$((iTransportCount + iPIDCount))
   if [ $iTransportCount -ge $iVehicleCapacity ]; then
-   local iCropValue=$((iTransportCount - iVehicleCapacity))
-   iProductCount=$((iProductCount - iCropValue))
+   iCropValue=$((iTransportCount - iVehicleCapacity))
+   iPIDCount=$((iPIDCount - iCropValue))
    iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
-   sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
+   sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
    echo "Sending $((iTransportCount - iCropValue)) items to main farm..."
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
   iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
-  sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
+  sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
    echo "Sending partially loaded vehicle to main farm (no slots left)..."
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
@@ -1161,30 +1168,16 @@ function check_SendGoodsToMainFarm {
 }
 
 function get_ProductCountFittingOnField {
- local iProduct=$1
- local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'" | tonumber')
- local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'" | tonumber')
- local iProductDim=$((iProductDim_x * iProductDim_y))
- local iProductCountFittingOnField=$((120 / iProductDim))
- echo $iProductCountFittingOnField
+ local iPID=$1
+ local iPIDDim_x=$(echo $aDIM_X | $JQBIN '."'${iPID}'" | tonumber')
+ local iPIDDim_y=$(echo $aDIM_Y | $JQBIN '."'${iPID}'" | tonumber')
+ echo $((120 / (iPIDDim_x * iPIDDim_y)))
 }
 
 function get_FieldsOnFarmNum {
  local iFarm=$1
  local iFieldsOnFarm=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE | wc -l)
  echo $iFieldsOnFarm
-}
-
-function check_ValueInArray {
- local -n aProducts=$1
- local iProduct=$2
- local iValue
- for iValue in "${aProducts[@]}"; do
-  if [ $iValue -eq $iProduct ]; then
-   return 0
-  fi
- done
- return 1
 }
 
 function check_SendGoodsOffMainFarm {
