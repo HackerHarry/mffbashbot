@@ -784,26 +784,30 @@ function check_CowRace {
  local sEnvironment
  local sBodyPart
  local iEquipmentID
+ local iCowLevel
  local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
  for iSlot in $aSlots; do
   if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].race_remain'; then
-   # remove all equipment from cow
-   SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-   SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-   SendAJAXFarmRequest "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-   GetFarmData $FARMDATAFILE
-   sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
-   for sBodyPart in head body foot; do
-    # find best equipment for the cow
-    iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
-    if [ "$iEquipmentID" = "-1" ]; then
-     continue
-    fi
-    # equip it
-    SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iSlot}&mode=cowracing_equipitem"
-   done
-  # start the race
-  sleep 1
+   iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
+   if [ $iCowLevel -gt 1 ]; then
+    # remove all equipment from cow
+    SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+    SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+    SendAJAXFarmRequest "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+    GetFarmData $FARMDATAFILE
+    sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
+    for sBodyPart in head body foot; do
+     # find best equipment for the cow
+     iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
+     if [ "$iEquipmentID" = "-1" ]; then
+      continue
+     fi
+     # equip it
+     SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iSlot}&mode=cowracing_equipitem"
+    done
+   # start the race
+   sleep 1
+  fi
   echo "Starting cow race in slot ${iSlot}..."
   SendAJAXFarmRequest "type=pve&slot=${iSlot}&mode=cowracing_startrace"
   fi
