@@ -26,6 +26,11 @@ function CreateOptionsWithID() {
  foreach (func_get_args() as $i)
 	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
 }
+function CreateOptionsWithIDfromArray($arr) {
+ global $productlist;
+ foreach ($arr as $i)
+	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+}
 function CreateMonsterOptions() {
  global $monsterlist;
  foreach (func_get_args() as $i)

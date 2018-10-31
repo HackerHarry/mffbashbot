@@ -92,6 +92,12 @@ print "<option value=\"1\" id=\"lot1\">" . $strings['lot'] . "</option>\n";
 print "<option value=\"2\" id=\"lot2\">" . $strings['instantwin'] . "</option></select>&nbsp;" . $strings['collectdaily'] . "\n";
 print "</td></tr>";
 print "<tr><td>";
+print "<select id=\"loginbonus\" name=\"loginbonus\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"o0\">Sleep</option>\n";
+CreateOptionsWithIDfromArray($farmdata["updateblock"]["menue"]["loginbonus"]["products"]);
+print "</select>&nbsp;" . $strings['collectloginbonus'] . "\n";
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"vehiclemgmt5\" name=\"vehiclemgmt5\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"vehicle0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"vehicle1\">" . $strings['sheepcart'] . "</option>\n";
@@ -158,8 +164,8 @@ print "<hr>\n";
 print "<script type=\"text/javascript\">\n";
 
 global $configContents;
-$expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dolot',
-'vehiclemgmt5', 'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
+$expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
+'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
 'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
 'dodeliveryevent', 'megafieldinstantplant', 'doolympiaevent', 'doseedbox',
@@ -178,6 +184,8 @@ $savedValue = $configContents['caretoy'];
 print "document.getElementById('caretoy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['careplushy'];
 print "document.getElementById('careplushy').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
+$savedValue = $configContents['dologinbonus'];
+print "document.getElementById('loginbonus').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 $savedValue = $configContents['vehiclemgmt5'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt5').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";

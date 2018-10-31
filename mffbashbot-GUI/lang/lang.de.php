@@ -83,5 +83,6 @@ $strings['startcowrace'] = 'Kuhrennen in allen Stallplätzen starten';
 $strings['feedsecontestant'] = 'Wettesser füttern';
 $strings['racecowslots'] = 'Rennkuh-Ställe';
 $strings['slot'] = 'Slot';
+$strings['collectloginbonus'] = 'Anmeldebonus einsammeln und aktivieren';
 // $strings[''] = '';
 ?>

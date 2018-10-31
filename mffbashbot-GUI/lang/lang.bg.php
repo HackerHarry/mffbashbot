@@ -82,5 +82,6 @@ $strings['startcowrace'] = 'Start cow race in all slots';
 $strings['feedsecontestant'] = 'Feed the speed eating contestant';
 $strings['racecowslots'] = 'Race cow slots';
 $strings['slot'] = 'Slot';
+$strings['collectloginbonus'] = 'Collect and activate login bonus';
 // $strings[''] = '';
 ?>

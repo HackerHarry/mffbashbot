@@ -137,6 +137,7 @@ switch ($farm) {
   $configContents['careplushy'] = $_POST["careplushy"];
   $configContents['dodog'] = $_POST["dogtoggle"];
   $configContents['dolot'] = $_POST["lottoggle"];
+  $configContents['dologinbonus'] = $_POST["loginbonus"];
   $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];

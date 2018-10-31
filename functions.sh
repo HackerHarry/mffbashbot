@@ -554,6 +554,32 @@ function start_FoodWorldBuildingNP {
  start_FoodWorldBuilding $1 $2 $3
 }
 
+function check_MunchiesAtTables {
+ local sJSONDataType
+ local iTable
+ local iChair
+ local bMunchieReady
+ # JSON data uses different data types when you bought further tables on food world
+ sJSONDataType=$($JQBIN -r '.datablock.tables | type' $FARMDATAFILE)
+ for iTable in {0..4}; do
+  # Munchies on unleased tables can still be claimed, do not skip iTable loop
+  for iChair in 1 2; do
+   if [ "$sJSONDataType" = "object" ]; then
+    bMunchieReady=$($JQBIN '.datablock.tables."'${iTable}'"."chairs"."'${iChair}'".ready? == 1' $FARMDATAFILE)
+   elif [ "$sJSONDataType" = "array" ]; then
+    bMunchieReady=$($JQBIN '.datablock.tables['${iTable}']."chairs"."'${iChair}'".ready? == 1' $FARMDATAFILE)
+   else
+    echo "Error: Unknown JSON datatype: ${sJSONDataType}" >&2
+    break 2
+   fi
+   if [ "$bMunchieReady" = "true" ]; then
+    echo "Munchie available at table $((iTable + 1)), chair ${iChair}, claiming it..."
+    SendAJAXFoodworldRequest "action=cash&id=0&table=${iTable}&chair=${iChair}"
+   fi
+  done
+ done
+}
+
 function DoFarmersMarket {
  local sFarm=$1
  local sPosition=$2
@@ -727,9 +753,7 @@ function check_VetJobDone {
  # that's why we're calculating with one less treatment
  iNumAnimals2Heal=$((iNumAnimals2Heal - 1))
  if [ $iNumAnimals2Heal -eq $iNumAnimalsHealed ]; then
-  CFGLINE=$(grep restartvetjob $CFGFILE)
-  TOKENS=( $CFGLINE )
-  local iVetJob=${TOKENS[2]}
+  local iVetJob=$(get_ConfigValue restartvetjob)
   echo "Restarting vets' treatment with difficulty ${iVetJob}..."
   sleep 2
   SendAJAXFarmRequest "mode=vet_setrole&farm=1&position=1&id=${iVetJob}&role=${iVetJob}"
@@ -742,9 +766,7 @@ function DoFarmersMarketPetCare {
  if grep -q "care${sSlot} = 0" $CFGFILE; then
   echo "Pet's $sSlot care is set to sleep"
  else
-  local sCFGline=$(grep care${sSlot} $CFGFILE)
-  local sTokens=( $sCFGline )
-  local sCare=${sTokens[2]}
+  local sCare=$(get_ConfigValue care${sSlot})
   SendAJAXFarmRequest "mode=pets_care&set=${sCare},${sCare},${sCare}"
  fi
 }
@@ -764,9 +786,7 @@ function start_CowRacing {
 
 function check_RaceCowFeeding {
  local iSlot=$1
- CFGLINE=$(grep racecowslot${iSlot} $CFGFILE)
- TOKENS=( $CFGLINE )
- local iPID=${TOKENS[2]}
+ local iPID=$(get_ConfigValue racecowslot${iSlot})
  local sSlotType=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cowslots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
  if [ "$sSlotType" = "number" ]; then
   SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?' $FARMDATAFILE 2>/dev/null)
@@ -1087,15 +1107,49 @@ function start_PonyFarm {
  done
 }
 
+function check_Farmies {
+ local sFarmieType=$1
+ local aFarmies
+ local iID
+ case "$sFarmieType" in
+  farmie)
+     aFarmies=$($JQBIN '.updateblock.farmis[0] | .[] | .id | tonumber' $FARMDATAFILE)
+     for iID in $aFarmies; do
+      echo "Sending farmie with ID ${iID} away..."
+      SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
+     done
+     ;;
+  flowerfarmie)
+     aFarmies=$($JQBIN '.updateblock.farmersmarket.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+     for iID in $aFarmies; do
+      echo "Sending flower farmie with ID ${iID} away..."
+      SendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
+     done
+     ;;
+  forestryfarmie)
+     aFarmies=$($JQBIN '.datablock[5] | .[] | .farmiid | tonumber' $FARMDATAFILE)
+     for iID in $aFarmies; do
+      echo "Sending forestry farmie with ID ${iID} away..."
+      SendAJAXForestryRequest "action=kickfarmi&productid=${iID}"
+     done
+     ;;
+  munchie)
+     aFarmies=$($JQBIN '.datablock.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+     for iID in $aFarmies; do
+      echo "Sending munchie with ID ${iID} away..."
+      SendAJAXFoodworldRequest "action=kick&id=${iID}&table=0&chair=0"
+     done
+     ;;
+ esac
+}
+
 function check_VehiclePosition {
  local iFarm=$1
  local iRoute=$2
  local iVehicle
  local iCurrentVehiclePos
  echo -n "Transport vehicle for route $iRoute is "
- CFGLINE=$(grep vehiclemgmt${iFarm} $CFGFILE)
- TOKENS=( $CFGLINE )
- iVehicle=${TOKENS[2]}
+ iVehicle=$(get_ConfigValue vehiclemgmt${iFarm})
  if ! $JQBIN -e '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
   iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current | tonumber' $FARMDATAFILE)
   if [ "$iCurrentVehiclePos" = "1" ]; then
@@ -1719,6 +1773,38 @@ function get_FieldPlotReadiness {
  fi
 }
 
+function check_QueueNum {
+ local iFarm=$1
+ local iPosition=$2
+ local iBuildingID=$3
+ local iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
+ local iMaxQueueNum=$(get_MaxQueuesForBuildingID $iBuildingID)
+ local iQueuesInGame
+ if [ $iQueuesInFS -gt $iMaxQueueNum ]; then
+  echo "Reducing position $iPosition to $iMaxQueueNum Queue(s)..."
+  reduce_QueuesOnPosition $iFarm $iPosition $iMaxQueueNum
+  iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
+ fi
+ # queues are capped to the max. possible value
+ # from here we'll handle multi-q buildings
+ case "$iBuildingID" in
+  13|14|16|21) iQueuesInGame=$(get_QueueCountFromInnerInfo $iFarm $iPosition)
+      ;;
+  20) iQueuesInGame=$(get_QueueCount20 $iFarm $iPosition)
+      ;;
+   *) iQueuesInGame=1
+      ;;
+ esac
+ if [ "$iQueuesInFS" -lt "$iQueuesInGame" ]; then
+  echo "Adding $((iQueuesInGame - iQueuesInFS)) Queue(s) to position $iPosition..."
+  add_QueuesToPosition $iFarm $iPosition $iQueuesInFS $iQueuesInGame
+ fi
+ if [ "$iQueuesInFS" -gt "$iQueuesInGame" ]; then
+  echo "Reducing position $iPosition to $iQueuesInGame Queue(s)..."
+  reduce_QueuesOnPosition $iFarm $iPosition $iQueuesInGame
+ fi
+}
+
 function get_QueueCountInFS {
  local iFarm=$1
  local iPosition=$2
@@ -1940,6 +2026,64 @@ function check_ButterflyBonus {
  fi
 }
 
+function check_DogBonus {
+ local bDogExists=$($JQBIN '.updateblock.menue.farmdog == 1' $FARMDATAFILE)
+ local bDogDone=$($JQBIN '.updateblock.menue.farmdog_harvest == 1' $FARMDATAFILE)
+ if [ "$bDogExists" = "true" ] && [ "$bDogDone" = "false" ]; then
+  echo "not yet claimed, activating it..."
+  SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
+  # reduce pause time by 300 secs after claiming the dogs' time bonus
+  PAUSETIME=$((PAUSETIME - 300))
+ else
+  echo "already claimed"
+ fi
+}
+
+function check_DonkeyBonus {
+ local bDonkeyExists=$($JQBIN '.updateblock.menue.donkey == 1' $FARMDATAFILE)
+ if [ "$bDonkeyExists" = "true" ]; then
+  echo -n "Checking if it's time for the daily donkey bonus..."
+  if [ $SECONDS -gt 86400 ] || [ $DONKEYCLAIMED -eq 0 ]; then
+   echo "it is, claiming it..."
+   SendAJAXFarmRequest "mode=dailydonkey&farm=1&position=1"
+   SECONDS=0
+   DONKEYCLAIMED=1
+  else
+   echo "it's not"
+  fi
+ fi
+}
+
+function check_PuzzleParts {
+ local bPartsAvailable=$($JQBIN '.updateblock.farmersmarket.pets.daily == 1' $FARMDATAFILE)
+ if [ "$bPartsAvailable" = "true" ]; then
+  echo "available, buying it..."
+  SendAJAXFarmRequest "mode=pets_buy_parts&id=1&amount=1"
+ else
+  echo "already bought"
+ fi
+}
+
+function check_Lottery {
+ GetLotteryData $FARMDATAFILE
+ local iLot
+ local bLotstatus=$($JQBIN '.datablock[2] == 0' $FARMDATAFILE)
+ if [ "$bLotstatus" = "true" ]; then
+  iLot=$(get_ConfigValue dolot)
+  echo -n "not yet claimed, getting it"
+  SendAJAXCityRequest "city=2&mode=newlot"
+  if [ $iLot -eq 2 ]; then
+   echo " and trading it for an instant-win..."
+   sleep 1
+   SendAJAXCityRequest "city=2&mode=lotgetprize"
+  else
+   echo "..."
+  fi
+ else
+  echo "already claimed"
+ fi
+}
+
 function check_DeliveryEvent {
  local iPointsNeeded=250
  local iPointsAvailable
@@ -1974,6 +2118,29 @@ function check_OlympiaEvent {
  fi
 }
 
+function check_LoginBonus {
+ local iLoginCount=$($JQBIN '.updateblock.menue.loginbonus.data.count?' $FARMDATAFILE)
+ local bLoginBonusDone=$($JQBIN '.updateblock.menue.loginbonus.data.rewards["'$iLoginCount'"].done > 0' $FARMDATAFILE)
+ local bLoginBonusActive=$($JQBIN '.updateblock.menue.loginbonus.data.bonus.remain > 0' $FARMDATAFILE)
+ local iPID
+ if [ "$bLoginBonusDone" = "false" ]; then
+  if [ $iLoginCount -eq 7 ] && [ "$bLoginBonusActive" = "false" ]; then
+   iPID=$(get_ConfigValue dologinbonus)
+   echo "not yet claimed, activating points bonus for plant #${iPID}..."
+   SendAJAXFarmRequest "pid=${iPID}&mode=loginbonus_setplant"
+  else
+   if [ $iLoginCount -le 6 ]; then
+    echo "not yet claimed, getting it for day ${iLoginCount}..."
+    SendAJAXFarmRequest "day=${iLoginCount}&mode=loginbonus_getreward"
+   else
+    echo "not claiming it yet since points bonus is still active"
+   fi
+  fi
+ else
+  echo "already claimed"
+ fi
+}
+
 function check_TimeRemaining {
  # returns true if a zero or negative timer is found
  # and sets new PAUSETIME if applicable
@@ -1992,6 +2159,13 @@ function check_TimeRemaining {
   fi
  fi
  return 1
+}
+
+function get_ConfigValue {
+ local sConfigItem=$1
+ local sConfigLine=$(grep $sConfigItem $CFGFILE)
+ local sTokens=( $sConfigLine )
+ echo ${sTokens[2]}
 }
 
 function SendAJAXFarmRequest {
