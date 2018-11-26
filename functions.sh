@@ -808,6 +808,10 @@ function check_CowRace {
  local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
  for iSlot in $aSlots; do
   if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].race_remain'; then
+   if grep -q "excluderank1cow = 1" $CFGFILE && check_CowRanked1st $iSlot; then
+    echo "Skipping cow ranked 1st in slot $iSlot"
+    continue
+   fi
    iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
    if [ $iCowLevel -gt 1 ]; then
     # remove all equipment from cow
@@ -901,6 +905,16 @@ function check_CowEquipmentAvailability {
   fi
  done
  echo "-1"
+}
+
+function check_CowRanked1st {
+ # returns true if a cow is ranked 1st
+ local iSlot=$1
+ local bCowIsRanked1st=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].ladder.rank == 1' $FARMDATAFILE)
+ if [ "$bCowIsRanked1st" = "true" ]; then
+  return 0
+ fi
+ return 1
 }
 
 function harvest_MegaField {
@@ -1326,20 +1340,16 @@ function check_PowerUps {
   return
  fi
  local iActiveTool
- local iActiveGuildJob=$($JQBIN '.updateblock.job.guild_job_data | length' $FARMDATAFILE)
  local iTool=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- if [ $iActiveGuildJob -gt 0 ]; then
-  # job is running and player is taking part
-  iActiveTool=$($JQBIN '.updateblock.job.tool.remain' $FARMDATAFILE)
-  if [ $iActiveTool -gt 0 ]; then
-   echo "Requested tool #${iTool} is already in use"
-   return
-  else
-   echo "Activating tool #${iTool}..."
-   SendAJAXGuildRequest "mode=job_set_tool&pid=${iTool}"
-   update_queue ${iFarm} ${iPosition} ${iSlot}
-   return
-  fi
+ iActiveTool=$($JQBIN '.updateblock.job.tool.remain' $FARMDATAFILE)
+ if [ $iActiveTool -gt 0 ]; then
+  echo "Requested tool #${iTool} is already in use"
+  return
+ else
+  echo "Activating tool #${iTool}..."
+  SendAJAXGuildRequest "mode=job_set_tool&pid=${iTool}"
+  update_queue ${iFarm} ${iPosition} ${iSlot}
+  return
  fi
 }
 
@@ -2139,6 +2149,15 @@ function check_LoginBonus {
  else
   echo "already claimed"
  fi
+}
+
+function check_ActiveGuildJobForPlayer {
+ local iActiveGuildJob=$($JQBIN '.updateblock.job.guild_job_data | length' $FARMDATAFILE)
+ if [ $iActiveGuildJob -gt 0 ]; then
+  # guild job is running and player is taking part
+  return 0
+ fi
+ return 1
 }
 
 function check_TimeRemaining {

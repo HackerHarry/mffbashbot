@@ -156,6 +156,7 @@ switch ($farm) {
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['docowrace'] = $_POST["cowracetoggle"];
+  $configContents['excluderank1cow'] = $_POST["excluderank1cowtoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   // clean up deprecated variables
   if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);

@@ -214,8 +214,7 @@ while (true); do
  fi
 
  # guild tool handling
- ISGUILDMEMBER=$($JQBIN '.updateblock.menue.guildid | tonumber' $FARMDATAFILE)
- if [ $ISGUILDMEMBER -gt 0 ]; then
+ if check_ActiveGuildJobForPlayer; then
   echo "Checking for pending guild job tools..."
   check_Tools city2 tools 0
  fi
