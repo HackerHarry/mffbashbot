@@ -2095,12 +2095,13 @@ function check_Lottery {
 }
 
 function check_DeliveryEvent {
- local iPointsNeeded=250
+ local iPointsNeeded
  local iPointsAvailable
- local iDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent' $FARMDATAFILE)
- if [ "$iDeliveryEventRunning" = "0" ]; then
+ local bDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent != 0' $FARMDATAFILE)
+ if [ "$bDeliveryEventRunning" = "false" ]; then
   return
  fi
+ iPointsNeeded=$($JQBIN '.updateblock.menue.deliveryevent.config.spots | .[] | select(.points <= 250).points' $FARMDATAFILE)
  if check_TimeRemaining '.updateblock.menue.deliveryevent.data.tour.remain'; then
   iPointsAvailable=$($JQBIN '.updateblock.menue.deliveryevent.data["points"]' $FARMDATAFILE)
   if [ $iPointsAvailable -ge $iPointsNeeded ] 2>/dev/null; then
