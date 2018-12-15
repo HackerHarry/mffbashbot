@@ -2,5 +2,3 @@
 .gitignore export-ignore
 install.sh export-ignore
 install-cygwin.sh export-ignore
-mffbashbot-setup.exe export-ignore
-mffbashbot-setup-x64.exe export-ignore

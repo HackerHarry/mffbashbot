@@ -389,7 +389,13 @@ function start_FarmNP {
  done
 }
 
- function water_FieldNP {
+function water_Field {
+ local iFarm=$1
+ local iPosition=$2
+ SendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
+}
+
+function water_FieldNP {
  # this function only supports completely filled fields of the same crop size
  local iFarm=$1
  local iPosition=$2
@@ -1121,6 +1127,11 @@ function start_PonyFarm {
  done
 }
 
+function start_Butterflies {
+ local iSlot=$1
+ SendAJAXFarmRequest "slot=${iSlot}&mode=butterfly_carebreed"
+}
+
 function check_Farmies {
  local sFarmieType=$1
  local aFarmies
@@ -1385,11 +1396,11 @@ function check_RipePlotOnField {
  local iFarm=$1
  local iPosition=$2
  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
- local bHasRipePlots=$($JQBIN '.datablock[1] | .[] | select(.phase? == 4)' $TMPFILE)
- if [ -z "$bHasRipePlots" ]; then
-  return 1
+ local bHasRipePlots=$($JQBIN '[.datablock[1] | .[] | select(.phase? == 4 and .buildingid == "v")][0] | type == "object"' $TMPFILE)
+ if [ "$bHasRipePlots" = "true" ]; then
+  return 0
  fi
- return 0
+ return 1
 }
 
 function check_RunningMegaFieldJob {
@@ -1403,11 +1414,11 @@ function check_RunningMegaFieldJob {
 
 function check_RipePlotOnMegaField {
  # returns true if a plot shows a negative remainder
- local bHasNegatives=$($JQBIN '.updateblock.megafield.area | .[] | select(.remain < 0)' $FARMDATAFILE)
- if [ -z "$bHasNegatives" ]; then
-  return 1
+ local bHasNegatives=$($JQBIN '[.updateblock.megafield.area | .[] | select(.remain < 0)][0] | type == "object"' $FARMDATAFILE)
+ if [ "$bHasNegatives" = "true" ]; then
+  return 0
  fi
- return 0
+ return 1
 }
 
 function get_UnlockedMegaFieldPlotNum {
@@ -1449,23 +1460,20 @@ function get_MegaFieldHarvesterDelay {
 function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iVehicleBought=$2
- local iDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability' $FARMDATAFILE 2>/dev/null)
- if [ "$iDurability" = "null" ] || [ -z "$iDurability" ]; then
-  if [ $iVehicleBought -eq 0 ]; then
-   # buy a brand new one if empty
-   echo "Buying new vehicle #${iHarvestDevice}..." >&2
-   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
-   echo 1
-   return
-  else
-   # sending to STDERR...not the best way to do it
-   echo "Not buying new vehicle since it's already been bought this iteration" >&2
-   echo 1
-   return
-  fi
+ local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability | type == "number"' $FARMDATAFILE)
+ if [ "$bDurability" = "false" ] && [ $iVehicleBought -eq 0 ]; then
+  # buy a brand new one if empty
+  echo "Buying new vehicle #${iHarvestDevice}..." >&2
+  SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
+  echo 1
+  return
  else
-  echo 0
+  # sending to STDERR - otherwise the text would be part of the returned value
+  echo "Not buying new vehicle since it's already been bought this iteration!" >&2
+  echo 1
+  return
  fi
+ echo 0
 }
 
 function check_MegaFieldProductIsHarvestable {
@@ -1513,13 +1521,13 @@ function MegaFieldPlantNP {
  local iFreePlots=$2
  local iCount=1
  local iCount2=0
- local sPlotOccupied
+ local bPlotOccupied
  local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotNum)
  while [ "$iCount" -le "$iFreePlots" ]; do
    while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
-    sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free | keys | .['$iCount2'] | tonumber' $FARMDATAFILE)
-    sPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"]?' $FARMDATAFILE)
-    if [ -z "$sPlotOccupied" ] || [ "$sPlotOccupied" = "null" ]; then
+    sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free | keys['$iCount2'] | tonumber' $FARMDATAFILE)
+    bPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"] | type == "object"' $FARMDATAFILE)
+    if [ "$bPlotOccupied" = "false" ]; then
      # plot is free, plant stuff on it
      echo "Planting item ${iPID} on Mega Field plot ${sUnlockedPlotName}..."
      SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
@@ -1775,7 +1783,7 @@ function get_RealSlotName {
 function get_FieldPlotReadiness {
  # returns 0 if a plot is not occupied in any way
  local iPlot=$1
- local sResult=$($JQBIN '.datablock[1] | .[] | select(.teil_nr? == "'$iPlot'")' $TMPFILE 2>/dev/null)
+ local sResult=$($JQBIN '.datablock[1] | .[] | select(.teil_nr? == "'$iPlot'") | type == "object"' $TMPFILE)
  if [ -z "$sResult" ]; then
   return 0
  else

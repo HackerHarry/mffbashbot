@@ -270,11 +270,7 @@ while (true); do
      if [ $SLOT -eq 0 ]; then
       if check_TimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain'; then
        echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
-       if [ $PREMIUM -eq 1 ]; then
-        SendAJAXFarmRequest "mode=watergarden&farm=${FARM}&position=${POSITION}"
-       else
-        water_FieldNP $FARM $POSITION
-       fi
+       water_Field${NONPREMIUM} $FARM $POSITION
       fi
      fi
    done
@@ -400,7 +396,7 @@ while (true); do
   for SLOT in {1..6}; do
    if check_TimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"].remain?'; then
    echo "Doing butterfly house slot ${SLOT}..."
-   SendAJAXFarmRequest "slot=${SLOT}&mode=butterfly_carebreed"
+   start_Butterflies $SLOT
    fi
   done
  fi
@@ -581,11 +577,11 @@ while (true); do
  if [ $PAUSECORRECTEDAT -ne 0 ]; then
   CURRENTEPOCH=$(date +"%s")
   TIMEDELTA=$((CURRENTEPOCH - PAUSECORRECTEDAT))
-  PAUSETIME=$((PAUSETIME - TIMEDELTA))
+  PAUSETIME=$((PAUSETIME - TIMEDELTA + 10)) # add a slight jitter
  TIMEDELTA=0
  PAUSECORRECTEDAT=0
  fi
- if [ $PAUSETIME -lt 10 ]; then # allow a slight jitter
+ if [ $PAUSETIME -lt 10 ]; then
   PAUSETIME=10
  fi
  echo "Pausing $PAUSETIME secs..."
