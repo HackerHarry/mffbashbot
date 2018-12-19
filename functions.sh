@@ -928,7 +928,8 @@ function harvest_MegaField {
  local iPosition=$2
  local iSlot=$3
  local iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local iPlot=1
+ local iPlot
+ local aPlots
  local iVehicleBought=0
  # check for 2x2 harvest device
  case "$iHarvestDevice" in
@@ -943,28 +944,19 @@ function harvest_MegaField {
   ;;
  esac
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
- while (true); do
-  if [ $iPlot -gt 99 ]; then
-   if ! check_RipePlotOnMegaField ; then
-    return
-   fi
-   # there's more to harvest...
-   iPlot=1
+ aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ for iPlot in $aPlots; do
+  echo -n "Harvesting Mega Field plot ${iPlot}..."
+  SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
+  echo "delaying ${iHarvestDelay} seconds"
+  sleep ${iHarvestDelay}s
+  if grep -q "megafieldinstantplant = 1" $CFGFILE; then
+   start_MegaField${NONPREMIUM}
   fi
-  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
-  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"].remain?'; then
-   echo -n "Harvesting Mega Field plot ${iPlot}..."
-   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
-   echo "delaying ${iHarvestDelay} seconds"
-   sleep ${iHarvestDelay}s
-   if grep -q "megafieldinstantplant = 1" $CFGFILE; then
-    start_MegaField${NONPREMIUM}
-   fi
-   iPlot=$((iPlot + 1))
-   continue
-  fi
-  iPlot=$((iPlot + 1))
  done
+ if check_RipePlotOnMegaField; then
+  harvest_MegaField ${FARM} ${POSITION} 0
+ fi
 }
 
 function start_MegaField {
@@ -1396,7 +1388,7 @@ function check_RipePlotOnField {
  local iFarm=$1
  local iPosition=$2
  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
- local bHasRipePlots=$($JQBIN '[.datablock[1] | .[] | select(.phase? == 4 and .buildingid == "v")][0] | type == "object"' $TMPFILE)
+ local bHasRipePlots=$($JQBIN '[.datablock[1] | .[] | select(.phase? == 4 and (.buildingid == "v" or .buildingid == "ex" or .buildingid == "alpin"))][0] | type == "object"' $TMPFILE)
  if [ "$bHasRipePlots" = "true" ]; then
   return 0
  fi
@@ -1461,19 +1453,22 @@ function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iVehicleBought=$2
  local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability | type == "number"' $FARMDATAFILE)
- if [ "$bDurability" = "false" ] && [ $iVehicleBought -eq 0 ]; then
-  # buy a brand new one if empty
-  echo "Buying new vehicle #${iHarvestDevice}..." >&2
-  SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
-  echo 1
-  return
+ if [ "$bDurability" = "false" ]; then
+  if [ $iVehicleBought -eq 0 ]; then
+   # buy a brand new one if empty
+   echo "Buying new vehicle #${iHarvestDevice}..." >&2
+   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
+   echo 1
+   return
+  else
+   # sending to STDERR - otherwise the text would be part of the returned value
+   echo "Not buying new vehicle since it's already been bought this iteration!" >&2
+   echo 1
+   return
+  fi
  else
-  # sending to STDERR - otherwise the text would be part of the returned value
-  echo "Not buying new vehicle since it's already been bought this iteration!" >&2
-  echo 1
-  return
+  echo 0
  fi
- echo 0
 }
 
 function check_MegaFieldProductIsHarvestable {
