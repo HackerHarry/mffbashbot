@@ -242,7 +242,7 @@ while (true); do
    fi
    # add/remove queues on demand
    if grep -q "correctqueuenum = 1" $CFGFILE; then
-    check_QueueNum $FARM $POSITION $BUILDINGID
+    check_QueueCount $FARM $POSITION $BUILDINGID
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field

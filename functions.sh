@@ -753,12 +753,12 @@ function DoFarmersMarketAnimalTreatment {
 }
 
 function check_VetJobDone {
- local iNumAnimalsHealed=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count | tonumber' $FARMDATAFILE)
- local iNumAnimals2Heal=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
+ local iAnimalsHealedCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count | tonumber' $FARMDATAFILE)
+ local iAnimals2HealCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
  # we're not using updated farm data at this point, but a treatment has just been finished
  # that's why we're calculating with one less treatment
- iNumAnimals2Heal=$((iNumAnimals2Heal - 1))
- if [ $iNumAnimals2Heal -eq $iNumAnimalsHealed ]; then
+ iAnimals2HealCount=$((iAnimals2HealCount - 1))
+ if [ $iAnimals2HealCount -eq $iAnimalsHealedCount ]; then
   local iVetJob=$(get_ConfigValue restartvetjob)
   echo "Restarting vets' treatment with difficulty ${iVetJob}..."
   sleep 2
@@ -827,7 +827,7 @@ function check_CowRace {
     GetFarmData $FARMDATAFILE
     sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
     for sBodyPart in head body foot; do
-     # find best equipment for the cow
+     # find/equip best equipment for the cow, buy non-coin equipment if possible
      iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
      if [ "$iEquipmentID" = "-1" ]; then
       continue
@@ -905,8 +905,29 @@ function check_CowEquipmentAvailability {
  # desired globbing
  for iItem in $iSearchPattern; do
   iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "type" and $value == "'${iItem}'" then ($key[-2] | tonumber) else empty end' $FARMDATAFILE | head -1)
+  # iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0].id | tonumber' $FARMDATAFILE)
+  # this could return "null" as a result.
   if [ -n "$iKey" ]; then
    echo $iKey
+   return
+  fi
+ done
+ # nothing suitable in stock, let's try and buy something that fits
+ iKey=$(get_CowEquipment "$iSearchPattern")
+ echo $iKey
+}
+
+function get_CowEquipment {
+ local iSearchPattern="$1"
+ local iItem
+ local bIsMoneyItem
+ for iItem in $iSearchPattern; do
+  bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
+  if [ "$bIsMoneyItem" = "true" ]; then
+   echo "Buying cow equipment #${iItem}..." >&2
+   SendAJAXFarmRequest "id=${iItem}&slot=1&mode=cowracing_buyitem"
+   # nicer would be to use the correct slot no.
+   echo $iItem
    return
   fi
  done
@@ -933,19 +954,22 @@ function harvest_MegaField {
  local iVehicleBought=0
  # check for 2x2 harvest device
  case "$iHarvestDevice" in
-  5|7|9|10) harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
-  update_queue ${iFarm} ${iPosition} ${iSlot}
-  iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
-  case "$iHarvestDevice" in
-   5|7|9|10) echo "You need a 1x1 device after the 2x2 one - cannot continue"
-   return
-   ;;
-  esac
-  ;;
+  5|7|9|10)
+     harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
+     update_queue ${iFarm} ${iPosition} ${iSlot}
+     iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+     case "$iHarvestDevice" in
+      5|7|9|10)
+         echo "You need a 1x1 device after the 2x2 one - cannot continue"
+         return
+         ;;
+     esac
+     ;;
  esac
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
  aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iPlot in $aPlots; do
+  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   echo -n "Harvesting Mega Field plot ${iPlot}..."
   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
   echo "delaying ${iHarvestDelay} seconds"
@@ -980,7 +1004,7 @@ function start_MegaField {
    continue
    # no need to plant more
   fi
-  iFreePlots=$(get_MegaFieldFreePlotsNum)
+  iFreePlots=$(get_MegaFieldFreePlotsCount)
   if [ $iFreePlots -eq 0 ]; then
    # no free plots, no need to plant
    return
@@ -1196,9 +1220,12 @@ function check_SendGoodsToMainFarm {
  local iPIDMin
  local iPIDMax
  local aPIDs
+ local iFilledFieldCount
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
- local iFieldsOnFarmNum=$(get_FieldsOnFarmNum $iFarm)
+ local iFieldsOnFarmCount=$(get_FieldsOnFarmCount $iFarm)
+ local aPositions=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position | tonumber' $FARMDATAFILE)
+ echo -n "Calculating transport count for route ${iRoute}..."
  case $iFarm in
   5) iPIDMin=351
      iPIDMax=361
@@ -1210,10 +1237,16 @@ function check_SendGoodsToMainFarm {
  # this will fail if more than one rack is in use on farm 5 or 6
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid >= "'${iPIDMin}'" and .pid <= "'${iPIDMax}'").pid | tonumber' $FARMDATAFILE)
  for iPID in $aPIDs; do
+  echo -n "."
   iPIDCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid == "'${iPID}'").amount | tonumber' $FARMDATAFILE)
   iSafetyCount=$(get_ProductCountFittingOnField $iPID)
   # do we have multiple fields on the current farm?
-  iSafetyCount=$((iSafetyCount * iFieldsOnFarmNum))
+  # are they filled with crop we want to transport off?
+  iFilledFieldCount=$(get_FilledFieldCount $iFarm $iPID "$aPositions")
+  iSafetyCount=$((iSafetyCount * (iFieldsOnFarmCount - iFilledFieldCount)))
+  if [ $iSafetyCount -lt 5 ]; then
+   iSafetyCount=5
+  fi
   iPIDCount=$((iPIDCount - iSafetyCount))
   if [ $iPIDCount -le 0 ]; then
    continue
@@ -1224,14 +1257,14 @@ function check_SendGoodsToMainFarm {
    iPIDCount=$((iPIDCount - iCropValue))
    iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
    sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
-   echo "Sending $((iTransportCount - iCropValue)) items to main farm..."
+   echo -e "\nSending $((iTransportCount - iCropValue)) items to main farm..."
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
   iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
   sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
-   echo "Sending partially loaded vehicle to main farm (no slots left)..."
+   echo -e "\nSending partially loaded vehicle to main farm (no slots left)..."
    SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
@@ -1239,7 +1272,7 @@ function check_SendGoodsToMainFarm {
  if [ $iTransportCount -lt 0 ]; then
   iTransportCount=0
  fi
- echo "$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
+ echo -e "\n$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
 }
 
 function get_ProductCountFittingOnField {
@@ -1249,7 +1282,7 @@ function get_ProductCountFittingOnField {
  echo $((120 / (iPIDDim_x * iPIDDim_y)))
 }
 
-function get_FieldsOnFarmNum {
+function get_FieldsOnFarmCount {
  local iFarm=$1
  local iFieldsOnFarm=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE | wc -l)
  echo $iFieldsOnFarm
@@ -1413,7 +1446,7 @@ function check_RipePlotOnMegaField {
  return 1
 }
 
-function get_UnlockedMegaFieldPlotNum {
+function get_UnlockedMegaFieldPlotCount {
  local iUnlockedPlots=$($JQBIN '.updateblock.megafield.area_free | length' $FARMDATAFILE)
  # we always have a positive number here
  echo $iUnlockedPlots
@@ -1452,8 +1485,10 @@ function get_MegaFieldHarvesterDelay {
 function check_MegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iVehicleBought=$2
- local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"].durability | type == "number"' $FARMDATAFILE)
- if [ "$bDurability" = "false" ]; then
+ local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"]?.durability | type == "number"' $FARMDATAFILE)
+ # if no vehicle is available, the query returns an empty array which can't be indexed
+ # hence the -z test. don't remove it :)
+ if [ "$bDurability" = "false" ] || [ -z "$bDurability" ]; then
   if [ $iVehicleBought -eq 0 ]; then
    # buy a brand new one if empty
    echo "Buying new vehicle #${iHarvestDevice}..." >&2
@@ -1461,7 +1496,7 @@ function check_MegaFieldEmptyHarvestDevice {
    echo 1
    return
   else
-   # sending to STDERR - otherwise the text would be part of the returned value
+   # sending to STDERR - otherwise the text would be part of the return value
    echo "Not buying new vehicle since it's already been bought this iteration!" >&2
    echo 1
    return
@@ -1487,7 +1522,7 @@ function get_MegaFieldAmountToGoInSlot {
  local iNeededPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].need' $FARMDATAFILE)
  local iHavePID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].have' $FARMDATAFILE)
  local iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
- local iSeeminglyNeeded=$(($iNeededPID - $iHavePID))
+ local iSeeminglyNeeded=$((iNeededPID - iHavePID))
  if [ "$iSeeminglyNeeded" = "0" ]; then
   # no more products needed in this slot
   echo 0
@@ -1505,7 +1540,7 @@ function get_MegaFieldAmountToGoInSlot {
  # in theory, this amount can't be less than zero
 }
 
-function get_MegaFieldFreePlotsNum {
+function get_MegaFieldFreePlotsCount {
  local iTotalPlots=$($JQBIN '.updateblock.megafield.area_free | length' $FARMDATAFILE)
  local iBusyPlots=$($JQBIN '.updateblock.megafield.area | length' $FARMDATAFILE)
  echo $((iTotalPlots - iBusyPlots))
@@ -1517,12 +1552,14 @@ function MegaFieldPlantNP {
  local iCount=1
  local iCount2=0
  local bPlotOccupied
- local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotNum)
+ local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotCount)
  while [ "$iCount" -le "$iFreePlots" ]; do
    while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
     sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free | keys['$iCount2'] | tonumber' $FARMDATAFILE)
-    bPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"] | type == "object"' $FARMDATAFILE)
-    if [ "$bPlotOccupied" = "false" ]; then
+    bPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"]? | type == "object"' $FARMDATAFILE)
+    # if all the plots are free, the query returns an empty array which can't be indexed
+    # hence the -z test. don't remove it ;)
+    if [ "$bPlotOccupied" = "false" ] || [ -z "$bPlotOccupied" ]; then
      # plot is free, plant stuff on it
      echo "Planting item ${iPID} on Mega Field plot ${sUnlockedPlotName}..."
      SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
@@ -1786,16 +1823,34 @@ function get_FieldPlotReadiness {
  fi
 }
 
-function check_QueueNum {
+function get_FilledFieldCount {
+ # returns the number of fields completely filled with a certain product
+ local iFarm=$1
+ local iPID=$2
+ local aPositions="$3"
+ local iPosition
+ local iPIDCount
+ local iFilledFields=0
+ for iPosition in $aPositions; do
+  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+  iPIDCount=$($JQBIN '.datablock[1] | map([select(.teil_nr? and .inhalt == "'${iPID}'")]) | [.[] | select(length > 0)] | length' $TMPFILE)
+  if [ $iPIDCount -eq 120 ]; then
+   iFilledFields=$((iFilledFields + 1))
+  fi
+ done
+ echo $iFilledFields
+}
+
+function check_QueueCount {
  local iFarm=$1
  local iPosition=$2
  local iBuildingID=$3
  local iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
- local iMaxQueueNum=$(get_MaxQueuesForBuildingID $iBuildingID)
+ local iMaxQueueCount=$(get_MaxQueuesForBuildingID $iBuildingID)
  local iQueuesInGame
- if [ $iQueuesInFS -gt $iMaxQueueNum ]; then
-  echo "Reducing position $iPosition to $iMaxQueueNum Queue(s)..."
-  reduce_QueuesOnPosition $iFarm $iPosition $iMaxQueueNum
+ if [ $iQueuesInFS -gt $iMaxQueueCount ]; then
+  echo "Reducing position $iPosition to $iMaxQueueCount Queue(s)..."
+  reduce_QueuesOnPosition $iFarm $iPosition $iMaxQueueCount
   iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
  fi
  # queues are capped to the max. possible value
@@ -1821,9 +1876,9 @@ function check_QueueNum {
 function get_QueueCountInFS {
  local iFarm=$1
  local iPosition=$2
- local iQueueNum
- iQueueNum=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
- echo $iQueueNum
+ local iQueueCount
+ iQueueCount=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
+ echo $iQueueCount
 }
 
 function get_MaxQueuesForBuildingID {
@@ -1840,8 +1895,8 @@ function reduce_QueuesOnPosition {
  local iFarm=$1
  local iPosition=$2
  local iMaxQ=$3
- local iQueueNum=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
- local iQDel=$((iQueueNum - iMaxQ))
+ local iQueueCount=$(ls -ld ${iFarm}/${iPosition}/* | wc -l)
+ local iQDel=$((iQueueCount - iMaxQ))
  rm $(ls -d1 ${iFarm}/${iPosition}/* | tail -${iQDel})
 }
 
@@ -1894,17 +1949,17 @@ function add_QueuesToPosition {
 }
 
 function redeemPuzzlePartsPacks {
- local iNumPacks
+ local iPackCount
  local iCount
  local iCount2
  local iType
- iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs | length' $FARMDATAFILE)
- if [ $iNumPacks -gt 0 ]; then
-  for iCount in $(seq 0 $((iNumPacks - 1))); do
+ iPackCount=$($JQBIN '.updateblock.farmersmarket.pets.packs | length' $FARMDATAFILE)
+ if [ $iPackCount -gt 0 ]; then
+  for iCount in $(seq 0 $((iPackCount - 1))); do
    iType=$($JQBIN '.updateblock.farmersmarket.pets.packs | keys['$iCount'] | tonumber' $FARMDATAFILE)
-   iNumPacks=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"] | tonumber' $FARMDATAFILE)
-   echo "Redeeming $iNumPacks puzzle parts pack(s) of type ${iType}..."
-   for iCount2 in $(seq 1 $iNumPacks); do
+   iPackCount=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"] | tonumber' $FARMDATAFILE)
+   echo "Redeeming $iPackCount puzzle parts pack(s) of type ${iType}..."
+   for iCount2 in $(seq 1 $iPackCount); do
     SendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
@@ -1915,11 +1970,11 @@ function check_PanBonus {
  # function by jbond47, update by maiblume & jbond47
  GetPanData "$FARMDATAFILE"
  local iToday=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
- local iNumSheep=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
+ local iSheepCount=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
  local iLastBonus
  local bValue
  # Hero Sheep Bonus
- if [ $iNumSheep -eq 12 ]; then # requires all 12 super sheep
+ if [ $iSheepCount -eq 12 ]; then # requires all 12 super sheep
   iLastBonus=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
@@ -1933,8 +1988,8 @@ function check_PanBonus {
   fi
  fi
  # Horror Sheep Bonus
- iNumSheep=$($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE)
- if [ $iNumSheep -eq 9 ]; then # requires all 9 horror sheep
+ iSheepCount=$($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE)
+ if [ $iSheepCount -eq 9 ]; then # requires all 9 horror sheep
   iLastBonus=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
@@ -1948,8 +2003,8 @@ function check_PanBonus {
   fi
  fi
  # Sport Sheep Bonus
- iNumSheep=$($JQBIN '.datablock[11].collections.sport | length' $FARMDATAFILE)
- if [ $iNumSheep -eq 9 ]; then # requires all 9 sport sheep
+ iSheepCount=$($JQBIN '.datablock[11].collections.sport | length' $FARMDATAFILE)
+ if [ $iSheepCount -eq 9 ]; then # requires all 9 sport sheep
   iLastBonus=$($JQBIN '.datablock[11].lastbonus.sport' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
@@ -1963,8 +2018,8 @@ function check_PanBonus {
   fi
  fi
  # Beach Sheep Bonus
- iNumSheep=$($JQBIN '.datablock[11].collections.beach | length' $FARMDATAFILE)
- if [ $iNumSheep -eq 9 ]; then # requires all 9 beach sheep
+ iSheepCount=$($JQBIN '.datablock[11].collections.beach | length' $FARMDATAFILE)
+ if [ $iSheepCount -eq 9 ]; then # requires all 9 beach sheep
   iLastBonus=$($JQBIN '.datablock[11].lastbonus.beach' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
@@ -1978,8 +2033,8 @@ function check_PanBonus {
   fi
  fi
  # Fantasy Sheep Bonus
- iNumSheep=$($JQBIN '.datablock[11].collections.fantasy | length' $FARMDATAFILE)
- if [ $iNumSheep -eq 9 ]; then # requires all 9 fantasy sheep
+ iSheepCount=$($JQBIN '.datablock[11].collections.fantasy | length' $FARMDATAFILE)
+ if [ $iSheepCount -eq 9 ]; then # requires all 9 fantasy sheep
   iLastBonus=$($JQBIN '.datablock[11].lastbonus.fantasy' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
