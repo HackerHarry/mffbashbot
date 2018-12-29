@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Install script for Harry's My Free Farm Bash Bot on Cygwin
 
 LCONF=/etc/lighttpd/lighttpd.conf

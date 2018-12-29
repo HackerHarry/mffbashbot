@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Update handler for Harry's My Free Farm Bash Bot
 # Copyright 2016-18 Harun "Harry" Basalamah
 #

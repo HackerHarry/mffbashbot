@@ -823,8 +823,7 @@ function check_CowRace {
     # remove all equipment from cow
     SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
     SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-    SendAJAXFarmRequest "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-    GetFarmData $FARMDATAFILE
+    SendAJAXFarmRequestOverwrite "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
     sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
     for sBodyPart in head body foot; do
      # find/equip best equipment for the cow, buy non-coin equipment if possible
@@ -842,6 +841,8 @@ function check_CowRace {
   SendAJAXFarmRequest "type=pve&slot=${iSlot}&mode=cowracing_startrace"
   fi
  done
+ # refresh farm data
+ GetFarmData $FARMDATAFILE
 }
 
 function get_CowEquipmentID {
@@ -920,15 +921,20 @@ function check_CowEquipmentAvailability {
 function get_CowEquipment {
  local iSearchPattern="$1"
  local iItem
+ local iKey
  local bIsMoneyItem
  for iItem in $iSearchPattern; do
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "true" ]; then
    echo "Buying cow equipment #${iItem}..." >&2
-   SendAJAXFarmRequest "id=${iItem}&slot=1&mode=cowracing_buyitem"
+   SendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
    # nicer would be to use the correct slot no.
-   echo $iItem
-   return
+   iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id | tonumber' $FARMDATAFILE)
+   # at this point it should be safe to use this construct. but just to be safe...
+   if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
+    echo $iKey
+    return
+   fi
   fi
  done
  echo "-1"
@@ -1536,7 +1542,7 @@ function get_MegaFieldAmountToGoInSlot {
   return
  fi
  iPIDOnBusyPlots=$($JQBIN '.updateblock.megafield.area | .[] | select(.pid == '$iPID').pid' $FARMDATAFILE | wc -l)
- echo $(($iSeeminglyNeeded - $iPIDOnBusyPlots))
+ echo $((iSeeminglyNeeded - iPIDOnBusyPlots))
  # in theory, this amount can't be less than zero
 }
 
