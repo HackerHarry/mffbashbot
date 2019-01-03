@@ -1,5 +1,5 @@
 # Functions file for Harry's My Free Farm Bash Bot
-# Copyright 2016-18 Harun "Harry" Basalamah
+# Copyright 2016-19 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -109,9 +109,10 @@ function start_Stable {
  local iFarm=$1
  local iPosition=$2
  local aParams=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local sOldIFS=$IFS
  IFS=,
  set -- $aParams
- unset IFS
+ IFS=$sOldIFS
  local iPID=$1
  local iAmount=$2
  # feeding
@@ -821,9 +822,7 @@ function check_CowRace {
    iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
    if [ $iCowLevel -gt 1 ]; then
     # remove all equipment from cow
-    SendAJAXFarmRequest "type=head&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-    SendAJAXFarmRequest "type=body&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
-    SendAJAXFarmRequestOverwrite "type=foot&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+    remove_CowEquipment $iSlot
     sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
     for sBodyPart in head body foot; do
      # find/equip best equipment for the cow, buy non-coin equipment if possible
@@ -838,11 +837,26 @@ function check_CowRace {
    sleep 1
   fi
   echo "Starting cow race in slot ${iSlot}..."
-  SendAJAXFarmRequest "type=pve&slot=${iSlot}&mode=cowracing_startrace"
+  SendAJAXFarmRequestOverwrite "type=pve&slot=${iSlot}&mode=cowracing_startrace" && sleep 3
+  # put equipment back into stock
+  remove_CowEquipment $iSlot
   fi
  done
  # refresh farm data
  GetFarmData $FARMDATAFILE
+}
+
+function remove_CowEquipment {
+ # does what the name suggests. mind that this function overwrites $FARMDATAFILE !
+ local iSlot=$1
+ local sBodyPart
+ local bItemEquipped
+ for sBodyPart in head body foot; do
+  bItemEquipped=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].slot_'${sBodyPart}' != "0"' $FARMDATAFILE)
+  if [ "$bItemEquipped" = "true" ]; then
+   SendAJAXFarmRequestOverwrite "type=${sBodyPart}&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+  fi
+ done
 }
 
 function get_CowEquipmentID {
@@ -905,10 +919,8 @@ function check_CowEquipmentAvailability {
  local iKey
  # desired globbing
  for iItem in $iSearchPattern; do
-  iKey=$($JQBIN '.updateblock.farmersmarket.cowracing.data.items | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "type" and $value == "'${iItem}'" then ($key[-2] | tonumber) else empty end' $FARMDATAFILE | head -1)
-  # iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0].id | tonumber' $FARMDATAFILE)
-  # this could return "null" as a result.
-  if [ -n "$iKey" ]; then
+  iKey=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'" and .stock == "1").id][0]' $FARMDATAFILE)
+  if [ "$iKey" != "null" ]; then
    echo $iKey
    return
   fi
@@ -930,7 +942,7 @@ function get_CowEquipment {
    SendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
    # nicer would be to use the correct slot no.
    iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id | tonumber' $FARMDATAFILE)
-   # at this point it should be safe to use this construct. but just to be safe...
+   # at this point it should be safe to use this construct. but just to be even safer... ;)
    if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
     echo $iKey
     return
@@ -1206,6 +1218,8 @@ function check_VehiclePosition {
    echo "on farm $iCurrentVehiclePos"
    # check if sending a fully loaded vehicle is possible
    check_SendGoodsToMainFarm $iVehicle $iFarm $iRoute
+   # clean up the mess created in get_FilledFieldCount()
+   rm -f "${TMPFILE}-${iFarm}"-*
   fi
  else
   echo "en route"
@@ -1307,6 +1321,7 @@ function check_SendGoodsOffMainFarm {
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
  local iPosition=trans2${iFarm}
+ local sOldIFS=$IFS
  # ugly static coding... :)
  while (true); do
   if check_QueueSleep city2/${iPosition}/0; then
@@ -1317,7 +1332,7 @@ function check_SendGoodsOffMainFarm {
   local aParams=$(sed '2q;d' city2/${iPosition}/0)
   IFS=,
   set -- $aParams
-  unset IFS
+  IFS=$sOldIFS
   iProduct=$1
   iProductCount=$2
   iTransportCount=$((iTransportCount + iProductCount))
@@ -1837,9 +1852,13 @@ function get_FilledFieldCount {
  local iPosition
  local iPIDCount
  local iFilledFields=0
+ local sTmpFile
  for iPosition in $aPositions; do
-  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
-  iPIDCount=$($JQBIN '.datablock[1] | map([select(.teil_nr? and .inhalt == "'${iPID}'")]) | [.[] | select(length > 0)] | length' $TMPFILE)
+  sTmpFile="${TMPFILE}-${iFarm}-${iPosition}"
+  if ! [ -f "$sTmpFile" ]; then
+   GetInnerInfoData "$sTmpFile" $iFarm $iPosition gardeninit
+  fi
+  iPIDCount=$($JQBIN '.datablock[1] | map([select(.teil_nr? and .inhalt == "'${iPID}'")]) | [.[] | select(length > 0)] | length' "$sTmpFile")
   if [ $iPIDCount -eq 120 ]; then
    iFilledFields=$((iFilledFields + 1))
   fi
