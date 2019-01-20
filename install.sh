@@ -121,6 +121,7 @@ echo '/home/'$USER'/mffbashbot/*/mffbot.log
         compress
 } ' | sudo tee /etc/logrotate.d/mffbashbot > /dev/null
 
+cd
 echo
 echo "Creating bot start script..."
 echo '#!/usr/bin/env bash
