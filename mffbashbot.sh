@@ -262,8 +262,15 @@ while (true); do
      fi
     fi
    fi
-   for SLOT in 0 1 2; do
-     if check_TimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].remain'; then
+   # shellcheck disable=SC2046
+   if [ $(get_MaxQueuesForBuildingID $BUILDINGID) -eq 3 ]; then
+    aSLOTS="0 1 2"
+   else
+    aSLOTS="0"
+   fi
+   # desired globbing
+   for SLOT in $aSLOTS; do
+     if check_TimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}']?.remain'; then
        echo -n "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}"
        if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild | tonumber' $FARMDATAFILE 2>/dev/null | grep -q '1'; then
         echo " as a guild job..."
@@ -291,14 +298,14 @@ while (true); do
   # first the flower area. we'll only check one of 'em.
   FASTATUS=$($JQBIN '.updateblock.farmersmarket.flower_area | length' $FARMDATAFILE)
   if [ $FASTATUS -gt 0 ]; then
-   if check_TimeRemaining '.updateblock.farmersmarket.flower_area["1"].remain'; then
+   if check_TimeRemaining '.updateblock.farmersmarket.flower_area["1"]?.remain'; then
     echo "Doing flower area..."
     DoFarmersMarket farmersmarket flowerarea 0
    fi
   fi
   # nursery is next
   for SLOT in 1 2; do
-    if check_TimeRemaining '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"].remain'; then
+    if check_TimeRemaining '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"]?.remain'; then
       echo "Doing nursery slot ${SLOT}..."
       DoFarmersMarket farmersmarket nursery ${SLOT}
     fi
@@ -341,7 +348,7 @@ while (true); do
      # next the audience
      for BLOCK in 1 2 3 4; do
       for PINTYPE in fame money points products; do
-       if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"].pin.'${PINTYPE}'.remain'; then
+       if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"]?.pin.'${PINTYPE}'.remain'; then
         echo "Picking up ${PINTYPE} from audience block ${BLOCK}..."
         DoFoodContestAudience ${BLOCK} ${PINTYPE}
        fi
@@ -379,7 +386,7 @@ while (true); do
   # veterinarian
   if [ $PLAYERLEVELNUM -ge 36 ]; then
    for SLOT in 1 2 3; do
-    if check_TimeRemaining '.updateblock.farmersmarket.vet.production["'${SLOT}'"]["1"].remain'; then
+    if check_TimeRemaining '.updateblock.farmersmarket.vet.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing vet production slot ${SLOT}..."
      DoFarmersMarket farmersmarket vet ${SLOT}
     fi
@@ -389,7 +396,7 @@ while (true); do
    VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role | tonumber' $FARMDATAFILE 2>/dev/null)
    if [ "$VETJOBSTATUS" != "0" ] && [ "$VETJOBSTATUS" != "" ]; then
     for SLOT in 1 2 3; do
-     if check_TimeRemaining '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"].remain'; then
+     if check_TimeRemaining '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"]?.remain'; then
       echo "Doing animal treatment slot ${SLOT}..."
       DoFarmersMarketAnimalTreatment ${SLOT}
      fi
@@ -400,9 +407,9 @@ while (true); do
  # butterfly house
  if [ $PLAYERLEVELNUM -ge 40 ]; then
   for SLOT in {1..6}; do
-   if check_TimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"].remain?'; then
-   echo "Doing butterfly house slot ${SLOT}..."
-   start_Butterflies $SLOT
+   if check_TimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
+    echo "Doing butterfly house slot ${SLOT}..."
+    start_Butterflies $SLOT
    fi
   done
  fi
@@ -411,7 +418,7 @@ while (true); do
   CRBARNEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
   if [ "$CRBARNEXISTS" != "number" ] && [ "$CRBARNEXISTS" != "null" ]; then
    for SLOT in 1 2 3; do
-    if check_TimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]["1"].remain'; then
+    if check_TimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing cow racing production slot ${SLOT}..."
      DoFarmersMarket farmersmarket2 cowracing ${SLOT}
     fi
@@ -514,7 +521,7 @@ while (true); do
   # then the forestry buildings
   for POSITION in 1 2; do
    for SLOT in 1 2; do
-    if check_TimeRemaining '.datablock[2]["'${POSITION}'"].slots["'${SLOT}'"].remain'; then
+    if check_TimeRemaining '.datablock[2]["'${POSITION}'"]?.slots["'${SLOT}'"]?.remain'; then
      echo "Doing position ${POSITION}, slot ${SLOT}..."
      DoFarm forestry ${POSITION} ${SLOT}
     fi
@@ -559,13 +566,13 @@ while (true); do
   if [ "$RUNCHK" = "true" ] || [ "$WINDMILLREADY" = "true" ]; then
    echo "Checking for pending tasks in wind mill..."
    # we handle two slots
-   if check_TimeRemaining '.datablock[2]["1"].remain'; then
+   if check_TimeRemaining '.datablock[2]["1"]?.remain'; then
     echo "Doing wind mill, slot 1..."
     DoFarm city2 windmill 1
    fi
    SLOTREMAIN=$($JQBIN '.datablock[3]' $FARMDATAFILE)
    if [ $SLOTREMAIN -gt 0 ]; then
-    if check_TimeRemaining '.datablock[2]["2"].remain'; then
+    if check_TimeRemaining '.datablock[2]["2"]?.remain'; then
      echo "Doing wind mill, slot 2..."
      DoFarm city2 windmill 2
     fi
@@ -576,7 +583,7 @@ while (true); do
  echo "Logging off..."
  WGETREQ "$LOGOFFURL"
  # housekeeping -- adjust to your liking
- rm -f "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE"
+ rm -f "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-6]-[1-6]
  echo -n "Time stamp: "
  date "+%A, %d. %B %Y - %H:%Mh" | tee $LASTRUNFILE
  # consider time delta

@@ -16,7 +16,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-$configContents = parse_ini_file($gamepath . "/config.ini");
+if (file_exists($gamepath . "/config.ini"))
+ $configContents = parse_ini_file($gamepath . "/config.ini");
+else
+ if (empty($_POST["language"]))
+  $configContents['lang'] = "";
+ else
+  $configContents['lang'] = $_POST["language"];
 $translations_available = ['de', 'en', 'bg'];
 $lang = $configContents['lang'];
 // fallback to german if lang is unsupported or missing

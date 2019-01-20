@@ -51,11 +51,49 @@ function sanityCheck(elSel, elSelDest, amountpos) {
  return true;
 }
 
-function insertOptionBefore(elSel, elSelDest, amountpos)
-{
+function multiplierIsValid(multiplier) {
+ if (multiplier >= 1 && multiplier <= 99)
+  return true;
+ else
+  return false;
+}
+
+function insertOptionBefore(elSel, elSelDest, amountpos) {
  if (!sanityCheck(elSel, elSelDest, amountpos))
   return false;
- if (elSel.selectedIndex >= 0) {
+ var multiplier = document.getElementById("multi").value;
+ if (!multiplierIsValid(multiplier))
+  multiplier = 1;
+ for (var i = 0; i < multiplier; i++) {
+  if (elSel.selectedIndex >= 0) {
+   var elOptNew = document.createElement('option');
+   if (amountpos > 0) {
+    elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
+    elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
+   } else {
+    elOptNew.text = elSel.options[elSel.selectedIndex].text;
+    elOptNew.value = elSel.options[elSel.selectedIndex].value;
+   }
+   var elOptOld = elSelDest.options[elSelDest.selectedIndex];
+   try {
+    elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
+   }
+   catch(ex) {
+    elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
+   }
+  }
+ }
+ document.getElementById("multi").value = 1;
+ return false;
+}
+
+function appendOptionLast(elSel, elSelDest, amountpos) {
+ if (!sanityCheck(elSel, elSelDest, amountpos))
+  return false;
+ var multiplier = document.getElementById("multi").value;
+ if (!multiplierIsValid(multiplier))
+  multiplier = 1;
+ for (var i = 0; i < multiplier; i++) {
   var elOptNew = document.createElement('option');
   if (amountpos > 0) {
    elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
@@ -64,42 +102,18 @@ function insertOptionBefore(elSel, elSelDest, amountpos)
    elOptNew.text = elSel.options[elSel.selectedIndex].text;
    elOptNew.value = elSel.options[elSel.selectedIndex].value;
   }
-  var elOptOld = elSelDest.options[elSelDest.selectedIndex];
   try {
-   elSelDest.add(elOptNew, elOptOld); // standards compliant; doesn't work in IE
-   return false;
+   elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
   }
   catch(ex) {
-   elSelDest.add(elOptNew, elSel.selectedIndex); // IE only
-   return false;
+   elSelDest.add(elOptNew); // IE only
   }
  }
+ document.getElementById("multi").value = 1;
+ return false;
 }
 
-function appendOptionLast(elSel, elSelDest, amountpos)
-{
- if (!sanityCheck(elSel, elSelDest, amountpos))
-  return false;
- var elOptNew = document.createElement('option');
- if (amountpos > 0) {
-  elOptNew.text = amountpos + " " + elSel.options[elSel.selectedIndex].text;
-  elOptNew.value = elSel.options[elSel.selectedIndex].value + "," + amountpos;
- } else {
-  elOptNew.text = elSel.options[elSel.selectedIndex].text;
-  elOptNew.value = elSel.options[elSel.selectedIndex].value;
- }
- try {
-  elSelDest.add(elOptNew, null); // standards compliant; doesn't work in IE
-  return false;
- }
- catch(ex) {
-  elSelDest.add(elOptNew); // IE only
-  return false;
- }
-}
-
-function removeOptionSelected(elSelDest)
-{
+function removeOptionSelected(elSelDest) {
  for (var i = elSelDest.length - 1; i>=0; i--) {
   if (elSelDest.options[i].selected) {
    elSelDest.remove(i);

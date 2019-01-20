@@ -85,5 +85,8 @@ $strings['feedsecontestant'] = 'Wettesser füttern';
 $strings['racecowslots'] = 'Rennkuh-Ställe';
 $strings['slot'] = 'Slot';
 $strings['collectloginbonus'] = 'Anmeldebonus einsammeln und aktivieren';
+$strings['insert-multiplier'] = 'Einfüge-Multiplikator';
+$strings['farmadded'] = 'Farm wurde hinzugefügt';
+$strings['farmadditionfailed'] = 'Hinzufügen der Farm fehlgeschlagen!';
 // $strings[''] = '';
 ?>

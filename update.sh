@@ -121,8 +121,8 @@ if [ -d ~/mffbashbot ]; then
   INDEX=0
   cd $FARMNAME
   echo "Checking farm $FARMNAME for missing directories..."
-  while [ $INDEX -lt $NUMDIRS ]; do
-   if ! [ -d "${DIRS[$INDEX]}" ]; then
+  while [ $INDEX -lt $NUMDIRS ]; do # there's a similar construct in addfarm.sh in the GUI section!
+   if ! [ -d "${DIRS[$INDEX]}" ]; then # don't forget about it when you're updating this part
     echo "Creating directory ${DIRS[$INDEX]}"
     mkdir -p "${DIRS[$INDEX]}"
     case "${DIRS[$INDEX]}" in
@@ -161,8 +161,8 @@ fi
 cd ~/mffbashbot
 
 echo "(Re)Setting permissions..."
-find . -type d -exec chmod 775 {} +
-find . -type f -exec chmod 664 {} +
+find . -type d -exec chmod 775 2>/dev/null {} +
+find . -type f -exec chmod 664 2>/dev/null {} +
 chmod +x *.sh
 
 echo "Updating GUI files..."
@@ -184,6 +184,12 @@ if ! grep -qe 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
   sleep 3
   /usr/sbin/lighttpd -f '$LCONF'
  fi
+fi
+
+# create .screenrc if it's missing
+if [ ! -f ~/.screenrc ]; then
+ echo 'hardstatus alwayslastline
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
 fi
 
 echo "Done!"

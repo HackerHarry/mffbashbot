@@ -75,9 +75,9 @@ for ($pc = 0; $pc < 3; $pc++) {
 }
 print "<div style=\"clear:both\"></div>";
 print "<br>";
-print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\">";
+print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\" style=\"display: inline-block; margin-right: 2em\">";
 print "<button class=\"btn btn-success btn-sm\" name=\"save\" onclick=\"return saveConfig()\">" . $strings['save'] . "</button>";
-print "</form><br>\n";
+print "</form>" . $strings['insert-multiplier'] . "&nbsp;<input id=\"multi\" type=\"text\" maxlength=\"2\" size=\"1\" value=\"1\" pattern=\"[0-9]{1,2}\"><br><br>\n";
 
 for ($pc = 3; $pc < count($position); $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);

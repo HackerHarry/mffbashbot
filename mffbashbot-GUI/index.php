@@ -74,6 +74,7 @@ unset($username);
   <div class="form-group">
    <div class="offset-sm-5 col-sm-2">
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15" role="button">Forum</a>
+    <a class="btn btn-outline-dark btn-sm" href="addfarm.php" role="button">+ Farm</a>
    </div>
   </div>
   <div id="logonstatus"><br></div>

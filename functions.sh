@@ -31,7 +31,7 @@ function exitBot {
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-6]-[1-6]
  fi
  echo "Exiting..."
  exit 0
@@ -814,7 +814,7 @@ function check_CowRace {
  local iCowLevel
  local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
  for iSlot in $aSlots; do
-  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].race_remain'; then
+  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
    if grep -q "excluderank1cow = 1" $CFGFILE && check_CowRanked1st $iSlot; then
     echo "Skipping cow ranked 1st in slot $iSlot"
     continue
@@ -1218,8 +1218,6 @@ function check_VehiclePosition {
    echo "on farm $iCurrentVehiclePos"
    # check if sending a fully loaded vehicle is possible
    check_SendGoodsToMainFarm $iVehicle $iFarm $iRoute
-   # clean up the mess created in get_FilledFieldCount()
-   rm -f "${TMPFILE}-${iFarm}"-*
   fi
  else
   echo "en route"
@@ -1618,10 +1616,10 @@ function harvest_MegaField2x2 {
    iPlot=$((iPlot + 1))
    # prevent harvesting of last column
   fi
-  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"].remain?'; then
-   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 1))'"].remain?'; then
-    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 11))'"].remain?'; then
-     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 12))'"].remain?'; then
+  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"]?.remain'; then
+   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 1))'"]?.remain'; then
+    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 11))'"]?.remain'; then
+     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 12))'"]?.remain'; then
       echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot + 1)), $((iPlot + 11)), $((iPlot + 12))..."
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot + 1)),$((iPlot + 11)),$((iPlot + 12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
@@ -1909,10 +1907,12 @@ function get_QueueCountInFS {
 function get_MaxQueuesForBuildingID {
  local iBuildingID=$1
  case "$iBuildingID" in
-  13|14|16|20|21) echo 3
-   ;;
-  *) echo 1
-   ;;
+  13|14|16|20|21)
+     echo 3
+     ;;
+  *)
+     echo 1
+     ;;
  esac
 }
 
@@ -2247,20 +2247,19 @@ function check_ActiveGuildJobForPlayer {
 function check_TimeRemaining {
  # returns true if a zero or negative timer is found
  # and sets new PAUSETIME if applicable
- local sFilter=$1
- local iRemaining=$($JQBIN $sFilter $FARMDATAFILE 2>/dev/null)
- if ! [ $iRemaining -eq $iRemaining ] 2>/dev/null || [ -z "$iRemaining" ]; then
-  # value is not an integer or empty
+ local sFilter="$1"
+ sFilter="$sFilter | if . == 0 then 0 elif (. | length) > 0 and . < 0 then 0 elif (. | length) > 0 and . < $PAUSETIME then . else empty end"
+ # this expression returns 0 if a zero / negative value or the value itself if it's between 0 and $PAUSETIME
+ # in all other cases, there's no return value
+ local iRemaining=$($JQBIN "$sFilter" $FARMDATAFILE)
+ if [ -z "$iRemaining" ]; then
   return 1
  fi
- if [ $iRemaining -le 0 ]; then
+ if [ $iRemaining -eq 0 ]; then
   return 0
- else
-  if [ $iRemaining -gt 0 ] && [ $iRemaining -lt $PAUSETIME ]; then
-   PAUSETIME=$iRemaining
-   PAUSECORRECTEDAT=$(date +"%s")
-  fi
  fi
+ PAUSETIME=$iRemaining
+ PAUSECORRECTEDAT=$(date +"%s")
  return 1
 }
 

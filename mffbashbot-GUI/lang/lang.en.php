@@ -84,5 +84,8 @@ $strings['feedsecontestant'] = 'Feed the speed eating contestant';
 $strings['racecowslots'] = 'Race cow slots';
 $strings['slot'] = 'Slot';
 $strings['collectloginbonus'] = 'Collect and activate login bonus';
+$strings['insert-multiplier'] = 'Insert-Multiplier';
+$strings['farmadded'] = 'Farm has been added';
+$strings['farmadditionfailed'] = 'Failed to add a new farm';
 // $strings[''] = '';
 ?>
