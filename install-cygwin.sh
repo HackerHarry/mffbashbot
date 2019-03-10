@@ -77,7 +77,10 @@ if [ ! -f ~/.screenrc ]; then
 hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
 fi
 # set a larger font for mintty
-sed -i 's/^FontHeight=[0-9]*$/FontHeight=14/' .minttyrc
+# hmm. doesn't exist at run time :/
+# sed -i 's/^FontHeight=[0-9]*$/FontHeight=14/' .minttyrc
+# let's see if this helps
+echo "FontHeight=14" >>.minttyrc
 echo
 /usr/sbin/lighttpd -f $LCONF
 echo "Done! Start the bot with ./startallbots.sh after adding farms using your browser."
