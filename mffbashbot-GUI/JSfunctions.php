@@ -1,5 +1,5 @@
 <?php
-// Dynamic JavaScript for Harry's My Free Farm Bash Bot (front end)
+// Dynamic JavaScript for My Free Farm Bash Bot (front end)
 // Copyright 2016-19 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html

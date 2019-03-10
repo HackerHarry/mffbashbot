@@ -1,5 +1,5 @@
 <?php
-// Language file for Harry's My Free Farm Bash Bot (front end)
+// Language file for My Free Farm Bash Bot (front end)
 // Copyright 2016-19 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //

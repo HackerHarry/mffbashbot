@@ -1,5 +1,5 @@
 <?php
-// This file is part of Harry's My Free Farm Bash Bot (front end)
+// This file is part of My Free Farm Bash Bot (front end)
 // Copyright 2016-19 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //

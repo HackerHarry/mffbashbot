@@ -1,5 +1,5 @@
-#!/bin/bash
-# This script is part of Harry's My Free Farm Bash Bot (front end)
+#!/usr/bin/env bash
+# This script is part of My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
 # Copyright 2016-19 Harun "Harry" Basalamah
 #

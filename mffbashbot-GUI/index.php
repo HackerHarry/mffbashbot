@@ -1,5 +1,5 @@
 <?php
-// Index file for Harry's My Free Farm Bash Bot (front end)
+// Index file for My Free Farm Bash Bot (front end)
 // Copyright 2016-19 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -21,7 +21,7 @@ include 'functions.php';
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
  <head>
-  <title>Harry's MFF Bash Bot - Log on</title>
+  <title>My Free Farm Bash Bot - Log on</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/mffbot.css" rel="stylesheet" type="text/css">
@@ -70,7 +70,7 @@ unset($username);
    return true;
    }
   </script>
-  <h1>Harry's My Free Farm Bash Bot</h1>
+  <h1>My Free Farm Bash Bot</h1>
   <div class="form-group">
    <div class="offset-sm-5 col-sm-2">
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15" role="button">Forum</a>

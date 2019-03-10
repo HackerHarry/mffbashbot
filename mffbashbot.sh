@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2086,SC2155
 #
-# Harry's My Free Farm Bash Bot
+# My Free Farm Bash Bot
 # Copyright 2016-19 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
@@ -168,7 +168,7 @@ while (true); do
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
- echo "Running Harry's My Free Farm Bash Bot $VERSION"
+ echo "Running My Free Farm Bash Bot $VERSION"
  echo "Getting a token to MFF server ${MFFSERVER}"
  MFFTOKEN=$(wget -nv -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"

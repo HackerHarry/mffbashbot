@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install script for Harry's My Free Farm Bash Bot on GNU/Linux
+# Install script for My Free Farm Bash Bot on GNU/Linux
 # Tested on Debian Jessie, Stretch, Ubuntu 16.04.1 LTS, Linux Mint 19
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 set -e
@@ -45,7 +45,7 @@ echo "Installing needed packages..."
 sudo apt-get -qq install lighttpd $PHPV screen logrotate cron unzip nano
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
+echo "Downloading My Free Farm Bash Bot..."
 # just in case...
 rm -f master.zip
 rm -rf mffbashbot-master

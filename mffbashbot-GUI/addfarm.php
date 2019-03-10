@@ -1,5 +1,5 @@
 <?php
-// This file is part of Harry's My Free Farm Bash Bot (front end)
+// This file is part of My Free Farm Bash Bot (front end)
 // Copyright 2016-19 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -21,7 +21,7 @@ include 'functions.php';
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
  <head>
-  <title>Harry's MFF Bash Bot - Add farm</title>
+  <title>My Free Farm Bash Bot - Add farm</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
   <link href="css/mffbot.css" rel="stylesheet" type="text/css">

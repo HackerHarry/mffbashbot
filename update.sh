@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Update handler for Harry's My Free Farm Bash Bot
+# Update handler for My Free Farm Bash Bot
 # Copyright 2016-18 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
@@ -103,7 +103,7 @@ if [ -d ~/mffbashbot ]; then
 fi
 
 cd
-echo "Updating Harry's MFF Bash Bot..."
+echo "Updating My Free Farm Bash Bot..."
 rm -f master.zip 2>/dev/null
 rm -rf mffbashbot-master 2>/dev/null
 wget -nv "https://github.com/HackerHarry/mffbashbot/archive/master.zip"

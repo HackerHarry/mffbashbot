@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install script for Harry's My Free Farm Bash Bot on Cygwin
+# Install script for My Free Farm Bash Bot on Cygwin
 
 LCONF=/etc/lighttpd/lighttpd.conf
 LMODS=/etc/lighttpd/modules.conf
@@ -15,7 +15,7 @@ fi
 JQBIN="$(which jq) -r"
 
 cd
-echo "Downloading Harrys MFF Bash Bot..."
+echo "Downloading My Free Farm Bash Bot..."
 # just in case...
 rm -f master.zip
 rm -rf mffbashbot-master
@@ -76,8 +76,10 @@ if [ ! -f ~/.screenrc ]; then
  echo 'hardstatus alwayslastline
 hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
 fi
+# set a larger font for mintty
+sed -i 's/^FontHeight=[0-9]*$/FontHeight=14/' .minttyrc
 echo
 /usr/sbin/lighttpd -f $LCONF
 echo "Done! Start the bot with ./startallbots.sh after adding farms using your browser."
-echo "Fertig! Starte den Bot mit ./startallbots.sh nach dem Hinzufuegen von Farmen ueber den Browser."
+echo "Fertig! Starte den Bot mit ./startallbots.sh nach dem Hinzufuegen von Farmen im Browser."
 sleep 5
