@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Adds a farm to the bot folder
 # Copyright 2016-19 Harun "Harry" Basalamah

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Install script for My Free Farm Bash Bot on Cygwin
 
 LCONF=/etc/lighttpd/lighttpd.conf

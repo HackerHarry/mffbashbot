@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Kills the sleep command in order to make the bot do an iteration.
 # Requires the account that the web server runs under to be able to kill as su

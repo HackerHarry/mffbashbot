@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
 # Copyright 2016-19 Harun "Harry" Basalamah
