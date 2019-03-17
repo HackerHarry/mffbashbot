@@ -106,8 +106,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools"];
-  for ($poscount = 0; $poscount < 5; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "cowracepvp"];
+  for ($poscount = 0; $poscount < 6; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
@@ -159,8 +159,8 @@ switch ($farm) {
   $configContents['excluderank1cow'] = $_POST["excluderank1cowtoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   // clean up deprecated variables
-  if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);
-  if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
+  // if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);
+  // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
   for ($i = 1; $i <= 13; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
 

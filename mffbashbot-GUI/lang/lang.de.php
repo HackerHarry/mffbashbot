@@ -79,8 +79,8 @@ $strings['vetjobeasy'] = 'Einfach';
 $strings['vetjobmedium'] = 'Mittel';
 $strings['vetjobhard'] = 'Schwer';
 $strings['restartvetjob'] = 'Tierarztpraxis nachstarten';
-$strings['startcowrace'] = 'Kuhrennen starten';
-$strings['excluderank1cow'] = 'Rang-1-Kühe vom Rennen ausschliessen';
+$strings['startcowrace'] = 'Kuhrennen starten (Training)';
+$strings['excluderank1cow'] = 'Rang-1-Kühe vom Trainingsrennen ausschliessen';
 $strings['feedsecontestant'] = 'Wettesser füttern';
 $strings['racecowslots'] = 'Rennkuh-Ställe';
 $strings['slot'] = 'Slot';
@@ -88,5 +88,6 @@ $strings['collectloginbonus'] = 'Anmeldebonus einsammeln und aktivieren';
 $strings['insert-multiplier'] = 'Einfüge-Multiplikator';
 $strings['farmadded'] = 'Farm wurde hinzugefügt';
 $strings['farmadditionfailed'] = 'Hinzufügen der Farm fehlgeschlagen!';
+$strings['cowracepvp'] = 'Kuhrennen PvP';
 // $strings[''] = '';
 ?>

@@ -796,10 +796,14 @@ function check_RaceCowFeeding {
  local iPID=$(get_ConfigValue racecowslot${iSlot})
  local sSlotType=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cowslots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
  if [ "$sSlotType" = "number" ]; then
-  SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?' $FARMDATAFILE 2>/dev/null)
-  if [ "$SLOTREMAIN" = "null" ]; then
-   echo "Feeding race cow in slot ${iSlot}..."
-   SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
+  if ! check_CowIsPvP ${iSlot}; then
+   SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?' $FARMDATAFILE 2>/dev/null)
+   if [ "$SLOTREMAIN" = "null" ]; then
+    echo "Feeding race cow in slot ${iSlot}..."
+    SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
+   fi
+  else
+   echo "Cannot feed PvP signed up cow in slot ${iSlot}!"
   fi
  else
   echo "There seems to be no cow in slot ${iSlot}!"
@@ -816,7 +820,11 @@ function check_CowRace {
  for iSlot in $aSlots; do
   if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
    if grep -q "excluderank1cow = 1" $CFGFILE && check_CowRanked1st $iSlot; then
-    echo "Skipping cow ranked 1st in slot $iSlot"
+    echo "Skipping training for cow ranked 1st in slot $iSlot"
+    continue
+   fi
+   if check_CowIsPvP ${iSlot}; then
+    echo "Skipping PvP signed up cow in slot $iSlot"
     continue
    fi
    iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
@@ -836,13 +844,61 @@ function check_CowRace {
    # start the race
    sleep 1
   fi
-  echo "Starting cow race in slot ${iSlot}..."
+  echo "Starting cow training race in slot ${iSlot}..."
   SendAJAXFarmRequestOverwrite "type=pve&slot=${iSlot}&mode=cowracing_startrace" && sleep 3
   # put equipment back into stock
   remove_CowEquipment $iSlot
   fi
  done
  # refresh farm data
+ GetFarmData $FARMDATAFILE
+}
+
+function check_CowRacePvP {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+  return
+ fi
+ local iCowSlot=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local sIsPvP
+ local bTimeThreshold
+ local sEnvironment
+ local sBodyPart
+ sIsPvP=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | .[] | select(.ispvp == "1").ispvp' $FARMDATAFILE)
+ if [ -n "$sIsPvP" ]; then
+  echo "You have already signed up for the PvP cow race"
+  return
+ fi
+ # give player enough time to sign up in case he chooses to override the bot
+ bTimeThreshold=$($JQBIN '.updateblock.farmersmarket.cowracing.pvp.racedayremain < 7200' $FARMDATAFILE)
+ if [ "$bTimeThreshold" = "false" ]; then
+  return
+ fi
+ if ! check_CowRanked1st $iCowSlot; then
+  echo "The cow you chose isn't ranked 1st!"
+  return
+ fi
+ if check_CowSuspended $iCowSlot; then
+  echo "The cow you chose has been temporarily suspended from PvP racing"
+  return
+ fi
+ # ready to rock
+ remove_CowEquipment $iCowSlot
+ sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE 2>/dev/null)
+ for sBodyPart in head body foot; do
+  iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
+  if [ "$iEquipmentID" = "-1" ]; then
+   continue
+  fi
+  SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
+ done
+ sleep 1
+ echo "Signing up cow in slot ${iCowSlot} for the next PvP race..."
+ # we cannot remove the eqiupment here
+ SendAJAXFarmRequest "slot=${iCowSlot}&mode=cowracing_registercowpvp" && sleep 3
+ update_queue ${iFarm} ${iPosition} ${iSlot}
  GetFarmData $FARMDATAFILE
 }
 
@@ -865,49 +921,49 @@ function get_CowEquipmentID {
  local iEquipmentID=-1
  case "$sBodyPart:$sEnvironment" in
   head:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "1 4")
+     iEquipmentID=$(check_CowEquipmentAvailability "17 1")
      ;;
   head:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "2 1")
+     iEquipmentID=$(check_CowEquipmentAvailability "2 16")
      ;;
   head:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "4 2")
+     iEquipmentID=$(check_CowEquipmentAvailability "4 16")
      ;;
   head:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "5 3")
+     iEquipmentID=$(check_CowEquipmentAvailability "17 5")
      ;;
   head:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "3 5")
+     iEquipmentID=$(check_CowEquipmentAvailability "17 3")
      ;;
   body:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "11 13")
+     iEquipmentID=$(check_CowEquipmentAvailability "21 11")
      ;;
   body:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "14 15")
+     iEquipmentID=$(check_CowEquipmentAvailability "14 20")
      ;;
   body:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "13 11")
+     iEquipmentID=$(check_CowEquipmentAvailability "21 13")
      ;;
   body:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "12 14")
+     iEquipmentID=$(check_CowEquipmentAvailability "12 20")
      ;;
   body:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "15 14")
+     iEquipmentID=$(check_CowEquipmentAvailability "21 15")
      ;;
   foot:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "6 8")
+     iEquipmentID=$(check_CowEquipmentAvailability "19 6")
      ;;
   foot:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "9 6")
+     iEquipmentID=$(check_CowEquipmentAvailability "19 9")
      ;;
   foot:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "10 7")
+     iEquipmentID=$(check_CowEquipmentAvailability "10 18")
      ;;
   foot:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "8 7")
+     iEquipmentID=$(check_CowEquipmentAvailability "19 8")
      ;;
   foot:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "7 9")
+     iEquipmentID=$(check_CowEquipmentAvailability "7 18")
      ;;
  esac
  echo "$iEquipmentID"
@@ -957,6 +1013,26 @@ function check_CowRanked1st {
  local iSlot=$1
  local bCowIsRanked1st=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].ladder.rank == 1' $FARMDATAFILE)
  if [ "$bCowIsRanked1st" = "true" ]; then
+  return 0
+ fi
+ return 1
+}
+
+function check_CowIsPvP {
+ # returns true if a cow has signed up for a PvP race
+ local iSlot=$1
+ local bCowIsPvP=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].ispvp == "1"' $FARMDATAFILE)
+ if [ "$bCowIsPvP" = "true" ]; then
+  return 0
+ fi
+ return 1
+}
+
+function check_CowSuspended {
+ # returns true if a cow has been suspended from PvP racing
+ local iSlot=$1
+ local bCowSuspended=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].suspendpvp == "1"' $FARMDATAFILE)
+ if [ "$bCowSuspended" = "true" ]; then
   return 0
  fi
  return 1
@@ -1422,7 +1498,6 @@ function update_queue {
   sed -n '3,'$iLines'p' $sInfile >>$sTmpfile
   head -2 $sInfile | tail -1 >>$sTmpfile
   mv $sTmpfile $sInfile
-  unset sInfile sTmpfile # unset a local variable??
  fi
 }
 

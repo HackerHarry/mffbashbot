@@ -78,8 +78,8 @@ $strings['vetjobeasy'] = 'просто';
 $strings['vetjobmedium'] = 'средства';
 $strings['vetjobhard'] = 'труден';
 $strings['restartvetjob'] = 'ветеринарна практика стартиране';
-$strings['startcowrace'] = 'Start cow race';
-$strings['excluderank1cow'] = 'Exclude cows ranked 1st from race';
+$strings['startcowrace'] = 'Start cow race (Training)';
+$strings['excluderank1cow'] = 'Exclude cows ranked 1st from training race';
 $strings['feedsecontestant'] = 'Feed the speed eating contestant';
 $strings['racecowslots'] = 'Race cow slots';
 $strings['slot'] = 'Slot';
@@ -87,5 +87,6 @@ $strings['collectloginbonus'] = 'Collect and activate login bonus';
 $strings['insert-multiplier'] = 'Insert-Multiplier';
 $strings['farmadded'] = 'Farm has been added';
 $strings['farmadditionfailed'] = 'Failed to add a new farm';
+$strings['cowracepvp'] = 'Cow race PvP';
 // $strings[''] = '';
 ?>

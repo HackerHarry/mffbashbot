@@ -433,6 +433,9 @@ while (true); do
    if grep -q "docowrace = 1" $CFGFILE; then
     check_CowRace
    fi
+   if grep -q "docowracepvp = 1" $CFGFILE; then
+    check_CowRacePvP city2 cowracepvp 0
+   fi
   fi
  fi
 

@@ -64,7 +64,8 @@ racecowslot11 = 0
 racecowslot12 = 0
 racecowslot13 = 0
 dologinbonus = 0
-excluderank1cow = 0"
+excluderank1cow = 0
+docowracepvp = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

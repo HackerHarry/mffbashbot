@@ -61,6 +61,10 @@ function CreatePonyFarmOptions() {
  foreach (func_get_args() as $i)
         print "<option value=\"" . $i . "\">" . $ponyfarmproductlist[$i]  . "</option>\n";
 }
+function CreateCowRacePvPOptions() {
+ foreach (func_get_args() as $i)
+        print "<option value=\"" . $i . "\">Slot " . $i  . "</option>\n";
+}
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  print "<select id=\"itempos" . $position . "\" name=\"itempos" . $position . "\">\n";
  switch ($BuildingID) {
@@ -292,6 +296,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
         print "</select>\n";
         break;
+  case "cowracepvp":
+        // Kuhrennen PvP
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateCowRacePvPOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
+        print "</select>\n";
+        break;
   default:
         // nicht unterstuetzte auswahl
         print "<option value=\"sleep\">Sleep</option></select>\n";
@@ -345,6 +355,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "tools":
 	$buildingType = "Tools";
+	break;
+  case "cowracepvp":
+	$buildingType = "CowRacePvP";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -475,6 +488,9 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "PonyFarm":
    $queueItemFriendlyName = $ponyfarmproductlist[intval($queueItem)];
+   break;
+   case "CowRacePvP":
+   $queueItemFriendlyName = "Slot " . intval($queueItem);
    break;
    default:
    $queueItemFriendlyName = "Sleep";
