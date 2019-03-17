@@ -118,6 +118,7 @@ city2/powerups
 city2/trans25
 city2/trans26
 city2/tools
+city2/cowracepvp
 city2/windmill
 farmersmarket/flowerarea
 farmersmarket/monsterfruit
