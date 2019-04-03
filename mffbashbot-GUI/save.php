@@ -45,11 +45,9 @@ switch ($farm) {
     $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot1);
     $retval = saveConfig($filename, $slot1);
     if ($retval === false || $retval == 0) exit("1");
-    if ($slot2) { // this should not be needed since we have at least 2 slots here
-     $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot2);
-     $retval = saveConfig($filename, $slot2);
-     if ($retval === false || $retval == 0) exit("1");
-    }
+    $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot2);
+    $retval = saveConfig($filename, $slot2);
+    if ($retval === false || $retval == 0) exit("1");
     if (isset($slot3)) {
      $filename = $gamepath . "/" . $farm . "/" . $position . "/" . array_shift($slot3);
      $retval = saveConfig($filename, $slot3);

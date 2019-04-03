@@ -433,7 +433,8 @@ while (true); do
    if grep -q "docowrace = 1" $CFGFILE; then
     check_CowRace
    fi
-   if grep -q "docowracepvp = 1" $CFGFILE; then
+   if ! check_QueueSleep city2/cowracepvp/0; then
+    echo "Checking for pending PvP cow race signup..."
     check_CowRacePvP city2 cowracepvp 0
    fi
   fi

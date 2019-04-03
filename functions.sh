@@ -820,7 +820,7 @@ function check_CowRace {
  for iSlot in $aSlots; do
   if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
    if grep -q "excluderank1cow = 1" $CFGFILE && check_CowRanked1st $iSlot; then
-    echo "Skipping training for cow ranked 1st in slot $iSlot"
+    echo "Skipping training race for cow ranked 1st in slot $iSlot"
     continue
    fi
    if check_CowIsPvP ${iSlot}; then

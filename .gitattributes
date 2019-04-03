@@ -2,3 +2,5 @@
 .gitignore export-ignore
 install.sh export-ignore
 install-cygwin.sh export-ignore
+README.md export-ignore
+README_DE.md export-ignore
