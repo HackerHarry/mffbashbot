@@ -30,6 +30,7 @@ $togglesarray = [
 "dobutterflies" => "butterflytoggle",
 "dodeliveryevent" => "deliveryeventtoggle",
 "doolympiaevent" => "olympiaeventtoggle",
+"docalendarevent" => "calendareventtoggle",
 "megafieldinstantplant" => "megafieldplanttoggle",
 "doseedbox" => "redeemdailyseedboxtoggle",
 "dodonkey" => "donkeytoggle",
@@ -51,6 +52,7 @@ $strings['useponyenergybar'],
 $strings['butterflypointbonus'],
 $strings['onehourdelivery'],
 $strings['refillolympiaenergy'],
+$strings['opencalendardoors'],
 $strings['megafieldplantafterharvest'],
 $strings['dailyseedboxredeem'],
 $strings['waltraud'],
@@ -172,9 +174,10 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
 'dodeliveryevent', 'megafieldinstantplant', 'doolympiaevent', 'doseedbox',
 'dodonkey', 'docowrace', 'excluderank1cow', 'dofoodcontest', 'restartvetjob',
-'racecowslot1', 'racecowslot2', 'racecowslot3', 'racecowslot4', 'racecowslot5',
-'racecowslot6', 'racecowslot7', 'racecowslot8', 'racecowslot9', 'racecowslot10',
-'racecowslot11', 'racecowslot12', 'racecowslot13' ];
+'docalendarevent', 'racecowslot1', 'racecowslot2', 'racecowslot3',
+'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
+'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
+'racecowslot13' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))

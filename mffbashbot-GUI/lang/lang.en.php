@@ -63,7 +63,7 @@ $strings['butterflypointbonus'] = 'Collect butterfly points bonus';
 $strings['onehourdelivery'] = 'Delivery event: do the hour drive';
 $strings['megafieldplantafterharvest'] = 'Fast planting on mega field';
 $strings['powerups'] = 'Power-Ups';
-$strings['refillolympiaenergy'] = 'Olympic/Winter-Event: Refill energy';
+$strings['refillolympiaenergy'] = 'Olympic/Winter event: Refill energy';
 $strings['dailyseedboxredeem'] = 'Collect daily seed box bonuses';
 $strings['waltraud'] = 'Activate Lucky Donkey Luke on a regular basis';
 $strings['tools'] = 'Tools';
@@ -88,5 +88,6 @@ $strings['insert-multiplier'] = 'Insert-Multiplier';
 $strings['farmadded'] = 'Farm has been added';
 $strings['farmadditionfailed'] = 'Failed to add a new farm';
 $strings['cowracepvp'] = 'Cow race PvP';
+$strings['opencalendardoors'] = 'Calendar event: Open doors';
 // $strings[''] = '';
 ?>

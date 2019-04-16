@@ -80,6 +80,11 @@ function GetOlympiaData {
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXMAIN}action=olympia_init"
 }
 
+function GetCalendarData {
+ sFile=$1
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=calendar_init"
+}
+
 function DoFarm {
  # read function from queue file
  local iFarm=$1
@@ -2285,6 +2290,31 @@ function check_OlympiaEvent {
    SendAJAXMainRequest "amount=10&action=olympia_entry"
   fi
  fi
+}
+
+function check_CalendarEvent {
+ local iDay
+ local iEventDaysCount
+ local bPresentCollected
+ GetCalendarData $TMPFILE
+ iDay=$($JQBIN '.datablock.day?' $TMPFILE)
+ if ! [ $iDay -gt 0 ] 2>/dev/null; then
+  # no valid value for the current event day no.
+  return
+ fi
+ iEventDaysCount=$($JQBIN '.datablock.config.fields | length' $TMPFILE)
+ if [ $iDay -gt $iEventDaysCount ]; then
+  echo "Event period is over, deactivating feature..."
+  sed -i 's/docalendarevent = 1/docalendarevent = 0/' $CFGFILE
+  return
+ fi
+ bPresentCollected=$($JQBIN '.datablock.data.days["'${iDay}'"]? | type == "object"' $TMPFILE)
+ if [ "$bPresentCollected" = "true" ]; then
+  echo "already collected"
+  return
+ fi
+ echo "not yet claimed, opening door no. ${iDay}..."
+ SendAJAXFarmRequest "field=${iDay}&mode=calendar_openfield"
 }
 
 function check_LoginBonus {

@@ -371,16 +371,20 @@ while (true); do
      if [ "$SLOTREMAIN" != "number" ]; then
       echo "Taking care of pet using ${SLOT}..."
       DoFarmersMarketPetCare ${SLOT}
+     else
+      # we have a valid number, let's see if PAUSETIME needs a correction...
+      check_TimeRemaining '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]'
      fi
     done
    fi
    # stuff for pets production
    for SLOT in 1 2 3; do
-    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
-     if [ "$SLOTREMAIN" = "0" ]; then
-       echo "Doing pets stuff production slot ${SLOT}..."
-       DoFarmersMarket farmersmarket pets ${SLOT}
-     fi
+    if check_TimeRemaining '.updateblock.farmersmarket.pets.production["'${SLOT}'"]?["1"]?.remain'; then
+#    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
+#     if [ "$SLOTREMAIN" = "0" ]; then
+     echo "Doing pets stuff production slot ${SLOT}..."
+     DoFarmersMarket farmersmarket pets ${SLOT}
+    fi
    done
   fi
   # veterinarian
@@ -494,6 +498,12 @@ while (true); do
  if grep -q "doolympiaevent = 1" $CFGFILE; then
   echo "Checking for running olympia / winter sports event..."
   check_OlympiaEvent
+ fi
+
+ # calender event
+ if grep -q "docalendarevent = 1" $CFGFILE; then
+  echo -n "Checking for calendar event..."
+  check_CalendarEvent
  fi
 
  if grep -q "doseedbox = 1" $CFGFILE; then

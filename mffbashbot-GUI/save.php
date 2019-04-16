@@ -156,6 +156,7 @@ switch ($farm) {
   $configContents['docowrace'] = $_POST["cowracetoggle"];
   $configContents['excluderank1cow'] = $_POST["excluderank1cowtoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
+  $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
   // clean up deprecated variables
   // if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);

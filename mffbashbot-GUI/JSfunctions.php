@@ -156,7 +156,7 @@ function saveMisc() {
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
  'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
  'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
- 'foodcontesttoggle', 'excluderank1cowtoggle'];
+ 'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
