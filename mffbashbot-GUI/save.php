@@ -129,7 +129,6 @@ switch ($farm) {
  case "savemisc":
   include 'farmdata.php';
   global $configContents;
-  // langugage, password and server-no. must be set manually in config.ini
   $configContents['carefood'] = $_POST["carefood"];
   $configContents['caretoy'] = $_POST["caretoy"];
   $configContents['careplushy'] = $_POST["careplushy"];
@@ -162,6 +161,8 @@ switch ($farm) {
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
   for ($i = 1; $i <= 13; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
+  for ($i = 1; $i <= 4; $i++)
+   $configContents['fruitstallslot' . $i] = $_POST["fruitstallslot" . $i];
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

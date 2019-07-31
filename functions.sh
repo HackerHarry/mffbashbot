@@ -912,12 +912,18 @@ function remove_CowEquipment {
  local iSlot=$1
  local sBodyPart
  local bItemEquipped
+ local iSuspendedCowSlot
  for sBodyPart in head body foot; do
   bItemEquipped=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].slot_'${sBodyPart}' != "0"' $FARMDATAFILE)
   if [ "$bItemEquipped" = "true" ]; then
    SendAJAXFarmRequestOverwrite "type=${sBodyPart}&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
   fi
  done
+ # call again if PvP race cow is still wearing items
+ iSuspendedCowSlot=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows | .[] | select(.suspendpvp == "1" and (.slot_head != "0" or .slot_body != "0" or .slot_foot != "0")).slot' $FARMDATAFILE)
+ if [ -n "$iSuspendedCowSlot" ]; then
+  remove_CowEquipment $iSuspendedCowSlot
+ fi
 }
 
 function get_CowEquipmentID {
@@ -2337,6 +2343,45 @@ function check_LoginBonus {
   fi
  else
   echo "already claimed"
+ fi
+}
+
+function check_FruitStall {
+ local iSlot=$1
+ local iPID=$(get_ConfigValue fruitstallslot${iSlot})
+ local iLevel
+ local iAmount
+ local iCurrentEpoch
+ # rumours say the regular fruit stall farmie interval is 1800 secs ;)
+ local iFarmieInterval=1800
+ local iLastFarmieEpoch
+ local iNextFarmieEpoch
+ local iSecsToNextFarmie
+ local sSlotType=$($JQBIN -r '.updateblock.map.stall.data | type' $FARMDATAFILE 2>/dev/null)
+ if [ "$sSlotType" = "object" ]; then
+  # ANY reward ready for pickup?
+  local sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].reward | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$sSlotType" = "object" ]; then
+   echo "Collecting fruit stall reward..."
+   SendAJAXFarmRequest "position=1&mode=stall_get_reward"
+   sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
+   if [ "$sSlotType" = "array" ]; then
+    # refill slot
+    iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
+    iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
+    echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
+    SendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
+   fi
+  fi
+  # boosters are not taken into account
+  iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["1"].farmi_last' $FARMDATAFILE)
+  iNextFarmieEpoch=$((iLastFarmieEpoch + iFarmieInterval))
+  iCurrentEpoch=$(date +"%s")
+  iSecsToNextFarmie=$((iNextFarmieEpoch - iCurrentEpoch))
+  if [ $iSecsToNextFarmie -gt 0 2>/dev/null ] && [ $iSecsToNextFarmie -lt $PAUSETIME 2>/dev/null ]; then
+   PAUSETIME=$iSecsToNextFarmie
+   PAUSECORRECTEDAT=$(date +"%s")
+  fi
  fi
 }
 

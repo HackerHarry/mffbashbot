@@ -164,7 +164,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:67.0) Gecko/20100101 Firefox/67.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=and&retid="
 
@@ -490,6 +490,14 @@ while (true); do
  if grep -q "dodeliveryevent = 1" $CFGFILE; then
   echo "Checking for running delivery event..."
   check_DeliveryEvent
+ fi
+
+ if [ $PLAYERLEVELNUM -ge 9 ]; then
+  for SLOT in {1..4}; do
+   if ! grep -q "fruitstallslot${SLOT} = 0" $CFGFILE && grep -q "fruitstallslot${SLOT} = " $CFGFILE; then
+    check_FruitStall ${SLOT}
+   fi
+  done
  fi
 
  # contents of FARMDATAFILE change from here !

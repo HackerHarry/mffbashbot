@@ -90,5 +90,6 @@ $strings['farmadded'] = 'Farm wurde hinzugefügt';
 $strings['farmadditionfailed'] = 'Hinzufügen der Farm fehlgeschlagen!';
 $strings['cowracepvp'] = 'Kuhrennen PvP';
 $strings['opencalendardoors'] = 'Kalender-Event: Türen offnen';
+$strings['fruitstallslots'] = 'Obststand';
 // $strings[''] = '';
 ?>

@@ -171,6 +171,10 @@ function saveMisc() {
   v = document.getElementById("racecowslot" + i);
   sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;
  }
+ for (i = 1; i <= 4; i++) {
+  v = document.getElementById("fruitstallslot" + i);
+  sData += "&fruitstallslot" + i + "=" + v.options[v.selectedIndex].value;
+ }
  AJAXsave(sData);
  return false;
 }

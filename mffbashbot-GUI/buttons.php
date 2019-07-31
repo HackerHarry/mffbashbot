@@ -160,9 +160,24 @@ for ($i = 1; $i <= 13; $i++) {
 }
 print "</table>\n";
 print "</div>\n";
+// fruit stall slots
+print "<div id=\"fruitstallspane\" style=\"display:none;\">";
+print "<table id=\"fruitstallslotstbl\" style=\"float:left;\" border=\"1\">";
+print "<tr><th>" . $strings['fruitstallslots'] . "</th></tr>\n";
+for ($i = 1; $i <= 4; $i++) {
+ print "<tr><td>";
+ print "<select id=\"fruitstallslot" . $i . "\" name=\"fruitstallslot" . $i . "\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"fruitstallslot0\">Sleep</option>\n";
+ CreateOptionsWithID(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361);
+ print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
+ print "</td></tr>";
+}
+print "</table>\n";
+print "</div>\n";
 
 print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane');\">" . $strings['fruitstallslots'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
@@ -177,7 +192,8 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'docalendarevent', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
-'racecowslot13' ];
+'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',
+'fruitstallslot4' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -217,6 +233,11 @@ for ($i = 0; $i < count($togglesarray); $i++) {
 for ($i = 1; $i <= 13; $i++) {
 $savedValue = $configContents['racecowslot' . $i];
 print "document.getElementById('racecowslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
+}
+
+for ($i = 1; $i <= 4; $i++) {
+$savedValue = $configContents['fruitstallslot' . $i];
+print "document.getElementById('fruitstallslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
 
 print "</script>\n";
