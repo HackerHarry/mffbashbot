@@ -584,7 +584,7 @@ while (true); do
   echo "Getting wind mill status..."
   GetWindMillData $FARMDATAFILE
   RUNCHK=$($JQBIN '.datablock[4].running == 1' $FARMDATAFILE)
-  WINDMILLREADY=$($JQBIN '.datablock[4].ready == 1' $FARMDATAFILE)
+  WINDMILLREADY=$($JQBIN '.datablock[4].ready >= 1' $FARMDATAFILE)
   if [ "$RUNCHK" = "true" ] || [ "$WINDMILLREADY" = "true" ]; then
    echo "Checking for pending tasks in wind mill..."
    # we handle two slots

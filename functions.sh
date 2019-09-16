@@ -806,9 +806,9 @@ function check_RaceCowFeeding {
    if [ "$SLOTREMAIN" = "null" ]; then
     echo "Feeding race cow in slot ${iSlot}..."
     SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
+   else
+    check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?'
    fi
-  else
-   echo "Cannot feed PvP signed up cow in slot ${iSlot}!"
   fi
  else
   echo "There seems to be no cow in slot ${iSlot}!"
@@ -2364,8 +2364,8 @@ function check_FruitStall {
   if [ "$sSlotType" = "object" ]; then
    echo "Collecting fruit stall reward..."
    SendAJAXFarmRequest "position=1&mode=stall_get_reward"
-   sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
-   if [ "$sSlotType" = "array" ]; then
+   sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
+   if [ "$sSlotType" != "number" ]; then
     # refill slot
     iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
     iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
@@ -2378,7 +2378,7 @@ function check_FruitStall {
   iNextFarmieEpoch=$((iLastFarmieEpoch + iFarmieInterval))
   iCurrentEpoch=$(date +"%s")
   iSecsToNextFarmie=$((iNextFarmieEpoch - iCurrentEpoch))
-  if [ $iSecsToNextFarmie -gt 0 2>/dev/null ] && [ $iSecsToNextFarmie -lt $PAUSETIME 2>/dev/null ]; then
+  if [ $iSecsToNextFarmie -gt 0 ] 2>/dev/null && [ $iSecsToNextFarmie -lt $PAUSETIME ] 2>/dev/null; then
    PAUSETIME=$iSecsToNextFarmie
    PAUSECORRECTEDAT=$(date +"%s")
   fi
