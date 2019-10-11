@@ -1,7 +1,7 @@
 <?php
 // Die meissten Werte kommen aus den LIVE Daten und stehen ergo NICHT hier
 // most values are extracted from live data. that's why they can't be found here.
-$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', 'farmersmarket' => 'Bauernmarkt', 'farmersmarket2' => 'Bauernmarkt 2', 'forestry' => 'B&auml;umerei', 'foodworld' => 'Picknickarea', 'city2' => 'Teichlingen'];
+$farmFriendlyName = ['1' => 'Farm 1', '2' => 'Farm 2', '3' => 'Farm 3', '4' => 'Farm 4', '5' => 'Farm 5', '6' => 'Farm 6', '7' => 'Farm 7','farmersmarket' => 'Bauernmarkt', 'farmersmarket2' => 'Bauernmarkt 2', 'forestry' => 'B&auml;umerei', 'foodworld' => 'Picknickarea', 'city2' => 'Teichlingen'];
 $forestryBuildingFriendlyName = ['S&auml;gewerk', 'Schreinerei', 'B&auml;umerei'];
 $foodworldBuildingFriendlyName = ['Getr&auml;nkebude', 'Imbissbude', 'Konditorei', 'Eisdiele' ];
 $monsterlist = [1 => "Wassereimer", 2 => "Gießkanne", 3 => "Gartenschlauch", 4 => "Sprenkler", 5 => "Automatische Gießanlage", 6 => "Quellwasser", 7 => "Solar-Bew&auml;sserung", 10 => "Gl&uuml;hlampe", 11 => "Kronleuchter", 12 => "Halogenstrahler", 13 => "UV-Lampe", 14 => "Tageslichtlampe", 15 => "Biolampe", 16=> "LED Pflanzenlampe", 20 => "Einfacher D&uuml;nger", 21 => "Kraftd&uuml;nger", 22 => "Speziald&uuml;nger", 23 => "Wachstumsverst&auml;rker", 24 => "Extremd&uuml;nger", 25 => "Deluxed&uuml;nger", 26 => "Biod&uuml;nger"];
@@ -34,8 +34,14 @@ $strings['atv'] = 'Allradauto';
 $strings['snowgroomer'] = 'Pistenraupe';
 $strings['helicopter'] = 'Helikopter';
 $strings['hotairballoon'] = 'Heißluftballon';
+$strings['coach'] = 'Pferdekutsche';
+$strings['tuktuk'] = 'Tuktuk';
+$strings['sprinter'] = 'Sprinter';
+$strings['drone'] = 'Drohne';
+$strings['airplane'] = 'Flugzeug';
 $strings['autotransport5'] = 'Auto-Transport von/nach Farm 5';
 $strings['autotransport6'] = 'Auto-Transport von/nach Farm 6';
+$strings['autotransport7'] = 'Auto-Transport nach Farm 7';
 $strings['satisfyfoodneed'] = 'Futterbed&uuml;rfnis stillen';
 $strings['satisfytoyneed'] = 'Spielzeugbed&uuml;rfnis stillen';
 $strings['satisfyplushyneed'] = 'Kuscheltierbed&uuml;rfnis stillen';
@@ -59,6 +65,7 @@ $strings['correctqueuenumber'] = 'Anzahl Warteschlangen einmalig korrigieren';
 $strings['useponyenergybar'] = 'Pony-Kraftriegel auf Ausritte anwenden';
 $strings['trans25'] = 'Transport zur Farm 5';
 $strings['trans26'] = 'Transport zur Farm 6';
+$strings['trans27'] = 'Transport zur Farm 7';
 $strings['puzzlepartredeem'] = 'Vorhandene Puzzlezeile-Pakete einl&ouml;sen';
 $strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
 $strings['onehourdelivery'] = 'Liefer-Event: Einstundenfahrt durchführen';

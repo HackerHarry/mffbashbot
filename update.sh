@@ -54,9 +54,16 @@ DIRS=( 1/1
 6/4
 6/5
 6/6
+7/1
+7/2
+7/3
+7/4
+7/5
+7/6
 city2/powerups
 city2/trans25
 city2/trans26
+city2/trans27
 city2/tools
 city2/cowracepvp
 city2/windmill

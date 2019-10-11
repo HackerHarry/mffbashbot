@@ -65,7 +65,7 @@ print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>"
 print "<form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"" . $farm . "\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">\n";
-for ($i = 1; $i < 7; $i++)
+for ($i = 1; $i <= 7; $i++)
  print "<input type=\"image\" src=\"image/navi_farm" . $i . ".png\" class=\"navilink\" title=\"" . $farmFriendlyName[$i] . "\" name=\"" . $i . "\" onclick=\"document.venueselect.farm.value = '" . $i . "'; this.form.submit();\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket'] . "\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['farmersmarket2'] . "\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
@@ -118,6 +118,15 @@ print "<option value=\"7\" id=\"vehicle7\">" . $strings['atv'] . "</option>\n";
 print "<option value=\"8\" id=\"vehicle8\">" . $strings['snowgroomer'] . "</option>\n";
 print "<option value=\"9\" id=\"vehicle9\">" . $strings['helicopter'] . "</option>\n";
 print "<option value=\"10\" id=\"vehicle10\">" . $strings['hotairballoon'] . "</option></select>&nbsp;" . $strings['autotransport6'];
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"vehiclemgmt7\" name=\"vehiclemgmt7\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"vehicle0\">Sleep</option>\n";
+print "<option value=\"11\" id=\"vehicle11\">" . $strings['coach'] . "</option>\n";
+print "<option value=\"12\" id=\"vehicle12\">" . $strings['tuktuk'] . "</option>\n";
+print "<option value=\"13\" id=\"vehicle13\">" . $strings['sprinter'] . "</option>\n";
+print "<option value=\"14\" id=\"vehicle14\">" . $strings['drone'] . "</option>\n";
+print "<option value=\"15\" id=\"vehicle15\">" . $strings['airplane'] . "</option></select>&nbsp;" . $strings['autotransport7'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"vetjobdifficulty\" name=\"vetjobdifficulty\" onchange=\"saveMisc();\">";
@@ -184,7 +193,7 @@ print "<script type=\"text/javascript\">\n";
 
 global $configContents;
 $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
-'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'dopuzzleparts', 'sendfarmiesaway',
+'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'dopuzzleparts', 'sendfarmiesaway',
 'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
 'dodeliveryevent', 'megafieldinstantplant', 'doolympiaevent', 'doseedbox',
@@ -213,6 +222,9 @@ print "document.getElementById('vehiclemgmt5').selectedIndex = document.getEleme
 $savedValue = $configContents['vehiclemgmt6'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt6').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['vehiclemgmt7'];
+$savedValue = "vehicle" . $savedValue;
+print "document.getElementById('vehiclemgmt7').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
 $savedValue = $configContents['restartvetjob'];
 $savedValue = "vjdiff" . $savedValue;
 print "document.getElementById('vetjobdifficulty').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";

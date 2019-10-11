@@ -205,6 +205,7 @@ while (true); do
   unset NONPREMIUM
  fi
  echo "premium account"
+ check_LoginNews
 
  # login bonus handling
  if ! grep -q "dologinbonus = 0" $CFGFILE && grep -q "dologinbonus = " $CFGFILE; then
@@ -225,14 +226,14 @@ while (true); do
   check_Tools city2 tools 0
  fi
 
- for FARM in 1 2 3 4 5 6; do
+ for FARM in {1..7}; do
   FARMEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
   if [ "$FARMEXISTS" = "false" ]; then
    echo "Skipping farm ${FARM}"
    continue
   fi
   echo "Checking for pending tasks on farm ${FARM}..."
-  for POSITION in 1 2 3 4 5 6; do
+  for POSITION in {1..6}; do
    BUILDINGID=$($JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].buildingid | tonumber' $FARMDATAFILE 2>/dev/null)
    # skip premium fields for non-premium users
    if [ "$NONPREMIUM" = "NP" ]; then
@@ -452,6 +453,9 @@ while (true); do
  if ! grep -q "vehiclemgmt6 = 0" $CFGFILE && grep -q "vehiclemgmt6 = " $CFGFILE; then
   check_VehiclePosition 6 2
  fi
+ if ! grep -q "vehiclemgmt7 = 0" $CFGFILE && grep -q "vehiclemgmt7 = " $CFGFILE; then
+  check_VehiclePosition 7 3
+ fi
 
  if grep -q "sendfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting farmies..."
@@ -491,7 +495,8 @@ while (true); do
   echo "Checking for running delivery event..."
   check_DeliveryEvent
  fi
-
+ # check_FruitStall _might_ change the contents of FARMDATAFILE using SendAJAXFarmRequestOverwrite()
+ # this is to prevent collecting the stall reward multiple times during one iteration
  if [ $PLAYERLEVELNUM -ge 9 ]; then
   for SLOT in {1..4}; do
    if ! grep -q "fruitstallslot${SLOT} = 0" $CFGFILE && grep -q "fruitstallslot${SLOT} = " $CFGFILE; then

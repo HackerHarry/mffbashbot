@@ -23,4 +23,4 @@ All the info you might need, can be found in the [mffbashbot wiki](https://githu
 If you feel obliged to make a donation for my work, i'll happily transmit my<br>
 PayPal details.
 
-Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15).
+Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).

@@ -290,6 +290,13 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
+  case "trans27":
+        // Transport -> Farm 7, goods are subject to change
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274);
+        print "</select>\n";
+        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
+        break;
   case "tools":
         // Werkzeuge
         print "<option value=\"sleep\">Sleep</option>\n";
@@ -348,6 +355,7 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "trans25":
   case "trans26":
+  case "trans27":
 	$buildingType = "AutoTrans";
 	break;
   case "powerups":

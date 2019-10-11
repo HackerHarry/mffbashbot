@@ -22,4 +22,4 @@ Alle nötigen Informationen stehen im [mffbashbot Wiki](https://github.com/Hacke
 Sollte sich jemand verpflichtet fühlen etwas für meine Arbeit zu spenden,<br>
 gebe ich gerne meine PayPal-Daten weiter.
 
-Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15).
+Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).

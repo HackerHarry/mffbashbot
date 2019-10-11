@@ -1013,6 +1013,11 @@ function get_CowEquipment {
    if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
     echo $iKey
     return
+#   else
+#    echo "DEBUG: cow equipment was bought, but iKey could not be read!" >&2
+#    echo "DEBUG: iKey value is $iKey" >&2
+#    echo "DEBUG: saving FARMDATAFILE for later analysis" >&2
+#    cp $FARMDATAFILE ${FARMDATAFILE}.debug
    fi
   fi
  done
@@ -1337,6 +1342,9 @@ function check_SendGoodsToMainFarm {
      ;;
   6) iPIDMin=700
      iPIDMax=709
+     ;;
+  7) echo -e "\nAuto transport off farm 7 is not supported"
+     return
      ;;
  esac
  # this will fail if more than one rack is in use on farm 5 or 6
@@ -2363,15 +2371,15 @@ function check_FruitStall {
   local sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].reward | type' $FARMDATAFILE 2>/dev/null)
   if [ "$sSlotType" = "object" ]; then
    echo "Collecting fruit stall reward..."
-   SendAJAXFarmRequest "position=1&mode=stall_get_reward"
-   sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
-   if [ "$sSlotType" != "number" ]; then
-    # refill slot
-    iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
-    iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
-    echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
-    SendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
-   fi
+   SendAJAXFarmRequestOverwrite "position=1&mode=stall_get_reward" && sleep 1
+  fi
+  sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$sSlotType" != "number" ]; then
+   # refill slot
+   iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
+   iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
+   echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
+   SendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
   fi
   # boosters are not taken into account
   iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["1"].farmi_last' $FARMDATAFILE)
@@ -2392,6 +2400,19 @@ function check_ActiveGuildJobForPlayer {
   return 0
  fi
  return 1
+}
+
+function check_LoginNews {
+ # checks for news to be displayed upon login
+ # marks it/them as read
+ # this prevents news popups in running browser sessions
+ local iNews
+ local aNews=$($JQBIN -r '.updateblock.menue.news? | .[]? | select(.login == "1").nnr' $FARMDATAFILE)
+ # you've guessed it: globbing is needed here :)
+ for iNews in $aNews; do
+  # echo "Marking news #${iNews} as read..."
+  SendAJAXMainRequest "nnr=${iNews}&opt1=1&action=setnewsunread"
+ done
 }
 
 function check_TimeRemaining {

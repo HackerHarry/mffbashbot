@@ -34,6 +34,7 @@ switch ($farm) {
  case 4:
  case 5:
  case 6:
+ case 7:
   // Normal farms
   for ($position = 1; $position <= 6; $position++) {
    if (strrpos($queue[$position - 1], "-") !== false) {
@@ -104,8 +105,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "cowracepvp"];
-  for ($poscount = 0; $poscount < 6; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "cowracepvp", "trans27"];
+  for ($poscount = 0; $poscount < 7; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
@@ -137,6 +138,7 @@ switch ($farm) {
   $configContents['dologinbonus'] = $_POST["loginbonus"];
   $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
+  $configContents['vehiclemgmt7'] = $_POST["vehiclemgmt7"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
   $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
