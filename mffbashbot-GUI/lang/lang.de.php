@@ -69,7 +69,6 @@ $strings['trans27'] = 'Transport zur Farm 7';
 $strings['puzzlepartredeem'] = 'Vorhandene Puzzlezeile-Pakete einl&ouml;sen';
 $strings['butterflypointbonus'] = 'Schmetterlings-Punktebonus einsammeln';
 $strings['onehourdelivery'] = 'Liefer-Event: Einstundenfahrt durchführen';
-$strings['megafieldplantafterharvest'] = 'Schnelles Anpflanzen auf dem Güterhof';
 $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympia/Winter-Event: Energie auffüllen';
 $strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';

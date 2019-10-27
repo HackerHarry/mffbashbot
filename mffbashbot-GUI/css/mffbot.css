@@ -137,7 +137,7 @@ input:checked + .slider:before {
 
 input, button, select, optgroup, textarea {
  margin: 0;
- font-family: initial;
+ font-family: Arial, sans-serif;
  font-size: initial;
  line-height: initial;
 }

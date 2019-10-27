@@ -78,7 +78,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         if ($farm == 6)
          CreateOptions(700, 701, 702, 703, 704, 705, 706, 707, 708, 709);
         else
-         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 153, 154, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274);
+         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 153, 154, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276);
         print "</select>\n";
         break;
   case 2:
@@ -284,16 +284,10 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         break;
   case "trans25":
   case "trans26":
-        // Transport -> Farm 5 / 6
-        print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 28, 92, 93, 108, 109, 114, 126, 152, 153, 154, 156, 157, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
-        print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
-        break;
   case "trans27":
-        // Transport -> Farm 7, goods are subject to change
+        // Transport -> Farm 5 / 6 / 7
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
@@ -322,7 +316,7 @@ function GetQueueCount($gamepath, $farm, $position) {
 function PlaceQueueButtons($position, $QueueNum) {
  global $strings;
  print "<input type=\"image\" src=\"image/rewind.png\" class=\"queuebtn\" onclick=\"return insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placebefore'] . "\">\n";
- print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"" . $strings['deletequeueitem'] . "\">\n";
+ print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" ondblclick=\"return removeOptionAll(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"" . $strings['deletequeueitem'] . "\">\n";
  print "<input type=\"image\" src=\"image/fastforward.png\" class=\"queuebtn\" onclick=\"return appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placeatend'] . "\">\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {

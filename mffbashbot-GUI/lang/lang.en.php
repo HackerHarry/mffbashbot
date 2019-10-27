@@ -68,7 +68,6 @@ $strings['trans27'] = 'Transport to Farm 7';
 $strings['puzzlepartredeem'] = 'Redeem puzzle parts packs';
 $strings['butterflypointbonus'] = 'Collect butterfly points bonus';
 $strings['onehourdelivery'] = 'Delivery event: do the hour drive';
-$strings['megafieldplantafterharvest'] = 'Fast planting on mega field';
 $strings['powerups'] = 'Power-Ups';
 $strings['refillolympiaenergy'] = 'Olympic/Winter event: Refill energy';
 $strings['dailyseedboxredeem'] = 'Collect daily seed box bonuses';

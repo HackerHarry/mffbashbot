@@ -68,7 +68,6 @@ $strings['trans27'] = 'Транспортиране към Ферма 7';
 $strings['puzzlepartredeem'] = 'Осребрете пакетите с части от пъзела';
 $strings['butterflypointbonus'] = 'Съберете бонус точки за пеперуди';
 $strings['onehourdelivery'] = 'Събитие за доставка: направете час за доставка';
-$strings['megafieldplantafterharvest'] = 'Бързо засаждане на мега поле';
 $strings['powerups'] = 'Ъпгрейди';
 $strings['refillolympiaenergy'] = 'Олимпийско / Зимно събитие: Зареждане на енергия';
 $strings['dailyseedboxredeem'] = 'Съберете дневните бонуси за семена';

@@ -43,7 +43,6 @@ useponyenergybar = 0
 redeempuzzlepacks = 0
 dobutterflies = 0
 dodeliveryevent = 0
-megafieldinstantplant = 0
 doolympiaevent = 0
 doseedbox = 0
 dodonkey = 0

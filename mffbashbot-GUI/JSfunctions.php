@@ -122,6 +122,12 @@ function removeOptionSelected(elSelDest) {
  return false;
 }
 
+function removeOptionAll(elSelDest) {
+ for (var i = elSelDest.length - 1; i >= 0; i--)
+  elSelDest.remove(0);
+ return false;
+}
+
 function updateBotStatus() {
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&action=getbotstatus";
@@ -154,7 +160,7 @@ function saveMisc() {
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'megafieldplanttoggle', 'olympiaeventtoggle',
+ 'deliveryeventtoggle', 'olympiaeventtoggle',
  'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
  'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
  var sUser = document.venueselect.username.value;

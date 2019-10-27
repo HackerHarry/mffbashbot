@@ -150,7 +150,6 @@ switch ($farm) {
   $configContents['redeempuzzlepacks'] = $_POST["redeempuzzlepartstoggle"];
   $configContents['dobutterflies'] = $_POST["butterflytoggle"];
   $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
-  $configContents['megafieldinstantplant'] = $_POST["megafieldplanttoggle"];
   $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
@@ -159,7 +158,7 @@ switch ($farm) {
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
   // clean up deprecated variables
-  // if (isset($configContents['racecowfood'])) unset($configContents['racecowfood']);
+  if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
   for ($i = 1; $i <= 13; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];

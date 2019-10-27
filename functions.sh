@@ -1077,6 +1077,10 @@ function harvest_MegaField {
      ;;
  esac
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ if [ $iHarvestDelay -eq 0 ]; then
+  echo "Stopping work on Mega Field!"
+  return
+ fi
  aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iPlot in $aPlots; do
   iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
@@ -1084,9 +1088,8 @@ function harvest_MegaField {
   SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
   echo "delaying ${iHarvestDelay} seconds"
   sleep ${iHarvestDelay}s
-  if grep -q "megafieldinstantplant = 1" $CFGFILE; then
-   start_MegaField${NONPREMIUM}
-  fi
+  # plant instantly
+  start_MegaField${NONPREMIUM}
  done
  if check_RipePlotOnMegaField; then
   harvest_MegaField ${FARM} ${POSITION} 0
@@ -1344,14 +1347,15 @@ function check_SendGoodsToMainFarm {
      iPIDMax=709
      ;;
   7) echo -e "\nAuto transport off farm 7 is not supported"
+     #iPIDMin=1
+     #iPIDMax=128
      return
      ;;
  esac
- # this will fail if more than one rack is in use on farm 5 or 6
- aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid >= "'${iPIDMin}'" and .pid <= "'${iPIDMax}'").pid | tonumber' $FARMDATAFILE)
+ aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
  for iPID in $aPIDs; do
   echo -n "."
-  iPIDCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"]["1"] | .[] | select(.pid == "'${iPID}'").amount | tonumber' $FARMDATAFILE)
+  iPIDCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid == "'${iPID}'").amount | tonumber' $FARMDATAFILE)
   iSafetyCount=$(get_ProductCountFittingOnField $iPID)
   # do we have multiple fields on the current farm?
   # are they filled with crop we want to transport off?
@@ -1385,7 +1389,12 @@ function check_SendGoodsToMainFarm {
  if [ $iTransportCount -lt 0 ]; then
   iTransportCount=0
  fi
- echo -e "\n$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
+ if ! check_QueueSleep city2/trans2${iFarm}/0; then
+  echo -e "\nSending vehicle back empty (Queue is still busy)..."
+  SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
+ else
+  echo -e "\n$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
+ fi
 }
 
 function get_ProductCountFittingOnField {
@@ -1701,6 +1710,10 @@ function harvest_MegaField2x2 {
  local iPlot=1
  local iVehicleBought=0
  iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ if [ $iHarvestDelay -eq 0 ]; then
+  echo "Stopping work on Mega Field!"
+  return
+ fi
  while (true); do
   if [ $iPlot -gt 87 ]; then
    return
@@ -1718,9 +1731,8 @@ function harvest_MegaField2x2 {
       SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot + 1)),$((iPlot + 11)),$((iPlot + 12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
-      if grep -q "megafieldinstantplant = 1" $CFGFILE; then
-       start_MegaField${NONPREMIUM}
-      fi
+      # plant instantly
+      start_MegaField${NONPREMIUM}
       iPlot=$((iPlot + 2))
       continue
      else
@@ -2362,6 +2374,10 @@ function check_FruitStall {
  local iCurrentEpoch
  # rumours say the regular fruit stall farmie interval is 1800 secs ;)
  local iFarmieInterval=1800
+# local bDelayBooster=$($JQBIN '.updateblock.map.stall.data["1"].booster.delay.remain? | type == "number"' $FARMDATAFILE)
+# if [ "$bDelayBooster" = "true" ];then
+#  iFarmieInterval=900
+# fi
  local iLastFarmieEpoch
  local iNextFarmieEpoch
  local iSecsToNextFarmie
@@ -2381,7 +2397,7 @@ function check_FruitStall {
    echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
    SendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
   fi
-  # boosters are not taken into account
+  # boosters are not taken into account - or are they? ;)
   iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["1"].farmi_last' $FARMDATAFILE)
   iNextFarmieEpoch=$((iLastFarmieEpoch + iFarmieInterval))
   iCurrentEpoch=$(date +"%s")
