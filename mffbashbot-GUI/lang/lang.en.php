@@ -96,5 +96,7 @@ $strings['farmadditionfailed'] = 'Failed to add a new farm';
 $strings['cowracepvp'] = 'Cow race PvP';
 $strings['opencalendardoors'] = 'Calendar event: Open doors';
 $strings['fruitstallslots'] = 'Fruit stand';
+$strings['stockmgmt'] = 'Stock management';
+$strings['buyatmerchant'] = '(top-up quantity) selected items are bought, soon as there is less than 50% of the top-up quantity in stock';
 // $strings[''] = '';
 ?>

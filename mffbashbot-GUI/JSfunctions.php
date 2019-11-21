@@ -154,9 +154,9 @@ function updateBotStatus() {
 }
 
 function saveMisc() {
- var i, v;
+ var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy'];
+ 'vehiclemgmt7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
@@ -181,6 +181,15 @@ function saveMisc() {
   v = document.getElementById("fruitstallslot" + i);
   sData += "&fruitstallslot" + i + "=" + v.options[v.selectedIndex].value;
  }
+ j = (document.querySelectorAll("[id*=autobuyitem]")).length;
+ sData += "&autobuyitems=";
+ for (i = 0; i < j; i++) {
+  if (document.querySelectorAll("[id*=autobuyitem]")[i].checked)
+   sData += (document.querySelectorAll("[id*=autobuyitem]"))[i].value + ",";
+ }
+ if (sData.substring(sData.length-1, sData.length) == ",")
+  sData = sData.substring(0, sData.length - 1);
+
  AJAXsave(sData);
  return false;
 }

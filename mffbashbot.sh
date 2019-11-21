@@ -171,7 +171,7 @@ while (true); do
  echo "Running My Free Farm Bash Bot $VERSION"
  echo "Getting a token to MFF server ${MFFSERVER}"
  MFFTOKEN=$(wget -nv -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
- echo "Login to MFF server ${MFFSERVER} with username $MFFUSER"
+ echo "Attempting to log in to MFF server ${MFFSERVER} with username $MFFUSER"
  wget -nv -T10 -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
  # get our RID
  RID=$(grep -om1 '[a-z0-9]\{32\}' $OUTFILE)
@@ -184,7 +184,7 @@ while (true); do
   sleep 5m
   continue
  fi
- echo "Your RID is $RID"
+ echo "Login successful"
 
  # shellcheck source=functions.sh
  source ../functions.sh
@@ -505,6 +505,12 @@ while (true); do
   done
  fi
 
+ # auto-buy
+ if ! grep -q "autobuyrefillto = 0" $CFGFILE && grep -q "autobuyrefillto = " $CFGFILE && ! grep -q "autobuyitems = 0" $CFGFILE; then
+  echo "Checking if stock needs a refill..."
+  check_StockRefill
+ fi
+
  # contents of FARMDATAFILE change from here !
 
  # olympia / winter sports event
@@ -579,6 +585,7 @@ while (true); do
   if grep -q "sendmunchiesaway = 1" $CFGFILE; then
    echo "Checking for waiting munchies..."
    check_Farmies munchie
+   # check_Munchies
   fi
   echo "Checking for munchies sitting at tables..."
   check_MunchiesAtTables

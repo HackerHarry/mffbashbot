@@ -157,6 +157,7 @@ switch ($farm) {
   $configContents['excluderank1cow'] = $_POST["excluderank1cowtoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
+  $configContents['autobuyrefillto'] = $_POST["autobuyrefillto"];
   // clean up deprecated variables
   if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
@@ -164,6 +165,10 @@ switch ($farm) {
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
   for ($i = 1; $i <= 4; $i++)
    $configContents['fruitstallslot' . $i] = $_POST["fruitstallslot" . $i];
+  if (!empty($_POST["autobuyitems"]))
+   $configContents['autobuyitems'] = str_replace(",", " ", $_POST["autobuyitems"]);
+  else
+   $configContents['autobuyitems'] = 0;
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

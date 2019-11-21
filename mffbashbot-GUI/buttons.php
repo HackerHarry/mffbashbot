@@ -181,10 +181,43 @@ for ($i = 1; $i <= 4; $i++) {
 }
 print "</table>\n";
 print "</div>\n";
+// auto-buy
+print "<div id=\"autobuypane\" style=\"display:none;\">";
+print "<table id=\"autobuytbl\" style=\"float:left;\" border=\"1\">";
+print "<tr><th colspan=\"8\">" . $strings['stockmgmt'] . "</th></tr>\n";
+print "<tr><td colspan=\"8\">";
+print "<select id=\"autobuyrefillto\" name=\"autobuyrefillto\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"autobuyrefillto0\">Sleep</option>\n";
+print "<option value=\"1000\" id=\"autobuyrefillto1000\">1000</option>\n";
+print "<option value=\"2000\" id=\"autobuyrefillto2000\">2000</option>\n";
+print "<option value=\"3000\" id=\"autobuyrefillto3000\">3000</option>\n";
+print "<option value=\"4000\" id=\"autobuyrefillto4000\">4000</option>\n";
+print "<option value=\"5000\" id=\"autobuyrefillto5000\">5000</option>\n";
+print "<option value=\"10000\" id=\"autobuyrefillto10000\">10000</option>\n";
+print "<option value=\"20000\" id=\"autobuyrefillto20000\">20000</option>\n";
+print "</select>&nbsp;" . $strings['buyatmerchant'];
+print "</td></tr>";
+$buyableGoods = [ 1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274 ];
+for ($i = 0; $i < count($buyableGoods); $i++) {
+ print "<tr>";
+ for ($j = 0; $j <= 7; $j++) {
+  if (isset($buyableGoods[$i])) {
+   print "<td>";
+   print "<input type=\"checkbox\" id=\"autobuyitem" . $buyableGoods[$i] . "\" name=\"autobuyitem" . $buyableGoods[$i] . "\" onchange=\"saveMisc();\" value=\"" . $buyableGoods[$i] . "\">&nbsp;" . $productlist[$buyableGoods[$i]] . "\n";
+   print "</td>";
+   $i++;
+  }
+ }
+ $i--;
+ print "</tr>";
+}
+print "</table>\n";
+print "</div>\n";
 
 print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane');\">" . $strings['fruitstallslots'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane');\">" . $strings['stockmgmt'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
@@ -200,7 +233,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
 'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',
-'fruitstallslot4' ];
+'fruitstallslot4', 'autobuyitems', 'autobuyrefillto' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -229,6 +262,9 @@ print "document.getElementById('vetjobdifficulty').selectedIndex = document.getE
 $savedValue = $configContents['dolot'];
 $savedValue = "lot" . $savedValue;
 print "document.getElementById('lottoggle').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
+$savedValue = $configContents['autobuyrefillto'];
+$savedValue = "autobuyrefillto" . $savedValue;
+print "document.getElementById('autobuyrefillto').selectedIndex = document.getElementById('" . $savedValue . "').index;\n";
 
 reset($togglesarray);
 for ($i = 0; $i < count($togglesarray); $i++) {
@@ -250,5 +286,8 @@ $savedValue = $configContents['fruitstallslot' . $i];
 print "document.getElementById('fruitstallslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
 
+$savedValue = explode(" ", $configContents['autobuyitems']);
+for ($i = 0; $i < count($savedValue); $i++)
+ print "document.getElementById('autobuyitem" . $savedValue[$i] . "').checked = true;\n";
 print "</script>\n";
 ?>

@@ -85,6 +85,11 @@ function GetCalendarData {
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=calendar_init"
 }
 
+function GetMerchantData {
+ local sFile=$1
+ wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}shopid=1&mode=shopinit"
+}
+
 function DoFarm {
  # read function from queue file
  local iFarm=$1
@@ -592,6 +597,54 @@ function check_MunchiesAtTables {
  done
 }
 
+function check_Munchies {
+# unused function. sits munchie down if there's enough goods for him
+ local iID
+ local aIDs
+ local iPID
+ local aPIDs
+ local aTables
+ local iTable
+ local iChair
+ local iAmountNeeded
+ local iAmountInStock
+ local bCanSit
+ # get Munchies with status 0
+ aIDs=$($JQBIN '.datablock.farmis | .[] | select(.status == "0").id | tonumber' $FARMDATAFILE)
+ for iID in $aIDs; do
+  bCanSit="true"
+  aPIDs=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products | to_entries[] | .key | tonumber' $FARMDATAFILE)
+  for iPID in $aPIDs; do
+   iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+   iAmountNeeded=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products["'${iPID}'"]' $FARMDATAFILE)
+   if [ $iAmountInStock -lt $iAmountNeeded ]; then
+    bCanSit="false"
+    break
+   fi
+  done
+  if [ "$bCanSit" = "false" ]; then
+   continue
+  fi
+  # get tables that are neither locked or blocked
+  aTables=$($JQBIN '.datablock.tables | .[] | select(.block != 1 and .locked != 1).id | tonumber' $FARMDATAFILE)
+  for iTable in $aTables; do
+   # find a free chair - the logical or for .id is needed cuz the source data is inconsistent as of 11/2019
+   iChair=$($JQBIN 'first(.datablock.tables | .[] | select(.id == '${iTable}' or .id == "'${iTable}'").chairs| tostream | select(length == 2)  as [$key, $value] | if ($key[0] | tonumber < 3) and $value == [] then $key[-1] | tonumber else empty end)' $FARMDATAFILE)
+   if [ -n "$iChair" ]; then
+    echo "Sitting munchie with ID ${iID} down at table ${iTable}, chair ${iChair}..."
+    # table indices start at 0
+    iTable=$((iTable - 1))
+    SendAJAXFoodworldRequest "action=dropped&id=${iID}&table=${iTable}&chair=${iChair}"
+    sleep 2
+    break
+   fi
+  done
+  if [ -z "$iChair" ]; then
+   echo "No free seat found for munchie with ID ${iID}"
+  fi
+ done
+}
+
 function DoFarmersMarket {
  local sFarm=$1
  local sPosition=$2
@@ -743,7 +796,7 @@ function DoFarmersMarketAnimalTreatment {
   return
  fi
  # get animal ID from queue holding status 0
- iAnimalID=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "status" and $value == "0" then ($key[-2] | tonumber) else empty end' $FARMDATAFILE | head -1)
+ iAnimalID=$($JQBIN 'first(.updateblock.farmersmarket.vet.animals.queue | .[] | select(.status == "0").id | tonumber)' $FARMDATAFILE)
  # place it in slot
  SendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
  # isolate deseases for animal ID
@@ -1355,7 +1408,7 @@ function check_SendGoodsToMainFarm {
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
  for iPID in $aPIDs; do
   echo -n "."
-  iPIDCount=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid == "'${iPID}'").amount | tonumber' $FARMDATAFILE)
+  iPIDCount=$(get_PIDAmountFromStock $iPID $iFarm)
   iSafetyCount=$(get_ProductCountFittingOnField $iPID)
   # do we have multiple fields on the current farm?
   # are they filled with crop we want to transport off?
@@ -2204,6 +2257,34 @@ function check_PanBonus {
  fi
 }
 
+function check_StockRefill {
+ local iPID
+ local iCanBuyPID
+ local iAmountInStock
+ local iAmountToBuy
+ local aPIDs=$(get_ConfigValue autobuyitems)
+ local iRefillAmount=$(get_ConfigValue autobuyrefillto)
+ local iLowerThreshold=$((iRefillAmount / 2))
+ for iPID in $aPIDs; do
+  iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+  if [ $iAmountInStock -ge $iLowerThreshold ]; then
+   continue
+  fi
+  # lower threshold reached, prepare purchase
+  GetMerchantData $TMPFILE
+  iAmountToBuy=$((iRefillAmount - iAmountInStock))
+  # check, if player can buy the item
+  iCanBuyPID=$($JQBIN '.datablock[1].products | .[] | select(.pid == '${iPID}').pid?' $TMPFILE)
+  if [ -z "$iCanBuyPID" ]; then
+   echo "Sorry, you cannot buy item #${iPID} yet"
+   continue
+  fi
+  echo "Buying $iAmountToBuy of item #${iPID}..."
+  SendAJAXCityRequest "shopid=1&mode=shopfire&cart=${iPID},${iAmountToBuy}"
+  sleep 2
+ done
+}
+
 function check_ButterflyBonus {
  local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
  local aKeys
@@ -2450,11 +2531,18 @@ function check_TimeRemaining {
  return 1
 }
 
+function get_PIDAmountFromStock {
+ # returns the amount of items found in stock on a given farm
+ local iPID=$1
+ local iFarm=$2
+ local iPIDCount=$($JQBIN '(.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid? == "'${iPID}'").amount | tonumber) // 0' $FARMDATAFILE)
+ echo $iPIDCount
+}
+
 function get_ConfigValue {
  local sConfigItem=$1
- local sConfigLine=$(grep $sConfigItem $CFGFILE)
- local sTokens=( $sConfigLine )
- echo ${sTokens[2]}
+ local sConfigLine=$(grep -m1 "$sConfigItem " $CFGFILE | tr -d "'")
+ echo ${sConfigLine/$sConfigItem = /}
 }
 
 function SendAJAXFarmRequest {
@@ -2475,7 +2563,8 @@ function SendAJAXForestryRequest {
 
 function SendAJAXFoodworldRequest {
  local sAJAXSuffix=$1
- WGETREQ ${AJAXFOOD}${sAJAXSuffix}
+# keep food world status current. this shouldn't break anything
+wget -nv -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFOOD}${sAJAXSuffix}
 }
 
 function SendAJAXCityRequest {

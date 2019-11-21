@@ -97,5 +97,7 @@ $strings['farmadditionfailed'] = 'Hinzufügen der Farm fehlgeschlagen!';
 $strings['cowracepvp'] = 'Kuhrennen PvP';
 $strings['opencalendardoors'] = 'Kalender-Event: Türen offnen';
 $strings['fruitstallslots'] = 'Obststand';
+$strings['stockmgmt'] = 'Lagerverwaltung';
+$strings['buyatmerchant'] = '(Auffüllmenge) Die angehakten Waren werden nachgekauft, sobald weniger als 50% der Auffüllmenge im Stock übrig sind';
 // $strings[''] = '';
 ?>
