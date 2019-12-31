@@ -12,8 +12,8 @@ Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**. Ihr wurdet gewarnt.
 Auch möchte ich euch ermutigen, die Farmspiel-Entwickler gelegentlich durch den<br>
 Kauf von Coins zu unterstützen.
 
-Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von Bastian<br>
-Kanaan gegeben. Seine Produkte 'Berater' und 'Automat' leisten vielen Spielern<br>
+Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von<br>
+[@Bastian Kanaan](https://github.com/BastianKanaan) gegeben. Seine Produkte 'Berater' und 'Automat' leisten vielen Spielern<br>
 treue Dienste. Inspiriert von Bastians Automaten, fing ich an diesen Bot zu<br>
 entwickeln. Bastians Berater ist bis heute für mich unverzichtbar.
 

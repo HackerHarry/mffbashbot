@@ -2153,13 +2153,13 @@ function redeemPuzzlePartsPacks {
 function check_PanBonus {
  # function by jbond47, update by maiblume & jbond47
  GetPanData "$FARMDATAFILE"
- local iToday=$($JQBIN '.datablock[11].today' $FARMDATAFILE)
- local iSheepCount=$($JQBIN '.datablock[11].collections.heros | length' $FARMDATAFILE)
+ local iToday=$($JQBIN '.datablock["11"].today' $FARMDATAFILE)
+ local iSheepCount=$($JQBIN '.datablock["11"].collections.heros | length' $FARMDATAFILE)
  local iLastBonus
  local bValue
  # Hero Sheep Bonus
  if [ $iSheepCount -eq 12 ]; then # requires all 12 super sheep
-  iLastBonus=$($JQBIN '.datablock[11].lastbonus.heros' $FARMDATAFILE)
+  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.heros' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
   fi
@@ -2172,9 +2172,9 @@ function check_PanBonus {
   fi
  fi
  # Horror Sheep Bonus
- iSheepCount=$($JQBIN '.datablock[11].collections.horror | length' $FARMDATAFILE)
+ iSheepCount=$($JQBIN '.datablock["11"].collections.horror | length' $FARMDATAFILE)
  if [ $iSheepCount -eq 9 ]; then # requires all 9 horror sheep
-  iLastBonus=$($JQBIN '.datablock[11].lastbonus.horror' $FARMDATAFILE)
+  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.horror' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
   fi
@@ -2187,9 +2187,9 @@ function check_PanBonus {
   fi
  fi
  # Sport Sheep Bonus
- iSheepCount=$($JQBIN '.datablock[11].collections.sport | length' $FARMDATAFILE)
+ iSheepCount=$($JQBIN '.datablock["11"].collections.sport | length' $FARMDATAFILE)
  if [ $iSheepCount -eq 9 ]; then # requires all 9 sport sheep
-  iLastBonus=$($JQBIN '.datablock[11].lastbonus.sport' $FARMDATAFILE)
+  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.sport' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
   fi
@@ -2202,9 +2202,9 @@ function check_PanBonus {
   fi
  fi
  # Beach Sheep Bonus
- iSheepCount=$($JQBIN '.datablock[11].collections.beach | length' $FARMDATAFILE)
+ iSheepCount=$($JQBIN '.datablock["11"].collections.beach | length' $FARMDATAFILE)
  if [ $iSheepCount -eq 9 ]; then # requires all 9 beach sheep
-  iLastBonus=$($JQBIN '.datablock[11].lastbonus.beach' $FARMDATAFILE)
+  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.beach' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
   fi
@@ -2217,9 +2217,9 @@ function check_PanBonus {
   fi
  fi
  # Fantasy Sheep Bonus
- iSheepCount=$($JQBIN '.datablock[11].collections.fantasy | length' $FARMDATAFILE)
+ iSheepCount=$($JQBIN '.datablock["11"].collections.fantasy | length' $FARMDATAFILE)
  if [ $iSheepCount -eq 9 ]; then # requires all 9 fantasy sheep
-  iLastBonus=$($JQBIN '.datablock[11].lastbonus.fantasy' $FARMDATAFILE)
+  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.fantasy' $FARMDATAFILE)
   if [ $iLastBonus = "null" ]; then
    iLastBonus=0
   fi
@@ -2232,10 +2232,10 @@ function check_PanBonus {
   fi
  fi
  # Portal Rabbit Points
- bValue=$($JQBIN '.datablock[1].gifts | has("289")' $FARMDATAFILE)
+ bValue=$($JQBIN '.datablock["1"].gifts | has("289")' $FARMDATAFILE)
  if [ "$bValue" = "true" ]; then
   echo -n "Portal rabbit..."
-  bValue=$($JQBIN '.datablock[1].gifts."289" | has("giver")' $FARMDATAFILE)
+  bValue=$($JQBIN '.datablock["1"].gifts."289" | has("giver")' $FARMDATAFILE)
   if [ "$bValue" = "true" ]; then
    echo "available, claiming it..."
    SendAJAXCityRequest "city=0&mode=giverpresent&id=289"
@@ -2244,10 +2244,10 @@ function check_PanBonus {
   fi
  fi
  # Bug Rogers Points
- bValue=$($JQBIN '.datablock[1].gifts | has("410")' $FARMDATAFILE)
+ bValue=$($JQBIN '.datablock["1"].gifts | has("410")' $FARMDATAFILE)
  if [ "$bValue" = "true" ]; then
   echo -n "Bug Rogers..."
-  bValue=$($JQBIN '.datablock[1].gifts."410" | has("giver")' $FARMDATAFILE)
+  bValue=$($JQBIN '.datablock["1"].gifts."410" | has("giver")' $FARMDATAFILE)
   if [ "$bValue" = "true" ]; then
    echo "available, claiming it..."
    SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
@@ -2262,9 +2262,16 @@ function check_StockRefill {
  local iCanBuyPID
  local iAmountInStock
  local iAmountToBuy
+ local bRackIsPresent=$($JQBIN '.updateblock.stock.stock["1"] | type == "object"' $FARMDATAFILE)
  local aPIDs=$(get_ConfigValue autobuyitems)
  local iRefillAmount=$(get_ConfigValue autobuyrefillto)
  local iLowerThreshold=$((iRefillAmount / 2))
+ # prevent unwanted purchase, i.e. in case of network problems
+ if [ "$bRackIsPresent" = "false" ]; then
+  # something is very wrong if rack 1 is missing
+  # abort silently
+  return
+ fi
  for iPID in $aPIDs; do
   iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
   if [ $iAmountInStock -ge $iLowerThreshold ]; then

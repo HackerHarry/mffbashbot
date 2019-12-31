@@ -14,7 +14,7 @@ I want to encourage you, to support the game designers every now and then by<br>
 purchasing coins.
 
 This bot would not have seen the light of day without the superb work of<br>
-Bastian Kanaan. His 'Adviser' and 'Automaton' have been working for many gamers<br>
+[@Bastian Kanaan](https://github.com/BastianKanaan). His 'Adviser' and 'Automaton' have been working for many gamers<br>
 reliably. Inspired by Bastian's Automaton, i started developing this bot. His<br>
 Adviser is still a loyal comapanion to me.
 

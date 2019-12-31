@@ -91,6 +91,7 @@ include 'functions.php';
       <option value="de">German (myfreefarm.de)</option>
       <option value="en">English (myfreefarm.com)</option>
       <option value="bg">Bulgarian (veselaferma.com)</option>
+      <option value="pl">Polish (wolnifarmerzy.pl)</option>
      </select>
     </div>
    </div>

@@ -23,7 +23,7 @@ else
   $configContents['lang'] = "";
  else
   $configContents['lang'] = $_POST["language"];
-$translations_available = ['de', 'en', 'bg'];
+$translations_available = ['de', 'en', 'bg', 'pl'];
 $lang = $configContents['lang'];
 // fallback to german if lang is unsupported or missing
 if (!in_array($lang, $translations_available))

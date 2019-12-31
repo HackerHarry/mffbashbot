@@ -34,6 +34,8 @@ case "$MFFLANG" in
          ;;
  bg) DOMAIN=veselaferma.com
          ;;
+ pl) DOMAIN=wolnifarmerzy.pl
+         ;;
   *) DOMAIN=myfreefarm.de
          ;;
 esac
@@ -53,7 +55,7 @@ rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
 LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
-AGENT="Mozilla/5.0 (Windows NT 10.0; WOW64; rv:67.0) Gecko/20100101 Firefox/67.0"
+AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
 
