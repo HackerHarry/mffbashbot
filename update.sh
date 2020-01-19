@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Update handler for My Free Farm Bash Bot
-# Copyright 2016-18 Harun "Harry" Basalamah
+# Copyright 2016-20 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
