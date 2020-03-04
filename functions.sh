@@ -525,7 +525,9 @@ function start_Tree {
  local iPID=$(sed '2q;d' ${sFile})
  # plant trees
  SendAJAXForestryRequest "action=autoplant&productid=${iPID}"
- water_Tree
+ if check_CanWaterTrees; then
+  water_Tree
+ fi
 }
 
 function water_Tree {
@@ -1589,6 +1591,15 @@ function check_QueueSleep {
   return 0
  fi
  return 1
+}
+
+function check_CanWaterTrees {
+ local bCanWaterTrees=$($JQBIN '.datablock[9]?' $FARMDATAFILE)
+ if [ "$bCanWaterTrees" = "1" ]; then
+  return 0
+ else
+  return 1
+ fi
 }
 
 function check_RipePlotOnField {

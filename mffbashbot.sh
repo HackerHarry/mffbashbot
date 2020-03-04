@@ -549,9 +549,11 @@ while (true); do
    echo "Doing trees..."
    DoForestry forestry
   fi
-  if [ "$($JQBIN '.datablock[1][0].waterremain' $FARMDATAFILE 2>/dev/null)" = "0" ] 2>/dev/null;  then
-   echo "Watering trees..."
-   water_Tree
+  if check_CanWaterTrees; then
+   if [ "$($JQBIN '.datablock[1][0].waterremain' $FARMDATAFILE 2>/dev/null)" = "0" ] 2>/dev/null; then
+    echo "Watering trees..."
+    water_Tree
+   fi
   fi
   # then the forestry buildings
   for POSITION in 1 2; do
