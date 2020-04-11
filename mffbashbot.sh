@@ -171,7 +171,7 @@ while (true); do
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
  echo "Running My Free Farm Bash Bot $VERSION"
- echo "Getting a token to MFF server ${MFFSERVER}"
+ echo "Getting a login token"
  MFFTOKEN=$(wget -nv -T10 -a $LOGFILE --output-document=- --user-agent="$AGENT" --post-data="$POSTDATA" --keep-session-cookies --save-cookies $COOKIEFILE "$POSTURL" | sed -e 's/\[1,"\(.*\)"\]/\1/g' | sed -e 's/\\//g')
  echo "Attempting to log in to MFF server ${MFFSERVER} with username $MFFUSER"
  wget -nv -T10 -a $LOGFILE --output-document=$OUTFILE --user-agent="$AGENT" --keep-session-cookies --save-cookies $COOKIEFILE "$MFFTOKEN"
@@ -314,18 +314,7 @@ while (true); do
     fi
   done
   # see if flower pots need water...
-  aSLOTS=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
-  for SLOT in $aSLOTS; do
-   PID=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"].pid | tonumber' $FARMDATAFILE)
-   # skip watering of special flowers (214 and up)
-   if [ $PID -le 213 ]; then
-    # skip plants that don't need water anymore
-    if [ -n "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${SLOT}'"] | select(.remain != .waterremain)' $FARMDATAFILE)" ]; then
-     echo "Watering flower pot ${SLOT}..."
-     DoFarmersMarketFlowerPots ${SLOT}
-    fi
-   fi
-  done
+  DoFarmersMarketFlowerPots
   # monster fruit
   if [ $PLAYERLEVELNUM -ge 31 ]; then
    RUNCHK=$($JQBIN -r '.updateblock.farmersmarket.megafruit.current | type' $FARMDATAFILE)

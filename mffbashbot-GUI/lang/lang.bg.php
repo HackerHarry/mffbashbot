@@ -98,5 +98,6 @@ $strings['opencalendardoors'] = 'Календарна събитие: Отвор
 $strings['fruitstallslots'] = 'Щанд за плодове';
 $strings['stockmgmt'] = 'Управление на стоки';
 $strings['buyatmerchant'] = '(отбележете количество) избраните стоки се капуват веднага, щом количеството им спадне на 50% от отбелязаното';
+$strings['flowerarrangements'] = 'Flower arrangements';
 // $strings[''] = '';
 ?>

@@ -173,6 +173,10 @@ function saveMisc() {
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }
+ for (i = 1; i <= 17; i++) {
+  v = document.getElementById("flowerarrangementslot" + i);
+  sData += "&flowerarrangementslot" + i + "=" + v.options[v.selectedIndex].value;
+ }
  for (i = 1; i <= 13; i++) {
   v = document.getElementById("racecowslot" + i);
   sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;

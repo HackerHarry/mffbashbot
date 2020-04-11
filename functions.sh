@@ -225,7 +225,9 @@ function harvest_Factory {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- SendAJAXFarmRequest "mode=getadvancedcrop&farm=${iFarm}&position=${iPosition}"
+ iSlot=$((iSlot + 1))
+# SendAJAXFarmRequest "mode=getadvancedcrop&farm=${iFarm}&position=${iPosition}"
+ SendAJAXFarmRequest "mode=harvestproduction&farm=${iFarm}&position=${iPosition}&id=${iSlot}&slot=${iSlot}"
 }
 
 function start_Factory {
@@ -234,7 +236,24 @@ function start_Factory {
  local iSlot=$3
  # Factory takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local sAJAXSuffix="mode=setadvancedproduction&farm=${iFarm}&position=${iPosition}&id=${iPID}&product=${iPID}"
+ # factory data changed on Apr 7th 2020
+ case "$iPID" in
+  # mayo kitchen, cheese diary, wool spinning mill and sweets kitchen
+  # 9,10,11 and 12 are kept for convenience, will be removed in the future
+  9|10|11|12|25|27|28|30)
+    iPID=1
+    ;;
+  # 21,110 and 151 are kept for convenience, will be removed in the future
+  21|110|151|144|111|152)
+    iPID=2
+    ;;
+  *)
+    echo "start_Factory: Unknown PID" >&2
+    return
+    ;;
+ esac
+ iSlot=$((iSlot + 1))
+ local sAJAXSuffix="farm=${iFarm}&position=${iPosition}&slot=${iSlot}&item=${iPID}&mode=start"
  if [ "$GUILDJOB" = true ]; then
   local sAJAXSuffix="${sAJAXSuffix}&guildjob=1"
   GUILDJOB=false
@@ -726,8 +745,32 @@ function start_Nursery {
 }
 
 function DoFarmersMarketFlowerPots {
- local iSlot=$1
- SendAJAXFarmRequest "mode=flowerslot_water&farm=1&position=1&set=${iSlot}:1,"
+ local iPID
+ local iSlot
+ # find withered arrangements
+ local aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ for iSlot in $aSlots; do
+  iPID=$(get_ConfigValue flowerarrangementslot${iSlot})
+  if [ $iPID -ne 0 ]; then
+   SendAJAXFarmRequest "mode=flowerslot_remove&farm=1&position=1&set=${iSlot}:1,"
+   sleep 1
+   echo "Planting arrangement ${iPID} to flower pot ${iSlot}..."
+   SendAJAXFarmRequest "mode=flowerslot_plant&farm=1&position=1&set=${iSlot}:${iPID},"
+  fi
+ done
+ # water pots in need
+ aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ for iSlot in $aSlots; do
+  iPID=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"].pid | tonumber' $FARMDATAFILE)
+  # skip watering of special flowers (214 and up)
+  if [ $iPID -le 213 ]; then
+   # skip plants that don't need water anymore
+   if [ -n "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"] | select(.remain != .waterremain)' $FARMDATAFILE)" ]; then
+    echo "Watering flower pot ${iSlot}..."
+    SendAJAXFarmRequest "mode=flowerslot_water&farm=1&position=1&set=${iSlot}:1,"
+   fi
+  fi
+ done
 }
 
 function harvest_MonsterFruitHelper {
@@ -1144,7 +1187,7 @@ function harvest_MegaField {
   echo "delaying ${iHarvestDelay} seconds"
   sleep ${iHarvestDelay}s
   # plant instantly
-  start_MegaField${NONPREMIUM}
+  start_MegaField${NONPREMIUM} 1
  done
  if check_RipePlotOnMegaField; then
   harvest_MegaField ${FARM} ${POSITION} 0
@@ -1152,13 +1195,19 @@ function harvest_MegaField {
 }
 
 function start_MegaField {
- local iProductSlot
  local iSafetyCount=$1
+ if [ -z "$iSafetyCount" ]; then
+  return
+  # no need to run through since insta-plant is default now.
+  # calling functions deliver a value for iSafetyCount
+ fi
+ local iProductSlot
  local iPID
- local amountToGo
+ local iAmountToGo
+ local iAmount
  local iFreePlots
  if [ $iSafetyCount -gt 4 ] 2>/dev/null; then
-  echo "Exiting start_MegaField after four cycles! (Not enough crop in stock?)"
+  echo "Exiting start_MegaField after four cycles!"
   return
  fi
  for iProductSlot in 0 1 2; do
@@ -1167,8 +1216,9 @@ function start_MegaField {
   fi
   # here we've got a product that is harvestable
   iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
-  amountToGo=$(get_MegaFieldAmountToGoInSlot $iProductSlot)
-  if [ "$amountToGo" = "0" ]; then
+  iAmount=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].amount' $FARMDATAFILE)
+  iAmountToGo=$(get_MegaFieldAmountToGoInSlot $iProductSlot)
+  if [ "$iAmountToGo" = "0" ]; then
    continue
    # no need to plant more
   fi
@@ -1178,24 +1228,41 @@ function start_MegaField {
    return
   fi
   # plant
-  if [ $iFreePlots -lt $amountToGo ]; then
-   # plant on all free plots
-   MegaFieldPlant${NONPREMIUM} $iPID $iFreePlots
+  if [ $iFreePlots -lt $iAmountToGo ]; then
+   if check_MegaFieldPIDAmount $iPID $iFreePlots $iAmount; then
+    # plant on all free plots
+    MegaFieldPlant${NONPREMIUM} $iPID $iFreePlots
+   else
+    echo "start_MegaField: Cannot plant! Not enough crop in stock!"
+   fi
    return
   fi
-  MegaFieldPlant${NONPREMIUM} $iPID $amountToGo
-  # call function again since there are still free plots
-  if [ "$iSafetyCount" = "" ]; then
-   start_MegaField 2
+  if check_MegaFieldPIDAmount $iPID $iAmountToGo $iAmount; then
+   MegaFieldPlant${NONPREMIUM} $iPID $iAmountToGo
   else
-   iSafetyCount=$((iSafetyCount + 1))
-   start_MegaField $iSafetyCount
+   echo "start_MegaField: Cannot plant! Not enough crop in stock!"
+   return
   fi
+  # call function again since there are still free plots
+  iSafetyCount=$((iSafetyCount + 1))
+  start_MegaField $iSafetyCount
  done
 }
 
 function start_MegaFieldNP {
  start_MegaField
+}
+
+function check_MegaFieldPIDAmount {
+ local iPID=$1
+ local iFreePlots=$2
+ local iAmount=$3
+ local iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+ local iAmountNeeded=$((iFreePlots * iAmount))
+ if [ $iAmountInStock -ge $iAmountNeeded ]; then
+  return 0
+ fi
+ return 1
 }
 
 function harvest_FuelStation {
@@ -1401,10 +1468,10 @@ function check_SendGoodsToMainFarm {
   6) iPIDMin=700
      iPIDMax=709
      ;;
-  7) echo -e "\nAuto transport off farm 7 is not supported"
-     #iPIDMin=1
-     #iPIDMax=128
-     return
+  7) echo -ne "\nAuto transport off farm 7 is not supported"
+     iPIDMin=998
+     iPIDMax=998
+     #return
      ;;
  esac
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
@@ -1662,7 +1729,7 @@ function get_MegaFieldHarvesterDelay {
       ;;
   10) echo 20
       ;;
-   *) echo "Unknown harvest device in get_MegaFieldHarvesterDelay()" >&2
+   *) echo "get_MegaFieldHarvesterDelay: Unknown harvest device" >&2
       echo 0
       ;;
  esac
@@ -1796,7 +1863,7 @@ function harvest_MegaField2x2 {
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
       # plant instantly
-      start_MegaField${NONPREMIUM}
+      start_MegaField${NONPREMIUM} 1
       iPlot=$((iPlot + 2))
       continue
      else
@@ -1986,7 +2053,7 @@ function get_AnimalsFastestCureForDisease {
    54) echo 402
       # Furchtbare Beule
       ;;
-   *) echo "Unknown disease id in get_AnimalsFastestCureForDisease()" >&2
+   *) echo "get_AnimalsFastestCureForDisease: Unknown disease id" >&2
       echo 0
       ;;
  esac

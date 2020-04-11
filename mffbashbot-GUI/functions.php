@@ -34,36 +34,36 @@ function CreateOptionsWithIDfromArray($arr) {
 function CreateMonsterOptions() {
  global $monsterlist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $monsterlist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $monsterlist[$i]  . "</option>\n";
 }
 function CreateForestryOptions() {
  global $forestryproductlist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $forestryproductlist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $forestryproductlist[$i]  . "</option>\n";
 }
 function CreateFoodworldOptions() {
  global $foodworldproductlist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $foodworldproductlist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $foodworldproductlist[$i]  . "</option>\n";
 }
 function CreateMegaFieldOptions() {
  global $megafieldvehicleslist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $megafieldvehicleslist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $megafieldvehicleslist[$i]  . "</option>\n";
 }
 function CreateWindMillOptions() {
  global $windmillproductlist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $windmillproductlist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $windmillproductlist[$i]  . "</option>\n";
 }
 function CreatePonyFarmOptions() {
  global $ponyfarmproductlist;
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">" . $ponyfarmproductlist[$i]  . "</option>\n";
+  print "<option value=\"" . $i . "\">" . $ponyfarmproductlist[$i]  . "</option>\n";
 }
 function CreateCowRacePvPOptions() {
  foreach (func_get_args() as $i)
-        print "<option value=\"" . $i . "\">Slot " . $i  . "</option>\n";
+  print "<option value=\"" . $i . "\">Slot " . $i  . "</option>\n";
 }
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  print "<select id=\"itempos" . $position . "\" name=\"itempos" . $position . "\">\n";
@@ -139,25 +139,25 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case 7:
         // Mayo-Küche
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(9, 21);
+        CreateOptions(25, 144);
         print "</select>\n";
         break;
   case 8:
         // Käserei
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(10, 110);
+        CreateOptions(27, 111);
         print "</select>\n";
         break;
   case 9:
         // Wollspinnerei
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(11, 151);
+        CreateOptions(28, 152);
         print "</select>\n";
         break;
   case 10:
         // Bonbonküche
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(12);
+        CreateOptions(30);
         print "</select>\n";
         break;
   case 13:

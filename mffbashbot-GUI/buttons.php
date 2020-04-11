@@ -213,8 +213,23 @@ for ($i = 0; $i < count($buyableGoods); $i++) {
 }
 print "</table>\n";
 print "</div>\n";
+// flower arrangement slots
+print "<div id=\"flowerarrangementspane\" style=\"display:none;\">";
+print "<table id=\"flowerarrangementslotstbl\" style=\"float:left;\" border=\"1\">";
+print "<tr><th>" . $strings['flowerarrangements'] . "</th></tr>\n";
+for ($i = 1; $i <= 17; $i++) {
+ print "<tr><td>";
+ print "<select id=\"flowerarrangementslot" . $i . "\" name=\"flowerarrangementslot" . $i . "\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"flowerarrangementslot0\">Sleep</option>\n";
+ CreateOptionsWithID(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221);
+ print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
+ print "</td></tr>";
+}
+print "</table>\n";
+print "</div>\n";
 
 print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"flowerarrangementsbtn\" onclick=\"showHideOptions('flowerarrangementspane');\">" . $strings['flowerarrangements'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane');\">" . $strings['fruitstallslots'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane');\">" . $strings['stockmgmt'] . "...</button>\n";
@@ -233,7 +248,13 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
 'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',
-'fruitstallslot4', 'autobuyitems', 'autobuyrefillto' ];
+'fruitstallslot4', 'autobuyitems', 'autobuyrefillto', 'flowerarrangementslot1',
+'flowerarrangementslot2', 'flowerarrangementslot3', 'flowerarrangementslot4',
+'flowerarrangementslot5', 'flowerarrangementslot6', 'flowerarrangementslot7',
+'flowerarrangementslot8', 'flowerarrangementslot9', 'flowerarrangementslot10',
+'flowerarrangementslot11', 'flowerarrangementslot12', 'flowerarrangementslot13',
+'flowerarrangementslot14', 'flowerarrangementslot15', 'flowerarrangementslot16',
+'flowerarrangementslot17' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -284,6 +305,11 @@ print "document.getElementById('racecowslot" . $i . "').selectedIndex = document
 for ($i = 1; $i <= 4; $i++) {
 $savedValue = $configContents['fruitstallslot' . $i];
 print "document.getElementById('fruitstallslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
+}
+
+for ($i = 1; $i <= 17; $i++) {
+$savedValue = $configContents['flowerarrangementslot' . $i];
+print "document.getElementById('flowerarrangementslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
 
 $savedValue = explode(" ", $configContents['autobuyitems']);

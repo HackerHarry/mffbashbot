@@ -46,7 +46,7 @@ body {
  margin: 8px;
  line-height: 1;
  color: #000000;
- font-family: Arial,sans-serif;
+ font-family: 'Open Sans', Arial, sans-serif;
 }
 
 small {
@@ -137,7 +137,7 @@ input:checked + .slider:before {
 
 input, button, select, optgroup, textarea {
  margin: 0;
- font-family: Arial, sans-serif;
+ font-family: 'Open Sans', Arial, sans-serif;
  font-size: initial;
  line-height: initial;
 }

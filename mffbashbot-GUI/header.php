@@ -21,6 +21,7 @@ print "<html>\n";
 print "<head>\n";
 print "<title>My Free Farm Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
+print "<link href=\"https://fonts.googleapis.com/css?family=Open+Sans&display=swap\" rel=\"stylesheet\">";
 print "<link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "<link href=\"css/mffbot.css\" rel=\"stylesheet\" type=\"text/css\">\n";
 print "</head>\n";
