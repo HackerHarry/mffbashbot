@@ -244,8 +244,20 @@ function start_Factory {
     iPID=1
     ;;
   # 21,110 and 151 are kept for convenience, will be removed in the future
-  21|110|151|144|111|152)
+  21|110|151|144|111|152|820)
     iPID=2
+    ;;
+  821)
+    iPID=3
+    ;;
+  822)
+    iPID=4
+    ;;
+  823)
+    iPID=5
+    ;;
+  824)
+    iPID=6
     ;;
   *)
     echo "start_Factory: Unknown PID" >&2
