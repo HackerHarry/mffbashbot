@@ -61,6 +61,7 @@ function multiplierIsValid(multiplier) {
 function insertOptionBefore(elSel, elSelDest, amountpos) {
  if (!sanityCheck(elSel, elSelDest, amountpos))
   return false;
+ elSelDest.style.minWidth = null;
  var multiplier = document.getElementById("multi").value;
  if (!multiplierIsValid(multiplier))
   multiplier = 1;
@@ -90,6 +91,7 @@ function insertOptionBefore(elSel, elSelDest, amountpos) {
 function appendOptionLast(elSel, elSelDest, amountpos) {
  if (!sanityCheck(elSel, elSelDest, amountpos))
   return false;
+ elSelDest.style.minWidth = null;
  var multiplier = document.getElementById("multi").value;
  if (!multiplierIsValid(multiplier))
   multiplier = 1;
@@ -123,6 +125,8 @@ function removeOptionSelected(elSelDest) {
 }
 
 function removeOptionAll(elSelDest) {
+ var currentWidth = elSelDest.offsetWidth;
+ elSelDest.style.minWidth = currentWidth + "px";
  for (var i = elSelDest.length - 1; i >= 0; i--)
   elSelDest.remove(0);
  return false;
