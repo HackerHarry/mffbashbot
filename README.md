@@ -47,3 +47,4 @@ If you feel obliged to make a donation for my work, i'll happily transmit my<br>
 PayPal details.
 
 Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
+ 
