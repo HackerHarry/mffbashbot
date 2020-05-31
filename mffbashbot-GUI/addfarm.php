@@ -62,7 +62,7 @@ include 'functions.php';
   <h1>+ Farm</h1>
   <div class="form-group">
    <div class="offset-sm-5 col-sm-2">
-    <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/forumdisplay.php?fid=15" role="button">Forum</a>
+    <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html" role="button">Forum</a>
     <a class="btn btn-outline-dark btn-sm" onclick="history.back()" role="button">Back</a>
    </div>
   </div>
