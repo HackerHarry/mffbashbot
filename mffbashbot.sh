@@ -502,6 +502,14 @@ while (true); do
   check_StockRefill
  fi
 
+ if grep -q "doinfinitequest = 1" $CFGFILE; then
+  if [ $PLAYERLEVELNUM -ge 49 ]; then
+   if check_TimeRemaining '.updateblock.queststatus.infinite.data.quest.remain'; then
+    doInfiniteQuest
+   fi
+  fi
+ fi
+
  # contents of FARMDATAFILE change from here !
 
  # olympia / winter sports event

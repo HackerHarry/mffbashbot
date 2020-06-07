@@ -1328,6 +1328,28 @@ function start_WindMill {
  SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
+function doInfiniteQuest { # function names are to be harmonised at a later time
+ local iCount
+ local iPIDCount
+ local aPID=()
+ local aAmount=()
+ local iTotalProductsNeeded=$($JQBIN '.updateblock.queststatus.infinite.data.quest.products | keys | length' $FARMDATAFILE)
+ for iCount in $(seq 0 $((iTotalProductsNeeded - 1))); do
+  # see if player has enuff in stock
+  aPID+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products | keys['${iCount}'] | tonumber' $FARMDATAFILE))
+  aAmount+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products["'${aPID[$iCount]}'"]' $FARMDATAFILE))
+  iPIDCount=$(get_PIDAmountFromStock ${aPID[$iCount]} 1)
+  if [ $iPIDCount -lt ${aAmount[$iCount]} ]; then
+   echo "Not enough goods for infinite quest"
+   return 1
+  fi
+ done
+ echo "Doing infinite quest..."
+ for iCount in $(seq 0 $((iTotalProductsNeeded - 1))); do
+  SendAJAXFarmRequest "pid=${aPID[$iCount]}&amount=${aAmount[$iCount]}&mode=infinitequestline_questentry"
+ done
+}
+
 function harvest_PonyFarm {
  local iFarm=$1
  local iPosition=$2
