@@ -73,6 +73,7 @@ fruitstallslot4 = 0
 vehiclemgmt7 = 0
 autobuyrefillto = 0
 autobuyitems = 0
+doinfinitequest = 0
 flowerarrangementslot1 = 0
 flowerarrangementslot2 = 0
 flowerarrangementslot3 = 0

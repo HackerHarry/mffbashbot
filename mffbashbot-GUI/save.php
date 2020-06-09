@@ -158,6 +158,7 @@ switch ($farm) {
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
   $configContents['autobuyrefillto'] = $_POST["autobuyrefillto"];
+  $configContents['doinfinitequest'] = $_POST["infinitequesttoggle"];
   // clean up deprecated variables
   if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
