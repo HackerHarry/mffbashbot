@@ -37,37 +37,37 @@ function exitBot {
  exit 0
 }
 
-function GetFarmData {
+function getFarmData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=getfarms&farm=1&position=0"
 }
 
-function GetForestryData {
+function getForestryData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOREST}action=initforestry"
 }
 
-function GetFoodWorldData {
+function getFoodWorldData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOOD}action=foodworld_init&id=0&table=0&chair=0"
 }
 
-function GetLotteryData {
+function getLotteryData {
  sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=initlottery"
 }
 
-function GetWindMillData {
+function getWindMillData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=windmillinit"
 }
 
-function GetPanData {
+function getPanData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=showpan&farm=1&position=0"
 }
 
-function GetInnerInfoData {
+function getInnerInfoData {
  local sFile=$1
  local iFarm=$2
  local iPosition=$3
@@ -75,45 +75,44 @@ function GetInnerInfoData {
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=${sMode}&farm=${iFarm}&position=${iPosition}"
 }
 
-function GetOlympiaData {
+function getOlympiaData {
  sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXMAIN}action=olympia_init"
 }
 
-function GetCalendarData {
+function getCalendarData {
  sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=calendar_init"
 }
 
-function GetMerchantData {
+function getMerchantData {
  local sFile=$1
  wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}shopid=1&mode=shopinit"
 }
 
-function DoFarm {
+function doFarm {
  # read function from queue file
  local iFarm=$1
- # for the forestry this should be called sFarm.. but what the hell.
  local iPosition=$2
  local iSlot=$3
- if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+ if checkQueueSleep ${iFarm}/${iPosition}/${iSlot}; then
   echo "Set to sleep"
   return
  fi
  local sFunction=$(head -1 ${iFarm}/${iPosition}/${iSlot})
  # now we should know which function to call
- harvest_${sFunction} ${iFarm} ${iPosition} ${iSlot}
- start_${sFunction}${NONPREMIUM} ${iFarm} ${iPosition} ${iSlot}
- update_queue ${iFarm} ${iPosition} ${iSlot}
+ harvest${sFunction} ${iFarm} ${iPosition} ${iSlot}
+ start${sFunction}${NONPREMIUM} ${iFarm} ${iPosition} ${iSlot}
+ updateQueue ${iFarm} ${iPosition} ${iSlot}
 }
 
-function harvest_Stable {
+function harvestStable {
  local iFarm=$1
  local iPosition=$2
- SendAJAXFarmRequest "mode=inner_crop&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequest "mode=inner_crop&farm=${iFarm}&position=${iPosition}"
 }
 
-function start_Stable {
+function startStable {
  # get parameters from line 2
  # since stable takes two parameters, we need to split 'em
  local iFarm=$1
@@ -132,26 +131,26 @@ function start_Stable {
   # reset guild job flag
   GUILDJOB=false
  fi
- SendAJAXFarmRequest $sAJAXSuffix
+ sendAJAXFarmRequest $sAJAXSuffix
 }
 
-function start_StableNP {
- start_Stable $1 $2
+function startStableNP {
+ startStable $1 $2
 }
 
-function harvest_KnittingMill {
+function harvestKnittingMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
- SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
 }
 
-function start_KnittingMill {
+function startKnittingMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
  # Knitting Mill takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # PIDs start at 1 for this building type
@@ -162,24 +161,24 @@ function start_KnittingMill {
   GUILDJOB=false
  fi
  # do the knitting
- SendAJAXFarmRequest $sAJAXSuffix
+ sendAJAXFarmRequest $sAJAXSuffix
 }
 
-function start_KnittingMillNP {
- start_KnittingMill $1 $2 $3
+function startKnittingMillNP {
+ startKnittingMill $1 $2 $3
 }
 
-function harvest_OilMill {
+function harvestOilMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  # slot index in oil mill doesn't always match slot "name"
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
  # oil mills use slots 1, 2 and 3 instead of 0, 1... FFS
- SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
+ sendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
 }
 
-function start_OilMill {
+function startOilMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -188,24 +187,24 @@ function start_OilMill {
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # PIDs start at 1 for this building type
  iPID=$((iPID - 115))
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
  # do the mill
- SendAJAXFarmRequest "position=${iPosition}&oil=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
+ sendAJAXFarmRequest "position=${iPosition}&oil=${iPID}&mode=start&slot=${iRealSlot}&farm=${iFarm}"
 }
 
-function start_OilMillNP {
- start_OilMill $1 $2 $3
+function startOilMillNP {
+ startOilMill $1 $2 $3
 }
 
- function harvest_TeaFactory {
+ function harvestTeaFactory {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
- SendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
 }
 
-function start_TeaFactory {
+function startTeaFactory {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -213,24 +212,24 @@ function start_TeaFactory {
  # PIDs start at 1 for this building type
  iPID=$((iPID - 749))
  # this only works cuz the farm data isn't updated in between harvesting and planting (!)
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
- SendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
 }
 
-function start_TeaFactoryNP {
- start_TeaFactory $1 $2 $3
+function startTeaFactoryNP {
+ startTeaFactory $1 $2 $3
 }
 
-function harvest_Factory {
+function harvestFactory {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  iSlot=$((iSlot + 1))
-# SendAJAXFarmRequest "mode=getadvancedcrop&farm=${iFarm}&position=${iPosition}"
- SendAJAXFarmRequest "mode=harvestproduction&farm=${iFarm}&position=${iPosition}&id=${iSlot}&slot=${iSlot}"
+# sendAJAXFarmRequest "mode=getadvancedcrop&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequest "mode=harvestproduction&farm=${iFarm}&position=${iPosition}&id=${iSlot}&slot=${iSlot}"
 }
 
-function start_Factory {
+function startFactory {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -260,7 +259,7 @@ function start_Factory {
     iPID=6
     ;;
   *)
-    echo "start_Factory: Unknown PID" >&2
+    echo "startFactory: Unknown PID" >&2
     return
     ;;
  esac
@@ -271,40 +270,42 @@ function start_Factory {
   GUILDJOB=false
  fi
  # start the factory
- SendAJAXFarmRequest $sAJAXSuffix
+ sendAJAXFarmRequest $sAJAXSuffix
 }
 
-function start_FactoryNP {
- start_Factory $1 $2 $3
+function startFactoryNP {
+ startFactory $1 $2 $3
 }
 
-function harvest_Farm {
+function harvestFarm {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- SendAJAXFarmRequest "mode=cropgarden&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequest "mode=cropgarden&farm=${iFarm}&position=${iPosition}"
 }
 
-function start_Farm {
+function startFarm {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  # Farm takes one parameter
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # start the farm
- SendAJAXFarmRequest "mode=autoplant&farm=${iFarm}&position=${iPosition}&id=${iPID}&product=${iPID}"
+ sendAJAXFarmRequest "mode=autoplant&farm=${iFarm}&position=${iPosition}&id=${iPID}&product=${iPID}"
  # water the farm
- SendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
 }
 
-function start_FarmNP {
+function startFarmNP {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  # fetch garden data
- GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+ getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
  local iProduct=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ # shellcheck disable=SC2090
  local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'" | tonumber')
+ # shellcheck disable=SC2090
  local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'" | tonumber')
  local iPlot=1
  local iCache=0
@@ -314,18 +315,18 @@ function start_FarmNP {
  while (true); do
   if [ $iPlot -gt 120 ]; then
    if [ $iCacheFlag -eq 1 ]; then
-    SendAJAXFarmRequest "${sData}cid=${iPosition}"
-    SendAJAXFarmRequest "${sDataWater}"
+    sendAJAXFarmRequest "${sData}cid=${iPosition}"
+    sendAJAXFarmRequest "${sDataWater}"
     iCacheFlag=0
     iCache=0
    fi
-   if ! check_RipePlotOnField $iFarm $iPosition; then
-    GetFarmData $FARMDATAFILE
+   if ! checkRipePlotOnField $iFarm $iPosition; then
+    getFarmData $FARMDATAFILE
     return
    fi
    # there's more to harvest on this very field
-   harvest_Farm $iFarm $iPosition $iSlot
-   GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+   harvestFarm $iFarm $iPosition $iSlot
+   getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
    iPlot=1
   fi
  # don't plant on last column if x-dim is 2
@@ -337,20 +338,20 @@ function start_FarmNP {
  fi
  if [ $iPlot -ge 109 ] && [ $iProductDim_y -eq 2 ]; then
   if [ $iCacheFlag -eq 1 ]; then
-   SendAJAXFarmRequest "${sData}cid=${iPosition}"
-   SendAJAXFarmRequest "${sDataWater}"
+   sendAJAXFarmRequest "${sData}cid=${iPosition}"
+   sendAJAXFarmRequest "${sDataWater}"
    iCacheFlag=0
    iCache=0
   fi
-  if ! check_RipePlotOnField $iFarm $iPosition; then
-   GetFarmData $FARMDATAFILE
+  if ! checkRipePlotOnField $iFarm $iPosition; then
+   getFarmData $FARMDATAFILE
    return
   fi
-  harvest_Farm $iFarm $iPosition $iSlot
-  GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+  harvestFarm $iFarm $iPosition $iSlot
+  getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
   iPlot=1
  fi
- if ! get_FieldPlotReadiness $iPlot ; then
+ if ! getFieldPlotReadiness $iPlot ; then
   iPlot=$((iPlot + 1))
   continue
  fi
@@ -363,8 +364,8 @@ function start_FarmNP {
   iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
    # CID is some water interval ID .. screw it.
-   SendAJAXFarmRequest "${sData}cid=${iPosition}"
-   SendAJAXFarmRequest "${sDataWater}"
+   sendAJAXFarmRequest "${sData}cid=${iPosition}"
+   sendAJAXFarmRequest "${sDataWater}"
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot + 1))
@@ -377,7 +378,7 @@ function start_FarmNP {
   fi
  fi
  # x dim is 2
- if ! get_FieldPlotReadiness $((iPlot + 1)); then
+ if ! getFieldPlotReadiness $((iPlot + 1)); then
   iPlot=$((iPlot + 2))
   continue
  fi
@@ -388,8 +389,8 @@ function start_FarmNP {
   iCacheFlag=1
   iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
-   SendAJAXFarmRequest "${sData}cid=${iPosition}"
-   SendAJAXFarmRequest "${sDataWater}"
+   sendAJAXFarmRequest "${sData}cid=${iPosition}"
+   sendAJAXFarmRequest "${sDataWater}"
    sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot + 2))
@@ -402,11 +403,11 @@ function start_FarmNP {
   fi
  fi
  # y dim is 2
- if ! get_FieldPlotReadiness $((iPlot + 12)); then
+ if ! getFieldPlotReadiness $((iPlot + 12)); then
   iPlot=$((iPlot + 1))
   continue
  fi
- if ! get_FieldPlotReadiness $((iPlot + 13)); then
+ if ! getFieldPlotReadiness $((iPlot + 13)); then
   iPlot=$((iPlot + 1))
   continue
  fi
@@ -415,8 +416,8 @@ function start_FarmNP {
  iCacheFlag=1
  iCache=$((iCache + 1))
  if [ $iCache -eq 5 ]; then
-  SendAJAXFarmRequest "${sData}cid=${iPosition}"
-  SendAJAXFarmRequest "${sDataWater}"
+  sendAJAXFarmRequest "${sData}cid=${iPosition}"
+  sendAJAXFarmRequest "${sDataWater}"
   sData="mode=garden_plant&farm=${iFarm}&position=${iPosition}&"
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot + 2))
@@ -431,17 +432,17 @@ function start_FarmNP {
  done
 }
 
-function water_Field {
+function waterField {
  local iFarm=$1
  local iPosition=$2
- SendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequest "mode=watergarden&farm=${iFarm}&position=${iPosition}"
 }
 
-function water_FieldNP {
+function waterFieldNP {
  # this function only supports completely filled fields of the same crop size
  local iFarm=$1
  local iPosition=$2
- SendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
+ sendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
  local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $FARMDATAFILE)
  local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $FARMDATAFILE)
  local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
@@ -451,11 +452,11 @@ function water_FieldNP {
  while (true); do
   if [ $iPlot -gt 120 ]; then
    if [ $iCacheFlag -eq 1 ]; then
-    SendAJAXFarmRequest "${sDataWater}"
-    GetFarmData $FARMDATAFILE
+    sendAJAXFarmRequest "${sDataWater}"
+    getFarmData $FARMDATAFILE
     return
    fi
-  GetFarmData $FARMDATAFILE
+  getFarmData $FARMDATAFILE
   return
   fi
  if ! ((iPlot % 12)); then
@@ -467,11 +468,11 @@ function water_FieldNP {
  if [ $iPlot -ge 109 ]; then
   if [ $iProductDim_y -eq 2 ]; then
    if [ $iCacheFlag -eq 1 ]; then
-    SendAJAXFarmRequest "${sDataWater}"
-    GetFarmData $FARMDATAFILE
+    sendAJAXFarmRequest "${sDataWater}"
+    getFarmData $FARMDATAFILE
     return
    else
-    GetFarmData $FARMDATAFILE
+    getFarmData $FARMDATAFILE
     return
    fi
   fi
@@ -482,7 +483,7 @@ function water_FieldNP {
   iCacheFlag=1
   iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
-   SendAJAXFarmRequest "${sDataWater}"
+   sendAJAXFarmRequest "${sDataWater}"
    sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot + 1))
@@ -501,7 +502,7 @@ function water_FieldNP {
   iCacheFlag=1
   iCache=$((iCache + 1))
   if [ $iCache -eq 5 ]; then
-   SendAJAXFarmRequest "${sDataWater}"
+   sendAJAXFarmRequest "${sDataWater}"
    sleep 1
    sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
    iPlot=$((iPlot + 2))
@@ -518,7 +519,7 @@ function water_FieldNP {
  iCacheFlag=1
  iCache=$((iCache + 1))
  if [ $iCache -eq 5 ]; then
-  SendAJAXFarmRequest "${sDataWater}"
+  sendAJAXFarmRequest "${sDataWater}"
   sleep 1
   sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
   iPlot=$((iPlot + 2))
@@ -532,79 +533,79 @@ function water_FieldNP {
  done
 }
 
-function DoForestry {
+function doForestry {
  # read stuff from queue file
  # code iss a bit cheesy due to laziness ;)
  local sFile=$1
  local sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
- if check_QueueSleep ${sFile}/${sFile}/${sFile}; then
+ if checkQueueSleep ${sFile}/${sFile}/${sFile}; then
   echo "Set to sleep"
   return
  fi
- harvest_${sFunction}
- start_${sFunction} ${sFile}/${sFile}/${sFile}
- update_queue ${sFile} ${sFile} ${sFile}
+ harvest${sFunction}
+ start${sFunction} ${sFile}/${sFile}/${sFile}
+ updateQueue ${sFile} ${sFile} ${sFile}
 }
 
-function harvest_Tree {
+function harvestTree {
  # harvest all trees
- SendAJAXForestryRequest "action=cropall"
+ sendAJAXForestryRequest "action=cropall"
 }
 
-function start_Tree {
+function startTree {
  local sFile=$1
  local iPID=$(sed '2q;d' ${sFile})
  # plant trees
- SendAJAXForestryRequest "action=autoplant&productid=${iPID}"
- if check_CanWaterTrees; then
-  water_Tree
+ sendAJAXForestryRequest "action=autoplant&productid=${iPID}"
+ if checkCanWaterTrees; then
+  waterTree
  fi
 }
 
-function water_Tree {
+function waterTree {
  # water trees
- SendAJAXForestryRequest "action=water"
+ sendAJAXForestryRequest "action=water"
 }
 
-function harvest_ForestryBuilding {
+function harvestForestryBuilding {
  local iPosition=$2
  local iSlot=$3
- SendAJAXForestryRequest "action=cropproduction&position=${iPosition}&slot=${iSlot}"
+ sendAJAXForestryRequest "action=cropproduction&position=${iPosition}&slot=${iSlot}"
 }
 
-function start_ForestryBuilding {
+function startForestryBuilding {
  local sFarm=$1
  local iPosition=$2
  local iSlot=$3
  # this building needs one parameter
  local iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
- SendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iPID}&slot=${iSlot}"
+ sendAJAXForestryRequest "action=startproduction&position=${iPosition}&productid=${iPID}&slot=${iSlot}"
 }
 
-function start_ForestryBuildingNP {
- start_ForestryBuilding $1 $2 $3
+function startForestryBuildingNP {
+ startForestryBuilding $1 $2 $3
 }
 
-function harvest_FoodWorldBuilding {
+function harvestFoodWorldBuilding {
  local iPosition=$2
  local iSlot=$3
- SendAJAXFoodworldRequest "action=crop&id=0&table=${iPosition}&chair=${iSlot}"
+ sendAJAXFoodworldRequest "action=crop&id=0&table=${iPosition}&chair=${iSlot}"
 }
 
-function start_FoodWorldBuilding {
+function startFoodWorldBuilding {
  local sFarm=$1
  local iPosition=$2
  local iSlot=$3
  # this building needs one parameter
  iPID=$(sed '2q;d' ${sFarm}/${iPosition}/${iSlot})
- SendAJAXFoodworldRequest "action=production&id=${iPID}&table=${iPosition}&chair=${iSlot}"
+ sendAJAXFoodworldRequest "action=production&id=${iPID}&table=${iPosition}&chair=${iSlot}"
 }
 
-function start_FoodWorldBuildingNP {
- start_FoodWorldBuilding $1 $2 $3
+function startFoodWorldBuildingNP {
+ startFoodWorldBuilding $1 $2 $3
 }
 
-function check_MunchiesAtTables {
+function checkMunchiesAtTables {
  local sJSONDataType
  local iTable
  local iChair
@@ -624,13 +625,13 @@ function check_MunchiesAtTables {
    fi
    if [ "$bMunchieReady" = "true" ]; then
     echo "Munchie available at table $((iTable + 1)), chair ${iChair}, claiming it..."
-    SendAJAXFoodworldRequest "action=cash&id=0&table=${iTable}&chair=${iChair}"
+    sendAJAXFoodworldRequest "action=cash&id=0&table=${iTable}&chair=${iChair}"
    fi
   done
  done
 }
 
-function check_Munchies {
+function checkMunchies {
 # unused function. sits munchie down if there's enough goods for him
  local iID
  local aIDs
@@ -648,7 +649,7 @@ function check_Munchies {
   bCanSit="true"
   aPIDs=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products | to_entries[] | .key | tonumber' $FARMDATAFILE)
   for iPID in $aPIDs; do
-   iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+   iAmountInStock=$(getPIDAmountFromStock $iPID 1)
    iAmountNeeded=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products["'${iPID}'"]' $FARMDATAFILE)
    if [ $iAmountInStock -lt $iAmountNeeded ]; then
     bCanSit="false"
@@ -667,7 +668,7 @@ function check_Munchies {
     echo "Sitting munchie with ID ${iID} down at table ${iTable}, chair ${iChair}..."
     # table indices start at 0
     iTable=$((iTable - 1))
-    SendAJAXFoodworldRequest "action=dropped&id=${iID}&table=${iTable}&chair=${iChair}"
+    sendAJAXFoodworldRequest "action=dropped&id=${iID}&table=${iTable}&chair=${iChair}"
     sleep 2
     break
    fi
@@ -678,30 +679,30 @@ function check_Munchies {
  done
 }
 
-function DoFarmersMarket {
+function doFarmersMarket {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
- if check_QueueSleep ${sFarm}/${sPosition}/${iSlot}; then
+ if checkQueueSleep ${sFarm}/${sPosition}/${iSlot}; then
   echo "Set to sleep"
   return
  fi
  local sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
- harvest_${sFunction} ${sFarm} ${sPosition} ${iSlot}
- start_${sFunction} ${sFarm} ${sPosition} ${iSlot}
- update_queue ${sFarm} ${sPosition} ${iSlot}  
+ harvest${sFunction} ${sFarm} ${sPosition} ${iSlot}
+ start${sFunction} ${sFarm} ${sPosition} ${iSlot}
+ updateQueue ${sFarm} ${sPosition} ${iSlot}
 }
 
-function harvest_FlowerArea {
+function harvestFlowerArea {
  # harvest flowers
  if [ "$NONPREMIUM" = "NP" ]; then
-  harvest_FlowerAreaNP
+  harvestFlowerAreaNP
   return
  fi
- SendAJAXFarmRequest "mode=flowerarea_harvest_all&farm=1&position=1"
+ sendAJAXFarmRequest "mode=flowerarea_harvest_all&farm=1&position=1"
 }
 
-function harvest_FlowerAreaNP {
+function harvestFlowerAreaNP {
  # this function only supports the same flower in all spots
  local iPID=$($JQBIN '.updateblock.farmersmarket.flower_area["1"].pid | tonumber' $FARMDATAFILE)
  local iCount
@@ -709,10 +710,10 @@ function harvest_FlowerAreaNP {
  for iCount in {1..36}; do
   sData=${sData}${iCount}:${iPID},
  done
- SendAJAXFarmRequest $sData
+ sendAJAXFarmRequest $sData
 }
 
-function start_FlowerArea {
+function startFlowerArea {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
@@ -722,15 +723,15 @@ function start_FlowerArea {
   iPID=$($JQBIN '.updateblock.farmersmarket.flower_bonus.pid' $FARMDATAFILE)
  fi
  if [ "$NONPREMIUM" = "NP" ]; then
-  start_FlowerAreaNP $iPID
+  startFlowerAreaNP $iPID
   return
  fi
- SendAJAXFarmRequest "mode=flowerarea_autoplant&farm=1&position=1&set=0&pid=${iPID}"
+ sendAJAXFarmRequest "mode=flowerarea_autoplant&farm=1&position=1&set=0&pid=${iPID}"
  # water the flowers
- SendAJAXFarmRequest "mode=flowerarea_water_all&farm=1&position=1"
+ sendAJAXFarmRequest "mode=flowerarea_water_all&farm=1&position=1"
 }
 
-function start_FlowerAreaNP {
+function startFlowerAreaNP {
  local iPID=$1
  local iCount
  local sData="mode=flowerarea_plant&farm=1&position=1&set="
@@ -739,35 +740,35 @@ function start_FlowerAreaNP {
   sData=${sData}${iCount}:${iPID},
   sDataWater=${sDataWater}${iCount}:${iPID},
  done
- SendAJAXFarmRequest $sData
- SendAJAXFarmRequest $sDataWater
+ sendAJAXFarmRequest $sData
+ sendAJAXFarmRequest $sDataWater
 }
 
-function harvest_Nursery {
+function harvestNursery {
  local iSlot=$3
- SendAJAXFarmRequest "mode=nursery_harvest&farm=1&position=1&id=1&slot=${iSlot}"
+ sendAJAXFarmRequest "mode=nursery_harvest&farm=1&position=1&id=1&slot=${iSlot}"
 }
 
-function start_Nursery {
+function startNursery {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=nursery_startproduction&farm=1&position=1&id=${iPID}&pid=${iPID}&slot=${iSlot}"
+ sendAJAXFarmRequest "mode=nursery_startproduction&farm=1&position=1&id=${iPID}&pid=${iPID}&slot=${iSlot}"
 }
 
-function DoFarmersMarketFlowerPots {
+function doFarmersMarketFlowerPots {
  local iPID
  local iSlot
  # find withered arrangements
  local aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iSlot in $aSlots; do
-  iPID=$(get_ConfigValue flowerarrangementslot${iSlot})
+  iPID=$(getConfigValue flowerarrangementslot${iSlot})
   if [ $iPID -ne 0 ]; then
-   SendAJAXFarmRequest "mode=flowerslot_remove&farm=1&position=1&set=${iSlot}:1,"
+   sendAJAXFarmRequest "mode=flowerslot_remove&farm=1&position=1&set=${iSlot}:1,"
    sleep 1
    echo "Planting arrangement ${iPID} to flower pot ${iSlot}..."
-   SendAJAXFarmRequest "mode=flowerslot_plant&farm=1&position=1&set=${iSlot}:${iPID},"
+   sendAJAXFarmRequest "mode=flowerslot_plant&farm=1&position=1&set=${iSlot}:${iPID},"
   fi
  done
  # water pots in need
@@ -779,145 +780,145 @@ function DoFarmersMarketFlowerPots {
    # skip plants that don't need water anymore
    if [ -n "$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"] | select(.remain != .waterremain)' $FARMDATAFILE)" ]; then
     echo "Watering flower pot ${iSlot}..."
-    SendAJAXFarmRequest "mode=flowerslot_water&farm=1&position=1&set=${iSlot}:1,"
+    sendAJAXFarmRequest "mode=flowerslot_water&farm=1&position=1&set=${iSlot}:1,"
    fi
   fi
  done
 }
 
-function harvest_MonsterFruitHelper {
+function harvestMonsterFruitHelper {
  :
 }
 
-function start_MonsterFruitHelper {
+function startMonsterFruitHelper {
  sFarm=$1
  sPosition=$2
  iSlot=$3
  iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=megafruit_buyobject&farm=1&position=1&id=${iPID}&oid=${iPID}"
+ sendAJAXFarmRequest "mode=megafruit_buyobject&farm=1&position=1&id=${iPID}&oid=${iPID}"
 }
 
-function DoFoodContestCashDesk {
- SendAJAXFarmRequest "mode=foodcontest_merchpin&farm=1&position=1"
+function doFoodContestCashDesk {
+ sendAJAXFarmRequest "mode=foodcontest_merchpin&farm=1&position=1"
 }
 
-function DoFoodContestAudience {
+function doFoodContestAudience {
  local iBlock=$1
  local sPinType=$2
- SendAJAXFarmRequest "mode=foodcontest_pincache&farm=1&position=1&id=1_${sPinType},&value=${iBlock}_${sPinType},"
+ sendAJAXFarmRequest "mode=foodcontest_pincache&farm=1&position=1&id=1_${sPinType},&value=${iBlock}_${sPinType},"
 }
 
-function DoFoodContestFeeding {
- SendAJAXFarmRequest "mode=foodcontest_feed&farm=1&position=1"
+function doFoodContestFeeding {
+ sendAJAXFarmRequest "mode=foodcontest_feed&farm=1&position=1"
 }
 
-function harvest_Pets {
+function harvestPets {
  local iSlot=$3
- SendAJAXFarmRequest "mode=pets_harvest_production&slot=${iSlot}&position=1"
+ sendAJAXFarmRequest "mode=pets_harvest_production&slot=${iSlot}&position=1"
 }
 
-function start_Pets {
+function startPets {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=pets_start_production&slot=${iSlot}&pid=${iPID}"
+ sendAJAXFarmRequest "mode=pets_start_production&slot=${iSlot}&pid=${iPID}"
 }
 
-function harvest_Vet {
+function harvestVet {
  local iSlot=$3
- SendAJAXFarmRequest "mode=vet_harvestproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pos=1"
+ sendAJAXFarmRequest "mode=vet_harvestproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pos=1"
 }
 
-function start_Vet {
+function startVet {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "mode=vet_startproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pid=${iPID}&pos=1"
+ sendAJAXFarmRequest "mode=vet_startproduction&farm=1&position=1&id=${iSlot}&slot=${iSlot}&pid=${iPID}&pos=1"
 }
 
-function DoFarmersMarketAnimalTreatment {
+function doFarmersMarketAnimalTreatment {
  local iSlot=$1
  local iAnimalID
  local aQueue
  local sTreatmentSet=
  local iDiseaseID
  local iFastestCure
- SendAJAXFarmRequest "mode=vet_endtreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}"
+ sendAJAXFarmRequest "mode=vet_endtreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}"
  if ! grep -q "restartvetjob = 0" $CFGFILE && grep -q "restartvetjob = " $CFGFILE; then
-  check_VetJobDone
+  checkVetJobDone
  fi
- if get_AnimalQueueLength ; then
+ if getAnimalQueueLength ; then
   # queue is empty, return
   return
  fi
  # get animal ID from queue holding status 0
  iAnimalID=$($JQBIN 'first(.updateblock.farmersmarket.vet.animals.queue | .[] | select(.status == "0").id | tonumber)' $FARMDATAFILE)
  # place it in slot
- SendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
+ sendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
  # isolate deseases for animal ID
  aQueue=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue["'${iAnimalID}'"].diseases | .[] | .id?' $FARMDATAFILE)
  for iDiseaseID in $aQueue; do
   # find fastest cure for disease
-  iFastestCure=$(get_AnimalsFastestCureForDisease $iDiseaseID)
+  iFastestCure=$(getAnimalsFastestCureForDisease $iDiseaseID)
   sTreatmentSet=${sTreatmentSet}${iDiseaseID}_${iFastestCure},
  done
  # start treatment
- SendAJAXFarmRequest "mode=vet_starttreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}&set=${sTreatmentSet}"
- GetFarmData $FARMDATAFILE
+ sendAJAXFarmRequest "mode=vet_starttreatment&farm=1&position=1&id=${iSlot}&slot=${iSlot}&set=${sTreatmentSet}"
+ getFarmData $FARMDATAFILE
 }
 
-function check_VetJobDone {
+function checkVetJobDone {
  local iAnimalsHealedCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count | tonumber' $FARMDATAFILE)
  local iAnimals2HealCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
  # we're not using updated farm data at this point, but a treatment has just been finished
  # that's why we're calculating with one less treatment
  iAnimals2HealCount=$((iAnimals2HealCount - 1))
  if [ $iAnimals2HealCount -eq $iAnimalsHealedCount ]; then
-  local iVetJob=$(get_ConfigValue restartvetjob)
+  local iVetJob=$(getConfigValue restartvetjob)
   echo "Restarting vets' treatment with difficulty ${iVetJob}..."
   sleep 2
-  SendAJAXFarmRequest "mode=vet_setrole&farm=1&position=1&id=${iVetJob}&role=${iVetJob}"
+  sendAJAXFarmRequest "mode=vet_setrole&farm=1&position=1&id=${iVetJob}&role=${iVetJob}"
  fi
 }
 
-function DoFarmersMarketPetCare {
+function doFarmersMarketPetCare {
  local sSlot=$1
  # get config data
  if grep -q "care${sSlot} = 0" $CFGFILE; then
   echo "Pet's $sSlot care is set to sleep"
  else
-  local sCare=$(get_ConfigValue care${sSlot})
-  SendAJAXFarmRequest "mode=pets_care&set=${sCare},${sCare},${sCare}"
+  local sCare=$(getConfigValue care${sSlot})
+  sendAJAXFarmRequest "mode=pets_care&set=${sCare},${sCare},${sCare}"
  fi
 }
 
-function harvest_CowRacing {
+function harvestCowRacing {
  local iSlot=$3
- SendAJAXFarmRequest "slot=${iSlot}&position=1&mode=cowracing_harvestproduction"
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=cowracing_harvestproduction"
 }
 
-function start_CowRacing {
+function startCowRacing {
  local sFarm=$1
  local sPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
- SendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=cowracing_startproduction"
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=cowracing_startproduction"
 }
 
-function check_RaceCowFeeding {
+function checkRaceCowFeeding {
  local iSlot=$1
- local iPID=$(get_ConfigValue racecowslot${iSlot})
+ local iPID=$(getConfigValue racecowslot${iSlot})
  local sSlotType=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cowslots["'${iSlot}'"] | type' $FARMDATAFILE 2>/dev/null)
  if [ "$sSlotType" = "number" ]; then
-  if ! check_CowIsPvP ${iSlot}; then
+  if ! checkCowIsPvP ${iSlot}; then
    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?' $FARMDATAFILE 2>/dev/null)
    if [ "$SLOTREMAIN" = "null" ]; then
     echo "Feeding race cow in slot ${iSlot}..."
-    SendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
+    sendAJAXFarmRequest "pid=${iPID}&slot=${iSlot}&mode=cowracing_feedCow"
    else
-    check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?'
+    checkTimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].feed_remain?'
    fi
   fi
  else
@@ -925,7 +926,7 @@ function check_RaceCowFeeding {
  fi
 }
 
-function check_CowRace {
+function checkCowRace {
  local iSlot
  local sEnvironment
  local sBodyPart
@@ -933,47 +934,47 @@ function check_CowRace {
  local iCowLevel
  local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
  for iSlot in $aSlots; do
-  if check_TimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
-   if grep -q "excluderank1cow = 1" $CFGFILE && check_CowRanked1st $iSlot; then
+  if checkTimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
+   if grep -q "excluderank1cow = 1" $CFGFILE && checkCowRanked1st $iSlot; then
     echo "Skipping training race for cow ranked 1st in slot $iSlot"
     continue
    fi
-   if check_CowIsPvP ${iSlot}; then
+   if checkCowIsPvP ${iSlot}; then
     echo "Skipping PvP signed up cow in slot $iSlot"
     continue
    fi
    iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
    if [ $iCowLevel -gt 1 ]; then
     # remove all equipment from cow
-    remove_CowEquipment $iSlot
+    removeCowEquipment $iSlot
     sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].lanestatus' $FARMDATAFILE 2>/dev/null)
     for sBodyPart in head body foot; do
      # find/equip best equipment for the cow, buy non-coin equipment if possible
-     iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
+     iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
      if [ "$iEquipmentID" = "-1" ]; then
       continue
      fi
      # equip it
-     SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iSlot}&mode=cowracing_equipitem"
+     sendAJAXFarmRequest "id=${iEquipmentID}&slot=${iSlot}&mode=cowracing_equipitem"
     done
    # start the race
    sleep 1
   fi
   echo "Starting cow training race in slot ${iSlot}..."
-  SendAJAXFarmRequestOverwrite "type=pve&slot=${iSlot}&mode=cowracing_startrace" && sleep 3
+  sendAJAXFarmRequestOverwrite "type=pve&slot=${iSlot}&mode=cowracing_startrace" && sleep 3
   # put equipment back into stock
-  remove_CowEquipment $iSlot
+  removeCowEquipment $iSlot
   fi
  done
  # refresh farm data
- GetFarmData $FARMDATAFILE
+ getFarmData $FARMDATAFILE
 }
 
-function check_CowRacePvP {
+function checkCowRacePvP {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+ if checkQueueSleep ${iFarm}/${iPosition}/${iSlot}; then
   return
  fi
  local iCowSlot=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
@@ -991,33 +992,33 @@ function check_CowRacePvP {
  if [ "$bTimeThreshold" = "false" ]; then
   return
  fi
- if ! check_CowRanked1st $iCowSlot; then
+ if ! checkCowRanked1st $iCowSlot; then
   echo "The cow you chose isn't ranked 1st!"
   return
  fi
- if check_CowSuspended $iCowSlot; then
+ if checkCowSuspended $iCowSlot; then
   echo "The cow you chose has been temporarily suspended from PvP racing"
   return
  fi
  # ready to rock
- remove_CowEquipment $iCowSlot
+ removeCowEquipment $iCowSlot
  sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE 2>/dev/null)
  for sBodyPart in head body foot; do
-  iEquipmentID=$(get_CowEquipmentID $sBodyPart $sEnvironment)
+  iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
   if [ "$iEquipmentID" = "-1" ]; then
    continue
   fi
-  SendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
+  sendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
  done
  sleep 1
  echo "Signing up cow in slot ${iCowSlot} for the next PvP race..."
  # we cannot remove the eqiupment here
- SendAJAXFarmRequest "slot=${iCowSlot}&mode=cowracing_registercowpvp" && sleep 3
- update_queue ${iFarm} ${iPosition} ${iSlot}
- GetFarmData $FARMDATAFILE
+ sendAJAXFarmRequest "slot=${iCowSlot}&mode=cowracing_registercowpvp" && sleep 3
+ updateQueue ${iFarm} ${iPosition} ${iSlot}
+ getFarmData $FARMDATAFILE
 }
 
-function remove_CowEquipment {
+function removeCowEquipment {
  # does what the name suggests. mind that this function overwrites $FARMDATAFILE !
  local iSlot=$1
  local sBodyPart
@@ -1026,71 +1027,71 @@ function remove_CowEquipment {
  for sBodyPart in head body foot; do
   bItemEquipped=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'${iSlot}'"].slot_'${sBodyPart}' != "0"' $FARMDATAFILE)
   if [ "$bItemEquipped" = "true" ]; then
-   SendAJAXFarmRequestOverwrite "type=${sBodyPart}&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
+   sendAJAXFarmRequestOverwrite "type=${sBodyPart}&slot=${iSlot}&mode=cowracing_unequipitem" && sleep 1
   fi
  done
  # call again if PvP race cow is still wearing items
  iSuspendedCowSlot=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows | .[] | select(.suspendpvp == "1" and (.slot_head != "0" or .slot_body != "0" or .slot_foot != "0")).slot' $FARMDATAFILE)
  if [ -n "$iSuspendedCowSlot" ]; then
-  remove_CowEquipment $iSuspendedCowSlot
+  removeCowEquipment $iSuspendedCowSlot
  fi
 }
 
-function get_CowEquipmentID {
+function getCowEquipmentID {
  local sBodyPart=$1
  local sEnvironment=$2
  local iEquipmentID=-1
  case "$sBodyPart:$sEnvironment" in
   head:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "17 1")
+     iEquipmentID=$(checkCowEquipmentAvailability "17 1")
      ;;
   head:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "2 16")
+     iEquipmentID=$(checkCowEquipmentAvailability "2 16")
      ;;
   head:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "4 16")
+     iEquipmentID=$(checkCowEquipmentAvailability "4 16")
      ;;
   head:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "17 5")
+     iEquipmentID=$(checkCowEquipmentAvailability "17 5")
      ;;
   head:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "17 3")
+     iEquipmentID=$(checkCowEquipmentAvailability "17 3")
      ;;
   body:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "21 11")
+     iEquipmentID=$(checkCowEquipmentAvailability "21 11")
      ;;
   body:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "14 20")
+     iEquipmentID=$(checkCowEquipmentAvailability "14 20")
      ;;
   body:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "21 13")
+     iEquipmentID=$(checkCowEquipmentAvailability "21 13")
      ;;
   body:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "12 20")
+     iEquipmentID=$(checkCowEquipmentAvailability "12 20")
      ;;
   body:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "21 15")
+     iEquipmentID=$(checkCowEquipmentAvailability "21 15")
      ;;
   foot:normal)
-     iEquipmentID=$(check_CowEquipmentAvailability "19 6")
+     iEquipmentID=$(checkCowEquipmentAvailability "19 6")
      ;;
   foot:rain)
-     iEquipmentID=$(check_CowEquipmentAvailability "19 9")
+     iEquipmentID=$(checkCowEquipmentAvailability "19 9")
      ;;
   foot:cold)
-     iEquipmentID=$(check_CowEquipmentAvailability "10 18")
+     iEquipmentID=$(checkCowEquipmentAvailability "10 18")
      ;;
   foot:heat)
-     iEquipmentID=$(check_CowEquipmentAvailability "19 8")
+     iEquipmentID=$(checkCowEquipmentAvailability "19 8")
      ;;
   foot:mud)
-     iEquipmentID=$(check_CowEquipmentAvailability "7 18")
+     iEquipmentID=$(checkCowEquipmentAvailability "7 18")
      ;;
  esac
  echo "$iEquipmentID"
 }
 
-function check_CowEquipmentAvailability {
+function checkCowEquipmentAvailability {
  local iSearchPattern="$1"
  local iItem
  local iKey
@@ -1103,11 +1104,11 @@ function check_CowEquipmentAvailability {
   fi
  done
  # nothing suitable in stock, let's try and buy something that fits
- iKey=$(get_CowEquipment "$iSearchPattern")
+ iKey=$(getCowEquipment "$iSearchPattern")
  echo $iKey
 }
 
-function get_CowEquipment {
+function getCowEquipment {
  local iSearchPattern="$1"
  local iItem
  local iKey
@@ -1116,7 +1117,7 @@ function get_CowEquipment {
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "true" ]; then
    echo "Buying cow equipment #${iItem}..." >&2
-   SendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
+   sendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
    # nicer would be to use the correct slot no.
    iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id | tonumber' $FARMDATAFILE)
    # at this point it should be safe to use this construct. but just to be even safer... ;)
@@ -1134,7 +1135,7 @@ function get_CowEquipment {
  echo "-1"
 }
 
-function check_CowRanked1st {
+function checkCowRanked1st {
  # returns true if a cow is ranked 1st
  local iSlot=$1
  local bCowIsRanked1st=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].ladder.rank == 1' $FARMDATAFILE)
@@ -1144,7 +1145,7 @@ function check_CowRanked1st {
  return 1
 }
 
-function check_CowIsPvP {
+function checkCowIsPvP {
  # returns true if a cow has signed up for a PvP race
  local iSlot=$1
  local bCowIsPvP=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].ispvp == "1"' $FARMDATAFILE)
@@ -1154,7 +1155,7 @@ function check_CowIsPvP {
  return 1
 }
 
-function check_CowSuspended {
+function checkCowSuspended {
  # returns true if a cow has been suspended from PvP racing
  local iSlot=$1
  local bCowSuspended=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].suspendpvp == "1"' $FARMDATAFILE)
@@ -1164,7 +1165,7 @@ function check_CowSuspended {
  return 1
 }
 
-function harvest_MegaField {
+function harvestMegaField {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -1175,8 +1176,8 @@ function harvest_MegaField {
  # check for 2x2 harvest device
  case "$iHarvestDevice" in
   5|7|9|10)
-     harvest_MegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
-     update_queue ${iFarm} ${iPosition} ${iSlot}
+     harvestMegaField2x2 ${iFarm} ${iPosition} ${iSlot} ${iHarvestDevice}
+     updateQueue ${iFarm} ${iPosition} ${iSlot}
      iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
      case "$iHarvestDevice" in
       5|7|9|10)
@@ -1186,27 +1187,27 @@ function harvest_MegaField {
      esac
      ;;
  esac
- iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ iHarvestDelay=$(getMegaFieldHarvesterDelay $iHarvestDevice)
  if [ $iHarvestDelay -eq 0 ]; then
   echo "Stopping work on Mega Field!"
   return
  fi
  aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iPlot in $aPlots; do
-  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
+  iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   echo -n "Harvesting Mega Field plot ${iPlot}..."
-  SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
+  sendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
   echo "delaying ${iHarvestDelay} seconds"
   sleep ${iHarvestDelay}s
   # plant instantly
-  start_MegaField${NONPREMIUM} 1
+  startMegaField${NONPREMIUM} 1
  done
- if check_RipePlotOnMegaField; then
-  harvest_MegaField ${FARM} ${POSITION} 0
+ if checkRipePlotOnMegaField; then
+  harvestMegaField ${FARM} ${POSITION} 0
  fi
 }
 
-function start_MegaField {
+function startMegaField {
  local iSafetyCount=$1
  if [ -z "$iSafetyCount" ]; then
   return
@@ -1219,57 +1220,57 @@ function start_MegaField {
  local iAmount
  local iFreePlots
  if [ $iSafetyCount -gt 4 ] 2>/dev/null; then
-  echo "Exiting start_MegaField after four cycles!"
+  echo "Exiting startMegaField after four cycles!"
   return
  fi
  for iProductSlot in 0 1 2; do
-  if ! check_MegaFieldProductIsHarvestable $iProductSlot ; then
+  if ! checkMegaFieldProductIsHarvestable $iProductSlot ; then
    continue
   fi
   # here we've got a product that is harvestable
   iPID=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].pid' $FARMDATAFILE)
   iAmount=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].amount' $FARMDATAFILE)
-  iAmountToGo=$(get_MegaFieldAmountToGoInSlot $iProductSlot)
+  iAmountToGo=$(getMegaFieldAmountToGoInSlot $iProductSlot)
   if [ "$iAmountToGo" = "0" ]; then
    continue
    # no need to plant more
   fi
-  iFreePlots=$(get_MegaFieldFreePlotsCount)
+  iFreePlots=$(getMegaFieldFreePlotsCount)
   if [ $iFreePlots -eq 0 ]; then
    # no free plots, no need to plant
    return
   fi
   # plant
   if [ $iFreePlots -lt $iAmountToGo ]; then
-   if check_MegaFieldPIDAmount $iPID $iFreePlots $iAmount; then
+   if checkMegaFieldPIDAmount $iPID $iFreePlots $iAmount; then
     # plant on all free plots
-    MegaFieldPlant${NONPREMIUM} $iPID $iFreePlots
+    megaFieldPlant${NONPREMIUM} $iPID $iFreePlots
    else
-    echo "start_MegaField: Cannot plant! Not enough crop in stock!"
+    echo "startMegaField: Cannot plant! Not enough crop in stock!"
    fi
    return
   fi
-  if check_MegaFieldPIDAmount $iPID $iAmountToGo $iAmount; then
-   MegaFieldPlant${NONPREMIUM} $iPID $iAmountToGo
+  if checkMegaFieldPIDAmount $iPID $iAmountToGo $iAmount; then
+   megaFieldPlant${NONPREMIUM} $iPID $iAmountToGo
   else
-   echo "start_MegaField: Cannot plant! Not enough crop in stock!"
+   echo "startMegaField: Cannot plant! Not enough crop in stock!"
    return
   fi
   # call function again since there are still free plots
   iSafetyCount=$((iSafetyCount + 1))
-  start_MegaField $iSafetyCount
+  startMegaField $iSafetyCount
  done
 }
 
-function start_MegaFieldNP {
- start_MegaField
+function startMegaFieldNP {
+ startMegaField
 }
 
-function check_MegaFieldPIDAmount {
+function checkMegaFieldPIDAmount {
  local iPID=$1
  local iFreePlots=$2
  local iAmount=$3
- local iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+ local iAmountInStock=$(getPIDAmountFromStock $iPID 1)
  local iAmountNeeded=$((iFreePlots * iAmount))
  if [ $iAmountInStock -ge $iAmountNeeded ]; then
   return 0
@@ -1277,19 +1278,19 @@ function check_MegaFieldPIDAmount {
  return 1
 }
 
-function harvest_FuelStation {
+function harvestFuelStation {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
- SendAJAXFarmRequest "mode=fuelstation_harvest&farm=${iFarm}&position=${iPosition}&id=${iRealSlot}&slot=${iRealSlot}"
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "mode=fuelstation_harvest&farm=${iFarm}&position=${iPosition}&id=${iRealSlot}&slot=${iRealSlot}"
 }
 
-function start_FuelStation {
+function startFuelStation {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- local iRealSlot=$(get_RealSlotName $iFarm $iPosition $iSlot)
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  iSlot=$iRealSlot
  # get points per good
@@ -1304,31 +1305,31 @@ function start_FuelStation {
  local iAmount=$(((iPointsNeededToStart + (iPointsPerGood - 1)) / iPointsPerGood))
  # force 3 second delay, cuz upjers server can't handle too quick a re-start
  sleep 3
- SendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iPID}"
+ sendAJAXFarmRequest "mode=fuelstation_entry&farm=${iFarm}&position=${iPosition}&id=${iSlot}&amount=${iAmount}&slot=${iSlot}&pid=${iPID}"
 }
 
-function start_FuelStationNP {
- start_FuelStation $1 $2 $3
+function startFuelStationNP {
+ startFuelStation $1 $2 $3
 }
 
-function harvest_WindMill {
+function harvestWindMill {
  local iSlot=$3
- SendAJAXCityRequest "city=2&mode=windmillcrop&slot=${iSlot}"
+ sendAJAXCityRequest "city=2&mode=windmillcrop&slot=${iSlot}"
 }
 
-function start_WindMillNP {
- start_WindMill $1 $2 $3
+function startWindMillNP {
+ startWindMill $1 $2 $3
 }
 
-function start_WindMill {
+function startWindMill {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- SendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
+ sendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
-function doInfiniteQuest { # function names are to be harmonised at a later time
+function doInfiniteQuest {
  local iCount
  local iPIDCount
  local aPID=()
@@ -1338,7 +1339,7 @@ function doInfiniteQuest { # function names are to be harmonised at a later time
   # see if player has enuff in stock
   aPID+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products | keys['${iCount}'] | tonumber' $FARMDATAFILE))
   aAmount+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products["'${aPID[$iCount]}'"]' $FARMDATAFILE))
-  iPIDCount=$(get_PIDAmountFromStock ${aPID[$iCount]} 1)
+  iPIDCount=$(getPIDAmountFromStock ${aPID[$iCount]} 1)
   if [ $iPIDCount -lt ${aAmount[$iCount]} ]; then
    echo "Not enough goods for infinite quest"
    return 1
@@ -1346,28 +1347,28 @@ function doInfiniteQuest { # function names are to be harmonised at a later time
  done
  echo "Doing infinite quest..."
  for iCount in $(seq 0 $((iTotalProductsNeeded - 1))); do
-  SendAJAXFarmRequest "pid=${aPID[$iCount]}&amount=${aAmount[$iCount]}&mode=infinitequestline_questentry"
+  sendAJAXFarmRequest "pid=${aPID[$iCount]}&amount=${aAmount[$iCount]}&mode=infinitequestline_questentry"
  done
 }
 
-function harvest_PonyFarm {
+function harvestPonyFarm {
  local iFarm=$1
  local iPosition=$2
  local iSlot
  local iAnimalID
- GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
+ getInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
  local aAnimalIDs=$($JQBIN '.datablock[1].farmis | .[] | select(.data.remain < 0 and .data.remain != null).data.animalid' $TMPFILE)
  for iAnimalID in $aAnimalIDs; do
   iSlot=$($JQBIN '.datablock[1].ponys | .[] | select(.animalid == "'$iAnimalID'").data.position' $TMPFILE)
-  SendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
+  sendAJAXFarmRequest "mode=pony_crop&farm=${iFarm}&position=${iPosition}&id=${iSlot}"
  done
 }
 
-function start_PonyFarmNP {
- start_PonyFarm $1 $2
+function startPonyFarmNP {
+ startPonyFarm $1 $2
 }
 
-function start_PonyFarm {
+function startPonyFarm {
  local iFarm=$1
  local iPosition=$2
  local iMaxFood=8
@@ -1378,7 +1379,7 @@ function start_PonyFarm {
  local iFood
  local iEnergyBarCount
  for iSlot in 1 2 3; do
-  GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
+  getInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
   sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"] | select(.block == null and .data.farmi == null).data.position' $TMPFILE)
   if [ -n "$sBlocked" ]; then
    # slot is unblocked and idle...
@@ -1386,11 +1387,11 @@ function start_PonyFarm {
    # refill food dispenser
    iFood=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.feed' $TMPFILE)
    iFood=$((iMaxFood - iFood))
-   SendAJAXFarmRequest "mode=pony_feed&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iFood}"
+   sendAJAXFarmRequest "mode=pony_feed&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iFood}"
    # find a farmie
    if [ $iSlot -ge 2 ]; then
-    update_queue ${iFarm} ${iPosition} 0
-    if check_QueueSleep ${iFarm}/${iPosition}/0; then
+    updateQueue ${iFarm} ${iPosition} 0
+    if checkQueueSleep ${iFarm}/${iPosition}/0; then
      echo "Set to sleep"
      return
     fi
@@ -1401,23 +1402,23 @@ function start_PonyFarm {
     # something went wrong. bail out.
     return
    fi
-   SendAJAXFarmRequest "mode=pony_setfarmi&farm=${iFarm}&position=${iPosition}&farmi=${iFarmie}&pony=${iPony}"
+   sendAJAXFarmRequest "mode=pony_setfarmi&farm=${iFarm}&position=${iPosition}&farmi=${iFarmie}&pony=${iPony}"
    # check for pony energy bar...
    if grep -q "useponyenergybar = 1" $CFGFILE; then
     iEnergyBarCount=$((iDuration / 2))
     sleep 2
-    SendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
+    sendAJAXFarmRequest "mode=pony_speedup&farm=${iFarm}&position=${iPosition}&id=${iSlot}&pos=${iSlot}&amount=${iEnergyBarCount}"
    fi
   fi
  done
 }
 
-function start_Butterflies {
+function startButterflies {
  local iSlot=$1
- SendAJAXFarmRequest "slot=${iSlot}&mode=butterfly_carebreed"
+ sendAJAXFarmRequest "slot=${iSlot}&mode=butterfly_carebreed"
 }
 
-function check_Farmies {
+function checkFarmies {
  local sFarmieType=$1
  local aFarmies
  local iID
@@ -1426,56 +1427,56 @@ function check_Farmies {
      aFarmies=$($JQBIN '.updateblock.farmis[0] | .[] | .id | tonumber' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending farmie with ID ${iID} away..."
-      SendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
+      sendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
      done
      ;;
   flowerfarmie)
      aFarmies=$($JQBIN '.updateblock.farmersmarket.farmis | .[] | .id | tonumber' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending flower farmie with ID ${iID} away..."
-      SendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
+      sendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
      done
      ;;
   forestryfarmie)
      aFarmies=$($JQBIN '.datablock[5] | .[] | .farmiid | tonumber' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending forestry farmie with ID ${iID} away..."
-      SendAJAXForestryRequest "action=kickfarmi&productid=${iID}"
+      sendAJAXForestryRequest "action=kickfarmi&productid=${iID}"
      done
      ;;
   munchie)
      aFarmies=$($JQBIN '.datablock.farmis | .[] | .id | tonumber' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending munchie with ID ${iID} away..."
-      SendAJAXFoodworldRequest "action=kick&id=${iID}&table=0&chair=0"
+      sendAJAXFoodworldRequest "action=kick&id=${iID}&table=0&chair=0"
      done
      ;;
  esac
 }
 
-function check_VehiclePosition {
+function checkVehiclePosition {
  local iFarm=$1
  local iRoute=$2
  local iVehicle
  local iCurrentVehiclePos
  echo -n "Transport vehicle for route $iRoute is "
- iVehicle=$(get_ConfigValue vehiclemgmt${iFarm})
+ iVehicle=$(getConfigValue vehiclemgmt${iFarm})
  if ! $JQBIN -e '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
   iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current | tonumber' $FARMDATAFILE)
   if [ "$iCurrentVehiclePos" = "1" ]; then
    echo "on farm 1"
-   check_SendGoodsOffMainFarm $iVehicle $iFarm $iRoute
+   checkSendGoodsOffMainFarm $iVehicle $iFarm $iRoute
   else
    echo "on farm $iCurrentVehiclePos"
    # check if sending a fully loaded vehicle is possible
-   check_SendGoodsToMainFarm $iVehicle $iFarm $iRoute
+   checkSendGoodsToMainFarm $iVehicle $iFarm $iRoute
   fi
  else
   echo "en route"
  fi
 }
 
-function check_SendGoodsToMainFarm {
+function checkSendGoodsToMainFarm {
  local iVehicle=$1
  local iFarm=$2
  local iRoute=$3
@@ -1492,7 +1493,7 @@ function check_SendGoodsToMainFarm {
  local iFilledFieldCount
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
- local iFieldsOnFarmCount=$(get_FieldsOnFarmCount $iFarm)
+ local iFieldsOnFarmCount=$(getFieldsOnFarmCount $iFarm)
  local aPositions=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position | tonumber' $FARMDATAFILE)
  echo -n "Calculating transport count for route ${iRoute}..."
  case $iFarm in
@@ -1511,11 +1512,11 @@ function check_SendGoodsToMainFarm {
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
  for iPID in $aPIDs; do
   echo -n "."
-  iPIDCount=$(get_PIDAmountFromStock $iPID $iFarm)
-  iSafetyCount=$(get_ProductCountFittingOnField $iPID)
+  iPIDCount=$(getPIDAmountFromStock $iPID $iFarm)
+  iSafetyCount=$(getProductCountFittingOnField $iPID)
   # do we have multiple fields on the current farm?
   # are they filled with crop we want to transport off?
-  iFilledFieldCount=$(get_FilledFieldCount $iFarm $iPID "$aPositions")
+  iFilledFieldCount=$(getFilledFieldCount $iFarm $iPID "$aPositions")
   iSafetyCount=$((iSafetyCount * (iFieldsOnFarmCount - iFilledFieldCount)))
   if [ $iSafetyCount -lt 5 ]; then
    iSafetyCount=5
@@ -1531,42 +1532,44 @@ function check_SendGoodsToMainFarm {
    iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
    sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
    echo -e "\nSending $((iTransportCount - iCropValue)) items to main farm..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   sendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
   iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
   sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
    echo -e "\nSending partially loaded vehicle to main farm (no slots left)..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   sendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
  done
  if [ $iTransportCount -lt 0 ]; then
   iTransportCount=0
  fi
- if ! check_QueueSleep city2/trans2${iFarm}/0; then
+ if ! checkQueueSleep city2/trans2${iFarm}/0; then
   echo -e "\nSending vehicle back empty (Queue is still busy)..."
-  SendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
+  sendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart="
  else
   echo -e "\n$iTransportCount/$iVehicleCapacity items available for transport on route ${iRoute}, no transport started"
  fi
 }
 
-function get_ProductCountFittingOnField {
+function getProductCountFittingOnField {
  local iPID=$1
+ # shellcheck disable=SC2090
  local iPIDDim_x=$(echo $aDIM_X | $JQBIN '."'${iPID}'" | tonumber')
+ # shellcheck disable=SC2090
  local iPIDDim_y=$(echo $aDIM_Y | $JQBIN '."'${iPID}'" | tonumber')
  echo $((120 / (iPIDDim_x * iPIDDim_y)))
 }
 
-function get_FieldsOnFarmCount {
+function getFieldsOnFarmCount {
  local iFarm=$1
  local iFieldsOnFarm=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE | wc -l)
  echo $iFieldsOnFarm
 }
 
-function check_SendGoodsOffMainFarm {
+function checkSendGoodsOffMainFarm {
  local iVehicle=$1
  # this is the destination farm
  local iFarm=$2
@@ -1582,9 +1585,9 @@ function check_SendGoodsOffMainFarm {
  local sOldIFS=$IFS
  # ugly static coding... :)
  while (true); do
-  if check_QueueSleep city2/${iPosition}/0; then
+  if checkQueueSleep city2/${iPosition}/0; then
    echo "Sending $iTransportCount items to farm ${iFarm}..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   sendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
   fi
   local aParams=$(sed '2q;d' city2/${iPosition}/0)
@@ -1602,25 +1605,25 @@ function check_SendGoodsOffMainFarm {
   sCart=${sCart}${iVehicleSlotsUsed},${iProduct},${iProductCount}_
   if [ $iTransportCount -eq $iVehicleCapacity ]; then
    echo "Sending $iTransportCount items to farm ${iFarm}..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
-   update_queue city2 ${iPosition} 0
+   sendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   updateQueue city2 ${iPosition} 0
    return
   fi
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
    echo "Sending partially loaded vehicle to farm ${iFarm} (no slots left)..."
-   SendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
-   update_queue city2 ${iPosition} 0
+   sendAJAXFarmRequest "mode=map_sendvehicle&farm=1&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
+   updateQueue city2 ${iPosition} 0
    return
   fi
-  update_queue city2 ${iPosition} 0
+  updateQueue city2 ${iPosition} 0
  done
 }
 
-function check_PowerUps {
+function checkPowerUps {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+ if checkQueueSleep ${iFarm}/${iPosition}/${iSlot}; then
   return
  fi
  local iActivePowerUp
@@ -1629,8 +1632,8 @@ function check_PowerUps {
  local iActivePowerUps=$($JQBIN '.updateblock.farms.powerups.active | keys | length' $FARMDATAFILE)
  if [ $iActivePowerUps -eq 0 ]; then
   echo "Activating power-up #${iPowerUp}..."
-  SendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
-  update_queue ${iFarm} ${iPosition} ${iSlot}
+  sendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
+  updateQueue ${iFarm} ${iPosition} ${iSlot}
   return
  else
   # there are active powerups
@@ -1642,16 +1645,16 @@ function check_PowerUps {
    fi
   done
   echo "Activating power-up #${iPowerUp}..."
-  SendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
-  update_queue ${iFarm} ${iPosition} ${iSlot}
+  sendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
+  updateQueue ${iFarm} ${iPosition} ${iSlot}
  fi
 }
 
- function check_Tools {
+ function checkTools {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
- if check_QueueSleep ${iFarm}/${iPosition}/${iSlot}; then
+ if checkQueueSleep ${iFarm}/${iPosition}/${iSlot}; then
   return
  fi
  local iActiveTool
@@ -1662,13 +1665,13 @@ function check_PowerUps {
   return
  else
   echo "Activating tool #${iTool}..."
-  SendAJAXGuildRequest "mode=job_set_tool&pid=${iTool}"
-  update_queue ${iFarm} ${iPosition} ${iSlot}
+  sendAJAXGuildRequest "mode=job_set_tool&pid=${iTool}"
+  updateQueue ${iFarm} ${iPosition} ${iSlot}
   return
  fi
 }
 
-function update_queue {
+function updateQueue {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -1685,7 +1688,7 @@ function update_queue {
  fi
 }
 
-function check_QueueSleep {
+function checkQueueSleep {
  local sFile=$1
  local sQueueItem=$(sed '2q;d' $sFile)
  if [ "$sQueueItem" = "sleep" ] || [ -z "$sQueueItem" ]; then
@@ -1694,7 +1697,7 @@ function check_QueueSleep {
  return 1
 }
 
-function check_CanWaterTrees {
+function checkCanWaterTrees {
  local bCanWaterTrees=$($JQBIN '.datablock[9]?' $FARMDATAFILE)
  if [ "$bCanWaterTrees" = "1" ]; then
   return 0
@@ -1703,11 +1706,11 @@ function check_CanWaterTrees {
  fi
 }
 
-function check_RipePlotOnField {
+function checkRipePlotOnField {
  # returns true if at least one plot is ripe
  local iFarm=$1
  local iPosition=$2
- GetInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+ getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
  local bHasRipePlots=$($JQBIN '[.datablock[1] | .[] | select(.phase? == 4 and (.buildingid == "v" or .buildingid == "ex" or .buildingid == "alpin"))][0] | type == "object"' $TMPFILE)
  if [ "$bHasRipePlots" = "true" ]; then
   return 0
@@ -1715,7 +1718,7 @@ function check_RipePlotOnField {
  return 1
 }
 
-function check_RunningMegaFieldJob {
+function checkRunningMegaFieldJob {
  local iJobEnd=$($JQBIN '.updateblock.megafield.job_endtime | tonumber' $FARMDATAFILE)
  local iJobStart=$($JQBIN '.updateblock.megafield.job_start | tonumber' $FARMDATAFILE)
  if [ $iJobStart -gt 0 ] && [ $iJobEnd -eq 0 ]; then
@@ -1724,7 +1727,7 @@ function check_RunningMegaFieldJob {
  return 1
 }
 
-function check_RipePlotOnMegaField {
+function checkRipePlotOnMegaField {
  # returns true if a plot shows a negative remainder
  local bHasNegatives=$($JQBIN '[.updateblock.megafield.area | .[] | select(.remain < 0)][0] | type == "object"' $FARMDATAFILE)
  if [ "$bHasNegatives" = "true" ]; then
@@ -1733,43 +1736,22 @@ function check_RipePlotOnMegaField {
  return 1
 }
 
-function get_UnlockedMegaFieldPlotCount {
+function getUnlockedMegaFieldPlotCount {
  local iUnlockedPlots=$($JQBIN '.updateblock.megafield.area_free | length' $FARMDATAFILE)
  # we always have a positive number here
  echo $iUnlockedPlots
 }
 
-function get_MegaFieldHarvesterDelay {
+function getMegaFieldHarvesterDelay {
  local iHarvestDevice=$1
- # taken from here: .updateblock.megafield.vehicle_slots["nn"].duration
- case "$iHarvestDevice" in
-   1) echo 55
-      ;;
-   2) echo 50
-      ;;
-   3) echo 45
-      ;;
-   4) echo 40
-      ;;
-   5) echo 80
-      ;;
-   6) echo 30
-      ;;
-   7) echo 60
-      ;;
-   8) echo 20
-      ;;
-   9) echo 60
-      ;;
-  10) echo 20
-      ;;
-   *) echo "get_MegaFieldHarvesterDelay: Unknown harvest device" >&2
-      echo 0
-      ;;
- esac
+ local iHarvesterDelay=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].duration // 0' $FARMDATAFILE)
+ if [ $iHarvesterDelay -eq 0 ]; then
+  echo "getMegaFieldHarvesterDelay: Unknown harvest device" >&2
+ fi
+ echo $iHarvesterDelay
 }
 
-function check_MegaFieldEmptyHarvestDevice {
+function checkMegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iVehicleBought=$2
  local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"]?.durability | type == "number"' $FARMDATAFILE)
@@ -1779,7 +1761,7 @@ function check_MegaFieldEmptyHarvestDevice {
   if [ $iVehicleBought -eq 0 ]; then
    # buy a brand new one if empty
    echo "Buying new vehicle #${iHarvestDevice}..." >&2
-   SendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
+   sendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
    echo 1
    return
   else
@@ -1793,7 +1775,7 @@ function check_MegaFieldEmptyHarvestDevice {
  fi
 }
 
-function check_MegaFieldProductIsHarvestable {
+function checkMegaFieldProductIsHarvestable {
  local iProductSlot=$1
  local iIsHarvestable=$($JQBIN '.updateblock.megafield.job.products['$iProductSlot'].harvest' $FARMDATAFILE)
  if [ "$iIsHarvestable" = "1" ]; then
@@ -1802,7 +1784,7 @@ function check_MegaFieldProductIsHarvestable {
  return 1
 }
 
-function get_MegaFieldAmountToGoInSlot {
+function getMegaFieldAmountToGoInSlot {
  local iBusyPlots
  local iPIDOnBusyPlots
  local iProductSlot=$1
@@ -1827,19 +1809,19 @@ function get_MegaFieldAmountToGoInSlot {
  # in theory, this amount can't be less than zero
 }
 
-function get_MegaFieldFreePlotsCount {
+function getMegaFieldFreePlotsCount {
  local iTotalPlots=$($JQBIN '.updateblock.megafield.area_free | length' $FARMDATAFILE)
  local iBusyPlots=$($JQBIN '.updateblock.megafield.area | length' $FARMDATAFILE)
  echo $((iTotalPlots - iBusyPlots))
 }
 
-function MegaFieldPlantNP {
+function megaFieldPlantNP {
  local iPID=$1
  local iFreePlots=$2
  local iCount=1
  local iCount2=0
  local bPlotOccupied
- local iUnlockedPlotsCount=$(get_UnlockedMegaFieldPlotCount)
+ local iUnlockedPlotsCount=$(getUnlockedMegaFieldPlotCount)
  while [ "$iCount" -le "$iFreePlots" ]; do
    while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
     sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free | keys['$iCount2'] | tonumber' $FARMDATAFILE)
@@ -1849,7 +1831,7 @@ function MegaFieldPlantNP {
     if [ "$bPlotOccupied" = "false" ] || [ -z "$bPlotOccupied" ]; then
      # plot is free, plant stuff on it
      echo "Planting item ${iPID} on Mega Field plot ${sUnlockedPlotName}..."
-     SendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
+     sendAJAXFarmRequestOverwrite "mode=megafield_plant&farm=1&position=1&set=${sUnlockedPlotName}_${iPID}|"
      iCount2=$((iCount2 + 1))
      break
     fi
@@ -1859,22 +1841,22 @@ function MegaFieldPlantNP {
  done
 }
 
-function MegaFieldPlant {
+function megaFieldPlant {
  # new premium function after changes made by upjers 09.02.2016
  local iPID=$1
  local iAmount=$2
  echo "Planting item ${iPID} on ${iAmount} Mega Field plot(s)..."
- SendAJAXFarmRequestOverwrite "mode=megafield_autoplant&farm=1&position=1&id=${iPID}&pid=${iPID}"
+ sendAJAXFarmRequestOverwrite "mode=megafield_autoplant&farm=1&position=1&id=${iPID}&pid=${iPID}"
 }
 
-function harvest_MegaField2x2 {
+function harvestMegaField2x2 {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
  local iHarvestDevice=$4
  local iPlot=1
  local iVehicleBought=0
- iHarvestDelay=$(get_MegaFieldHarvesterDelay $iHarvestDevice)
+ iHarvestDelay=$(getMegaFieldHarvesterDelay $iHarvestDevice)
  if [ $iHarvestDelay -eq 0 ]; then
   echo "Stopping work on Mega Field!"
   return
@@ -1883,21 +1865,21 @@ function harvest_MegaField2x2 {
   if [ $iPlot -gt 87 ]; then
    return
   fi
-  iVehicleBought=$(check_MegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
+  iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if ! ((iPlot % 11)); then
    iPlot=$((iPlot + 1))
    # prevent harvesting of last column
   fi
-  if check_TimeRemaining '.updateblock.megafield.area["'$iPlot'"]?.remain'; then
-   if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 1))'"]?.remain'; then
-    if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 11))'"]?.remain'; then
-     if check_TimeRemaining '.updateblock.megafield.area["'$((iPlot + 12))'"]?.remain'; then
+  if checkTimeRemaining '.updateblock.megafield.area["'$iPlot'"]?.remain'; then
+   if checkTimeRemaining '.updateblock.megafield.area["'$((iPlot + 1))'"]?.remain'; then
+    if checkTimeRemaining '.updateblock.megafield.area["'$((iPlot + 11))'"]?.remain'; then
+     if checkTimeRemaining '.updateblock.megafield.area["'$((iPlot + 12))'"]?.remain'; then
       echo -n "Harvesting Mega Field plots ${iPlot}, $((iPlot + 1)), $((iPlot + 11)), $((iPlot + 12))..."
-      SendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot + 1)),$((iPlot + 11)),$((iPlot + 12)),|&vid=${iHarvestDevice}"
+      sendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},$((iPlot + 1)),$((iPlot + 11)),$((iPlot + 12)),|&vid=${iHarvestDevice}"
       echo "delaying ${iHarvestDelay} seconds"
       sleep ${iHarvestDelay}s
       # plant instantly
-      start_MegaField${NONPREMIUM} 1
+      startMegaField${NONPREMIUM} 1
       iPlot=$((iPlot + 2))
       continue
      else
@@ -1917,12 +1899,12 @@ function harvest_MegaField2x2 {
  done
 }
 
-function get_AnimalQueueLength {
+function getAnimalQueueLength {
  local iAnimalQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE)
  return $iAnimalQueueLength
 }
 
-function get_AnimalsFastestCureForDisease {
+function getAnimalsFastestCureForDisease {
  local iDiseaseID=$1
  case "$iDiseaseID" in
    1) echo 300
@@ -2087,13 +2069,13 @@ function get_AnimalsFastestCureForDisease {
    54) echo 402
       # Furchtbare Beule
       ;;
-   *) echo "get_AnimalsFastestCureForDisease: Unknown disease id" >&2
+   *) echo "getAnimalsFastestCureForDisease: Unknown disease id" >&2
       echo 0
       ;;
  esac
 }
 
-function get_RealSlotName {
+function getRealSlotName {
  local iFarm=$1
  local iPosition=$2
  local iSlot=$3
@@ -2102,7 +2084,7 @@ function get_RealSlotName {
  echo $iSlotName
 }
 
-function get_FieldPlotReadiness {
+function getFieldPlotReadiness {
  # returns 0 if a plot is not occupied in any way
  local iPlot=$1
  local sResult=$($JQBIN '.datablock[1] | .[] | select(.teil_nr? == "'$iPlot'") | type == "object"' $TMPFILE)
@@ -2113,7 +2095,7 @@ function get_FieldPlotReadiness {
  fi
 }
 
-function get_FilledFieldCount {
+function getFilledFieldCount {
  # returns the number of fields completely filled with a certain product
  local iFarm=$1
  local iPID=$2
@@ -2125,7 +2107,7 @@ function get_FilledFieldCount {
  for iPosition in $aPositions; do
   sTmpFile="${TMPFILE}-${iFarm}-${iPosition}"
   if ! [ -f "$sTmpFile" ]; then
-   GetInnerInfoData "$sTmpFile" $iFarm $iPosition gardeninit
+   getInnerInfoData "$sTmpFile" $iFarm $iPosition gardeninit
   fi
   iPIDCount=$($JQBIN '.datablock[1] | map([select(.teil_nr? and .inhalt == "'${iPID}'")]) | [.[] | select(length > 0)] | length' "$sTmpFile")
   if [ $iPIDCount -eq 120 ]; then
@@ -2135,39 +2117,39 @@ function get_FilledFieldCount {
  echo $iFilledFields
 }
 
-function check_QueueCount {
+function checkQueueCount {
  local iFarm=$1
  local iPosition=$2
  local iBuildingID=$3
- local iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
- local iMaxQueueCount=$(get_MaxQueuesForBuildingID $iBuildingID)
+ local iQueuesInFS=$(getQueueCountInFS $iFarm $iPosition)
+ local iMaxQueueCount=$(getMaxQueuesForBuildingID $iBuildingID)
  local iQueuesInGame
  if [ $iQueuesInFS -gt $iMaxQueueCount ]; then
   echo "Reducing position $iPosition to $iMaxQueueCount Queue(s)..."
-  reduce_QueuesOnPosition $iFarm $iPosition $iMaxQueueCount
-  iQueuesInFS=$(get_QueueCountInFS $iFarm $iPosition)
+  reduceQueuesOnPosition $iFarm $iPosition $iMaxQueueCount
+  iQueuesInFS=$(getQueueCountInFS $iFarm $iPosition)
  fi
  # queues are capped to the max. possible value
  # from here we'll handle multi-q buildings
  case "$iBuildingID" in
-  13|14|16|21) iQueuesInGame=$(get_QueueCountFromInnerInfo $iFarm $iPosition)
+  13|14|16|21) iQueuesInGame=$(getQueueCountFromInnerInfo $iFarm $iPosition)
       ;;
-  20) iQueuesInGame=$(get_QueueCount20 $iFarm $iPosition)
+  20) iQueuesInGame=$(getQueueCount20 $iFarm $iPosition)
       ;;
    *) iQueuesInGame=1
       ;;
  esac
  if [ "$iQueuesInFS" -lt "$iQueuesInGame" ]; then
   echo "Adding $((iQueuesInGame - iQueuesInFS)) Queue(s) to position $iPosition..."
-  add_QueuesToPosition $iFarm $iPosition $iQueuesInFS $iQueuesInGame
+  addQueuesToPosition $iFarm $iPosition $iQueuesInFS $iQueuesInGame
  fi
  if [ "$iQueuesInFS" -gt "$iQueuesInGame" ]; then
   echo "Reducing position $iPosition to $iQueuesInGame Queue(s)..."
-  reduce_QueuesOnPosition $iFarm $iPosition $iQueuesInGame
+  reduceQueuesOnPosition $iFarm $iPosition $iQueuesInGame
  fi
 }
 
-function get_QueueCountInFS {
+function getQueueCountInFS {
  local iFarm=$1
  local iPosition=$2
  local iQueueCount
@@ -2175,7 +2157,7 @@ function get_QueueCountInFS {
  echo $iQueueCount
 }
 
-function get_MaxQueuesForBuildingID {
+function getMaxQueuesForBuildingID {
  local iBuildingID=$1
  case "$iBuildingID" in
   13|14|16|20|21)
@@ -2187,7 +2169,7 @@ function get_MaxQueuesForBuildingID {
  esac
 }
 
-function reduce_QueuesOnPosition {
+function reduceQueuesOnPosition {
  local iFarm=$1
  local iPosition=$2
  local iMaxQ=$3
@@ -2196,13 +2178,13 @@ function reduce_QueuesOnPosition {
  rm $(ls -d1 ${iFarm}/${iPosition}/* | tail -${iQDel})
 }
 
-function get_QueueCountFromInnerInfo {
+function getQueueCountFromInnerInfo {
  local iFarm=$1
  local iPosition=$2
  local iCount
  local iSlots=1
  local iBlocked
- GetInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
+ getInnerInfoData $TMPFILE $iFarm $iPosition innerinfos
  # these buildings always have at least one slot. we'll check slots 2 and 3...
  for iCount in 2 3; do
   iBlocked=$($JQBIN '.datablock[1]["slots"]["'${iCount}'"].block?' $TMPFILE 2>/dev/null)
@@ -2213,7 +2195,7 @@ function get_QueueCountFromInnerInfo {
  echo $iSlots
 }
 
-function get_QueueCount20 {
+function getQueueCount20 {
  local iFarm=$1
  local iPosition=$2
  local iCount
@@ -2229,7 +2211,7 @@ function get_QueueCount20 {
  echo $iSlots
 }
 
-function add_QueuesToPosition {
+function addQueuesToPosition {
  local iFarm=$1
  local iPosition=$2
  local iQueuesInFS=$3
@@ -2256,15 +2238,15 @@ function redeemPuzzlePartsPacks {
    iPackCount=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"] | tonumber' $FARMDATAFILE)
    echo "Redeeming $iPackCount puzzle parts pack(s) of type ${iType}..."
    for iCount2 in $(seq 1 $iPackCount); do
-    SendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
+    sendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
  fi
 }
 
-function check_PanBonus {
+function checkPanBonus {
  # function by jbond47, update by maiblume & jbond47
- GetPanData "$FARMDATAFILE"
+ getPanData "$FARMDATAFILE"
  local iToday=$($JQBIN '.datablock["11"].today' $FARMDATAFILE)
  local iSheepCount=$($JQBIN '.datablock["11"].collections.heros | length' $FARMDATAFILE)
  local iLastBonus
@@ -2278,7 +2260,7 @@ function check_PanBonus {
   echo -n "Hero sheep..."
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
-   SendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
+   sendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi
@@ -2293,7 +2275,7 @@ function check_PanBonus {
   echo -n "Horror sheep..."
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
-   SendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
+   sendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi
@@ -2308,7 +2290,7 @@ function check_PanBonus {
   echo -n "Sport sheep..."
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
-   SendAJAXFarmRequest "type=sport&mode=paymentitemcollection_bonus"
+   sendAJAXFarmRequest "type=sport&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi
@@ -2323,7 +2305,7 @@ function check_PanBonus {
   echo -n "Beach sheep..."
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
-   SendAJAXFarmRequest "type=beach&mode=paymentitemcollection_bonus"
+   sendAJAXFarmRequest "type=beach&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi
@@ -2338,7 +2320,7 @@ function check_PanBonus {
   echo -n "Fantasy sheep..."
   if [ $iToday -gt $iLastBonus ]; then
    echo "available, claiming it..."
-   SendAJAXFarmRequest "type=fantasy&mode=paymentitemcollection_bonus"
+   sendAJAXFarmRequest "type=fantasy&mode=paymentitemcollection_bonus"
   else
    echo "already claimed"
   fi
@@ -2350,7 +2332,7 @@ function check_PanBonus {
   bValue=$($JQBIN '.datablock["1"].gifts."289" | has("giver")' $FARMDATAFILE)
   if [ "$bValue" = "true" ]; then
    echo "available, claiming it..."
-   SendAJAXCityRequest "city=0&mode=giverpresent&id=289"
+   sendAJAXCityRequest "city=0&mode=giverpresent&id=289"
   else
    echo "already claimed"
   fi
@@ -2362,21 +2344,21 @@ function check_PanBonus {
   bValue=$($JQBIN '.datablock["1"].gifts."410" | has("giver")' $FARMDATAFILE)
   if [ "$bValue" = "true" ]; then
    echo "available, claiming it..."
-   SendAJAXCityRequest "city=0&mode=giverpresent&id=410"
+   sendAJAXCityRequest "city=0&mode=giverpresent&id=410"
   else
    echo "already claimed"
   fi
  fi
 }
 
-function check_StockRefill {
+function checkStockRefill {
  local iPID
  local iCanBuyPID
  local iAmountInStock
  local iAmountToBuy
  local bRackIsPresent=$($JQBIN '.updateblock.stock.stock["1"] | type == "object"' $FARMDATAFILE)
- local aPIDs=$(get_ConfigValue autobuyitems)
- local iRefillAmount=$(get_ConfigValue autobuyrefillto)
+ local aPIDs=$(getConfigValue autobuyitems)
+ local iRefillAmount=$(getConfigValue autobuyrefillto)
  local iLowerThreshold=$((iRefillAmount / 2))
  # prevent unwanted purchase, i.e. in case of network problems
  if [ "$bRackIsPresent" = "false" ]; then
@@ -2385,12 +2367,12 @@ function check_StockRefill {
   return
  fi
  for iPID in $aPIDs; do
-  iAmountInStock=$(get_PIDAmountFromStock $iPID 1)
+  iAmountInStock=$(getPIDAmountFromStock $iPID 1)
   if [ $iAmountInStock -ge $iLowerThreshold ]; then
    continue
   fi
   # lower threshold reached, prepare purchase
-  GetMerchantData $TMPFILE
+  getMerchantData $TMPFILE
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
   # check, if player can buy the item
   iCanBuyPID=$($JQBIN '.datablock[1].products | .[] | select(.pid == '${iPID}').pid?' $TMPFILE)
@@ -2399,12 +2381,12 @@ function check_StockRefill {
    continue
   fi
   echo "Buying $iAmountToBuy of item #${iPID}..."
-  SendAJAXCityRequest "shopid=1&mode=shopfire&cart=${iPID},${iAmountToBuy}"
+  sendAJAXCityRequest "shopid=1&mode=shopfire&cart=${iPID},${iAmountToBuy}"
   sleep 2
  done
 }
 
-function check_ButterflyBonus {
+function checkButterflyBonus {
  local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
  local aKeys
  local iKey
@@ -2413,24 +2395,24 @@ function check_ButterflyBonus {
   if [ "$NONPREMIUM" != "NP" ]; then
    # premium
    echo "Collecting butterfly points bonus..."
-   SendAJAXFarmRequest "mode=butterfly_click_all"
+   sendAJAXFarmRequest "mode=butterfly_click_all"
    return
   else
    # non-premium
    for iKey in $aKeys; do
     echo "Collecting points bonus from butterfly type ${iKey}..."
-    SendAJAXFarmRequest "id=${iKey}&mode=butterfly_click"
+    sendAJAXFarmRequest "id=${iKey}&mode=butterfly_click"
    done
   fi
  fi
 }
 
-function check_DogBonus {
+function checkDogBonus {
  local bDogExists=$($JQBIN '.updateblock.menue.farmdog == 1' $FARMDATAFILE)
  local bDogDone=$($JQBIN '.updateblock.menue.farmdog_harvest == 1' $FARMDATAFILE)
  if [ "$bDogExists" = "true" ] && [ "$bDogDone" = "false" ]; then
   echo "not yet claimed, activating it..."
-  SendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
+  sendAJAXFarmRequest "mode=dogbonus&farm=1&position=0"
   # reduce pause time by 300 secs after claiming the dogs' time bonus
   PAUSETIME=$((PAUSETIME - 300))
  else
@@ -2438,13 +2420,13 @@ function check_DogBonus {
  fi
 }
 
-function check_DonkeyBonus {
+function checkDonkeyBonus {
  local bDonkeyExists=$($JQBIN '.updateblock.menue.donkey == 1' $FARMDATAFILE)
  if [ "$bDonkeyExists" = "true" ]; then
   echo -n "Checking if it's time for the daily donkey bonus..."
   if [ $SECONDS -gt 86400 ] || [ $DONKEYCLAIMED -eq 0 ]; then
    echo "it is, claiming it..."
-   SendAJAXFarmRequest "mode=dailydonkey&farm=1&position=1"
+   sendAJAXFarmRequest "mode=dailydonkey&farm=1&position=1"
    SECONDS=0
    DONKEYCLAIMED=1
   else
@@ -2453,28 +2435,28 @@ function check_DonkeyBonus {
  fi
 }
 
-function check_PuzzleParts {
+function checkPuzzleParts {
  local bPartsAvailable=$($JQBIN '.updateblock.farmersmarket.pets.daily == 1' $FARMDATAFILE)
  if [ "$bPartsAvailable" = "true" ]; then
   echo "available, buying it..."
-  SendAJAXFarmRequest "mode=pets_buy_parts&id=1&amount=1"
+  sendAJAXFarmRequest "mode=pets_buy_parts&id=1&amount=1"
  else
   echo "already bought"
  fi
 }
 
-function check_Lottery {
- GetLotteryData $FARMDATAFILE
+function checkLottery {
+ getLotteryData $FARMDATAFILE
  local iLot
  local bLotstatus=$($JQBIN '.datablock[2] == 0' $FARMDATAFILE)
  if [ "$bLotstatus" = "true" ]; then
-  iLot=$(get_ConfigValue dolot)
+  iLot=$(getConfigValue dolot)
   echo -n "not yet claimed, getting it"
-  SendAJAXCityRequest "city=2&mode=newlot"
+  sendAJAXCityRequest "city=2&mode=newlot"
   if [ $iLot -eq 2 ]; then
    echo " and trading it for an instant-win..."
    sleep 1
-   SendAJAXCityRequest "city=2&mode=lotgetprize"
+   sendAJAXCityRequest "city=2&mode=lotgetprize"
   else
    echo "..."
   fi
@@ -2483,7 +2465,7 @@ function check_Lottery {
  fi
 }
 
-function check_DeliveryEvent {
+function checkDeliveryEvent {
  local iPointsNeeded
  local iPointsAvailable
  local bDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent != 0' $FARMDATAFILE)
@@ -2491,19 +2473,19 @@ function check_DeliveryEvent {
   return
  fi
  iPointsNeeded=$($JQBIN '.updateblock.menue.deliveryevent.config.spots | .[] | select(.points <= 250).points' $FARMDATAFILE)
- if check_TimeRemaining '.updateblock.menue.deliveryevent.data.tour.remain'; then
+ if checkTimeRemaining '.updateblock.menue.deliveryevent.data.tour.remain'; then
   iPointsAvailable=$($JQBIN '.updateblock.menue.deliveryevent.data["points"]' $FARMDATAFILE)
   if [ $iPointsAvailable -ge $iPointsNeeded ] 2>/dev/null; then
    echo "Starting one-hour delivery tour..."
-   SendAJAXFarmRequest "spot=playground&mode=deliveryevent_starttour"
+   sendAJAXFarmRequest "spot=playground&mode=deliveryevent_starttour"
   else
    echo "Not enough points to start delivery tour"
   fi
  fi
 }
 
-function check_OlympiaEvent {
- GetOlympiaData $FARMDATAFILE
+function checkOlympiaEvent {
+ getOlympiaData $FARMDATAFILE
  local iBerriesNeeded=20
  local iBerriesAvailable
  local iEnergy
@@ -2513,16 +2495,16 @@ function check_OlympiaEvent {
   iEnergy=$($JQBIN '.datablock.energy' $FARMDATAFILE)
   if [ $iEnergy -lt 100 ] && [ $iBerriesAvailable -ge $iBerriesNeeded ]; then
    echo "Re-filling 10% energy..."
-   SendAJAXMainRequest "amount=10&action=olympia_entry"
+   sendAJAXMainRequest "amount=10&action=olympia_entry"
   fi
  fi
 }
 
-function check_CalendarEvent {
+function checkCalendarEvent {
  local iDay
  local iEventDaysCount
  local bPresentCollected
- GetCalendarData $TMPFILE
+ getCalendarData $TMPFILE
  iDay=$($JQBIN '.datablock.day?' $TMPFILE)
  if ! [ $iDay -gt 0 ] 2>/dev/null; then
   # no valid value for the current event day no.
@@ -2540,23 +2522,23 @@ function check_CalendarEvent {
   return
  fi
  echo "not yet claimed, opening door no. ${iDay}..."
- SendAJAXFarmRequest "field=${iDay}&mode=calendar_openfield"
+ sendAJAXFarmRequest "field=${iDay}&mode=calendar_openfield"
 }
 
-function check_LoginBonus {
+function checkLoginBonus {
  local iLoginCount=$($JQBIN '.updateblock.menue.loginbonus.data.count?' $FARMDATAFILE)
  local bLoginBonusDone=$($JQBIN '.updateblock.menue.loginbonus.data.rewards["'$iLoginCount'"].done > 0' $FARMDATAFILE)
  local bLoginBonusActive=$($JQBIN '.updateblock.menue.loginbonus.data.bonus.remain > 0' $FARMDATAFILE)
  local iPID
  if [ "$bLoginBonusDone" = "false" ]; then
   if [ $iLoginCount -eq 7 ] && [ "$bLoginBonusActive" = "false" ]; then
-   iPID=$(get_ConfigValue dologinbonus)
+   iPID=$(getConfigValue dologinbonus)
    echo "not yet claimed, activating points bonus for plant #${iPID}..."
-   SendAJAXFarmRequest "pid=${iPID}&mode=loginbonus_setplant"
+   sendAJAXFarmRequest "pid=${iPID}&mode=loginbonus_setplant"
   else
    if [ $iLoginCount -le 6 ]; then
     echo "not yet claimed, getting it for day ${iLoginCount}..."
-    SendAJAXFarmRequest "day=${iLoginCount}&mode=loginbonus_getreward"
+    sendAJAXFarmRequest "day=${iLoginCount}&mode=loginbonus_getreward"
    else
     echo "not claiming it yet since points bonus is still active"
    fi
@@ -2566,9 +2548,9 @@ function check_LoginBonus {
  fi
 }
 
-function check_FruitStall {
+function checkFruitStall {
  local iSlot=$1
- local iPID=$(get_ConfigValue fruitstallslot${iSlot})
+ local iPID=$(getConfigValue fruitstallslot${iSlot})
  local iLevel
  local iAmount
  local iCurrentEpoch
@@ -2587,7 +2569,7 @@ function check_FruitStall {
   local sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].reward | type' $FARMDATAFILE 2>/dev/null)
   if [ "$sSlotType" = "object" ]; then
    echo "Collecting fruit stall reward..."
-   SendAJAXFarmRequestOverwrite "position=1&mode=stall_get_reward" && sleep 1
+   sendAJAXFarmRequestOverwrite "position=1&mode=stall_get_reward" && sleep 1
   fi
   sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
   if [ "$sSlotType" != "number" ]; then
@@ -2595,7 +2577,7 @@ function check_FruitStall {
    iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
    iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
    echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
-   SendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
+   sendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
   fi
   # boosters are not taken into account - or are they? ;)
   iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["1"].farmi_last' $FARMDATAFILE)
@@ -2609,7 +2591,7 @@ function check_FruitStall {
  fi
 }
 
-function check_ActiveGuildJobForPlayer {
+function checkActiveGuildJobForPlayer {
  local iActiveGuildJob=$($JQBIN '.updateblock.job.guild_job_data | length' $FARMDATAFILE)
  if [ $iActiveGuildJob -gt 0 ]; then
   # guild job is running and player is taking part
@@ -2618,7 +2600,7 @@ function check_ActiveGuildJobForPlayer {
  return 1
 }
 
-function check_LoginNews {
+function checkLoginNews {
  # checks for news to be displayed upon login
  # marks it/them as read
  # this prevents news popups in running browser sessions
@@ -2627,11 +2609,11 @@ function check_LoginNews {
  # you've guessed it: globbing is needed here :)
  for iNews in $aNews; do
   # echo "Marking news #${iNews} as read..."
-  SendAJAXMainRequest "nnr=${iNews}&opt1=1&action=setnewsunread"
+  sendAJAXMainRequest "nnr=${iNews}&opt1=1&action=setnewsunread"
  done
 }
 
-function check_TimeRemaining {
+function checkTimeRemaining {
  # returns true if a zero or negative timer is found
  # and sets new PAUSETIME if applicable
  local sFilter="$1"
@@ -2650,7 +2632,7 @@ function check_TimeRemaining {
  return 1
 }
 
-function get_PIDAmountFromStock {
+function getPIDAmountFromStock {
  # returns the amount of items found in stock on a given farm
  local iPID=$1
  local iFarm=$2
@@ -2658,45 +2640,45 @@ function get_PIDAmountFromStock {
  echo $iPIDCount
 }
 
-function get_ConfigValue {
+function getConfigValue {
  local sConfigItem=$1
  local sConfigLine=$(grep -m1 "$sConfigItem " $CFGFILE | tr -d "'")
  echo ${sConfigLine/$sConfigItem = /}
 }
 
-function SendAJAXFarmRequest {
+function sendAJAXFarmRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXFARM}${sAJAXSuffix}
 }
 
-function SendAJAXFarmRequestOverwrite {
+function sendAJAXFarmRequestOverwrite {
  local sAJAXSuffix=$1
  wget -nv -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix}
  # need to keep farm data file up to date here
 }
 
-function SendAJAXForestryRequest {
+function sendAJAXForestryRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXFOREST}${sAJAXSuffix}
 }
 
-function SendAJAXFoodworldRequest {
+function sendAJAXFoodworldRequest {
  local sAJAXSuffix=$1
 # keep food world status current. this shouldn't break anything
 wget -nv -T10 -a $LOGFILE --output-document=$FARMDATAFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFOOD}${sAJAXSuffix}
 }
 
-function SendAJAXCityRequest {
+function sendAJAXCityRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXCITY}${sAJAXSuffix}
 }
 
-function SendAJAXMainRequest {
+function sendAJAXMainRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXMAIN}${sAJAXSuffix}
 }
 
-function SendAJAXGuildRequest {
+function sendAJAXGuildRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXGUILD}${sAJAXSuffix}
 }

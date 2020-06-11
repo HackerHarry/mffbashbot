@@ -70,7 +70,7 @@ aDIM_X='{"0":"0","1":"2","2":"2","3":"2","4":"2","5":"2","6":"2","7":"2","8":"2"
 # shellcheck disable=SC2089,SC2034
 aDIM_Y='{"0":"0","1":"1","2":"2","3":"1","4":"2","5":"2","6":"2","7":"2","8":"2","9":"1","10":"1","11":"1","12":"1","13":"1","14":"1","15":"1","16":"1","17":"1","18":"1","19":"1","20":"1","21":"1","22":"1","23":"1","24":"1","25":"1","26":"1","27":"1","28":"1","29":"1","30":"1","31":"1","32":"1","33":"1","34":"1","35":"1","36":"2","37":"2","38":"1","39":"2","40":"2","41":"2","42":"2","43":"2","44":"1","91":"1","92":"1","93":"1","97":"1","45":"2","46":"1","47":"2","48":"1","49":"2","50":"1","51":"1","52":"2","53":"2","54":"1","55":"1","56":"2","57":"2","58":"1","59":"2","60":"2","61":"2","62":"1","63":"1","64":"1","65":"1","66":"1","67":"2","68":"1","69":"1","70":"1","71":"1","72":"1","73":"1","74":"1","75":"1","76":"2","77":"2","78":"2","79":"2","80":"1","81":"2","82":"1","83":"1","84":"1","85":"1","86":"1","87":"1","88":"2","89":"1","90":"2","94":"1","95":"2","96":"1","98":"2","99":"1","100":"2","101":"2","102":"2","103":"2","104":"1","105":"1","106":"2","107":"1","108":"2","109":"1","110":"1","111":"1","112":"1","113":"1","114":"1","115":"1","116":"1","117":"1","118":"1","119":"1","120":"1","121":"1","122":"1","123":"1","124":"1","125":"1","126":"1","127":"2","128":"2","129":"2","130":"1","131":"1","132":"1","133":"1","134":"1","135":"1","136":"1","137":"1","138":"1","139":"1","140":"1","141":"1","142":"1","143":"1","144":"1","145":"1","146":"1","147":"1","148":"1","149":"1","150":"1","151":"1","152":"1","153":"1","154":"2","155":"1","156":"1","157":"1","158":"1","159":"1","160":"1","161":"1","162":"1","163":"1","164":"1","165":"1","166":"1","167":"1","168":"1","169":"1","170":"1","171":"1","172":"1","173":"1","174":"1","175":"1","176":"1","177":"1","178":"1","179":"1","180":"1","181":"1","182":"1","183":"1","184":"1","185":"1","186":"1","187":"1","188":"1","189":"1","200":"1","201":"1","202":"1","203":"1","204":"1","205":"1","206":"1","207":"1","208":"1","209":"1","210":"1","211":"1","212":"1","213":"1","214":"1","215":"1","216":"1","217":"1","218":"1","219":"1","220":"1","221":"1","250":"1","251":"1","252":"1","253":"1","254":"1","255":"1","256":"1","257":"1","258":"1","259":"1","260":"1","261":"1","262":"1","263":"1","264":"1","265":"1","266":"1","267":"1","268":"1","269":"1","270":"1","271":"1","272":"1","273":"1","274":"1","275":"1","276":"1","300":"1","301":"1","302":"1","303":"1","304":"1","305":"1","306":"1","307":"1","308":"1","309":"1","310":"1","311":"1","312":"1","313":"1","314":"1","315":"1","316":"1","317":"1","318":"1","319":"1","320":"1","321":"1","322":"1","323":"1","324":"1","325":"1","326":"1","327":"1","328":"1","329":"1","330":"1","331":"1","332":"1","333":"1","334":"1","335":"1","336":"1","337":"1","338":"1","339":"1","340":"1","341":"1","342":"1","343":"1","344":"1","345":"1","346":"1","347":"1","348":"1","349":"1","350":"0","351":"1","352":"1","353":"2","354":"2","355":"1","356":"2","357":"1","358":"2","359":"2","360":"1","361":"2","400":"1","401":"1","402":"1","403":"1","450":"1","451":"1","452":"1","453":"1","454":"1","455":"1","456":"1","457":"1","458":"1","459":"1","460":"1","461":"1","462":"1","463":"1","464":"1","465":"1","466":"1","467":"1","468":"1","469":"1","470":"1","471":"1","472":"1","473":"1","474":"1","475":"1","476":"1","477":"1","478":"1","479":"1","480":"1","481":"1","482":"1","483":"1","550":"2","551":"2","552":"2","553":"1","554":"2","555":"1","556":"1","557":"2","558":"2","559":"2","560":"2","561":"2","600":"1","601":"1","602":"1","603":"1","604":"1","605":"1","606":"1","607":"1","608":"1","609":"1","630":"1","631":"1","632":"1","633":"1","634":"1","635":"1","636":"1","637":"1","638":"1","639":"1","660":"1","661":"1","662":"1","663":"1","664":"1","665":"1","666":"1","667":"1","668":"1","669":"1","700":"2","701":"1","702":"1","703":"2","704":"1","705":"1","706":"2","707":"1","708":"2","709":"2","750":"1","751":"1","752":"1","753":"1","754":"1","755":"1","756":"1","757":"1","758":"1","759":"1","804":"1","801":"1","800":"1","805":"1","802":"1","807":"1","803":"1","809":"1","806":"1","810":"1","808":"1","812":"1","811":"1","813":"1","815":"1","814":"1","816":"1","818":"1","817":"1","819":"1","820":"1","821":"1","822":"1","823":"1","824":"1","825":"1","826":"1","827":"1","828":"1","829":"1","830":"1","831":"1","832":"2","833":"1","834":"1"}'
 # dimension data can be extracted from .../js/jsconstants_xxxxxx.js
-function check_SoftwareVersions {
+function checkSoftwareVersions {
  local bTestsPassed=false
  local iMajorVersion
  local iMinorVersion
@@ -103,7 +103,7 @@ function check_SoftwareVersions {
   exit 1
  fi
 }
-check_SoftwareVersions
+checkSoftwareVersions
 umask 002
 echo $BASHPID > "$PIDFILE"
 
@@ -195,7 +195,7 @@ while (true); do
  trap exitBot SIGINT SIGTERM
 
  echo "Getting farm status..."
- GetFarmData $FARMDATAFILE
+ getFarmData $FARMDATAFILE
  PLAYERLEVELNUM=$($JQBIN -r '.updateblock.menue.levelnum' $FARMDATAFILE)
  echo "Your player level is ${PLAYERLEVELNUM}"
  PREMIUM=$($JQBIN '.updateblock.menue.premium' $FARMDATAFILE 2>/dev/null)
@@ -207,25 +207,25 @@ while (true); do
   unset NONPREMIUM
  fi
  echo "premium account"
- check_LoginNews
+ checkLoginNews
 
  # login bonus handling
  if ! grep -q "dologinbonus = 0" $CFGFILE && grep -q "dologinbonus = " $CFGFILE; then
   echo -n "Checking for daily login bonus..."
-  check_LoginBonus
+  checkLoginBonus
  fi
 
  # power up handling
  if [ $PLAYERLEVELNUM -ge 8 ]; then
   echo "Checking for pending power-ups..."
-  check_PowerUps city2 powerups 0
-  check_PowerUps city2 powerups 1
+  checkPowerUps city2 powerups 0
+  checkPowerUps city2 powerups 1
  fi
 
  # guild tool handling
- if check_ActiveGuildJobForPlayer; then
+ if checkActiveGuildJobForPlayer; then
   echo "Checking for pending guild job tools..."
-  check_Tools city2 tools 0
+  checkTools city2 tools 0
  fi
 
  for FARM in {1..7}; do
@@ -251,29 +251,29 @@ while (true); do
    fi
    # add/remove queues on demand
    if grep -q "correctqueuenum = 1" $CFGFILE; then
-    check_QueueCount $FARM $POSITION $BUILDINGID
+    checkQueueCount $FARM $POSITION $BUILDINGID
    fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field
-    if check_RunningMegaFieldJob ; then
+    if checkRunningMegaFieldJob ; then
      echo "Checking for pending tasks on Mega Field..."
-     if check_RipePlotOnMegaField ; then
-      DoFarm ${FARM} ${POSITION} 0
+     if checkRipePlotOnMegaField ; then
+      doFarm ${FARM} ${POSITION} 0
       # this takes some time, that's why we're refreshing the farm data
-      GetFarmData $FARMDATAFILE
+      getFarmData $FARMDATAFILE
       continue
      fi
     fi
    fi
    # shellcheck disable=SC2046
-   if [ $(get_MaxQueuesForBuildingID $BUILDINGID) -eq 3 ]; then
+   if [ $(getMaxQueuesForBuildingID $BUILDINGID) -eq 3 ]; then
     aSLOTS="0 1 2"
    else
     aSLOTS="0"
    fi
    # desired globbing
    for SLOT in $aSLOTS; do
-     if check_TimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}']?.remain'; then
+     if checkTimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}']?.remain'; then
        echo -n "Doing farm ${FARM}, position ${POSITION}, slot ${SLOT}"
        if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}'].guild | tonumber' $FARMDATAFILE 2>/dev/null | grep -q '1'; then
         echo " as a guild job..."
@@ -281,12 +281,12 @@ while (true); do
        else
         echo "..."
        fi
-       DoFarm ${FARM} ${POSITION} ${SLOT}
+       doFarm ${FARM} ${POSITION} ${SLOT}
      fi
      if [ $SLOT -eq 0 ]; then
-      if check_TimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain'; then
+      if checkTimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain'; then
        echo "Watering farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
-       water_Field${NONPREMIUM} $FARM $POSITION
+       waterField${NONPREMIUM} $FARM $POSITION
       fi
      fi
    done
@@ -301,29 +301,29 @@ while (true); do
   # first the flower area. we'll only check one of 'em.
   FASTATUS=$($JQBIN '.updateblock.farmersmarket.flower_area | length' $FARMDATAFILE)
   if [ $FASTATUS -gt 0 ]; then
-   if check_TimeRemaining '.updateblock.farmersmarket.flower_area["1"]?.remain'; then
+   if checkTimeRemaining '.updateblock.farmersmarket.flower_area["1"]?.remain'; then
     echo "Doing flower area..."
-    DoFarmersMarket farmersmarket flowerarea 0
+    doFarmersMarket farmersmarket flowerarea 0
    fi
   fi
   # nursery is next
   for SLOT in 1 2; do
-    if check_TimeRemaining '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"]?.remain'; then
+    if checkTimeRemaining '.updateblock.farmersmarket.nursery.slots["'${SLOT}'"]?.remain'; then
       echo "Doing nursery slot ${SLOT}..."
-      DoFarmersMarket farmersmarket nursery ${SLOT}
+      doFarmersMarket farmersmarket nursery ${SLOT}
     fi
   done
   # see if flower pots need water...
-  DoFarmersMarketFlowerPots
+  doFarmersMarketFlowerPots
   # monster fruit
   if [ $PLAYERLEVELNUM -ge 31 ]; then
    RUNCHK=$($JQBIN -r '.updateblock.farmersmarket.megafruit.current | type' $FARMDATAFILE)
    if [ "$RUNCHK" = "object" ]; then
     if ! $JQBIN '.updateblock.farmersmarket.megafruit.current.remain' $FARMDATAFILE | grep -q '-'; then
      for HELPER in water light fertilize; do
-      if check_TimeRemaining '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain'; then
+      if checkTimeRemaining '.updateblock.farmersmarket.megafruit.current.data.'${HELPER}'.remain'; then
        echo "Using ${HELPER} on monster fruit..."
-       DoFarmersMarket farmersmarket monsterfruit ${HELPER}
+       doFarmersMarket farmersmarket monsterfruit ${HELPER}
       fi
      done
     fi
@@ -333,24 +333,24 @@ while (true); do
    if [ "$RUNCHK" = "object" ]; then
     if ! $JQBIN '.updateblock.farmersmarket.foodcontest.current.remain' $FARMDATAFILE | grep -q '-'; then
      # check for a ready cash desk first
-     if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain'; then
+     if checkTimeRemaining '.updateblock.farmersmarket.foodcontest.current.data.merchpin_remain'; then
       echo "Doing cash desk..."
-      DoFoodContestCashDesk
+      doFoodContestCashDesk
      fi
      # next the audience
      for BLOCK in 1 2 3 4; do
       for PINTYPE in fame money points products; do
-       if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"]?.pin.'${PINTYPE}'.remain'; then
+       if checkTimeRemaining '.updateblock.farmersmarket.foodcontest.blocks["'${BLOCK}'"]?.pin.'${PINTYPE}'.remain'; then
         echo "Picking up ${PINTYPE} from audience block ${BLOCK}..."
-        DoFoodContestAudience ${BLOCK} ${PINTYPE}
+        doFoodContestAudience ${BLOCK} ${PINTYPE}
        fi
       done
      done
      # feed the contestant if needed & desired
      if grep -q "dofoodcontest = 1" $CFGFILE; then
-      if check_TimeRemaining '.updateblock.farmersmarket.foodcontest.current.feedremain'; then
+      if checkTimeRemaining '.updateblock.farmersmarket.foodcontest.current.feedremain'; then
        echo "Feeding speed eating contestant..."
-       DoFoodContestFeeding
+       doFoodContestFeeding
       fi
      fi
     fi
@@ -362,29 +362,29 @@ while (true); do
      SLOTREMAIN=$($JQBIN -r '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]? | type' $FARMDATAFILE)
      if [ "$SLOTREMAIN" != "number" ]; then
       echo "Taking care of pet using ${SLOT}..."
-      DoFarmersMarketPetCare ${SLOT}
+      doFarmersMarketPetCare ${SLOT}
      else
       # we have a valid number, let's see if PAUSETIME needs a correction...
-      check_TimeRemaining '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]'
+      checkTimeRemaining '.updateblock.farmersmarket.pets.breed.care_remains["'${SLOT}'"]'
      fi
     done
    fi
    # stuff for pets production
    for SLOT in 1 2 3; do
-    if check_TimeRemaining '.updateblock.farmersmarket.pets.production["'${SLOT}'"]?["1"]?.remain'; then
+    if checkTimeRemaining '.updateblock.farmersmarket.pets.production["'${SLOT}'"]?["1"]?.remain'; then
 #    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
 #     if [ "$SLOTREMAIN" = "0" ]; then
      echo "Doing pets stuff production slot ${SLOT}..."
-     DoFarmersMarket farmersmarket pets ${SLOT}
+     doFarmersMarket farmersmarket pets ${SLOT}
     fi
    done
   fi
   # veterinarian
   if [ $PLAYERLEVELNUM -ge 36 ]; then
    for SLOT in 1 2 3; do
-    if check_TimeRemaining '.updateblock.farmersmarket.vet.production["'${SLOT}'"]?["1"]?.remain'; then
+    if checkTimeRemaining '.updateblock.farmersmarket.vet.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing vet production slot ${SLOT}..."
-     DoFarmersMarket farmersmarket vet ${SLOT}
+     doFarmersMarket farmersmarket vet ${SLOT}
     fi
    done
    # animal treatment
@@ -392,9 +392,9 @@ while (true); do
    VETJOBSTATUS=$($JQBIN '.updateblock.farmersmarket.vet.info.role | tonumber' $FARMDATAFILE 2>/dev/null)
    if [ "$VETJOBSTATUS" != "0" ] && [ "$VETJOBSTATUS" != "" ]; then
     for SLOT in 1 2 3; do
-     if check_TimeRemaining '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"]?.remain'; then
+     if checkTimeRemaining '.updateblock.farmersmarket.vet.animals.slots["'${SLOT}'"]?.remain'; then
       echo "Doing animal treatment slot ${SLOT}..."
-      DoFarmersMarketAnimalTreatment ${SLOT}
+      doFarmersMarketAnimalTreatment ${SLOT}
      fi
     done
    fi
@@ -403,9 +403,9 @@ while (true); do
  # butterfly house
  if [ $PLAYERLEVELNUM -ge 40 ]; then
   for SLOT in {1..6}; do
-   if check_TimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
+   if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
     echo "Doing butterfly house slot ${SLOT}..."
-    start_Butterflies $SLOT
+    startButterflies $SLOT
    fi
   done
  fi
@@ -414,24 +414,24 @@ while (true); do
   CRBARNEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
   if [ "$CRBARNEXISTS" != "number" ] && [ "$CRBARNEXISTS" != "null" ]; then
    for SLOT in 1 2 3; do
-    if check_TimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]?["1"]?.remain'; then
+    if checkTimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing cow racing production slot ${SLOT}..."
-     DoFarmersMarket farmersmarket2 cowracing ${SLOT}
+     doFarmersMarket farmersmarket2 cowracing ${SLOT}
     fi
    done
    # race cow feeding
    for SLOT in {1..13}; do
     if ! grep -q "racecowslot${SLOT} = 0" $CFGFILE && grep -q "racecowslot${SLOT} = " $CFGFILE; then
-     check_RaceCowFeeding ${SLOT}
+     checkRaceCowFeeding ${SLOT}
     fi
    done
    # start cow race
    if grep -q "docowrace = 1" $CFGFILE; then
-    check_CowRace
+    checkCowRace
    fi
-   if ! check_QueueSleep city2/cowracepvp/0; then
+   if ! checkQueueSleep city2/cowracepvp/0; then
     echo "Checking for pending PvP cow race signup..."
-    check_CowRacePvP city2 cowracepvp 0
+    checkCowRacePvP city2 cowracepvp 0
    fi
   fi
  fi
@@ -439,38 +439,38 @@ while (true); do
  # transport vehicle handling
  if ! grep -q "vehiclemgmt5 = 0" $CFGFILE && grep -q "vehiclemgmt5 = " $CFGFILE; then
   # parameters are farm no. and route no.
-  check_VehiclePosition 5 1
+  checkVehiclePosition 5 1
  fi
  if ! grep -q "vehiclemgmt6 = 0" $CFGFILE && grep -q "vehiclemgmt6 = " $CFGFILE; then
-  check_VehiclePosition 6 2
+  checkVehiclePosition 6 2
  fi
  if ! grep -q "vehiclemgmt7 = 0" $CFGFILE && grep -q "vehiclemgmt7 = " $CFGFILE; then
-  check_VehiclePosition 7 3
+  checkVehiclePosition 7 3
  fi
 
  if grep -q "sendfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting farmies..."
-  check_Farmies farmie
+  checkFarmies farmie
  fi
 
  if grep -q "sendflowerfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting flower farmies..."
-  check_Farmies flowerfarmie
+  checkFarmies flowerfarmie
  fi
 
  # daily actions
  if ! grep -q "dodog = 0" $CFGFILE && grep -q "dodog = " $CFGFILE; then
   echo -n "Checking for daily dog bonus..."
-  check_DogBonus
+  checkDogBonus
  fi
 
  if grep -q "dodonkey = 1" $CFGFILE; then
-  check_DonkeyBonus
+  checkDonkeyBonus
  fi
 
  if grep -q "dopuzzleparts = 1" $CFGFILE; then
   echo -n "Checking for buyable puzzle parts..."
-  check_PuzzleParts
+  checkPuzzleParts
  fi
 
  if grep -q "redeempuzzlepacks = 1" $CFGFILE; then
@@ -479,19 +479,19 @@ while (true); do
 
  if grep -q "dobutterflies = 1" $CFGFILE; then
   echo "Checking for butterfly points bonus..."
-  check_ButterflyBonus
+  checkButterflyBonus
  fi
 
  if grep -q "dodeliveryevent = 1" $CFGFILE; then
   echo "Checking for running delivery event..."
-  check_DeliveryEvent
+  checkDeliveryEvent
  fi
- # check_FruitStall _might_ change the contents of FARMDATAFILE using SendAJAXFarmRequestOverwrite()
+ # checkFruitStall _might_ change the contents of FARMDATAFILE using sendAJAXFarmRequestOverwrite()
  # this is to prevent collecting the stall reward multiple times during one iteration
  if [ $PLAYERLEVELNUM -ge 9 ]; then
   for SLOT in {1..4}; do
    if ! grep -q "fruitstallslot${SLOT} = 0" $CFGFILE && grep -q "fruitstallslot${SLOT} = " $CFGFILE; then
-    check_FruitStall ${SLOT}
+    checkFruitStall ${SLOT}
    fi
   done
  fi
@@ -499,12 +499,12 @@ while (true); do
  # auto-buy
  if ! grep -q "autobuyrefillto = 0" $CFGFILE && grep -q "autobuyrefillto = " $CFGFILE && ! grep -q "autobuyitems = 0" $CFGFILE; then
   echo "Checking if stock needs a refill..."
-  check_StockRefill
+  checkStockRefill
  fi
 
  if [ $PLAYERLEVELNUM -ge 49 ]; then
   if grep -q "doinfinitequest = 1" $CFGFILE; then
-   if check_TimeRemaining '.updateblock.queststatus.infinite.data.quest.remain'; then
+   if checkTimeRemaining '.updateblock.queststatus.infinite.data.quest.remain'; then
     doInfiniteQuest
    fi
   fi
@@ -515,62 +515,62 @@ while (true); do
  # olympia / winter sports event
  if grep -q "doolympiaevent = 1" $CFGFILE; then
   echo "Checking for running olympia / winter sports event..."
-  check_OlympiaEvent
+  checkOlympiaEvent
  fi
 
  # calender event
  if grep -q "docalendarevent = 1" $CFGFILE; then
   echo -n "Checking for calendar event..."
-  check_CalendarEvent
+  checkCalendarEvent
  fi
 
  if grep -q "doseedbox = 1" $CFGFILE; then
   echo "Checking for points bonus from seed box..."
-  check_PanBonus
+  checkPanBonus
  fi
 
  if [ $PLAYERLEVELNUM -ge 8 ]; then
   if ! grep -q "dolot = 0" $CFGFILE && grep -q "dolot = " $CFGFILE; then
    echo -n "Checking for daily lottery bonus..."
-   check_Lottery
+   checkLottery
   fi
  fi
 
  if [ $PLAYERLEVELNUM -ge 20 ]; then
   echo "Getting forestry status..."
-  GetForestryData $FARMDATAFILE
+  getForestryData $FARMDATAFILE
 
   echo "Checking for pending tasks in forestry..."
   # first the trees ... we'll only check one of 'em. timer ends at '0'
   if [ "$($JQBIN '.datablock[1][0].remain' $FARMDATAFILE 2>/dev/null)" = "0" ] 2>/dev/null; then
    echo "Doing trees..."
-   DoForestry forestry
+   doForestry forestry
   fi
-  if check_CanWaterTrees; then
+  if checkCanWaterTrees; then
    if [ "$($JQBIN '.datablock[1][0].waterremain' $FARMDATAFILE 2>/dev/null)" = "0" ] 2>/dev/null; then
     echo "Watering trees..."
-    water_Tree
+    waterTree
    fi
   fi
   # then the forestry buildings
   for POSITION in 1 2; do
    for SLOT in 1 2; do
-    if check_TimeRemaining '.datablock[2]["'${POSITION}'"]?.slots["'${SLOT}'"]?.remain'; then
+    if checkTimeRemaining '.datablock[2]["'${POSITION}'"]?.slots["'${SLOT}'"]?.remain'; then
      echo "Doing position ${POSITION}, slot ${SLOT}..."
-     DoFarm forestry ${POSITION} ${SLOT}
+     doFarm forestry ${POSITION} ${SLOT}
     fi
    done
   done
   # finally the forestry farmies
   if grep -q "sendforestryfarmiesaway = 1" $CFGFILE; then
    echo "Checking for waiting forestry farmies..."
-   check_Farmies forestryfarmie
+   checkFarmies forestryfarmie
   fi
  fi
 
  if [ $PLAYERLEVELNUM -ge 11 ]; then
   echo "Getting food world status..."
-  GetFoodWorldData $FARMDATAFILE
+  getFoodWorldData $FARMDATAFILE
 
   echo "Checking for pending tasks in food world..."
   for POSITION in 1 2 3 4; do
@@ -578,38 +578,38 @@ while (true); do
     # readiness in food world is signalled by a "ready:1" value
     if $JQBIN '.datablock.buildings["'${POSITION}'"].slots["'${SLOT}'"].ready' $FARMDATAFILE 2>/dev/null | grep -q '1'; then
      echo "Doing position ${POSITION}, slot ${SLOT}..."
-     DoFarm foodworld ${POSITION} ${SLOT}
+     doFarm foodworld ${POSITION} ${SLOT}
     fi
    done
   done
   # munchies
   if grep -q "sendmunchiesaway = 1" $CFGFILE; then
    echo "Checking for waiting munchies..."
-   check_Farmies munchie
-   # check_Munchies
+   checkFarmies munchie
+   # checkMunchies
   fi
   echo "Checking for munchies sitting at tables..."
-  check_MunchiesAtTables
+  checkMunchiesAtTables
  fi
  # this is the only building with a queue in city 2, and it's unlikely for this
  # to ever change, hence static coding
  if [ $PLAYERLEVELNUM -ge 8 ]; then
   echo "Getting wind mill status..."
-  GetWindMillData $FARMDATAFILE
+  getWindMillData $FARMDATAFILE
   RUNCHK=$($JQBIN '.datablock[4].running == 1' $FARMDATAFILE)
   WINDMILLREADY=$($JQBIN '.datablock[4].ready >= 1' $FARMDATAFILE)
   if [ "$RUNCHK" = "true" ] || [ "$WINDMILLREADY" = "true" ]; then
    echo "Checking for pending tasks in wind mill..."
    # we handle two slots
-   if check_TimeRemaining '.datablock[2]["1"]?.remain'; then
+   if checkTimeRemaining '.datablock[2]["1"]?.remain'; then
     echo "Doing wind mill, slot 1..."
-    DoFarm city2 windmill 1
+    doFarm city2 windmill 1
    fi
    SLOTREMAIN=$($JQBIN '.datablock[3]' $FARMDATAFILE)
    if [ $SLOTREMAIN -gt 0 ]; then
-    if check_TimeRemaining '.datablock[2]["2"]?.remain'; then
+    if checkTimeRemaining '.datablock[2]["2"]?.remain'; then
      echo "Doing wind mill, slot 2..."
-     DoFarm city2 windmill 2
+     doFarm city2 windmill 2
     fi
    fi
   fi

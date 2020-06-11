@@ -99,6 +99,6 @@ $strings['fruitstallslots'] = 'Obststand';
 $strings['stockmgmt'] = 'Lagerverwaltung';
 $strings['buyatmerchant'] = '(Auffüllmenge) Die angehakten Waren werden nachgekauft, sobald weniger als 50% der Auffüllmenge im Stock übrig sind';
 $strings['flowerarrangements'] = 'Blumengestecke';
-$strings['sendrosieshopping'] = 'Rosie einkaufen schicken';
+$strings['sendrosieshopping'] = 'Rosie täglich einkaufen schicken';
 // $strings[''] = '';
 ?>
