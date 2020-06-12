@@ -35,7 +35,8 @@ $togglesarray = [
 "dodonkey" => "donkeytoggle",
 "docowrace" => "cowracetoggle",
 "excluderank1cow" => "excluderank1cowtoggle",
-"dofoodcontest" => "foodcontesttoggle"
+"dofoodcontest" => "foodcontesttoggle",
+"doinfinitequest" => "infinitequesttoggle"
 ];
 
 $toggledesc = [
@@ -56,7 +57,8 @@ $strings['dailyseedboxredeem'],
 $strings['waltraud'],
 $strings['startcowrace'],
 $strings['excluderank1cow'],
-$strings['feedsecontestant']
+$strings['feedsecontestant'],
+$strings['sendrosieshopping']
 ];
 
 print "<h1>" . $strings['youareat'] . " " . $farmFriendlyName["$farm"] . "</h1>";
@@ -244,7 +246,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
 'dodeliveryevent', 'doolympiaevent', 'doseedbox',
 'dodonkey', 'docowrace', 'excluderank1cow', 'dofoodcontest', 'restartvetjob',
-'docalendarevent', 'racecowslot1', 'racecowslot2', 'racecowslot3',
+'docalendarevent', 'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
 'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',

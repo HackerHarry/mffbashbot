@@ -97,9 +97,9 @@ rm -f mffbashbot/updateTrigger
 if [ -d ~/mffbashbot ]; then
  cd ~/mffbashbot
  for FARMNAME in $(ls -d */ | tr -d '/'); do
-  if [ -e "$FARMNAME"/"$STATUSFILE" ]; then
+  if [ -f "$FARMNAME/$STATUSFILE" ]; then
    echo -n "Waiting for farm $FARMNAME to finish its iteration...${SPIN[0]}"
-   while [ -e "$FARMNAME"/"$STATUSFILE" ]; do
+   while [ -f "$FARMNAME/$STATUSFILE" ]; do
     for S in "${SPIN[@]}"; do
      echo -ne "\b$S"
      sleep 0.25
@@ -174,10 +174,23 @@ find . -type f -exec chmod 664 2>/dev/null {} +
 chmod +x *.sh
 
 echo "Updating GUI files..."
+for FILE in mffGetButterfly.php klubauftrag-mengenberechnung.html config.php; do
+ if [ -f "$BOTGUIROOT/$FILE" ]; then
+  echo "Preserving $FILE..."
+  cp -f "$BOTGUIROOT/$FILE" /tmp
+ fi
+done
 cd ~/mffbashbot-master
 $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
+for FILE in mffGetButterfly.php klubauftrag-mengenberechnung.html config.php; do
+ if [ -f "/tmp/$FILE" ]; then
+  echo "Restoring $FILE..."
+  mv -f "/tmp/$FILE" "$BOTGUIROOT"
+ fi
+done
+
 $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 
 # see if lighttpd.conf needs patching

@@ -74,7 +74,7 @@ $strings['dailyseedboxredeem'] = 'Tägliche Setzkasten Boni einsammeln';
 $strings['waltraud'] = 'Waltraud regelmässig aktivieren';
 $strings['tools'] = 'Werkzeuge';
 $strings['placebefore'] = 'Auswahl vor markiertes Element in die Warteschlange setzen';
-$strings['deletequeueitem'] = 'Markierte(s) Element(e) aus der Warteschlange löschen';
+$strings['deletequeueitem'] = 'Markierte(s) Element(e) aus der Warteschlange löschen&#013;&#010;Doppelklick löscht alle Elemente';
 $strings['placeatend'] = 'Auswahl ans Ende der Warteschlange setzen';
 $strings['selectserver'] = 'Bitte einen Server auswählen';
 $strings['enterpw'] = 'Bitte ein gültiges Passwort eingeben';
@@ -99,5 +99,6 @@ $strings['fruitstallslots'] = 'Obststand';
 $strings['stockmgmt'] = 'Lagerverwaltung';
 $strings['buyatmerchant'] = '(Auffüllmenge) Die angehakten Waren werden nachgekauft, sobald weniger als 50% der Auffüllmenge im Stock übrig sind';
 $strings['flowerarrangements'] = 'Blumengestecke';
+$strings['sendrosieshopping'] = 'Rosi täglich einkaufen schicken';
 // $strings[''] = '';
 ?>

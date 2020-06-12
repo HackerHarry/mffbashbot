@@ -164,7 +164,7 @@ function saveMisc() {
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'olympiaeventtoggle',
+ 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
  'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
  'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
  var sUser = document.venueselect.username.value;
