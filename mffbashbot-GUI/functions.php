@@ -23,8 +23,10 @@ function CreateOptions() {
 }
 function CreateOptionsWithID() {
  global $productlist;
- foreach (func_get_args() as $i)
-	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+ $arr = func_get_args();
+ $prefix = array_shift($arr);
+ foreach ($arr as $i)
+	print "<option id=\"" . $prefix . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
 }
 function CreateOptionsWithIDfromArray($arr) {
  global $productlist;

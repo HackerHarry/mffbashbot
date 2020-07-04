@@ -139,19 +139,20 @@ print "<tr><td>";
 print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
 // dirty coding so getElementById() can find id "o0"
 print "<option value=\"0\" id=\"o0\">Sleep</option>\n";
-CreateOptionsWithID(600, 601, 602, 603, 604, 605, 606, 607, 608, 609);
+// einzigartige indizes, bekommen das präfix "o"
+CreateOptionsWithID("o", 600, 601, 602, 603, 604, 605, 606, 607, 608, 609);
 print "</select>&nbsp;" . $strings['satisfyfoodneed'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"caretoy\" name=\"caretoy\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"caretoy0\">Sleep</option>\n";
-CreateOptionsWithID(630, 631, 632, 633, 634, 635, 636, 637, 638, 639);
+CreateOptionsWithID("o", 630, 631, 632, 633, 634, 635, 636, 637, 638, 639);
 print "</select>&nbsp;" . $strings['satisfytoyneed'];
 print "</td></tr>";
 print "<tr><td>";
 print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"careplushy0\">Sleep</option>\n";
-CreateOptionsWithID(660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
+CreateOptionsWithID("o", 660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
 print "</td></tr></table>\n";
 print "</div>\n";
@@ -163,7 +164,7 @@ for ($i = 1; $i <= 13; $i++) {
  print "<tr><td>";
  print "<select id=\"racecowslot" . $i . "\" name=\"racecowslot" . $i . "\" onchange=\"saveMisc();\">";
  print "<option value=\"0\" id=\"racecowslot0\">Sleep</option>\n";
- CreateOptionsWithID(800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
+ CreateOptionsWithID("o", 800, 801, 802, 803, 804, 805, 806, 807, 808, 809, 810, 811, 812, 813, 814, 815, 816, 817, 818, 819);
  print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
  print "</td></tr>";
 }
@@ -176,8 +177,10 @@ print "<tr><th>" . $strings['fruitstallslots'] . "</th></tr>\n";
 for ($i = 1; $i <= 4; $i++) {
  print "<tr><td>";
  print "<select id=\"fruitstallslot" . $i . "\" name=\"fruitstallslot" . $i . "\" onchange=\"saveMisc();\">";
- print "<option value=\"0\" id=\"fruitstallslot0\">Sleep</option>\n";
- CreateOptionsWithID(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361);
+ print "<option value=\"0\" id=\"fs0\">Sleep</option>\n";
+ // indizes, die bereits als "o"-wert existieren dürfen nicht mit verschiedenem index erneut erzeugt werden
+ // daher bekommt der obststand ein eigenes präfix
+ CreateOptionsWithID("fs", 1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
  print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
  print "</td></tr>";
 }
@@ -223,7 +226,7 @@ for ($i = 1; $i <= 17; $i++) {
  print "<tr><td>";
  print "<select id=\"flowerarrangementslot" . $i . "\" name=\"flowerarrangementslot" . $i . "\" onchange=\"saveMisc();\">";
  print "<option value=\"0\" id=\"flowerarrangementslot0\">Sleep</option>\n";
- CreateOptionsWithID(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221);
+ CreateOptionsWithID("o", 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221);
  print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
  print "</td></tr>";
 }
@@ -306,7 +309,7 @@ print "document.getElementById('racecowslot" . $i . "').selectedIndex = document
 
 for ($i = 1; $i <= 4; $i++) {
 $savedValue = $configContents['fruitstallslot' . $i];
-print "document.getElementById('fruitstallslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
+print "document.getElementById('fruitstallslot" . $i . "').selectedIndex = document.getElementById('fs" . $savedValue . "').index;\n";
 }
 
 for ($i = 1; $i <= 17; $i++) {

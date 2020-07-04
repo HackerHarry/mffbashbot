@@ -1001,11 +1001,13 @@ function checkCowRacePvP {
   return
  fi
  # ready to rock
+ sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE)
+ # needs to be called before removing equipment
  removeCowEquipment $iCowSlot
- sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE 2>/dev/null)
  for sBodyPart in head body foot; do
   iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
   if [ "$iEquipmentID" = "-1" ]; then
+   echo "$(date +'%F %X') Could not get equipment for your cow's $sBodyPart" | tee -a $LOGFILE
    continue
   fi
   sendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
