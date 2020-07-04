@@ -178,7 +178,7 @@ for ($i = 1; $i <= 4; $i++) {
  print "<tr><td>";
  print "<select id=\"fruitstallslot" . $i . "\" name=\"fruitstallslot" . $i . "\" onchange=\"saveMisc();\">";
  print "<option value=\"0\" id=\"fs0\">Sleep</option>\n";
- // indizes, die bereits als "o"-wert existieren dürfen nicht mitverschiedenem index erneut erzeugt werden
+ // indizes, die bereits als "o"-wert existieren dürfen nicht mit verschiedenem index erneut erzeugt werden
  // daher bekommt der obststand ein eigenes präfix
  CreateOptionsWithID("fs", 1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
  print "</select>&nbsp;" . $strings['slot'] . "&nbsp;" . $i;
