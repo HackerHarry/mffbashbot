@@ -302,7 +302,7 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  next($togglesarray);
 }
 
-for ($i = 1; $i <= 13; $i++) {
+for ($i = 1; $i <= 15; $i++) {
 $savedValue = $configContents['racecowslot' . $i];
 print "document.getElementById('racecowslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
