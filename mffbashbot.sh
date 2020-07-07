@@ -420,7 +420,7 @@ while (true); do
     fi
    done
    # race cow feeding
-   for SLOT in {1..13}; do
+   for SLOT in {1..15}; do
     if ! grep -q "racecowslot${SLOT} = 0" $CFGFILE && grep -q "racecowslot${SLOT} = " $CFGFILE; then
      checkRaceCowFeeding ${SLOT}
     fi

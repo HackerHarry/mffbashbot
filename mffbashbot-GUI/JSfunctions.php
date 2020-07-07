@@ -181,7 +181,7 @@ function saveMisc() {
   v = document.getElementById("flowerarrangementslot" + i);
   sData += "&flowerarrangementslot" + i + "=" + v.options[v.selectedIndex].value;
  }
- for (i = 1; i <= 13; i++) {
+ for (i = 1; i <= 15; i++) {
   v = document.getElementById("racecowslot" + i);
   sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;
  }

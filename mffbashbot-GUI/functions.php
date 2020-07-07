@@ -302,7 +302,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "cowracepvp":
         // Kuhrennen PvP
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateCowRacePvPOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
+        CreateCowRacePvPOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         print "</select>\n";
         break;
   default:

@@ -162,7 +162,7 @@ switch ($farm) {
   // clean up deprecated variables
   if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
-  for ($i = 1; $i <= 13; $i++)
+  for ($i = 1; $i <= 15; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
   for ($i = 1; $i <= 4; $i++)
    $configContents['fruitstallslot' . $i] = $_POST["fruitstallslot" . $i];

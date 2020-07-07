@@ -160,7 +160,7 @@ print "</div>\n";
 print "<div id=\"racecowslotspane\" style=\"display:none;\">";
 print "<table id=\"racecowslotstbl\" style=\"float:left;\" border=\"1\">";
 print "<tr><th>" . $strings['racecowslots'] . "</th></tr>\n";
-for ($i = 1; $i <= 13; $i++) {
+for ($i = 1; $i <= 15; $i++) {
  print "<tr><td>";
  print "<select id=\"racecowslot" . $i . "\" name=\"racecowslot" . $i . "\" onchange=\"saveMisc();\">";
  print "<option value=\"0\" id=\"racecowslot0\">Sleep</option>\n";
