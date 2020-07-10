@@ -252,14 +252,14 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'docalendarevent', 'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
-'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',
-'fruitstallslot4', 'autobuyitems', 'autobuyrefillto', 'flowerarrangementslot1',
-'flowerarrangementslot2', 'flowerarrangementslot3', 'flowerarrangementslot4',
-'flowerarrangementslot5', 'flowerarrangementslot6', 'flowerarrangementslot7',
-'flowerarrangementslot8', 'flowerarrangementslot9', 'flowerarrangementslot10',
-'flowerarrangementslot11', 'flowerarrangementslot12', 'flowerarrangementslot13',
-'flowerarrangementslot14', 'flowerarrangementslot15', 'flowerarrangementslot16',
-'flowerarrangementslot17' ];
+'racecowslot13', 'racecowslot14', 'racecowslot15' 'fruitstallslot1',
+'fruitstallslot2', 'fruitstallslot3', 'fruitstallslot4', 'autobuyitems',
+'autobuyrefillto', 'flowerarrangementslot1', 'flowerarrangementslot2',
+'flowerarrangementslot3', 'flowerarrangementslot4', 'flowerarrangementslot5',
+'flowerarrangementslot6', 'flowerarrangementslot7', 'flowerarrangementslot8',
+'flowerarrangementslot9', 'flowerarrangementslot10', 'flowerarrangementslot11',
+'flowerarrangementslot12', 'flowerarrangementslot13', 'flowerarrangementslot14',
+'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
