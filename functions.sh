@@ -442,9 +442,9 @@ function waterFieldNP {
  # this function only supports completely filled fields of the same crop size
  local iFarm=$1
  local iPosition=$2
- sendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
- local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $FARMDATAFILE)
- local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $FARMDATAFILE)
+ getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+ local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $TMPFILE)
+ local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $TMPFILE)
  local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
  local iPlot=1
  local iCache=0
