@@ -62,6 +62,8 @@ racecowslot10 = 0
 racecowslot11 = 0
 racecowslot12 = 0
 racecowslot13 = 0
+racecowslot14 = 0
+racecowslot15 = 0
 dologinbonus = 0
 excluderank1cow = 0
 docowracepvp = 0
@@ -90,7 +92,9 @@ flowerarrangementslot13 = 0
 flowerarrangementslot14 = 0
 flowerarrangementslot15 = 0
 flowerarrangementslot16 = 0
-flowerarrangementslot17 = 0"
+flowerarrangementslot17 = 0
+doinfinitequest = 0
+autobuybutterflies = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

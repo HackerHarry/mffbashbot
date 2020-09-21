@@ -100,5 +100,6 @@ $strings['stockmgmt'] = 'Stock management';
 $strings['buyatmerchant'] = '(Najwyzszej jakosci) Kupuj przedmioty kore sa ponizej 50%';
 $strings['flowerarrangements'] = 'Flower arrangements';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
+$strings['butterflies'] = 'Butterflies';
 // $strings[''] = '';
 ?>

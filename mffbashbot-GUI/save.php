@@ -172,6 +172,10 @@ switch ($farm) {
    $configContents['autobuyitems'] = 0;
   for ($i = 1; $i <= 17; $i++)
    $configContents['flowerarrangementslot' . $i] = $_POST["flowerarrangementslot" . $i];
+  if (!empty($_POST["autobuybutterflies"]))
+   $configContents['autobuybutterflies'] = str_replace(",", " ", $_POST["autobuybutterflies"]);
+  else
+   $configContents['autobuybutterflies'] = 0;
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

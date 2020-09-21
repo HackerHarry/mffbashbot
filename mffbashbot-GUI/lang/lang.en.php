@@ -100,5 +100,6 @@ $strings['stockmgmt'] = 'Stock management';
 $strings['buyatmerchant'] = '(top-up quantity) selected items are bought, soon as there is less than 50% of the top-up quantity in stock';
 $strings['flowerarrangements'] = 'Flower arrangements';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
+$strings['butterflies'] = 'Butterflies';
 // $strings[''] = '';
 ?>

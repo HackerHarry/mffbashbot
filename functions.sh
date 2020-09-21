@@ -1420,6 +1420,132 @@ function startButterflies {
  sendAJAXFarmRequest "slot=${iSlot}&mode=butterfly_carebreed"
 }
 
+function checkButterflies {
+ local aButterflies=$(getConfigValue autobuybutterflies)
+ local iSlot=$1
+ if [ $iSlot -ge 2 ]; then
+  local bSlotExists=$($JQBIN '.updateblock.farmersmarket.butterfly.data.slots["'${iSlot}'"].time | type == "number"' $FARMDATAFILE)
+  if [ "$bSlotExists" = "false" ]; then
+   return
+  fi
+ fi
+ local iMaxRepeat=10
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ if [ "$iButterfly" != "null" ]; then
+  # care_count1 is always 5(needs 5 feedings to mature)
+  local iMaxFeed=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iSlot}'"].care_count2' $FARMDATAFILE)
+  local iCurrentFeed=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"].count' $FARMDATAFILE)
+  if [ $iCurrentFeed -lt 14 ]; then
+   return
+  fi
+  local iReleaseValue
+  # we're gonna release butterflies immediately BEFORE they reach the min. blossoms count
+  case $iMaxFeed in
+   10) iReleaseValue=14
+       ;;
+   15) iReleaseValue=19
+       ;;
+   20) iReleaseValue=23
+       ;;
+    *) echo "checkButterflies: Invalid iMaxFeed value" >&2
+       return
+       ;;
+  esac
+  if [ $iCurrentFeed -ge $iReleaseValue ]; then
+   echo "Releasing butterfly in slot ${iSlot}..."
+   sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_delete"
+   sleep 1
+  fi
+ fi
+ echo -n "Trying to buy a butterfly in slot ${iSlot}..."
+ while (true); do
+  if [ $iMaxRepeat -eq 0 ]; then
+   echo "failed"
+   break
+  fi
+  if ! checkButterflyHouseSlotIsFree $iSlot; then
+   break
+  fi
+#  echo "DEBUG: Buying egg for slot $iSlot ... Attempts left: $iMaxRepeat"
+  echo -n "."
+  sendAJAXFarmRequestOverwrite "slot=${iSlot}&id=2&mode=butterfly_startbreed"
+  if checkButterflyMatch $iSlot "$aButterflies"; then
+   sleep 1
+   echo "success"
+   getButterflyHouseDeco $iSlot
+   break
+  fi
+#  echo "DEBUG: Removing egg..."
+  sleep 1
+  sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_delete"
+  iMaxRepeat=$((iMaxRepeat - 1))
+  sleep 1
+ done
+}
+
+function checkButterflyHouseSlotIsFree {
+ # returns 0 (true) if slot is free
+ local iSlot=$1
+ local sSlotType
+ sSlotType=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]? | type' $FARMDATAFILE)
+ if [ -z "$sSlotType" ] || [ "$sSlotType" = "null" ]; then
+  return 0
+ else
+  return 1
+ fi
+}
+
+function checkButterflyMatch {
+ # returns 0 (true) if a desired butterfly was purchased
+ local iSlot=$1
+ local aButterfies=$2
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ local _iButterfly
+ if [ "$iButterfly" = "null" ]; then
+  echo "Error reading butterfly house slot ${iSlot}" >&2
+  return 1
+ fi
+ for _iButterfly in $aButterfies; do
+  if [ $iButterfly -eq $_iButterfly ]; then
+#   echo "DEBUG: Bought butterfly egg #${iButterfly} in slot ${iSlot}"
+   return 0
+  fi
+ done
+# echo "DEBUG: this butterfly is not welcome..."
+ return 1
+}
+
+function getButterflyHouseDeco {
+ local iSlot=$1
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ if [ "$iButterfly" = "null" ]; then
+  # return if there's been an error
+  return 0
+ fi
+ local bQuestIsString=$($JQBIN '.updateblock.farmersmarket.butterfly.data.last_questid? | type == "string"' $FARMDATAFILE)
+ if [ "$bQuestIsString" = "false" ]; then
+  echo "getButterflyHouseDeco: Cannot buy decoration" >&2
+  return
+ fi
+ local iQuest=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.last_questid?' $FARMDATAFILE)
+ if [ $iQuest -lt 1 ]; then
+  echo "You cannot buy any decoration (yet)"
+  return
+ fi
+ if [ $iButterfly -ge 12 ] && [ $iButterfly -le 19 ]; then
+  # Schmetterling ist tropisch
+  if [ $iQuest -ge 35 ]; then
+#   echo "DEBUG: Buying decoration for tropical butterfly..."
+   sendAJAXFarmRequest "slot=${iSlot}&id=6&mode=butterfly_shopbuy"
+   return
+  else
+   echo "You cannot buy decoration for tropical butterflies (yet)"
+  fi
+ fi
+# echo "DEBUG: Brennessel kaufen..."
+ sendAJAXFarmRequest "slot=${iSlot}&id=1&mode=butterfly_shopbuy"
+}
+
 function checkFarmies {
  local sFarmieType=$1
  local aFarmies

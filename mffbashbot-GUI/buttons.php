@@ -232,12 +232,33 @@ for ($i = 1; $i <= 17; $i++) {
 }
 print "</table>\n";
 print "</div>\n";
+// butterflies
+print "<div id=\"butterflybuypane\" style=\"display:none;\">";
+print "<table id=\"autobuytbl\" style=\"float:left;\" border=\"1\">";
+print "<tr><th colspan=\"5\">" . $strings['butterflies'] . "</th></tr>\n";
+$numButterflies = 35;
+for ($i = 1; $i <= $numButterflies; $i++) {
+ print "<tr>";
+ for ($j = 0; $j <= 4; $j++) {
+  if (isset($farmdata["updateblock"]["farmersmarket"]["butterfly"]["config"]["butterflies"]["$i"]["name"])) {
+   print "<td>";
+   print "<input type=\"checkbox\" id=\"btfly" . $i . "\" name=\"btfly" . $i . "\" onchange=\"saveMisc();\" value=\"" . $i . "\">&nbsp;" . $farmdata["updateblock"]["farmersmarket"]["butterfly"]["config"]["butterflies"]["$i"]["name"] . "\n";
+   print "</td>";
+   $i++;
+  }
+ }
+ $i--;
+ print "</tr>";
+}
+print "</table>\n";
+print "</div>\n";
 
 print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"flowerarrangementsbtn\" onclick=\"showHideOptions('flowerarrangementspane');\">" . $strings['flowerarrangements'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane');\">" . $strings['fruitstallslots'] . "...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane');\">" . $strings['stockmgmt'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"butterflybtn\" onclick=\"showHideOptions('butterflybuypane');\">" . $strings['butterflies'] . "...</button>\n";
 print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
@@ -259,7 +280,8 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'flowerarrangementslot6', 'flowerarrangementslot7', 'flowerarrangementslot8',
 'flowerarrangementslot9', 'flowerarrangementslot10', 'flowerarrangementslot11',
 'flowerarrangementslot12', 'flowerarrangementslot13', 'flowerarrangementslot14',
-'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17' ];
+'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17',
+'autobuybutterflies' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -318,7 +340,13 @@ print "document.getElementById('flowerarrangementslot" . $i . "').selectedIndex 
 }
 
 $savedValue = explode(" ", $configContents['autobuyitems']);
-for ($i = 0; $i < count($savedValue); $i++)
- print "document.getElementById('autobuyitem" . $savedValue[$i] . "').checked = true;\n";
+if ($savedValue[0] != '0')
+ for ($i = 0; $i < count($savedValue); $i++)
+  print "document.getElementById('autobuyitem" . $savedValue[$i] . "').checked = true;\n";
+
+$savedValue = explode(" ", $configContents['autobuybutterflies']);
+if ($savedValue[0] != '0')
+ for ($i = 0; $i < count($savedValue); $i++)
+  print "document.getElementById('btfly" . $savedValue[$i] . "').checked = true;\n";
 print "</script>\n";
 ?>

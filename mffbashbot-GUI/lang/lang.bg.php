@@ -240,5 +240,6 @@ $strings['stockmgmt'] = 'Управление на стоки';
 $strings['buyatmerchant'] = '(отбележете количество) избраните стоки се капуват веднага, щом количеството им спадне на 50% от отбелязаното';
 $strings['flowerarrangements'] = 'Цветни аранжименти';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
+$strings['butterflies'] = 'Butterflies';
 // $strings[''] = '';
 ?>

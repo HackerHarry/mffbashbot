@@ -174,7 +174,7 @@ find . -type f -exec chmod 664 2>/dev/null {} +
 chmod +x *.sh
 
 echo "Updating GUI files..."
-for FILE in mffGetButterfly.php script/mffGetButterfly.sh klubauftrag-mengenberechnung.html config.php; do
+for FILE in klubauftrag-mengenberechnung.html config.php; do
  if [ -f "$BOTGUIROOT/$FILE" ]; then
   echo "Preserving $FILE..."
   cp -f "$BOTGUIROOT/$FILE" /tmp
@@ -183,13 +183,12 @@ done
 cd ~/mffbashbot-master
 $SUDO rm -rf $BOTGUIROOT
 $SUDO mv mffbashbot-GUI $BOTGUIROOT
-for FILE in mffGetButterfly.php klubauftrag-mengenberechnung.html config.php; do
+for FILE in klubauftrag-mengenberechnung.html config.php; do
  if [ -f "/tmp/$FILE" ]; then
   echo "Restoring $FILE..."
   mv -f "/tmp/$FILE" "$BOTGUIROOT"
  fi
 done
-if [ -f /tmp/mffGetButterfly.sh ]; then echo "Restoring mffGetButterfly.sh..."; mv -f /tmp/mffGetButterfly.sh "$BOTGUIROOT/script"; fi
 $SUDO chmod +x $BOTGUIROOT/script/*.sh
 $SUDO sed -i 's/\/pi\//\/'$USER'\//' $BOTGUIROOT/config.php
 

@@ -197,6 +197,14 @@ function saveMisc() {
  }
  if (sData.substring(sData.length-1, sData.length) == ",")
   sData = sData.substring(0, sData.length - 1);
+ j = (document.querySelectorAll("[id*=btfly]")).length;
+ sData += "&autobuybutterflies=";
+ for (i = 0; i < j; i++) {
+  if (document.querySelectorAll("[id*=btfly]")[i].checked)
+   sData += (document.querySelectorAll("[id*=btfly]"))[i].value + ",";
+ }
+ if (sData.substring(sData.length-1, sData.length) == ",")
+  sData = sData.substring(0, sData.length - 1);
 
  AJAXsave(sData);
  return false;
