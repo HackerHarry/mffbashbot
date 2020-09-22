@@ -1431,7 +1431,7 @@ function checkButterflies {
  fi
  local iMaxRepeat=10
  local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
- if [ "$iButterfly" != "null" ]; then
+ if [ "$iButterfly" != "null" ] && [ -n "$iButterfly" ]; then
   # care_count1 is always 5(needs 5 feedings to mature)
   local iMaxFeed=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iSlot}'"].care_count2' $FARMDATAFILE)
   local iCurrentFeed=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"].count' $FARMDATAFILE)
