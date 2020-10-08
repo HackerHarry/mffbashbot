@@ -988,7 +988,7 @@ function checkCowRacePvP {
   return
  fi
  # give player enough time to sign up in case he chooses to override the bot
- bTimeThreshold=$($JQBIN '.updateblock.farmersmarket.cowracing.pvp.racedayremain < 7200' $FARMDATAFILE)
+ bTimeThreshold=$($JQBIN '.updateblock.farmersmarket.cowracing.pvp.racedayremain < 5400' $FARMDATAFILE)
  if [ "$bTimeThreshold" = "false" ]; then
   return
  fi
@@ -1165,6 +1165,19 @@ function checkCowSuspended {
   return 0
  fi
  return 1
+}
+
+function harvestFishing {
+ local iSlot=$3
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=fishing_harvestproduction"
+}
+
+function startFishing {
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=fishing_startproduction"
 }
 
 function harvestMegaField {
@@ -2495,17 +2508,17 @@ function checkStockRefill {
  fi
  for iPID in $aPIDs; do
   iAmountInStock=$(getPIDAmountFromStock $iPID 1)
-  if [ $iAmountInStock -eq 0 ]; then
-   # in order to prevent erroneous purchases, player needs to own at least one item
-   logToFile "checkStockRefill: getPIDAmountFromStock() returned 0, not buying any items"
-   return
-  fi
   if [ $iAmountInStock -ge $iLowerThreshold ]; then
    continue
   fi
   # lower threshold reached, prepare purchase
   getMerchantData $TMPFILE
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
+  if [ $iAmountToBuy -eq $iRefillAmount ]; then
+   # in order to prevent erroneous purchases, player needs to own at least one item
+   logToFile "checkStockRefill: refusing to buy $iAmountToBuy items"
+   continue
+  fi
   # check, if player can buy the item
   iCanBuyPID=$($JQBIN '.datablock[1].products | .[] | select(.pid == '${iPID}').pid?' $TMPFILE)
   if [ -z "$iCanBuyPID" ]; then

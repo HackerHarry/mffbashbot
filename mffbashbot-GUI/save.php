@@ -73,7 +73,7 @@ switch ($farm) {
   $position = ["1", "2", "forestry"];
   $farm == "foodworld" ? $position = ["1", "2", "3", "4"] : '';
   $farm == "farmersmarket" ? $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"] : '';
-  $farm == "farmersmarket2" ? $position = ["cowracing"] : '';
+  $farm == "farmersmarket2" ? $position = ["cowracing", "fishing"] : '';
   for ($poscount = 0; $poscount <= (count($position) - 1); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 3 slots

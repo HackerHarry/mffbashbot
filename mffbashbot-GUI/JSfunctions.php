@@ -224,7 +224,7 @@ function saveConfig() {
    if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
    if (sFarm == "farmersmarket2")
-    var fmpos = ["cowracing"];
+    var fmpos = ["cowracing", "fishing"];
    if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
    if (sFarm == "foodworld")

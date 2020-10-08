@@ -229,8 +229,8 @@ while (true); do
  fi
 
  for FARM in {1..7}; do
-  FARMEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
-  if [ "$FARMEXISTS" = "false" ]; then
+  PLACEEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
+  if [ "$PLACEEXISTS" = "false" ]; then
    echo "Skipping farm ${FARM}"
    continue
   fi
@@ -413,8 +413,8 @@ while (true); do
  fi
  # cow racing production
  if [ $PLAYERLEVELNUM -ge 42 ]; then
-  CRBARNEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
-  if [ "$CRBARNEXISTS" != "number" ] && [ "$CRBARNEXISTS" != "null" ]; then
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
    for SLOT in 1 2 3; do
     if checkTimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing cow racing production slot ${SLOT}..."
@@ -435,6 +435,19 @@ while (true); do
     echo "Checking for pending PvP cow race signup..."
     checkCowRacePvP city2 cowracepvp 0
    fi
+  fi
+ fi
+ # fishing production
+ if [ $PLAYERLEVELNUM -ge 44 ]; then
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.fishing | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
+   for SLOT in 1 2 3; do
+    if checkTimeRemaining '.updateblock.farmersmarket.fishing.production["'${SLOT}'"]?["1"]?.remain'; then
+     echo "Doing fishing production slot ${SLOT}..."
+     doFarmersMarket farmersmarket2 fishing ${SLOT}
+    fi
+   done
+   # more to come?
   fi
  fi
 

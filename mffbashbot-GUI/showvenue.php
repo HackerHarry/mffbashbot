@@ -41,7 +41,7 @@ switch ($farm) {
   $position = [0 => ["flowerarea", "", "flowerarea"], 1 => ["nursery", "", "nursery"], 2 => ["monsterfruit", "", "monsterfruit"], 3 => ["pets", "", "pets"], 4 => ["vet", "", "vet"]];
   break;
  case "farmersmarket2":
-  $position = [0 => ["cowracing", "", "cowracing"]];
+  $position = [0 => ["cowracing", "", "cowracing"], 1 => ["fishing", "", "fishing"]];
   break;
  default:
   exit("1");
