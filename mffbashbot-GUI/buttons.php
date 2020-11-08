@@ -74,11 +74,20 @@ print "<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" titl
 print "<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"" . $farmFriendlyName['city2'] . "\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/runbot.png\" class=\"navilink\" name=\"runbot\" title=\"" . $strings['forcebotstart'] . "\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\">&nbsp;\n";
 print "<input type=\"button\" name=\"logon\" class=\"btn btn-warning btn-sm logonbtn\" value=\"" . $strings['logon'] . "\" onclick=\"this.form.action='index.php'; this.form.submit()\">\n";
-print "<br>";
-// misc options
+print "<br><br>\n";
+
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane'); return false;\">" . $strings['options'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"opt2btn\" onclick=\"showHideOptions('options2pane'); return false;\">" . $strings['moreoptions'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"flowerarrangementsbtn\" onclick=\"showHideOptions('flowerarrangementspane'); return false;\">" . $strings['flowerarrangements'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane'); return false;\">" . $strings['racecowslots'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane'); return false;\">" . $strings['fruitstallslots'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane'); return false;\">" . $strings['stockmgmt'] . "...</button>\n";
+print "<button class=\"btn btn-outline-dark btn-sm\" id=\"butterflybtn\" onclick=\"showHideOptions('butterflybuypane'); return false;\">" . $strings['butterflies'] . "...</button>\n";
+print "<hr>\n";
+// toggles
 print "<div id=\"optionspane\" style=\"display:none;\">";
 print "<table id=\"opttbl\" style=\"float:left;\" border=\"1\">";
-print "<tr><th>" . $strings['options'] . "</th></tr>";
+print "<caption>" . $strings['options'] . "</caption>\n";
 for ($i = 0; $i < count($togglesarray); $i++) {
  $savedkey=key($togglesarray);
  $toggle=$togglesarray[$savedkey];
@@ -89,6 +98,12 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  print "</td></tr>\n";
  next($togglesarray);
 }
+print "</td></tr></table>\n";
+print "</div>\n";
+// more options
+print "<div id=\"options2pane\" style=\"display:none;\">";
+print "<table id=\"opttbl2\" style=\"float:left;\" border=\"1\">";
+print "<caption>" . $strings['moreoptions'] . "</caption>\n";
 print "<tr><td>";
 print "<select id=\"lottoggle\" name=\"lottoggle\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"lot0\">Sleep</option>\n";
@@ -135,6 +150,7 @@ print "<option value=\"1\" id=\"vjdiff1\">" . $strings['vetjobeasy'] . "</option
 print "<option value=\"2\" id=\"vjdiff2\">" . $strings['vetjobmedium'] . "</option>\n";
 print "<option value=\"3\" id=\"vjdiff3\">" . $strings['vetjobhard'] . "</option></select>&nbsp;" . $strings['restartvetjob'] . "\n";
 print "</td></tr>";
+print "<tr><th>" . $farmdata["updateblock"]["farmersmarket"]["pos"][4]["name"] . "</th></tr>\n";
 print "<tr><td>";
 print "<select id=\"carefood\" name=\"carefood\" onchange=\"saveMisc();\">";
 // dirty coding so getElementById() can find id "o0"
@@ -154,13 +170,91 @@ print "<select id=\"careplushy\" name=\"careplushy\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"careplushy0\">Sleep</option>\n";
 CreateOptionsWithID("o", 660, 661, 662, 663, 664, 665, 666, 667, 668, 669);
 print "</select>&nbsp;" . $strings['satisfyplushyneed'];
-print "</td></tr></table>\n";
+print "</td></tr>\n";
+print "<tr><th>" . $farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"] . "</th></tr>\n";
+if ($farmdata["updateblock"]["farmersmarket"]["fishing"]) {
+ print "<tr><td>";
+ print "<select id=\"speciesbait1\" name=\"speciesbait1\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"sb10\">Sleep</option>\n";
+ CreateOptionsWithID("sb1", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+ print "</select>&nbsp;" . $strings['speciesbait'] . " " . $strings['slot'] . " 1";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"raritybait1\" name=\"raritybait1\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"rb10\">Sleep</option>\n";
+ CreateOptionsWithID("rb1", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['raritybait'] . " " . $strings['slot'] . " 1";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"fishinggear1\" name=\"fishinggear1\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"fg10\">Sleep</option>\n";
+ CreateFishingGearOptions("fg1", 1, 2, 3, 4, 5, 6);
+ print "</select>&nbsp;" . $strings['fishinggear'] . " " . $strings['slot'] . " 1";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"speciesbait2\" name=\"speciesbait2\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"sb20\">Sleep</option>\n";
+ CreateOptionsWithID("sb2", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+ print "</select>&nbsp;" . $strings['speciesbait'] . " " . $strings['slot'] . " 2";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"raritybait2\" name=\"raritybait2\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"rb20\">Sleep</option>\n";
+ CreateOptionsWithID("rb2", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['raritybait'] . " " . $strings['slot'] . " 2";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"fishinggear2\" name=\"fishinggear2\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"fg20\">Sleep</option>\n";
+ CreateFishingGearOptions("fg2", 1, 2, 3, 4, 5, 6);
+ print "</select>&nbsp;" . $strings['fishinggear'] . " " . $strings['slot'] . " 2";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"speciesbait3\" name=\"speciesbait3\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"sb30\">Sleep</option>\n";
+ CreateOptionsWithID("sb3", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+ print "</select>&nbsp;" . $strings['speciesbait'] . " " . $strings['slot'] . " 3";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"raritybait3\" name=\"raritybait3\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"rb30\">Sleep</option>\n";
+ CreateOptionsWithID("rb3", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['raritybait'] . " " . $strings['slot'] . " 3";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"fishinggear3\" name=\"fishinggear3\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"fg30\">Sleep</option>\n";
+ CreateFishingGearOptions("fg3", 1, 2, 3, 4, 5, 6);
+ print "</select>&nbsp;" . $strings['fishinggear'] . " " . $strings['slot'] . " 3";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"preferredbait1\" name=\"preferredbait1\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"pb10\">Sleep</option>\n";
+ CreateOptionsWithID("pb1", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['preferredbait'] . " " . $strings['slot'] . " 1";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"preferredbait2\" name=\"preferredbait2\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"pb20\">Sleep</option>\n";
+ CreateOptionsWithID("pb2", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['preferredbait'] . " " . $strings['slot'] . " 2";
+ print "</td></tr>\n";
+ print "<tr><td>";
+ print "<select id=\"preferredbait3\" name=\"preferredbait3\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"pb30\">Sleep</option>\n";
+ CreateOptionsWithID("pb3", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+ print "</select>&nbsp;" . $strings['preferredbait'] . " " . $strings['slot'] . " 3";
+ print "</td></tr>\n";
+} else {
+ print "<th>" . $strings['notavailable'] . "</th>";
+}
+print "</table>\n";
 print "</div>\n";
 // race cow slots
 print "<div id=\"racecowslotspane\" style=\"display:none;\">";
 print "<table id=\"racecowslotstbl\" style=\"float:left;\" border=\"1\">";
-print "<tr><th>" . $strings['racecowslots'] . "</th></tr>\n";
-for ($i = 1; $i <= 13; $i++) {
+print "<caption>" . $strings['racecowslots'] . "</caption>\n";
+for ($i = 1; $i <= 15; $i++) {
  print "<tr><td>";
  print "<select id=\"racecowslot" . $i . "\" name=\"racecowslot" . $i . "\" onchange=\"saveMisc();\">";
  print "<option value=\"0\" id=\"racecowslot0\">Sleep</option>\n";
@@ -173,7 +267,7 @@ print "</div>\n";
 // fruit stall slots
 print "<div id=\"fruitstallspane\" style=\"display:none;\">";
 print "<table id=\"fruitstallslotstbl\" style=\"float:left;\" border=\"1\">";
-print "<tr><th>" . $strings['fruitstallslots'] . "</th></tr>\n";
+print "<caption>" . $strings['fruitstallslots'] . "</caption>\n";
 for ($i = 1; $i <= 4; $i++) {
  print "<tr><td>";
  print "<select id=\"fruitstallslot" . $i . "\" name=\"fruitstallslot" . $i . "\" onchange=\"saveMisc();\">";
@@ -189,7 +283,7 @@ print "</div>\n";
 // auto-buy
 print "<div id=\"autobuypane\" style=\"display:none;\">";
 print "<table id=\"autobuytbl\" style=\"float:left;\" border=\"1\">";
-print "<tr><th colspan=\"8\">" . $strings['stockmgmt'] . "</th></tr>\n";
+print "<caption>" . $strings['stockmgmt'] . "</caption>\n";
 print "<tr><td colspan=\"8\">";
 print "<select id=\"autobuyrefillto\" name=\"autobuyrefillto\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"autobuyrefillto0\">Sleep</option>\n";
@@ -221,7 +315,7 @@ print "</div>\n";
 // flower arrangement slots
 print "<div id=\"flowerarrangementspane\" style=\"display:none;\">";
 print "<table id=\"flowerarrangementslotstbl\" style=\"float:left;\" border=\"1\">";
-print "<tr><th>" . $strings['flowerarrangements'] . "</th></tr>\n";
+print "<caption>" . $strings['flowerarrangements'] . "</caption>\n";
 for ($i = 1; $i <= 17; $i++) {
  print "<tr><td>";
  print "<select id=\"flowerarrangementslot" . $i . "\" name=\"flowerarrangementslot" . $i . "\" onchange=\"saveMisc();\">";
@@ -232,13 +326,32 @@ for ($i = 1; $i <= 17; $i++) {
 }
 print "</table>\n";
 print "</div>\n";
+// butterflies
+print "<div id=\"butterflybuypane\" style=\"display:none;\">";
+print "<table id=\"autobuytbl\" style=\"float:left;\" border=\"1\">";
+print "<caption>" . $strings['butterflies'] . "</caption>\n";
+if ($farmdata["updateblock"]["farmersmarket"]["butterfly"]) {
+ $numButterflies = 35;
+ for ($i = 1; $i <= $numButterflies; $i++) {
+  print "<tr>";
+  for ($j = 0; $j <= 4; $j++) {
+   if (isset($farmdata["updateblock"]["farmersmarket"]["butterfly"]["config"]["butterflies"]["$i"]["name"])) {
+    print "<td>";
+    print "<input type=\"checkbox\" id=\"btfly" . $i . "\" name=\"btfly" . $i . "\" onchange=\"saveMisc();\" value=\"" . $i . "\">&nbsp;" . $farmdata["updateblock"]["farmersmarket"]["butterfly"]["config"]["butterflies"]["$i"]["name"] . "\n";
+    print "</td>";
+    $i++;
+   }
+  }
+  $i--;
+  print "</tr>";
+ }
+} else {
+ print "<th>" . $strings['notavailable'] . "</th>";
+}
+print "</table>\n";
+print "</div>\n";
+print "</form>\n";
 
-print "</form><button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"showHideOptions('optionspane');\">" . $strings['options'] . "...</button>\n";
-print "<button class=\"btn btn-outline-dark btn-sm\" id=\"flowerarrangementsbtn\" onclick=\"showHideOptions('flowerarrangementspane');\">" . $strings['flowerarrangements'] . "...</button>\n";
-print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane');\">" . $strings['racecowslots'] . "...</button>\n";
-print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane');\">" . $strings['fruitstallslots'] . "...</button>\n";
-print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane');\">" . $strings['stockmgmt'] . "...</button>\n";
-print "<hr>\n";
 // set saved options
 print "<script type=\"text/javascript\">\n";
 
@@ -252,14 +365,17 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'docalendarevent', 'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
-'racecowslot13', 'fruitstallslot1', 'fruitstallslot2', 'fruitstallslot3',
-'fruitstallslot4', 'autobuyitems', 'autobuyrefillto', 'flowerarrangementslot1',
-'flowerarrangementslot2', 'flowerarrangementslot3', 'flowerarrangementslot4',
-'flowerarrangementslot5', 'flowerarrangementslot6', 'flowerarrangementslot7',
-'flowerarrangementslot8', 'flowerarrangementslot9', 'flowerarrangementslot10',
-'flowerarrangementslot11', 'flowerarrangementslot12', 'flowerarrangementslot13',
-'flowerarrangementslot14', 'flowerarrangementslot15', 'flowerarrangementslot16',
-'flowerarrangementslot17' ];
+'racecowslot13', 'racecowslot14', 'racecowslot15', 'fruitstallslot1',
+'fruitstallslot2', 'fruitstallslot3', 'fruitstallslot4', 'autobuyitems',
+'autobuyrefillto', 'flowerarrangementslot1', 'flowerarrangementslot2',
+'flowerarrangementslot3', 'flowerarrangementslot4', 'flowerarrangementslot5',
+'flowerarrangementslot6', 'flowerarrangementslot7', 'flowerarrangementslot8',
+'flowerarrangementslot9', 'flowerarrangementslot10', 'flowerarrangementslot11',
+'flowerarrangementslot12', 'flowerarrangementslot13', 'flowerarrangementslot14',
+'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17',
+'autobuybutterflies', 'speciesbait1', 'speciesbait2', 'speciesbait3',
+'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
+'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -302,7 +418,7 @@ for ($i = 0; $i < count($togglesarray); $i++) {
  next($togglesarray);
 }
 
-for ($i = 1; $i <= 13; $i++) {
+for ($i = 1; $i <= 15; $i++) {
 $savedValue = $configContents['racecowslot' . $i];
 print "document.getElementById('racecowslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
@@ -317,8 +433,25 @@ $savedValue = $configContents['flowerarrangementslot' . $i];
 print "document.getElementById('flowerarrangementslot" . $i . "').selectedIndex = document.getElementById('o" . $savedValue . "').index;\n";
 }
 
+for ($i = 1; $i <= 3; $i++) {
+ $savedValue = $configContents['speciesbait' . $i];
+ print "document.getElementById('speciesbait" . $i . "').selectedIndex = document.getElementById('sb" . $i . $savedValue . "').index;\n";
+ $savedValue = $configContents['raritybait' . $i];
+ print "document.getElementById('raritybait" . $i . "').selectedIndex = document.getElementById('rb" . $i . $savedValue . "').index;\n";
+ $savedValue = $configContents['fishinggear' . $i];
+ print "document.getElementById('fishinggear" . $i . "').selectedIndex = document.getElementById('fg" . $i . $savedValue . "').index;\n";
+ $savedValue = $configContents['preferredbait' . $i];
+ print "document.getElementById('preferredbait" . $i . "').selectedIndex = document.getElementById('pb" . $i . $savedValue . "').index;\n";
+}
+
 $savedValue = explode(" ", $configContents['autobuyitems']);
-for ($i = 0; $i < count($savedValue); $i++)
- print "document.getElementById('autobuyitem" . $savedValue[$i] . "').checked = true;\n";
+if ($savedValue[0] != '0')
+ for ($i = 0; $i < count($savedValue); $i++)
+  print "document.getElementById('autobuyitem" . $savedValue[$i] . "').checked = true;\n";
+
+$savedValue = explode(" ", $configContents['autobuybutterflies']);
+if ($savedValue[0] != '0')
+ for ($i = 0; $i < count($savedValue); $i++)
+  print "document.getElementById('btfly" . $savedValue[$i] . "').checked = true;\n";
 print "</script>\n";
 ?>

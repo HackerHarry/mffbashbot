@@ -73,7 +73,7 @@ switch ($farm) {
   $position = ["1", "2", "forestry"];
   $farm == "foodworld" ? $position = ["1", "2", "3", "4"] : '';
   $farm == "farmersmarket" ? $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"] : '';
-  $farm == "farmersmarket2" ? $position = ["cowracing"] : '';
+  $farm == "farmersmarket2" ? $position = ["cowracing", "fishing"] : '';
   for ($poscount = 0; $poscount <= (count($position) - 1); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 3 slots
@@ -162,7 +162,7 @@ switch ($farm) {
   // clean up deprecated variables
   if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
-  for ($i = 1; $i <= 13; $i++)
+  for ($i = 1; $i <= 15; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
   for ($i = 1; $i <= 4; $i++)
    $configContents['fruitstallslot' . $i] = $_POST["fruitstallslot" . $i];
@@ -172,6 +172,16 @@ switch ($farm) {
    $configContents['autobuyitems'] = 0;
   for ($i = 1; $i <= 17; $i++)
    $configContents['flowerarrangementslot' . $i] = $_POST["flowerarrangementslot" . $i];
+  for ($i = 1; $i <= 3; $i++) {
+   $configContents['speciesbait' . $i] = $_POST["speciesbait" . $i];
+   $configContents['raritybait' . $i] = $_POST["raritybait" . $i];
+   $configContents['fishinggear' . $i] = $_POST["fishinggear" . $i];
+   $configContents['preferredbait' . $i] = $_POST["preferredbait" . $i];
+  }
+  if (!empty($_POST["autobuybutterflies"]))
+   $configContents['autobuybutterflies'] = str_replace(",", " ", $_POST["autobuybutterflies"]);
+  else
+   $configContents['autobuybutterflies'] = 0;
 
   $filename = $gamepath . "/config.ini";
   $retval = writeINI($configContents, $filename);

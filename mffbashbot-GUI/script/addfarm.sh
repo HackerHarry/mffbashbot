@@ -62,6 +62,8 @@ racecowslot10 = 0
 racecowslot11 = 0
 racecowslot12 = 0
 racecowslot13 = 0
+racecowslot14 = 0
+racecowslot15 = 0
 dologinbonus = 0
 excluderank1cow = 0
 docowracepvp = 0
@@ -90,7 +92,21 @@ flowerarrangementslot13 = 0
 flowerarrangementslot14 = 0
 flowerarrangementslot15 = 0
 flowerarrangementslot16 = 0
-flowerarrangementslot17 = 0"
+flowerarrangementslot17 = 0
+doinfinitequest = 0
+autobuybutterflies = 0
+speciesbait1 = 0
+raritybait1 = 0
+fishinggear1 = 0
+speciesbait2 = 0
+raritybait2 = 0
+fishinggear2 = 0
+speciesbait3 = 0
+raritybait3 = 0
+fishinggear3 = 0
+preferredbait1 = 0
+preferredbait2 = 0
+preferredbait3 = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely
@@ -158,6 +174,7 @@ farmersmarket/nursery
 farmersmarket/pets
 farmersmarket/vet
 farmersmarket2/cowracing
+farmersmarket2/fishing
 foodworld/1
 foodworld/2
 foodworld/3

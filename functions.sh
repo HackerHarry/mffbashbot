@@ -259,7 +259,7 @@ function startFactory {
     iPID=6
     ;;
   *)
-    echo "startFactory: Unknown PID" >&2
+    logToFile "startFactory: Unknown PID"
     return
     ;;
  esac
@@ -442,9 +442,9 @@ function waterFieldNP {
  # this function only supports completely filled fields of the same crop size
  local iFarm=$1
  local iPosition=$2
- sendAJAXFarmRequestOverwrite "mode=gardeninit&farm=${iFarm}&position=${iPosition}"
- local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $FARMDATAFILE)
- local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $FARMDATAFILE)
+ getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+ local iProductDim_x=$($JQBIN '.datablock[1]["1"].x' $TMPFILE)
+ local iProductDim_y=$($JQBIN '.datablock[1]["1"].y' $TMPFILE)
  local sDataWater="mode=garden_water&farm=${iFarm}&position=${iPosition}&"
  local iPlot=1
  local iCache=0
@@ -620,7 +620,7 @@ function checkMunchiesAtTables {
    elif [ "$sJSONDataType" = "array" ]; then
     bMunchieReady=$($JQBIN '.datablock.tables['${iTable}']."chairs"."'${iChair}'".ready? == 1' $FARMDATAFILE)
    else
-    echo "Error: Unknown JSON datatype: ${sJSONDataType}" >&2
+    logToFile "checkMunchiesAtTables: Unknown JSON data type: ${sJSONDataType}"
     break 2
    fi
    if [ "$bMunchieReady" = "true" ]; then
@@ -690,6 +690,10 @@ function doFarmersMarket {
  local sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
  harvest${sFunction} ${sFarm} ${sPosition} ${iSlot}
  start${sFunction} ${sFarm} ${sPosition} ${iSlot}
+ if [ $SKIPQUEUEUPDATE -eq 1 ]; then
+  SKIPQUEUEUPDATE=0
+  return
+ fi
  updateQueue ${sFarm} ${sPosition} ${iSlot}
 }
 
@@ -988,7 +992,7 @@ function checkCowRacePvP {
   return
  fi
  # give player enough time to sign up in case he chooses to override the bot
- bTimeThreshold=$($JQBIN '.updateblock.farmersmarket.cowracing.pvp.racedayremain < 7200' $FARMDATAFILE)
+ bTimeThreshold=$($JQBIN '.updateblock.farmersmarket.cowracing.pvp.racedayremain < 5400' $FARMDATAFILE)
  if [ "$bTimeThreshold" = "false" ]; then
   return
  fi
@@ -1007,7 +1011,7 @@ function checkCowRacePvP {
  for sBodyPart in head body foot; do
   iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
   if [ "$iEquipmentID" = "-1" ]; then
-   echo "$(date +'%F %X') Could not get equipment for your cow's $sBodyPart" | tee -a $LOGFILE
+   logToFile "checkCowRacePvP: Could not get equipment for your cow's $sBodyPart"
    continue
   fi
   sendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
@@ -1118,7 +1122,7 @@ function getCowEquipment {
  for iItem in $iSearchPattern; do
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "true" ]; then
-   echo "Buying cow equipment #${iItem}..." >&2
+   echo "Buying cow equipment #${iItem}..." >&2 # this is very ugly.
    sendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
    # nicer would be to use the correct slot no.
    iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id | tonumber' $FARMDATAFILE)
@@ -1165,6 +1169,62 @@ function checkCowSuspended {
   return 0
  fi
  return 1
+}
+
+function harvestFishing {
+ local iSlot=$3
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=fishing_harvestproduction"
+}
+
+function startFishing {
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ if ! grep -q "preferredbait${iSlot} = 0" $CFGFILE && grep -q "preferredbait${iSlot} = " $CFGFILE; then
+  # player has a food preference
+  local iPreferredPID=$(getConfigValue preferredbait${iSlot})
+  local iNeededItem=$($JQBIN -r '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items | keys[0]' $FARMDATAFILE)
+  local iNeededAmount=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items["'${iNeededItem}'"]' $FARMDATAFILE)
+  local iAmountInStock=$($JQBIN '.updateblock.farmersmarket.fishing.data.stock["'${iNeededItem}'"]?' $FARMDATAFILE)
+  if [ "$iAmountInStock" != "null" ]; then
+   if [ $iAmountInStock -ge $iNeededAmount ]; then
+    echo "Producing a preferred item..."
+    iPID=$iPreferredPID
+    SKIPQUEUEUPDATE=1
+   fi
+  fi
+ fi
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=fishing_startproduction"
+}
+
+function doFisherman {
+ local iSlot=$1
+ local iSpeciesbait=$(getConfigValue speciesbait${iSlot})
+ local iRaritybait=$(getConfigValue raritybait${iSlot})
+ local iFishinggear=$(getConfigValue fishinggear${iSlot})
+ local iItem
+ local bIsMoneyItem
+ local sSelection
+ sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=fishing_finish_fishing" && sleep 1
+ iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[]? | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
+ if [ "$iItem" == "null" ]; then
+  # no item available, buy it, if it's not a coin-item
+  bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].money? | type == "number"' $FARMDATAFILE)
+  if [ "$bIsMoneyItem" = "false" ]; then
+   logToFile "doFisherman: refusing to buy coin item"
+   return
+  fi
+  echo "Buying fishing gear #${iFishinggear}..."
+  sendAJAXFarmRequestOverwrite "id=${iFishinggear}&mode=fishing_shop_buy" && sleep 1
+  iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[] | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
+ fi
+ # request requires encoded JSON data
+ # sSelection=$(echo '{"category":'${iSpeciesbait}',"rarity":'${iRaritybait}',"item":'${iItem}'}' | jq -r @uri)
+ sSelection="%7B%22category%22%3A${iSpeciesbait}%2C%22rarity%22%3A${iRaritybait}%2C%22item%22%3A${iItem}%7D"
+ echo "Starting fishing session in slot ${iSlot}..."
+ sendAJAXFarmRequest "slot=${iSlot}&selection=${sSelection}&mode=fishing_start_fishing"
+ getFarmData $FARMDATAFILE
 }
 
 function harvestMegaField {
@@ -1418,6 +1478,132 @@ function startPonyFarm {
 function startButterflies {
  local iSlot=$1
  sendAJAXFarmRequest "slot=${iSlot}&mode=butterfly_carebreed"
+}
+
+function checkButterflies {
+ local aButterflies=$(getConfigValue autobuybutterflies)
+ local iSlot=$1
+ if [ $iSlot -ge 2 ]; then
+  local bSlotExists=$($JQBIN '.updateblock.farmersmarket.butterfly.data.slots["'${iSlot}'"].time | type == "number"' $FARMDATAFILE)
+  if [ "$bSlotExists" = "false" ]; then
+   return
+  fi
+ fi
+ local iMaxRepeat=10
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ if [ "$iButterfly" != "null" ] && [ -n "$iButterfly" ]; then
+  # care_count1 is always 5 (needs 5 feedings to mature)
+  local iMaxFeed=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iSlot}'"].care_count2' $FARMDATAFILE)
+  local iCurrentFeed=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"].count' $FARMDATAFILE)
+  if [ $iCurrentFeed -lt 14 ]; then
+   return
+  fi
+  local iReleaseValue
+  # we're gonna release butterflies immediately BEFORE they reach the min. blossoms count
+  case $iMaxFeed in
+   10) iReleaseValue=14
+       ;;
+   15) iReleaseValue=19
+       ;;
+   20) iReleaseValue=23
+       ;;
+    *) logToFile "checkButterflies: Invalid iMaxFeed value"
+       return
+       ;;
+  esac
+  if [ $iCurrentFeed -ge $iReleaseValue ]; then
+   echo "Releasing butterfly in slot ${iSlot}..."
+   sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_free"
+   sleep 1
+  fi
+ fi
+ echo -n "Trying to buy a butterfly in slot ${iSlot}..."
+ while (true); do
+  if [ $iMaxRepeat -eq 0 ]; then
+   echo "failed"
+   break
+  fi
+  if ! checkButterflyHouseSlotIsFree $iSlot; then
+   break
+  fi
+#  echo "DEBUG: Buying egg for slot $iSlot ... Attempts left: $iMaxRepeat"
+  echo -n "."
+  sendAJAXFarmRequestOverwrite "slot=${iSlot}&id=2&mode=butterfly_startbreed"
+  if checkButterflyMatch $iSlot "$aButterflies"; then
+   sleep 1
+   echo "success"
+   getButterflyHouseDeco $iSlot
+   break
+  fi
+#  echo "DEBUG: Removing egg..."
+  sleep 1
+  sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_delete"
+  iMaxRepeat=$((iMaxRepeat - 1))
+  sleep 1
+ done
+}
+
+function checkButterflyHouseSlotIsFree {
+ # returns 0 (true) if slot is free
+ local iSlot=$1
+ local sSlotType
+ sSlotType=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]? | type' $FARMDATAFILE)
+ if [ -z "$sSlotType" ] || [ "$sSlotType" = "null" ]; then
+  return 0
+ else
+  return 1
+ fi
+}
+
+function checkButterflyMatch {
+ # returns 0 (true) if a desired butterfly was purchased
+ local iSlot=$1
+ local aButterfies=$2
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ local _iButterfly
+ if [ "$iButterfly" = "null" ]; then
+  logToFile "checkButterflyMatch: Error reading butterfly house slot ${iSlot}"
+  return 1
+ fi
+ for _iButterfly in $aButterfies; do
+  if [ $iButterfly -eq $_iButterfly ]; then
+#   echo "DEBUG: Bought butterfly egg #${iButterfly} in slot ${iSlot}"
+   return 0
+  fi
+ done
+# echo "DEBUG: this butterfly is not welcome..."
+ return 1
+}
+
+function getButterflyHouseDeco {
+ local iSlot=$1
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ if [ "$iButterfly" = "null" ]; then
+  # return if there's been an error
+  return 0
+ fi
+ local bQuestIsString=$($JQBIN '.updateblock.farmersmarket.butterfly.data.last_questid? | type == "string"' $FARMDATAFILE)
+ if [ "$bQuestIsString" = "false" ]; then
+  logToFile "getButterflyHouseDeco: Cannot buy decoration"
+  return
+ fi
+ local iQuest=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.last_questid?' $FARMDATAFILE)
+ if [ $iQuest -lt 1 ]; then
+  echo "You cannot buy any decoration (yet)"
+  return
+ fi
+ if [ $iButterfly -ge 12 ] && [ $iButterfly -le 19 ]; then
+  # Schmetterling ist tropisch
+  if [ $iQuest -ge 35 ]; then
+#   echo "DEBUG: Buying decoration for tropical butterfly..."
+   sendAJAXFarmRequest "slot=${iSlot}&id=6&mode=butterfly_shopbuy"
+   return
+  else
+   echo "You cannot buy decoration for tropical butterflies (yet)"
+  fi
+ fi
+# echo "DEBUG: Brennessel kaufen..."
+ sendAJAXFarmRequest "slot=${iSlot}&id=1&mode=butterfly_shopbuy"
 }
 
 function checkFarmies {
@@ -1748,7 +1934,7 @@ function getMegaFieldHarvesterDelay {
  local iHarvestDevice=$1
  local iHarvesterDelay=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].duration // 0' $FARMDATAFILE)
  if [ $iHarvesterDelay -eq 0 ]; then
-  echo "getMegaFieldHarvesterDelay: Unknown harvest device" >&2
+  logToFile "getMegaFieldHarvesterDelay: Unknown harvest device"
  fi
  echo $iHarvesterDelay
 }
@@ -1762,13 +1948,12 @@ function checkMegaFieldEmptyHarvestDevice {
  if [ "$bDurability" = "false" ] || [ -z "$bDurability" ]; then
   if [ $iVehicleBought -eq 0 ]; then
    # buy a brand new one if empty
-   echo "Buying new vehicle #${iHarvestDevice}..." >&2
+   echo "Buying new vehicle #${iHarvestDevice}..." >&2 # this is very ugly.
    sendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
    echo 1
    return
   else
-   # sending to STDERR - otherwise the text would be part of the return value
-   echo "Not buying new vehicle since it's already been bought this iteration!" >&2
+   logToFile "checkMegaFieldEmptyHarvestDevice: Not buying new vehicle since it's already been bought this iteration!"
    echo 1
    return
   fi
@@ -2071,7 +2256,7 @@ function getAnimalsFastestCureForDisease {
    54) echo 402
       # Furchtbare Beule
       ;;
-   *) echo "getAnimalsFastestCureForDisease: Unknown disease id" >&2
+   *) logToFile "getAnimalsFastestCureForDisease: Unknown disease id"
       echo 0
       ;;
  esac
@@ -2376,6 +2561,11 @@ function checkStockRefill {
   # lower threshold reached, prepare purchase
   getMerchantData $TMPFILE
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
+  if [ $iAmountToBuy -eq $iRefillAmount ]; then
+   # in order to prevent erroneous purchases, player needs to own at least one item
+   logToFile "checkStockRefill: refusing to buy $iAmountToBuy items of item #${iPID}"
+   continue
+  fi
   # check, if player can buy the item
   iCanBuyPID=$($JQBIN '.datablock[1].products | .[] | select(.pid == '${iPID}').pid?' $TMPFILE)
   if [ -z "$iCanBuyPID" ]; then
@@ -2683,4 +2873,9 @@ function sendAJAXMainRequest {
 function sendAJAXGuildRequest {
  local sAJAXSuffix=$1
  WGETREQ ${AJAXGUILD}${sAJAXSuffix}
+}
+
+function logToFile {
+ local sText="$1"
+ echo "$(date '+%F %X') $sText" | tee -a $LOGFILE >&2
 }

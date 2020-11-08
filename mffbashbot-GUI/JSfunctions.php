@@ -181,7 +181,7 @@ function saveMisc() {
   v = document.getElementById("flowerarrangementslot" + i);
   sData += "&flowerarrangementslot" + i + "=" + v.options[v.selectedIndex].value;
  }
- for (i = 1; i <= 13; i++) {
+ for (i = 1; i <= 15; i++) {
   v = document.getElementById("racecowslot" + i);
   sData += "&racecowslot" + i + "=" + v.options[v.selectedIndex].value;
  }
@@ -189,11 +189,34 @@ function saveMisc() {
   v = document.getElementById("fruitstallslot" + i);
   sData += "&fruitstallslot" + i + "=" + v.options[v.selectedIndex].value;
  }
+ var aFishingstuff = ['speciesbait', 'raritybait', 'fishinggear', 'preferredbait'];
+ for (i = 1; i <= 3; i++) {
+  for (j = 0; j < aFishingstuff.length; j++) {
+   if (document.getElementById(aFishingstuff[j] + i) !== null) {
+    v = document.getElementById(aFishingstuff[j] + i);
+    sData += "&" + aFishingstuff[j] + i + "=" + v.options[v.selectedIndex].value;
+   } else {
+    sData += "&" + aFishingstuff[j] + i + "=0";
+   }
+  }
+ }
  j = (document.querySelectorAll("[id*=autobuyitem]")).length;
  sData += "&autobuyitems=";
  for (i = 0; i < j; i++) {
   if (document.querySelectorAll("[id*=autobuyitem]")[i].checked)
    sData += (document.querySelectorAll("[id*=autobuyitem]"))[i].value + ",";
+ }
+ if (sData.substring(sData.length-1, sData.length) == ",")
+  sData = sData.substring(0, sData.length - 1);
+ j = (document.querySelectorAll("[id*=btfly]")).length;
+ sData += "&autobuybutterflies=";
+ if (j > 0) {
+  for (i = 0; i < j; i++) {
+   if (document.querySelectorAll("[id*=btfly]")[i].checked)
+    sData += (document.querySelectorAll("[id*=btfly]"))[i].value + ",";
+  }
+ } else {
+  sData += "0";
  }
  if (sData.substring(sData.length-1, sData.length) == ",")
   sData = sData.substring(0, sData.length - 1);
@@ -216,7 +239,7 @@ function saveConfig() {
    if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
    if (sFarm == "farmersmarket2")
-    var fmpos = ["cowracing"];
+    var fmpos = ["cowracing", "fishing"];
    if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
    if (sFarm == "foodworld")
@@ -302,15 +325,23 @@ function displayNotification(sTitle, sBody, bConfirm, sTag) {
 }
 
 function showHideOptions(element) {
+ var j = (document.querySelectorAll("[id*=pane]")).length, i;
  var div = document.getElementById(element);
  if (div.style.display !== "none") {
   div.style.display = "none";
   return false;
-  }
+ }
  else {
-  div.style.display = "inline-block";
-  return false;
+  for (i = 0; i < j; i++) {
+   // close all other panes
+   div = document.getElementById((document.querySelectorAll("[id*=pane]"))[i].id);
+   if (div.style.display !== "none")
+    div.style.display = "none";
   }
+  // all panes are closed, let's open the desired one
+  (document.getElementById(element)).style.display = "inline-block";
+  return false;
+ }
 }
 
 function confirmUpdate() {

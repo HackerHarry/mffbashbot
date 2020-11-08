@@ -39,6 +39,7 @@ MFFUSER=$1
 PAUSECORRECTEDAT=0
 TIMEDELTA=0
 CURRENTEPOCH=0
+SKIPQUEUEUPDATE=0
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
 MFFPASS=$(grep password $CFGFILE | tr -d "'")
@@ -229,8 +230,8 @@ while (true); do
  fi
 
  for FARM in {1..7}; do
-  FARMEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
-  if [ "$FARMEXISTS" = "false" ]; then
+  PLACEEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
+  if [ "$PLACEEXISTS" = "false" ]; then
    echo "Skipping farm ${FARM}"
    continue
   fi
@@ -372,8 +373,6 @@ while (true); do
    # stuff for pets production
    for SLOT in 1 2 3; do
     if checkTimeRemaining '.updateblock.farmersmarket.pets.production["'${SLOT}'"]?["1"]?.remain'; then
-#    SLOTREMAIN=$($JQBIN '.updateblock.farmersmarket.pets.production["'${SLOT}'"]["1"].remain' $FARMDATAFILE 2>/dev/null)
-#     if [ "$SLOTREMAIN" = "0" ]; then
      echo "Doing pets stuff production slot ${SLOT}..."
      doFarmersMarket farmersmarket pets ${SLOT}
     fi
@@ -403,16 +402,20 @@ while (true); do
  # butterfly house
  if [ $PLAYERLEVELNUM -ge 40 ]; then
   for SLOT in {1..6}; do
+   if ! grep -q "autobuybutterflies = 0" $CFGFILE && grep -q "autobuybutterflies = " $CFGFILE; then
+    checkButterflies $SLOT
+   fi
    if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
-    echo "Doing butterfly house slot ${SLOT}..."
+    echo "Feeding butterfly in slot ${SLOT}..."
     startButterflies $SLOT
    fi
   done
+ getFarmData $FARMDATAFILE
  fi
  # cow racing production
  if [ $PLAYERLEVELNUM -ge 42 ]; then
-  CRBARNEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
-  if [ "$CRBARNEXISTS" != "number" ] && [ "$CRBARNEXISTS" != "null" ]; then
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.cowracing | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
    for SLOT in 1 2 3; do
     if checkTimeRemaining '.updateblock.farmersmarket.cowracing.production["'${SLOT}'"]?["1"]?.remain'; then
      echo "Doing cow racing production slot ${SLOT}..."
@@ -420,7 +423,7 @@ while (true); do
     fi
    done
    # race cow feeding
-   for SLOT in {1..13}; do
+   for SLOT in {1..15}; do
     if ! grep -q "racecowslot${SLOT} = 0" $CFGFILE && grep -q "racecowslot${SLOT} = " $CFGFILE; then
      checkRaceCowFeeding ${SLOT}
     fi
@@ -433,6 +436,27 @@ while (true); do
     echo "Checking for pending PvP cow race signup..."
     checkCowRacePvP city2 cowracepvp 0
    fi
+  fi
+ fi
+ # fishing production & fisherman
+ if [ $PLAYERLEVELNUM -ge 44 ]; then
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.fishing | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
+   for SLOT in 1 2 3; do
+    if checkTimeRemaining '.updateblock.farmersmarket.fishing.production["'${SLOT}'"]?["1"]?.remain'; then
+     echo "Doing fishing production slot ${SLOT}..."
+     doFarmersMarket farmersmarket2 fishing ${SLOT}
+    fi
+    if ! grep -q "speciesbait${SLOT} = 0" $CFGFILE && grep -q "speciesbait${SLOT} = " $CFGFILE; then
+     if ! grep -q "raritybait${SLOT} = 0" $CFGFILE && grep -q "raritybait${SLOT} = " $CFGFILE; then
+      if ! grep -q "fishinggear${SLOT} = 0" $CFGFILE && grep -q "fishinggear${SLOT} = " $CFGFILE; then
+       if checkTimeRemaining '.updateblock.farmersmarket.fishing.data.fishingslots["'${SLOT}'"].remain'; then
+        doFisherman ${SLOT}
+       fi
+      fi
+     fi
+    fi
+   done
   fi
  fi
 
