@@ -17,6 +17,7 @@ $strings['thebotis'] = 'Bot jest Aktualnie :';
 $strings['forcebotstart'] = 'Zatrzymaj Bota';
 $strings['logon'] = 'Wróć do logowania';
 $strings['options'] = 'Opcje';
+$strings['moreoptions'] = 'More options';
 $strings['ben'] = 'Aktywuj Bonusy dzienne';
 $strings['puzzlepartpurchase'] = 'Zakup puzle dla 5000 Punktow';
 $strings['saynotofarmies'] = 'Odpowiedz nie "Nie" do wszystkich';
@@ -101,5 +102,9 @@ $strings['buyatmerchant'] = '(Najwyzszej jakosci) Kupuj przedmioty kore sa poniz
 $strings['flowerarrangements'] = 'Flower arrangements';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
 $strings['butterflies'] = 'Butterflies';
+$strings['speciesbait'] = 'Species bait';
+$strings['raritybait'] = 'Rarity bait';
+$strings['fishinggear'] = 'Fishing gear';
+$strings['preferredbait'] = 'Preferred for production in';
 // $strings[''] = '';
 ?>

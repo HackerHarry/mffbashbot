@@ -690,6 +690,10 @@ function doFarmersMarket {
  local sFunction=$(head -1 ${sFarm}/${sPosition}/${iSlot})
  harvest${sFunction} ${sFarm} ${sPosition} ${iSlot}
  start${sFunction} ${sFarm} ${sPosition} ${iSlot}
+ if [ $SKIPQUEUEUPDATE -eq 1 ]; then
+  SKIPQUEUEUPDATE=0
+  return
+ fi
  updateQueue ${sFarm} ${sPosition} ${iSlot}
 }
 
@@ -1177,7 +1181,50 @@ function startFishing {
  local sPosition=$2
  local iSlot=$3
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ if ! grep -q "preferredbait${iSlot} = 0" $CFGFILE && grep -q "preferredbait${iSlot} = " $CFGFILE; then
+  # player has a food preference
+  local iPreferredPID=$(getConfigValue preferredbait${iSlot})
+  local iNeededItem=$($JQBIN -r '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items | keys[0]' $FARMDATAFILE)
+  local iNeededAmount=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items["'${iNeededItem}'"]' $FARMDATAFILE)
+  local iAmountInStock=$($JQBIN '.updateblock.farmersmarket.fishing.data.stock["'${iNeededItem}'"]?' $FARMDATAFILE)
+  if [ "$iAmountInStock" != "null" ]; then
+   if [ $iAmountInStock -ge $iNeededAmount ]; then
+    echo "Producing a preferred item..."
+    iPID=$iPreferredPID
+    SKIPQUEUEUPDATE=1
+   fi
+  fi
+ fi
  sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=fishing_startproduction"
+}
+
+function doFisherman {
+ local iSlot=$1
+ local iSpeciesbait=$(getConfigValue speciesbait${iSlot})
+ local iRaritybait=$(getConfigValue raritybait${iSlot})
+ local iFishinggear=$(getConfigValue fishinggear${iSlot})
+ local iItem
+ local bIsMoneyItem
+ local sSelection
+ sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=fishing_finish_fishing" && sleep 1
+ iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[]? | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
+ if [ "$iItem" == "null" ]; then
+  # no item available, buy it, if it's not a coin-item
+  bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].money? | type == "number"' $FARMDATAFILE)
+  if [ "$bIsMoneyItem" = "false" ]; then
+   logToFile "doFisherman: refusing to buy coin item"
+   return
+  fi
+  echo "Buying fishing gear #${iFishinggear}..."
+  sendAJAXFarmRequestOverwrite "id=${iFishinggear}&mode=fishing_shop_buy" && sleep 1
+  iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[] | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
+ fi
+ # request requires encoded JSON data
+ # sSelection=$(echo '{"category":'${iSpeciesbait}',"rarity":'${iRaritybait}',"item":'${iItem}'}' | jq -r @uri)
+ sSelection="%7B%22category%22%3A${iSpeciesbait}%2C%22rarity%22%3A${iRaritybait}%2C%22item%22%3A${iItem}%7D"
+ echo "Starting fishing session in slot ${iSlot}..."
+ sendAJAXFarmRequest "slot=${iSlot}&selection=${sSelection}&mode=fishing_start_fishing"
+ getFarmData $FARMDATAFILE
 }
 
 function harvestMegaField {
@@ -2516,7 +2563,7 @@ function checkStockRefill {
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
   if [ $iAmountToBuy -eq $iRefillAmount ]; then
    # in order to prevent erroneous purchases, player needs to own at least one item
-   logToFile "checkStockRefill: refusing to buy $iAmountToBuy items"
+   logToFile "checkStockRefill: refusing to buy $iAmountToBuy items of item #${iPID}"
    continue
   fi
   # check, if player can buy the item

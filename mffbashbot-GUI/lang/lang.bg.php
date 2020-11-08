@@ -157,6 +157,7 @@ $strings['thebotis'] = 'Ботът в момента е';
 $strings['forcebotstart'] = 'Стартиране на бота';
 $strings['logon'] = 'Изход';
 $strings['options'] = 'Опции';
+$strings['moreoptions'] = 'More options';
 $strings['ben'] = 'Активиране на Добрият Гофри ежедневно';
 $strings['puzzlepartpurchase'] = 'Купи парчета от пъзел за 5000кД ежедневно';
 $strings['saynotofarmies'] = 'Отговори с "Не" на всички фермерчета';
@@ -241,5 +242,9 @@ $strings['buyatmerchant'] = '(отбележете количество) изб�
 $strings['flowerarrangements'] = 'Цветни аранжименти';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
 $strings['butterflies'] = 'Butterflies';
+$strings['speciesbait'] = 'Species bait';
+$strings['raritybait'] = 'Rarity bait';
+$strings['fishinggear'] = 'Fishing gear';
+$strings['preferredbait'] = 'Preferred for production in';
 // $strings[''] = '';
 ?>

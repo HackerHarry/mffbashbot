@@ -17,6 +17,7 @@ $strings['thebotis'] = 'The bot is currently';
 $strings['forcebotstart'] = 'Force bot iteration';
 $strings['logon'] = 'Back to logon';
 $strings['options'] = 'Options';
+$strings['moreoptions'] = 'More options';
 $strings['ben'] = 'Activate Good Godfrey daily';
 $strings['puzzlepartpurchase'] = 'Purchase puzzle parts for 5000pD daily';
 $strings['saynotofarmies'] = 'Answer "No" to all Farmies';
@@ -101,5 +102,9 @@ $strings['buyatmerchant'] = '(top-up quantity) selected items are bought, soon a
 $strings['flowerarrangements'] = 'Flower arrangements';
 $strings['sendrosieshopping'] = 'Send Rosy shopping daily';
 $strings['butterflies'] = 'Butterflies';
+$strings['speciesbait'] = 'Species bait';
+$strings['raritybait'] = 'Rarity bait';
+$strings['fishinggear'] = 'Fishing gear';
+$strings['preferredbait'] = 'Preferred for production in';
 // $strings[''] = '';
 ?>

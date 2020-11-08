@@ -17,6 +17,7 @@ $strings['thebotis'] = 'Der Bot ist gerade';
 $strings['forcebotstart'] = 'Bot-Durchlauf erzwingen';
 $strings['logon'] = 'Anmeldung';
 $strings['options'] = 'Optionen';
+$strings['moreoptions'] = 'Mehr Optionen';
 $strings['ben'] = 'Ben t&auml;glich aktivieren';
 $strings['puzzlepartpurchase'] = 'Puzzlezeile-Paket t&auml;glich f&uuml;r 5000kT kaufen';
 $strings['saynotofarmies'] = 'Alle Farmis mit "Nein" beantworten';
@@ -101,5 +102,9 @@ $strings['buyatmerchant'] = '(Auffüllmenge) Die angehakten Waren werden nachgek
 $strings['flowerarrangements'] = 'Blumengestecke';
 $strings['sendrosieshopping'] = 'Rosi täglich einkaufen schicken';
 $strings['butterflies'] = 'Schmetterlinge';
+$strings['speciesbait'] = 'Ordnungs-Futter';
+$strings['raritybait'] = 'Seltenheits-Futter';
+$strings['fishinggear'] = 'Angelausrüstung';
+$strings['preferredbait'] = 'Bevorzugt für die Produktion in';
 // $strings[''] = '';
 ?>

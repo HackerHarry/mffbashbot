@@ -39,6 +39,7 @@ MFFUSER=$1
 PAUSECORRECTEDAT=0
 TIMEDELTA=0
 CURRENTEPOCH=0
+SKIPQUEUEUPDATE=0
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
 MFFPASS=$(grep password $CFGFILE | tr -d "'")
@@ -437,7 +438,7 @@ while (true); do
    fi
   fi
  fi
- # fishing production
+ # fishing production & fisherman
  if [ $PLAYERLEVELNUM -ge 44 ]; then
   PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.fishing | type' $FARMDATAFILE 2>/dev/null)
   if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
@@ -446,8 +447,16 @@ while (true); do
      echo "Doing fishing production slot ${SLOT}..."
      doFarmersMarket farmersmarket2 fishing ${SLOT}
     fi
+    if ! grep -q "speciesbait${SLOT} = 0" $CFGFILE && grep -q "speciesbait${SLOT} = " $CFGFILE; then
+     if ! grep -q "raritybait${SLOT} = 0" $CFGFILE && grep -q "raritybait${SLOT} = " $CFGFILE; then
+      if ! grep -q "fishinggear${SLOT} = 0" $CFGFILE && grep -q "fishinggear${SLOT} = " $CFGFILE; then
+       if checkTimeRemaining '.updateblock.farmersmarket.fishing.data.fishingslots["'${SLOT}'"].remain'; then
+        doFisherman ${SLOT}
+       fi
+      fi
+     fi
+    fi
    done
-   # more to come?
   fi
  fi
 

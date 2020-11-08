@@ -150,3 +150,13 @@ table {
 .navbar {
  display: inline;
 }
+
+caption {
+ padding-top: 0.75rem;
+ padding-bottom: 0.75rem;
+ color: #343a40;
+ text-align: left;
+ caption-side: top;
+ font-size: 1.25em;
+ font-weight: bold;
+}

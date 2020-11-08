@@ -67,6 +67,13 @@ function CreateCowRacePvPOptions() {
  foreach (func_get_args() as $i)
   print "<option value=\"" . $i . "\">Slot " . $i  . "</option>\n";
 }
+function CreateFishingGearOptions() {
+ global $farmdata;
+ $arr = func_get_args();
+ $prefix = array_shift($arr);
+ foreach ($arr as $i)
+	print "<option id=\"" . $prefix . $i . "\" value=\"" . $i . "\">" . $farmdata["updateblock"]["farmersmarket"]["fishing"]["config"]["items"][$i]["name"]  . "</option>\n";
+}
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  print "<select id=\"itempos" . $position . "\" name=\"itempos" . $position . "\">\n";
  switch ($BuildingID) {

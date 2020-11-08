@@ -94,7 +94,19 @@ flowerarrangementslot15 = 0
 flowerarrangementslot16 = 0
 flowerarrangementslot17 = 0
 doinfinitequest = 0
-autobuybutterflies = 0"
+autobuybutterflies = 0
+speciesbait1 = 0
+raritybait1 = 0
+fishinggear1 = 0
+speciesbait2 = 0
+raritybait2 = 0
+fishinggear2 = 0
+speciesbait3 = 0
+raritybait3 = 0
+fishinggear3 = 0
+preferredbait1 = 0
+preferredbait2 = 0
+preferredbait3 = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

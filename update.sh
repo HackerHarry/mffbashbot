@@ -73,6 +73,7 @@ farmersmarket/nursery
 farmersmarket/pets
 farmersmarket/vet
 farmersmarket2/cowracing
+farmersmarket2/fishing
 foodworld/1
 foodworld/2
 foodworld/3

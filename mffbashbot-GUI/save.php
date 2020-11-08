@@ -172,6 +172,12 @@ switch ($farm) {
    $configContents['autobuyitems'] = 0;
   for ($i = 1; $i <= 17; $i++)
    $configContents['flowerarrangementslot' . $i] = $_POST["flowerarrangementslot" . $i];
+  for ($i = 1; $i <= 3; $i++) {
+   $configContents['speciesbait' . $i] = $_POST["speciesbait" . $i];
+   $configContents['raritybait' . $i] = $_POST["raritybait" . $i];
+   $configContents['fishinggear' . $i] = $_POST["fishinggear" . $i];
+   $configContents['preferredbait' . $i] = $_POST["preferredbait" . $i];
+  }
   if (!empty($_POST["autobuybutterflies"]))
    $configContents['autobuybutterflies'] = str_replace(",", " ", $_POST["autobuybutterflies"]);
   else
