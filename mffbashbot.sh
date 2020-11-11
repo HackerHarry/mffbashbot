@@ -401,16 +401,19 @@ while (true); do
  fi
  # butterfly house
  if [ $PLAYERLEVELNUM -ge 40 ]; then
-  for SLOT in {1..6}; do
-   if ! grep -q "autobuybutterflies = 0" $CFGFILE && grep -q "autobuybutterflies = " $CFGFILE; then
-    checkButterflies $SLOT
-   fi
-   if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
-    echo "Feeding butterfly in slot ${SLOT}..."
-    startButterflies $SLOT
-   fi
-  done
- getFarmData $FARMDATAFILE
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.butterfly | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
+   for SLOT in {1..6}; do
+    if ! grep -q "autobuybutterflies = 0" $CFGFILE && grep -q "autobuybutterflies = " $CFGFILE; then
+     checkButterflies $SLOT
+    fi
+    if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
+     echo "Feeding butterfly in slot ${SLOT}..."
+     startButterflies $SLOT
+    fi
+   done
+  getFarmData $FARMDATAFILE
+  fi
  fi
  # cow racing production
  if [ $PLAYERLEVELNUM -ge 42 ]; then
