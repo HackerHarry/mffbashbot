@@ -1515,6 +1515,8 @@ function checkButterflies {
    echo "Releasing butterfly in slot ${iSlot}..."
    sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_free"
    sleep 1
+  else
+   return
   fi
  fi
  echo -n "Trying to buy a butterfly in slot ${iSlot}..."
