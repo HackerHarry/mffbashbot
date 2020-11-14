@@ -1493,7 +1493,7 @@ function checkButterflies {
  local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
  if [ "$iButterfly" != "null" ] && [ -n "$iButterfly" ]; then
   # care_count1 is always 5 (needs 5 feedings to mature)
-  local iMaxFeed=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iSlot}'"].care_count2' $FARMDATAFILE)
+  local iMaxFeed=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].care_count2' $FARMDATAFILE)
   local iCurrentFeed=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"].count' $FARMDATAFILE)
   if [ $iCurrentFeed -lt 14 ]; then
    return
@@ -1501,11 +1501,11 @@ function checkButterflies {
   local iReleaseValue
   # we're gonna release butterflies immediately BEFORE they reach the min. blossoms count
   case $iMaxFeed in
-   10) iReleaseValue=14
+   10) iReleaseValue=15
        ;;
    15) iReleaseValue=19
        ;;
-   20) iReleaseValue=23
+   20) iReleaseValue=24
        ;;
     *) logToFile "checkButterflies: Invalid iMaxFeed value"
        return
@@ -1515,6 +1515,8 @@ function checkButterflies {
    echo "Releasing butterfly in slot ${iSlot}..."
    sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=butterfly_free"
    sleep 1
+  else
+   return
   fi
  fi
  echo -n "Trying to buy a butterfly in slot ${iSlot}..."
