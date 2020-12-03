@@ -975,18 +975,10 @@ function checkCowRace {
 }
 
 function checkCowRacePvP {
- local iFarm=$1
- local iPosition=$2
- local iSlot=$3
- if checkQueueSleep ${iFarm}/${iPosition}/${iSlot}; then
-  return
- fi
- local iCowSlot=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
- local sIsPvP
  local bTimeThreshold
  local sEnvironment
  local sBodyPart
- sIsPvP=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | .[] | select(.ispvp == "1").ispvp' $FARMDATAFILE)
+ local sIsPvP=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows | .[] | select(.ispvp == "1").ispvp' $FARMDATAFILE)
  if [ -n "$sIsPvP" ]; then
   echo "You have already signed up for the PvP cow race"
   return
@@ -996,17 +988,35 @@ function checkCowRacePvP {
  if [ "$bTimeThreshold" = "false" ]; then
   return
  fi
- if ! checkCowRanked1st $iCowSlot; then
-  echo "The cow you chose isn't ranked 1st!"
-  return
- fi
- if checkCowSuspended $iCowSlot; then
-  echo "The cow you chose has been temporarily suspended from PvP racing"
+ local iCow=0
+ local iCowProspect=0
+ local iCowRating
+ local iCowSlot
+ local iEquipmentID
+ local aCows=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows | keys | .[]' $FARMDATAFILE)
+ sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE)
+ for iCowSlot in $aCows; do
+  if ! checkCowRanked1st $iCowSlot; then
+#   echo "DEBUG: cow in slot $iCowSlot isn't ranked 1st"
+   continue
+  fi
+  if checkCowSuspended $iCowSlot; then
+#   echo "DEBUG: cow in slot $iCowSlot has been temporarily suspended"
+   continue
+  fi
+  iCowRating=$(getCowRating $iCowSlot $sEnvironment)
+  if [ $iCowRating -gt $iCowProspect ]; then
+   iCowProspect=$iCowRating
+   iCow=$iCowSlot
+#   echo "DEBUG: current prospect is cow in slot $iCow"
+  fi
+ done
+ if [ $iCow -eq 0 ]; then
+  logToFile "checkCowRacePvP: No suitable cow available for PvP cow race"
   return
  fi
  # ready to rock
- sEnvironment=$($JQBIN -r '.updateblock.farmersmarket.cowracing.pvp.lanestatus' $FARMDATAFILE)
- # needs to be called before removing equipment
+ iCowSlot=$iCow
  removeCowEquipment $iCowSlot
  for sBodyPart in head body foot; do
   iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
@@ -1020,8 +1030,37 @@ function checkCowRacePvP {
  echo "Signing up cow in slot ${iCowSlot} for the next PvP race..."
  # we cannot remove the eqiupment here
  sendAJAXFarmRequest "slot=${iCowSlot}&mode=cowracing_registercowpvp" && sleep 3
- updateQueue ${iFarm} ${iPosition} ${iSlot}
  getFarmData $FARMDATAFILE
+}
+
+function getCowRating {
+ local iSlot=$1
+ local sEnvironment=$2
+ local iCowRating
+ local iCowLevel
+ local iCowType
+ local iCowSpeed
+ local sCowAdv
+ local sCowDisadv
+ local iCowLevelSpeed
+ iCowLevel=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].level' $FARMDATAFILE)
+ iCowType=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"].type' $FARMDATAFILE)
+ iCowSpeed=$($JQBIN '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].speed' $FARMDATAFILE)
+ sCowAdv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_pro' $FARMDATAFILE)
+ sCowDisadv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_con' $FARMDATAFILE)
+ iCowLevelSpeed=$($JQBIN '.updateblock.farmersmarket.cowracing.config.level["'$iCowLevel'"].speed' $FARMDATAFILE)
+ iCowRating=$(awk 'BEGIN{print ('${iCowSpeed}' + '${iCowLevelSpeed}') * 100}')
+ # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75%
+ if [ "$sEnvironment" = "$sCowAdv" ]; then
+  iCowRating=$(awk 'BEGIN{print int('${iCowRating}' * 1.0375 * 100)}')
+  echo $iCowRating
+  return
+ elif [ "$sEnvironment" = "$sCowDisadv" ]; then
+  iCowRating=$(awk 'BEGIN{print int('${iCowRating}' * 0.9625 * 100)}')
+  echo $iCowRating
+  return
+ fi
+ echo $((iCowRating * 100))
 }
 
 function removeCowEquipment {

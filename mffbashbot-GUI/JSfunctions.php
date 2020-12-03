@@ -164,7 +164,7 @@ function saveMisc() {
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
+ 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle', 'cowracepvptoggle',
  'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
  'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
  var sUser = document.venueselect.username.value;
@@ -245,7 +245,7 @@ function saveConfig() {
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "cowracepvp", "trans27"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];

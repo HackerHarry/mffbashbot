@@ -167,7 +167,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -431,13 +431,12 @@ while (true); do
      checkRaceCowFeeding ${SLOT}
     fi
    done
-   # start cow race
+   # start cow races
    if grep -q "docowrace = 1" $CFGFILE; then
     checkCowRace
    fi
-   if ! checkQueueSleep city2/cowracepvp/0; then
-    echo "Checking for pending PvP cow race signup..."
-    checkCowRacePvP city2 cowracepvp 0
+   if grep -q "docowracepvp = 1" $CFGFILE; then
+    checkCowRacePvP
    fi
   fi
  fi

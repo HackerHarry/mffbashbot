@@ -105,8 +105,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "cowracepvp", "trans27"];
-  for ($poscount = 0; $poscount < 7; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27"];
+  for ($poscount = 0; $poscount < 6; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
@@ -154,13 +154,14 @@ switch ($farm) {
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['docowrace'] = $_POST["cowracetoggle"];
+  $configContents['docowracepvp'] = $_POST["cowracepvptoggle"];
   $configContents['excluderank1cow'] = $_POST["excluderank1cowtoggle"];
   $configContents['dofoodcontest'] = $_POST["foodcontesttoggle"];
   $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
   $configContents['autobuyrefillto'] = $_POST["autobuyrefillto"];
   $configContents['doinfinitequest'] = $_POST["infinitequesttoggle"];
   // clean up deprecated variables
-  if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
+  // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
   for ($i = 1; $i <= 15; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
