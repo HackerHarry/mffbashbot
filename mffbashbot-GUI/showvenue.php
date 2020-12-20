@@ -29,7 +29,7 @@ include 'buttons.php';
 
 switch ($farm) {
  case "city2":
-  $position = [0 => ["windmill", $strings['mill'], "windmill"], 1 => ["trans25", $strings['trans25'], "trans25"], 2 => ["trans26", $strings['trans26'], "trans26"], 3 => ["powerups", $strings['powerups'], "powerups"], 4 => ["tools", $strings['tools'], "tools"], 5 => ["cowracepvp", $strings['cowracepvp'], "cowracepvp"], 6 => ["trans27", $strings['trans27'], "trans27"]];
+  $position = [0 => ["windmill", $strings['mill'], "windmill"], 1 => ["trans25", $strings['trans25'], "trans25"], 2 => ["trans26", $strings['trans26'], "trans26"], 3 => ["powerups", $strings['powerups'], "powerups"], 4 => ["tools", $strings['tools'], "tools"], 5 => ["trans27", $strings['trans27'], "trans27"]];
   break;
  case "foodworld":
   $position = [0 => ["sodastall", $foodworldBuildingFriendlyName[0], "1"], 1 => ["snackbooth", $foodworldBuildingFriendlyName[1], "2"], 2 => ["pastryshop", $foodworldBuildingFriendlyName[2], "3"], 3 => ["icecreamparlour", $foodworldBuildingFriendlyName[3], "4"]];
@@ -51,10 +51,14 @@ for ($pc = 0; $pc < 3; $pc++) {
  if (!isset($position[$pc]))
   continue;
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
- print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ print "<table id=\"t{$position[$pc][0]}\" class=\"queuetable\" border=\"1\">";
+ print "<tr><th colspan=\"$iNumQueues\">";
+ if ((preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]))
+  print (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ else
+  print "{$strings['notavailable']}</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"$iNumQueues\"><form name=\"selpos{$position[$pc][0]}\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);
  print "</form></td>";
  print "</tr><tr>";
@@ -66,8 +70,8 @@ for ($pc = 0; $pc < 3; $pc++) {
  }
  print "</tr><tr>";
  // queues
- print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
- print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"$iNumQueues\">";
+ print "<form name=\"queue{$position[$pc][0]}\" id=\"queue{$position[$pc][0]}\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
   PlaceQueues($gamepath, $farm, $position[$pc][2], $i);
  print "</form></td>";
@@ -77,15 +81,19 @@ print "<div style=\"clear:both\"></div>";
 print "<br>";
 print "<form name=\"save_form\" id=\"saveConfig_form\" method=\"post\" action=\"save.php\" style=\"display: inline-block; margin-right: 2em\">";
 print "<button class=\"btn btn-success btn-sm\" name=\"save\" onclick=\"return saveConfig()\">" . $strings['save'] . "</button>";
-print "</form>" . $strings['insert-multiplier'] . "&nbsp;<input id=\"multi\" type=\"text\" maxlength=\"2\" size=\"1\" value=\"1\" pattern=\"[0-9]{1,2}\"><br><br>\n";
+print "</form>{$strings['insert-multiplier']}&nbsp;<input id=\"multi\" type=\"text\" maxlength=\"2\" size=\"1\" value=\"1\" pattern=\"[0-9]{1,2}\"><br><br>\n";
 
 for ($pc = 3; $pc < count($position); $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
- print "<table id=\"t" . $position[$pc][0] . "\" class=\"queuetable\" border=\"1\">";
+ print "<table id=\"t{$position[$pc][0]}\" class=\"queuetable\" border=\"1\">";
  // farmers' market uses a different source for its friendly name
- print "<tr><th colspan=\"" . $iNumQueues . "\">" . (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ print "<tr><th colspan=\"$iNumQueues\">";
+ if ((preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]))
+  print (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ else
+  print "{$strings['notavailable']}</th>";
  print "</tr><tr>";
- print "<td align=\"center\" colspan=\"" . $iNumQueues . "\"><form name=\"selpos" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ print "<td align=\"center\" colspan=\"$iNumQueues\"><form name=\"selpos{$position[$pc][0]}\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  CreateSelectionsForBuildingID($position[$pc][0], $position[$pc][2]);
  print "</form></td>";
  print "</tr><tr>";
@@ -96,8 +104,8 @@ for ($pc = 3; $pc < count($position); $pc++) {
   print "</form></td>";
  }
  print "</tr><tr>";
- print"<td align=\"center\" colspan=\"" . $iNumQueues . "\">";
- print "<form name=\"queue" . $position[$pc][0] . "\" id=\"queue" . $position[$pc][0] . "\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
+ print"<td align=\"center\" colspan=\"$iNumQueues\">";
+ print "<form name=\"queue{$position[$pc][0]}\" id=\"queue{$position[$pc][0]}\" action=\"makeW3Chappy\" style=\"margin-bottom:0\">";
  for ($i = 1; $i <= $iNumQueues; $i++)
   PlaceQueues($gamepath, $farm, $position[$pc][2], $i);
  print "</form></td>";

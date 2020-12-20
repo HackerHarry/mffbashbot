@@ -19,63 +19,59 @@
 function CreateOptions() {
  global $productlist;
  foreach (func_get_args() as $i)
-	print "<option value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+	print "<option value=\"$i\">$productlist[$i]</option>\n";
 }
 function CreateOptionsWithID() {
  global $productlist;
  $arr = func_get_args();
  $prefix = array_shift($arr);
  foreach ($arr as $i)
-	print "<option id=\"" . $prefix . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+	print "<option id=\"$prefix$i\" value=\"$i\">$productlist[$i]</option>\n";
 }
 function CreateOptionsWithIDfromArray($arr) {
  global $productlist;
  foreach ($arr as $i)
-	print "<option id=\"o" . $i . "\" value=\"" . $i . "\">" . $productlist[$i]  . "</option>\n";
+	print "<option id=\"o$i\" value=\"$i\">$productlist[$i]</option>\n";
 }
 function CreateMonsterOptions() {
  global $monsterlist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $monsterlist[$i]  . "</option>\n";
+  print "<option value=\"$i\">$monsterlist[$i]</option>\n";
 }
 function CreateForestryOptions() {
  global $forestryproductlist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $forestryproductlist[$i]  . "</option>\n";
+  print "<option value=\"$i\">$forestryproductlist[$i]</option>\n";
 }
 function CreateFoodworldOptions() {
  global $foodworldproductlist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $foodworldproductlist[$i]  . "</option>\n";
+  print "<option value=\"$i\">$foodworldproductlist[$i]</option>\n";
 }
 function CreateMegaFieldOptions() {
  global $megafieldvehicleslist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $megafieldvehicleslist[$i]  . "</option>\n";
+  print "<option value=\"$i\">$megafieldvehicleslist[$i]</option>\n";
 }
 function CreateWindMillOptions() {
  global $windmillproductlist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $windmillproductlist[$i]  . "</option>\n";
+  print "<option value=\"$i\">$windmillproductlist[$i]</option>\n";
 }
 function CreatePonyFarmOptions() {
  global $ponyfarmproductlist;
  foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">" . $ponyfarmproductlist[$i]  . "</option>\n";
-}
-function CreateCowRacePvPOptions() {
- foreach (func_get_args() as $i)
-  print "<option value=\"" . $i . "\">Slot " . $i  . "</option>\n";
+  print "<option value=\"$i\">$ponyfarmproductlist[$i]</option>\n";
 }
 function CreateFishingGearOptions() {
  global $farmdata;
  $arr = func_get_args();
  $prefix = array_shift($arr);
  foreach ($arr as $i)
-	print "<option id=\"" . $prefix . $i . "\" value=\"" . $i . "\">" . $farmdata["updateblock"]["farmersmarket"]["fishing"]["config"]["items"][$i]["name"]  . "</option>\n";
+	print "<option id=\"$prefix$i\" value=\"$i\">{$farmdata["updateblock"]["farmersmarket"]["fishing"]["config"]["items"][$i]["name"]}</option>\n";
 }
 function CreateSelectionsForBuildingID($BuildingID, $position) {
- print "<select id=\"itempos" . $position . "\" name=\"itempos" . $position . "\">\n";
+ print "<select id=\"itempos$position\" name=\"itempos$position\">\n";
  switch ($BuildingID) {
   case 1:
         // Acker
@@ -95,49 +91,49 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 3:
         // Kuhstall
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(3, 4);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 4:
         // Schafskoppel
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(5, 6);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 5:
         // Imkerei
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(7, 8);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 11:
         // Fischzucht
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(92, 93);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 12:
         // Ziegenfarm
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(108, 109);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 15:
         // Angorastall
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(153, 154);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"3\" size=\"3\">\n";
         break;
   case 16:
         // Strickerei
@@ -304,18 +300,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
-        print "<input id=\"amountpos" . $position . "\" name=\"amountpos" . $position . "\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
+        print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
   case "tools":
         // Werkzeuge
         print "<option value=\"sleep\">Sleep</option>\n";
         CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
-        print "</select>\n";
-        break;
-  case "cowracepvp":
-        // Kuhrennen PvP
-        print "<option value=\"sleep\">Sleep</option>\n";
-        CreateCowRacePvPOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
         print "</select>\n";
         break;
   default:
@@ -330,13 +320,13 @@ function GetQueueCount($gamepath, $farm, $position) {
 }
 function PlaceQueueButtons($position, $QueueNum) {
  global $strings;
- print "<input type=\"image\" src=\"image/rewind.png\" class=\"queuebtn\" onclick=\"return insertOptionBefore(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placebefore'] . "\">\n";
- print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel" . $position . $QueueNum . "'))\" ondblclick=\"return removeOptionAll(document.getElementById('qsel" . $position . $QueueNum . "'))\" title=\"" . $strings['deletequeueitem'] . "\">\n";
- print "<input type=\"image\" src=\"image/fastforward.png\" class=\"queuebtn\" onclick=\"return appendOptionLast(document.getElementById('itempos" . $position . "'), document.getElementById('qsel" . $position . $QueueNum . "'), (document.getElementById('amountpos" . $position . "')) ? document.getElementById('amountpos" . $position . "').value : void(0))\" title=\"" . $strings['placeatend'] . "\">\n";
+ print "<input type=\"image\" src=\"image/rewind.png\" class=\"queuebtn\" onclick=\"return insertOptionBefore(document.getElementById('itempos$position'), document.getElementById('qsel$position$QueueNum'), (document.getElementById('amountpos$position')) ? document.getElementById('amountpos$position').value : void(0))\" title=\"{$strings['placebefore']}\">\n";
+ print "<input type=\"image\" src=\"image/close.png\" class=\"queuebtn\" onclick=\"return removeOptionSelected(document.getElementById('qsel$position$QueueNum'))\" ondblclick=\"return removeOptionAll(document.getElementById('qsel$position$QueueNum'))\" title=\"{$strings['deletequeueitem']}\">\n";
+ print "<input type=\"image\" src=\"image/fastforward.png\" class=\"queuebtn\" onclick=\"return appendOptionLast(document.getElementById('itempos$position'), document.getElementById('qsel$position$QueueNum'), (document.getElementById('amountpos$position')) ? document.getElementById('amountpos$position').value : void(0))\" title=\"{$strings['placeatend']}\">\n";
 }
 function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
  global $farmdata;
- print "<input type=\"hidden\" name=\"queue" . $QueueNum . "\" value=\"" . GetQueueName($gamepath, $farm, $position, $QueueNum) . "\">\n";
+ print "<input type=\"hidden\" name=\"queue$QueueNum\" value=\"" . GetQueueName($gamepath, $farm, $position, $QueueNum) . "\">\n";
  switch ($position) {
   case "flowerarea":
 	$buildingType = "FlowerArea";
@@ -376,9 +366,6 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "tools":
 	$buildingType = "Tools";
 	break;
-  case "cowracepvp":
-	$buildingType = "CowRacePvP";
-	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
   case "3":
@@ -395,8 +382,8 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   $buildingType = GetBuildingTypeForBuildingID($farmdata["updateblock"]["farms"]["farms"]["$farm"]["$position"]["buildingid"]);
   break;
  }
- print "<input type=\"hidden\" name=\"BuildingType\" value=\"" . $buildingType . "\">\n"; 
- print "<select id=\"qsel" . $position . $QueueNum . "\" size=\"5\" multiple>";
+ print "<input type=\"hidden\" name=\"BuildingType\" value=\"$buildingType\">\n";
+ print "<select id=\"qsel$position$QueueNum\" size=\"5\" multiple>";
  print CreateQueueList($gamepath, $farm, $position, GetQueueName($gamepath, $farm, $position, $QueueNum), $buildingType);
  print "</select>";
 }
@@ -510,16 +497,13 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "PonyFarm":
    $queueItemFriendlyName = $ponyfarmproductlist[intval($queueItem)];
    break;
-   case "CowRacePvP":
-   $queueItemFriendlyName = "Slot " . intval($queueItem);
-   break;
    default:
    $queueItemFriendlyName = "Sleep";
    break;
   }
  }
  $queueItem = str_replace("\n", '', $queueItem);
- print "<option value=\"" . $queueItem . "\">" . $queueItemFriendlyName . "</option>\n";
+ print "<option value=\"$queueItem\">$queueItemFriendlyName</option>\n";
 }
 function saveConfig($filename, $queueData) {
  if (!$handle = fopen($filename, 'w'))
