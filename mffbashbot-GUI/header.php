@@ -19,7 +19,7 @@
 print "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 print "<html>\n";
 print "<head>\n";
-print "<title>My Free Farm Bash Bot - " . $farmFriendlyName["$farm"] . "</title>";
+print "<title>My Free Farm Bash Bot - {$farmFriendlyName["$farm"]}</title>";
 print "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n";
 print "<link href=\"https://fonts.googleapis.com/css?family=Open+Sans&display=swap\" rel=\"stylesheet\">";
 print "<link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">\n";
@@ -36,15 +36,15 @@ if ($farm == "runbot") {
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
 print "<nav class=\"navbar btn-dark bg-dark fixed-top\">\n";
-print $botver . " -- " . $username . " -- " . $strings['lastbotiteration'] . ": <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
+print "$botver -- $username -- {$strings['lastbotiteration']}: <div id=\"lastruntime\" style=\"display:inline; font-weight: bold\">";
 system("cat " . $gamepath . "/lastrun.txt");
-print "</div> -- " . $strings['thebotis'] . " <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
+print "</div> -- {$strings['thebotis']} <div id=\"botstatus\" style=\"display:inline; font-weight: bold\">\n";
 print "</div>\n";
 if (version_compare($botver, $versionavailable) == -1) {
  print " -- ";
- print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">" . $strings['updateavailable'];
- print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">" . $strings['updateto'] . " " . $versionavailable . "</button>";
- print "<small> -- " . $strings['historyishere'] . "</small></div>";
+ print "<div id=\"updatenotification\" style=\"display:inline; font-weight: bold\">{$strings['updateavailable']}";
+ print "<button id=\"updatebtn\" onclick=\"confirmUpdate()\">{$strings['updateto']} $versionavailable</button>";
+ print "<small> -- {$strings['historyishere']}</small></div>";
 }
 print "</nav><br><br>\n";
 ?>

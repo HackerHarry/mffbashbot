@@ -30,33 +30,33 @@ include 'functions.php';
 include 'config.php';
 include 'lang.php';
 if (empty($_POST["server"])) {
- print "1;<h4><font color=\"darkred\">" . $strings['selectserver'] . "</font></h4>\n";
+ print "1;<h4><font color=\"darkred\">{$strings['selectserver']}</font></h4>\n";
  exit(1);
 }
 $server = $_POST["server"];
 if (empty($_POST["password"])) {
- print "1;<h4><font color=\"darkred\">" . $strings['enterpw'] . "</font></h4>\n";
+ print "1;<h4><font color=\"darkred\">{$strings['enterpw']}</font></h4>\n";
  exit(1);
 }
 $password = $_POST["password"];
-echo "1;<h4><font color=\"yellow\">" . $strings['pleasewait'] . "</font></h4>;";
+print "1;<h4><font color=\"yellow\">{$strings['pleasewait']}</font></h4>;";
 //ob_flush();
 flush();
 if (empty($_POST["language"])) {
  // this is a logon request
  system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang, $retval);
  if ( $retval == 0 ) {
-  print "0;<h4><font color=\"lime\">" . $strings['logonsuccess'] . "</font></h4>;";
+  print "0;<h4><font color=\"lime\">{$strings['logonsuccess']}</font></h4>;";
 //  ob_flush();
   flush();
   print "<form name=\"jump2farm\" method=\"post\" action='showfarm.php'>";
-  print "<input type=\"hidden\" name=\"username\" value=\"" . $username . "\">";
+  print "<input type=\"hidden\" name=\"username\" value=\"$username\">";
   print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
-  print "<input type=\"hidden\" name=\"lang\" value=\"" . $lang . "\">";
+  print "<input type=\"hidden\" name=\"lang\" value=\"$lang\">";
   print "</form>";
  }
  else
-  print "1;<h4><font color=\"darkred\">" . $strings['logonfailed'] . "</font></h4>\n";
+  print "1;<h4><font color=\"darkred\">{$strings['logonfailed']}</font></h4>\n";
 }
 else
 {
@@ -65,13 +65,13 @@ else
  include 'config.php';
  system("script/addfarm.sh " . $password . " " . $server . " " . $lang . " " . $gamepath, $retval);
  if ( $retval == 0 ) {
-  print "0;<h4><font color=\"lime\">" . $strings['farmadded'] . "</font></h4>;";
+  print "0;<h4><font color=\"lime\">{$strings['farmadded']}</font></h4>;";
   ob_flush();
   flush();
   print "<form name=\"jump2farm\" method=\"get\" action='index.php'>";
   print "</form>";
  }
  else
-  print "1;<h4><font color=\"darkred\">" . $strings['farmadditionfailed'] . "</font></h4>\n";
+  print "1;<h4><font color=\"darkred\">{$strings['farmadditionfailed']}</font></h4>\n";
 }
 ?>

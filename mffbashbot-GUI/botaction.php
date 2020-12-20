@@ -25,12 +25,12 @@ include 'lang.php';
 switch ($action) {
  case "getbotstatus":
   if (file_exists($gamepath . "/../updateInProgress"))
-   print "<font color=\"yellow\">" . $strings['botisupdating'] . "</font>";
+   print "<font color=\"yellow\">{$strings['botisupdating']}</font>";
   else
    if (file_exists($gamepath . "/isactive.txt"))
-    print "<font color=\"red\">" . $strings['botisactive'] . "</font>";
+    print "<font color=\"red\">{$strings['botisactive']}</font>";
    else
-    print "<font color=\"lime\">" . $strings['botisidle'] . "</font>";
+    print "<font color=\"lime\">{$strings['botisidle']}</font>";
    break;
  case "getlastruntime":
   system("cat " . $gamepath . "/lastrun.txt");

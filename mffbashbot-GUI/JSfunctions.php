@@ -171,8 +171,12 @@ function saveMisc() {
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
  for (i = 0; i < aOptions.length; i++) {
-  v = document.getElementById(aOptions[i]);
-  sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
+  if (document.getElementById(aOptions[i]) !== null) {
+   v = document.getElementById(aOptions[i]);
+   sData += "&" + aOptions[i] + "=" + v.options[v.selectedIndex].value;
+  } else {
+   sData += "&" + aOptions[i] + "=0";
+  }
  }
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";

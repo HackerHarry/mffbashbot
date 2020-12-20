@@ -1296,6 +1296,9 @@ function harvestMegaField {
  aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iPlot in $aPlots; do
   iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
+  if [ $iVehicleBought -eq 2 ]; then
+   return
+  fi
   echo -n "Harvesting Mega Field plot ${iPlot}..."
   sendAJAXFarmRequestOverwrite "mode=megafield_tour&farm=1&position=1&set=${iPlot},|&vid=${iHarvestDevice}"
   echo "delaying ${iHarvestDelay} seconds"
@@ -1983,11 +1986,18 @@ function getMegaFieldHarvesterDelay {
 function checkMegaFieldEmptyHarvestDevice {
  local iHarvestDevice=$1
  local iVehicleBought=$2
+ local bIsCoinItem
  local bDurability=$($JQBIN '.updateblock.megafield.vehicles["'${iHarvestDevice}'"]?.durability | type == "number"' $FARMDATAFILE)
  # if no vehicle is available, the query returns an empty array which can't be indexed
  # hence the -z test. don't remove it :)
  if [ "$bDurability" = "false" ] || [ -z "$bDurability" ]; then
   if [ $iVehicleBought -eq 0 ]; then
+   bIsCoinItem=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].coins? | type == "number"' $FARMDATAFILE)
+   if [ "$bIsCoinItem" = "true" ]; then
+    logToFile "checkMegaFieldEmptyHarvestDevice: refusing to buy coin item"
+    echo 2
+    return
+   fi
    # buy a brand new one if empty
    echo "Buying new vehicle #${iHarvestDevice}..." >&2 # this is very ugly.
    sendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
@@ -2094,6 +2104,9 @@ function harvestMegaField2x2 {
    return
   fi
   iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
+  if [ $iVehicleBought -eq 2 ]; then
+   return
+  fi
   if ! ((iPlot % 11)); then
    iPlot=$((iPlot + 1))
    # prevent harvesting of last column
