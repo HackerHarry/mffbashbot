@@ -233,5 +233,8 @@ $strings['startcowracepvp-tt'] = 'No translation available';
 $strings['excluderank1cow-tt'] = 'No translation available';
 $strings['feedsecontestant-tt'] = 'No translation available';
 $strings['sendrosieshopping-tt'] = 'No translation available';
+$strings['autotransportO7'] = 'No translation available';
+$strings['trimlogstock'] = 'No translation available';
+$strings['trimlogstock-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

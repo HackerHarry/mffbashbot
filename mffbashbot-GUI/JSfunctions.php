@@ -160,13 +160,14 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto'];
+ 'vehiclemgmt7', 'transO7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle', 'cowracepvptoggle',
- 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
- 'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
+ 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
+ 'cowracepvptoggle', 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle',
+ 'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
+ 'calendareventtoggle', 'trimlogstocktoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)

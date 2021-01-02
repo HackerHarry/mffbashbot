@@ -534,13 +534,34 @@ function waterFieldNP {
 }
 
 function doForestry {
- # read stuff from queue file
- # code iss a bit cheesy due to laziness ;)
  local sFile=$1
+ local iSurplus
  local sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
  if checkQueueSleep ${sFile}/${sFile}/${sFile}; then
   echo "Set to sleep"
   return
+ fi
+ local iLogCapacity=$($JQBIN '.datablock[2]["1"].capacity' $FARMDATAFILE)
+ local iPID=$($JQBIN -r '.datablock[1][0].productid' $FARMDATAFILE)
+ local iAmountToHarvest=$($JQBIN -r '.datablock[1] | .[] | select(.productid == "'${iPID}'" and .remain == 0).productid' $FARMDATAFILE | wc -l)
+ # log's PIDs are different from the seed's PIDs
+  case "$iPID" in
+   [1-5]) iPID=$((iPID + 20))
+          ;;
+       *) iPID=$((iPID + 19))
+          ;;
+  esac
+ local iAmountInStock=$($JQBIN -r '.updateblock["forestry_stock"]["'${iPID}'"]' $FARMDATAFILE)
+ # test for stock overflow
+ iSurplus=$((iAmountInStock + iAmountToHarvest - iLogCapacity))
+ if [ $iSurplus -gt 0 ]; then
+  if grep -q "trimlogstock = 1" $CFGFILE; then
+   sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
+   echo "Destroying $iSurplus items of log type #${iPID}"
+  else
+   logToFile "doForestry: max. capacity reached, not harvesting"
+   return
+  fi
  fi
  harvest${sFunction}
  start${sFunction} ${sFile}/${sFile}/${sFile}
@@ -853,7 +874,7 @@ function doFarmersMarketAnimalTreatment {
  if ! grep -q "restartvetjob = 0" $CFGFILE && grep -q "restartvetjob = " $CFGFILE; then
   checkVetJobDone
  fi
- if getAnimalQueueLength ; then
+ if getAnimalQueueLength; then
   # queue is empty, return
   return
  fi
@@ -1735,10 +1756,13 @@ function checkSendGoodsToMainFarm {
   6) iPIDMin=700
      iPIDMax=709
      ;;
-  7) echo -ne "\nAuto transport off farm 7 is not supported"
-     iPIDMin=998
-     iPIDMax=998
-     #return
+  7) if ! grep -q "transO7 = 0" $CFGFILE && grep -q "transO7 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO7)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=998
+      iPIDMax=998
+     fi
      ;;
  esac
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)

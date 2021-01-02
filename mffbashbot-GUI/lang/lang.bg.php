@@ -266,5 +266,8 @@ $strings['startcowracepvp-tt'] = 'Стартирай PvP състезания с
 $strings['excluderank1cow-tt'] = 'Пропусни обучението на крави, които са стигнали ниво 1';
 $strings['feedsecontestant-tt'] = 'Бързо хранене може да бъде открито на фермерският пазар';
 $strings['sendrosieshopping-tt'] = 'Изпрати Рози да пазарува дистанционно (Ниво 49 и нагоре)';
+$strings['autotransportO7'] = 'No translation available';
+$strings['trimlogstock'] = 'No translation available';
+$strings['trimlogstock-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

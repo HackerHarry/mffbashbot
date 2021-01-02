@@ -148,7 +148,7 @@ $strings['drone'] = 'Drone';
 $strings['airplane'] = 'Airplane';
 $strings['autotransport5'] = 'Transport goods off/to farm 5';
 $strings['autotransport6'] = 'Transport goods off/to farm 6';
-$strings['autotransport7'] = 'Transport goods to farm 7';
+$strings['autotransport7'] = 'Transport goods off/to farm 7';
 $strings['satisfyfoodneed'] = 'Satisfy food need';
 $strings['satisfytoyneed'] = 'Satisfy toy need';
 $strings['satisfyplushyneed'] = 'Satisfy plushy need';
@@ -233,5 +233,8 @@ $strings['startcowracepvp-tt'] = 'Starts Player versus Player (PvP) cow races au
 $strings['excluderank1cow-tt'] = 'Skips the training race for cows that have reached level one';
 $strings['feedsecontestant-tt'] = 'Speed eating can be found on the farmers market';
 $strings['sendrosieshopping-tt'] = 'Sends Rosy shopping remotely (Level 49 and up)';
+$strings['autotransportO7'] = 'Transport this off of Farm 7';
+$strings['trimlogstock'] = 'Destroy logs if needed';
+$strings['trimlogstock-tt'] = 'If a tree harvest would exceed the stock capacity, this feature can destroy the surplus';
 // $strings[''] = '';
 ?>

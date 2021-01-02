@@ -148,7 +148,7 @@ $strings['drone'] = 'Drohne';
 $strings['airplane'] = 'Flugzeug';
 $strings['autotransport5'] = 'Auto-Transport von/nach Farm 5';
 $strings['autotransport6'] = 'Auto-Transport von/nach Farm 6';
-$strings['autotransport7'] = 'Auto-Transport nach Farm 7';
+$strings['autotransport7'] = 'Auto-Transport von/nach Farm 7';
 $strings['satisfyfoodneed'] = 'Futterbed&uuml;rfnis stillen';
 $strings['satisfytoyneed'] = 'Spielzeugbed&uuml;rfnis stillen';
 $strings['satisfyplushyneed'] = 'Kuscheltierbed&uuml;rfnis stillen';
@@ -233,5 +233,8 @@ $strings['startcowracepvp-tt'] = 'Player versus Player (PvP) Rennen können hier
 $strings['excluderank1cow-tt'] = 'Kühe, die bereits Rang 1 im Training erreicht haben, brauchen kein Training mehr';
 $strings['feedsecontestant-tt'] = 'Wettmampfen kann man auf dem Bauernmarkt';
 $strings['sendrosieshopping-tt'] = 'Ab Level 49 kann Rosi hier ferngesteuert werden';
+$strings['autotransportO7'] = 'Abtransportieren von Farm 7';
+$strings['trimlogstock'] = 'Baumstämme bei Bedarf zerstören';
+$strings['trimlogstock-tt'] = 'Sollte eine Baumernte die Lagerkapazität überfordern, kann hier der Übeschuss zerstört werden';
 // $strings[''] = '';
 ?>
