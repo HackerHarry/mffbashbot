@@ -556,8 +556,8 @@ function doForestry {
  iSurplus=$((iAmountInStock + iAmountToHarvest - iLogCapacity))
  if [ $iSurplus -gt 0 ]; then
   if grep -q "trimlogstock = 1" $CFGFILE; then
-   sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
    echo "Destroying $iSurplus items of log type #${iPID}"
+   sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
   else
    logToFile "doForestry: max. capacity reached, not harvesting"
    return
