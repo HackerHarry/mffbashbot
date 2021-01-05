@@ -3,24 +3,25 @@ My Free Farm Bash Bot
 
 English text further [down](#english)
 
-Ein Bot für das Browser-Spiel "My Free Farm".
+Ein Bot fÃ¼r das Browser-Spiel "My Free Farm".
 
 Es sei an dieser Stelle deutlichst darauf hingewiesen, dass der Gebrauch<br>
-von Bots gegen die AGB des Betreibers verstösst und u.a. eine Löschung<br>
+von Bots gegen die AGB des Betreibers verstÃ¶sst und u.a. eine LÃ¶schung<br>
 des Spielerkontos zur Folge haben kann!<br>
 Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**. Ihr wurdet gewarnt.
 
-Auch möchte ich euch ermutigen, die Farmspiel-Entwickler durch den Kauf von<br>
-Coins zu unterstützen.
+Auch mÃ¶chte ich euch ermutigen, die Farmspiel-Entwickler durch den Kauf von<br>
+Coins zu unterstÃ¼tzen.
 
-Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von<br>
-[@Bastian Kanaan](https://github.com/BastianKanaan) gegeben. Seine Produkte 'Berater' und 'Automat' leisten vielen Spielern<br>
+Diesen Bot hÃ¤tte es sicher nicht ohne die hervorragende Arbeit von<br>
+[@Bastian Kanaan](https://github.com/BastianKanaan) gegeben. Sein 'Berater' und 'Automat' leisten vielen Spielern<br>
 treue Dienste. Inspiriert von Bastians Automaten, fing ich an diesen Bot zu<br>
-entwickeln. Bastians Berater ist bis heute für mich unverzichtbar.
+entwickeln. Bastians Berater ist bis heute fÃ¼r mich unverzichtbar.<br>
+Seit einiger Zeit werden 'Berater' und 'Automat' von [@linus--tux](https://github.com/linus--tux) weiterentwickelt.
 
-Alle nötigen Informationen stehen im [mffbashbot Wiki](https://github.com/HackerHarry/mffbashbot/wiki).
+Alle nÃ¶tigen Informationen stehen im [mffbashbot Wiki](https://github.com/HackerHarry/mffbashbot/wiki).
 
-Sollte sich jemand verpflichtet fühlen etwas für meine Arbeit zu spenden,<br>
+Sollte sich jemand verpflichtet fÃ¼hlen etwas fÃ¼r meine Arbeit zu spenden,<br>
 gebe ich gerne meine PayPal-Daten weiter.
 
 Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
@@ -39,7 +40,8 @@ I want to encourage you, to support the game designers by purchasing coins.
 This bot would not have seen the light of day without the superb work of<br>
 [@Bastian Kanaan](https://github.com/BastianKanaan). His 'Adviser' and 'Automaton' have been working for many gamers<br>
 reliably. Inspired by Bastian's Automaton, i started developing this bot. His<br>
-Adviser is still a loyal comapanion to me.
+Adviser is still a loyal comapanion to me.<br>
+'Adviser' and 'Automaton' are being developed by [@linus--tux](https://github.com/linus--tux) these days.
 
 All the info you might need, can be found in the [mffbashbot wiki](https://github.com/HackerHarry/mffbashbot/wiki).
 
@@ -47,3 +49,5 @@ If you feel obliged to make a donation for my work, i'll happily transmit my<br>
 PayPal details.
 
 Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
+
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FHackerHarry%2Fmffbashbot&count_bg=%2362AE28&title_bg=%23555555&icon=probot.svg&icon_color=%23E7E7E7&title=Hits+today+%2F+total&edge_flat=false)](https://hits.seeyoufarm.com)
