@@ -236,5 +236,7 @@ $strings['sendrosieshopping-tt'] = 'Ab Level 49 kann Rosi hier ferngesteuert wer
 $strings['autotransportO7'] = 'Abtransportieren von Farm 7';
 $strings['trimlogstock'] = 'Baumstämme bei Bedarf zerstören';
 $strings['trimlogstock-tt'] = 'Sollte eine Baumernte die Lagerkapazität überfordern, kann hier der Übeschuss zerstört werden';
+$strings['removeweed'] = 'Unkraut einmalig beseitigen';
+$strings['removeweed-tt'] = 'Beseitigt einmalig Unkraut, Steine, Stümpfe und Kakerlaken auf Feldern';
 // $strings[''] = '';
 ?>

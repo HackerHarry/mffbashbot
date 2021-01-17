@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Adds a farm to the bot folder
-# Copyright 2016-20 Harun "Harry" Basalamah
+# Copyright 2016-21 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -108,7 +108,8 @@ fishinggear3 = 0
 preferredbait1 = 0
 preferredbait2 = 0
 preferredbait3 = 0
-trimlogstock = 0"
+trimlogstock = 0
+removeweed = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

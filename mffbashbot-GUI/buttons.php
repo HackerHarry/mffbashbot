@@ -1,6 +1,6 @@
 <?php
 // Buttons file for My Free Farm Bash Bot (front end)
-// Copyright 2016-20 Harun "Harry" Basalamah
+// Copyright 2016-21 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
@@ -38,7 +38,8 @@ $togglesarray = [
 "excluderank1cow" => "excluderank1cowtoggle",
 "dofoodcontest" => "foodcontesttoggle",
 "doinfinitequest" => "infinitequesttoggle",
-"trimlogstock" => "trimlogstocktoggle"
+"trimlogstock" => "trimlogstocktoggle",
+"removeweed" => "removeweedtoggle"
 ];
 
 $toggledesc = [
@@ -62,7 +63,8 @@ $strings['startcowracepvp'],
 $strings['excluderank1cow'],
 $strings['feedsecontestant'],
 $strings['sendrosieshopping'],
-$strings['trimlogstock']
+$strings['trimlogstock'],
+$strings['removeweed']
 ];
 
 $toggledesc_tt = [
@@ -86,7 +88,8 @@ $strings['startcowracepvp-tt'],
 $strings['excluderank1cow-tt'],
 $strings['feedsecontestant-tt'],
 $strings['sendrosieshopping-tt'],
-$strings['trimlogstock-tt']
+$strings['trimlogstock-tt'],
+$strings['removeweed-tt']
 ];
 
 print "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>";
@@ -428,7 +431,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17',
 'autobuybutterflies', 'speciesbait1', 'speciesbait2', 'speciesbait3',
 'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
-'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3' ];
+'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))

@@ -236,5 +236,7 @@ $strings['sendrosieshopping-tt'] = 'Sends Rosy shopping remotely (Level 49 and u
 $strings['autotransportO7'] = 'Transport this off of Farm 7';
 $strings['trimlogstock'] = 'Destroy logs if needed';
 $strings['trimlogstock-tt'] = 'If a tree harvest would exceed the stock capacity, this feature can destroy the surplus';
+$strings['removeweed'] = 'Remove weed once';
+$strings['removeweed-tt'] = 'Removes weed, rocks, stumps and cockroaches on fields';
 // $strings[''] = '';
 ?>

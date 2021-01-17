@@ -236,5 +236,7 @@ $strings['sendrosieshopping-tt'] = 'No translation available';
 $strings['autotransportO7'] = 'No translation available';
 $strings['trimlogstock'] = 'No translation available';
 $strings['trimlogstock-tt'] = 'No translation available';
+$strings['removeweed'] = 'No translation available';
+$strings['removeweed-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

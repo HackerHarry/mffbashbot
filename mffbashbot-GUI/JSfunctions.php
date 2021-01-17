@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-20 Harun "Harry" Basalamah
+// Copyright 2016-21 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -167,7 +167,7 @@ function saveMisc() {
  'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
  'cowracepvptoggle', 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle',
  'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
- 'calendareventtoggle', 'trimlogstocktoggle'];
+ 'calendareventtoggle', 'trimlogstocktoggle', 'removeweedtoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)

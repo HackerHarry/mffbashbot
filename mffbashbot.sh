@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086,SC2155
 #
 # My Free Farm Bash Bot
-# Copyright 2016-20 Harun "Harry" Basalamah
+# Copyright 2016-21 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -254,6 +254,9 @@ while (true); do
    if grep -q "correctqueuenum = 1" $CFGFILE; then
     checkQueueCount $FARM $POSITION $BUILDINGID
    fi
+   if grep -q "removeweed = 1" $CFGFILE && [ "$BUILDINGID" = "1" ]; then
+    removeWeed $FARM $POSITION
+   fi
    if [ "$BUILDINGID" = "19" ]; then
     # 19 is a mega field
     if checkRunningMegaFieldJob ; then
@@ -293,8 +296,9 @@ while (true); do
    done
   done
  done
- # reset queue correction flag if set
+ # reset one-shot flags if set
  sed -i 's/correctqueuenum = 1/correctqueuenum = 0/' $CFGFILE
+ sed -i 's/removeweed = 1/removeweed = 0/' $CFGFILE
 
  # work farmers market
  if [ $PLAYERLEVELNUM -ge 23 ]; then
