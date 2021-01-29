@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-20 Harun "Harry" Basalamah
+# Copyright 2016-21 Harun "Harry" Basalamah
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -304,9 +304,9 @@ function startFarmNP {
  getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
  local iProduct=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  # shellcheck disable=SC2090
- local iProductDim_x=$(echo $aDIM_X | $JQBIN '."'${iProduct}'" | tonumber')
+ local iProductDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iProduct}'"')
  # shellcheck disable=SC2090
- local iProductDim_y=$(echo $aDIM_Y | $JQBIN '."'${iProduct}'" | tonumber')
+ local iProductDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iProduct}'"')
  local iPlot=1
  local iCache=0
  local iCacheFlag=0
@@ -534,13 +534,34 @@ function waterFieldNP {
 }
 
 function doForestry {
- # read stuff from queue file
- # code iss a bit cheesy due to laziness ;)
  local sFile=$1
+ local iSurplus
  local sFunction=$(head -1 ${sFile}/${sFile}/${sFile})
  if checkQueueSleep ${sFile}/${sFile}/${sFile}; then
   echo "Set to sleep"
   return
+ fi
+ local iLogCapacity=$($JQBIN '.datablock[2]["1"].capacity' $FARMDATAFILE)
+ local iPID=$($JQBIN -r '.datablock[1][0].productid' $FARMDATAFILE)
+ local iAmountToHarvest=$($JQBIN -r '.datablock[1] | .[] | select(.productid == "'${iPID}'" and .remain == 0).productid' $FARMDATAFILE | wc -l)
+ # log's PIDs are different from the seed's PIDs
+  case "$iPID" in
+   [1-5]) iPID=$((iPID + 20))
+          ;;
+       *) iPID=$((iPID + 19))
+          ;;
+  esac
+ local iAmountInStock=$($JQBIN -r '.updateblock["forestry_stock"]["'${iPID}'"]' $FARMDATAFILE)
+ # test for stock overflow
+ iSurplus=$((iAmountInStock + iAmountToHarvest - iLogCapacity))
+ if [ $iSurplus -gt 0 ]; then
+  if grep -q "trimlogstock = 1" $CFGFILE; then
+   echo "Destroying $iSurplus items of log type #${iPID}"
+   sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
+  else
+   logToFile "doForestry: max. capacity reached, not harvesting"
+   return
+  fi
  fi
  harvest${sFunction}
  start${sFunction} ${sFile}/${sFile}/${sFile}
@@ -644,10 +665,10 @@ function checkMunchies {
  local iAmountInStock
  local bCanSit
  # get Munchies with status 0
- aIDs=$($JQBIN '.datablock.farmis | .[] | select(.status == "0").id | tonumber' $FARMDATAFILE)
+ aIDs=$($JQBIN -r '.datablock.farmis | .[] | select(.status == "0").id' $FARMDATAFILE)
  for iID in $aIDs; do
   bCanSit="true"
-  aPIDs=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products | to_entries[] | .key | tonumber' $FARMDATAFILE)
+  aPIDs=$($JQBIN -r '.datablock.farmis | .[] | select(.id == "'${iID}'").products | to_entries[] | .key' $FARMDATAFILE)
   for iPID in $aPIDs; do
    iAmountInStock=$(getPIDAmountFromStock $iPID 1)
    iAmountNeeded=$($JQBIN '.datablock.farmis | .[] | select(.id == "'${iID}'").products["'${iPID}'"]' $FARMDATAFILE)
@@ -660,7 +681,7 @@ function checkMunchies {
    continue
   fi
   # get tables that are neither locked or blocked
-  aTables=$($JQBIN '.datablock.tables | .[] | select(.block != 1 and .locked != 1).id | tonumber' $FARMDATAFILE)
+  aTables=$($JQBIN -r '.datablock.tables | .[] | select(.block != 1 and .locked != 1).id' $FARMDATAFILE)
   for iTable in $aTables; do
    # find a free chair - the logical or for .id is needed cuz the source data is inconsistent as of 11/2019
    iChair=$($JQBIN 'first(.datablock.tables | .[] | select(.id == '${iTable}' or .id == "'${iTable}'").chairs| tostream | select(length == 2)  as [$key, $value] | if ($key[0] | tonumber < 3) and $value == [] then $key[-1] | tonumber else empty end)' $FARMDATAFILE)
@@ -708,7 +729,7 @@ function harvestFlowerArea {
 
 function harvestFlowerAreaNP {
  # this function only supports the same flower in all spots
- local iPID=$($JQBIN '.updateblock.farmersmarket.flower_area["1"].pid | tonumber' $FARMDATAFILE)
+ local iPID=$($JQBIN -r '.updateblock.farmersmarket.flower_area["1"].pid' $FARMDATAFILE)
  local iCount
  local sData="mode=flowerarea_harvest&farm=1&position=1&set="
  for iCount in {1..36}; do
@@ -778,7 +799,7 @@ function doFarmersMarketFlowerPots {
  # water pots in need
  aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
  for iSlot in $aSlots; do
-  iPID=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"].pid | tonumber' $FARMDATAFILE)
+  iPID=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"].pid' $FARMDATAFILE)
   # skip watering of special flowers (214 and up)
   if [ $iPID -le 213 ]; then
    # skip plants that don't need water anymore
@@ -853,12 +874,12 @@ function doFarmersMarketAnimalTreatment {
  if ! grep -q "restartvetjob = 0" $CFGFILE && grep -q "restartvetjob = " $CFGFILE; then
   checkVetJobDone
  fi
- if getAnimalQueueLength ; then
+ if getAnimalQueueLength; then
   # queue is empty, return
   return
  fi
  # get animal ID from queue holding status 0
- iAnimalID=$($JQBIN 'first(.updateblock.farmersmarket.vet.animals.queue | .[] | select(.status == "0").id | tonumber)' $FARMDATAFILE)
+ iAnimalID=$($JQBIN -r 'first(.updateblock.farmersmarket.vet.animals.queue | .[] | select(.status == "0").id)' $FARMDATAFILE)
  # place it in slot
  sendAJAXFarmRequest "mode=vet_setslot&farm=1&position=1&id=${iSlot}&slot=${iSlot}&aid=${iAnimalID}"
  # isolate deseases for animal ID
@@ -874,8 +895,8 @@ function doFarmersMarketAnimalTreatment {
 }
 
 function checkVetJobDone {
- local iAnimalsHealedCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count | tonumber' $FARMDATAFILE)
- local iAnimals2HealCount=$($JQBIN '.updateblock.farmersmarket.vet.info.role_count_max | tonumber' $FARMDATAFILE)
+ local iAnimalsHealedCount=$($JQBIN -r '.updateblock.farmersmarket.vet.info.role_count' $FARMDATAFILE)
+ local iAnimals2HealCount=$($JQBIN -r '.updateblock.farmersmarket.vet.info.role_count_max' $FARMDATAFILE)
  # we're not using updated farm data at this point, but a treatment has just been finished
  # that's why we're calculating with one less treatment
  iAnimals2HealCount=$((iAnimals2HealCount - 1))
@@ -936,7 +957,7 @@ function checkCowRace {
  local sBodyPart
  local iEquipmentID
  local iCowLevel
- local aSlots=$($JQBIN '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[] | tonumber' $FARMDATAFILE 2>/dev/null)
+ local aSlots=$($JQBIN -r '.updateblock.farmersmarket.cowracing.data.cowslots | keys | .[]' $FARMDATAFILE 2>/dev/null)
  for iSlot in $aSlots; do
   if checkTimeRemaining '.updateblock.farmersmarket.cowracing.data.cows["'$iSlot'"]?.race_remain'; then
    if grep -q "excluderank1cow = 1" $CFGFILE && checkCowRanked1st $iSlot; then
@@ -1164,7 +1185,7 @@ function getCowEquipment {
    echo "Buying cow equipment #${iItem}..." >&2 # this is very ugly.
    sendAJAXFarmRequestOverwrite "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
    # nicer would be to use the correct slot no.
-   iKey=$($JQBIN '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id | tonumber' $FARMDATAFILE)
+   iKey=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id' $FARMDATAFILE)
    # at this point it should be safe to use this construct. but just to be even safer... ;)
    if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
     echo $iKey
@@ -1441,7 +1462,7 @@ function doInfiniteQuest {
  local iTotalProductsNeeded=$($JQBIN '.updateblock.queststatus.infinite.data.quest.products | keys | length' $FARMDATAFILE)
  for iCount in $(seq 0 $((iTotalProductsNeeded - 1))); do
   # see if player has enuff in stock
-  aPID+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products | keys['${iCount}'] | tonumber' $FARMDATAFILE))
+  aPID+=($($JQBIN -r '.updateblock.queststatus.infinite.data.quest.products | keys['${iCount}']' $FARMDATAFILE))
   aAmount+=($($JQBIN '.updateblock.queststatus.infinite.data.quest.products["'${aPID[$iCount]}'"]' $FARMDATAFILE))
   iPIDCount=$(getPIDAmountFromStock ${aPID[$iCount]} 1)
   if [ $iPIDCount -lt ${aAmount[$iCount]} ]; then
@@ -1487,7 +1508,7 @@ function startPonyFarm {
   sBlocked=$($JQBIN '.datablock[1].ponys["'${iSlot}'"] | select(.block == null and .data.farmi == null).data.position' $TMPFILE)
   if [ -n "$sBlocked" ]; then
    # slot is unblocked and idle...
-   iPony=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].animalid | tonumber' $TMPFILE)
+   iPony=$($JQBIN -r '.datablock[1].ponys["'${iSlot}'"].animalid' $TMPFILE)
    # refill food dispenser
    iFood=$($JQBIN '.datablock[1].ponys["'${iSlot}'"].data.feed' $TMPFILE)
    iFood=$((iMaxFood - iFood))
@@ -1501,7 +1522,7 @@ function startPonyFarm {
     fi
    fi
    iDuration=$(sed '2q;d' ${iFarm}/${iPosition}/0)
-   iFarmie=$($JQBIN '.datablock[1].farmis | .[] | select(.status == "0" and .type == "'$iDuration'").id | tonumber' $TMPFILE)
+   iFarmie=$($JQBIN -r '.datablock[1].farmis | .[] | select(.status == "0" and .type == "'$iDuration'").id' $TMPFILE)
    if [ -z "$iFarmie" ]; then
     # something went wrong. bail out.
     return
@@ -1656,28 +1677,28 @@ function checkFarmies {
  local iID
  case "$sFarmieType" in
   farmie)
-     aFarmies=$($JQBIN '.updateblock.farmis[0] | .[] | .id | tonumber' $FARMDATAFILE)
+     aFarmies=$($JQBIN -r '.updateblock.farmis[0] | .[] | .id' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending farmie with ID ${iID} away..."
       sendAJAXFarmRequest "mode=sellfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
      done
      ;;
   flowerfarmie)
-     aFarmies=$($JQBIN '.updateblock.farmersmarket.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+     aFarmies=$($JQBIN -r '.updateblock.farmersmarket.farmis | .[] | .id' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending flower farmie with ID ${iID} away..."
       sendAJAXFarmRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=2"
      done
      ;;
   forestryfarmie)
-     aFarmies=$($JQBIN '.datablock[5] | .[] | .farmiid | tonumber' $FARMDATAFILE)
+     aFarmies=$($JQBIN -r '.datablock[5] | .[] | .farmiid' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending forestry farmie with ID ${iID} away..."
       sendAJAXForestryRequest "action=kickfarmi&productid=${iID}"
      done
      ;;
   munchie)
-     aFarmies=$($JQBIN '.datablock.farmis | .[] | .id | tonumber' $FARMDATAFILE)
+     aFarmies=$($JQBIN -r '.datablock.farmis | .[] | .id' $FARMDATAFILE)
      for iID in $aFarmies; do
       echo "Sending munchie with ID ${iID} away..."
       sendAJAXFoodworldRequest "action=kick&id=${iID}&table=0&chair=0"
@@ -1694,7 +1715,7 @@ function checkVehiclePosition {
  echo -n "Transport vehicle for route $iRoute is "
  iVehicle=$(getConfigValue vehiclemgmt${iFarm})
  if ! $JQBIN -e '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain' $FARMDATAFILE >/dev/null; then
-  iCurrentVehiclePos=$($JQBIN '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current | tonumber' $FARMDATAFILE)
+  iCurrentVehiclePos=$($JQBIN -r '.updateblock.map.vehicles["'${iRoute}'"]["'$iVehicle'"].current' $FARMDATAFILE)
   if [ "$iCurrentVehiclePos" = "1" ]; then
    echo "on farm 1"
    checkSendGoodsOffMainFarm $iVehicle $iFarm $iRoute
@@ -1726,7 +1747,7 @@ function checkSendGoodsToMainFarm {
  local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
  local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
  local iFieldsOnFarmCount=$(getFieldsOnFarmCount $iFarm)
- local aPositions=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position | tonumber' $FARMDATAFILE)
+ local aPositions=$($JQBIN -r '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE)
  echo -n "Calculating transport count for route ${iRoute}..."
  case $iFarm in
   5) iPIDMin=351
@@ -1735,10 +1756,13 @@ function checkSendGoodsToMainFarm {
   6) iPIDMin=700
      iPIDMax=709
      ;;
-  7) echo -ne "\nAuto transport off farm 7 is not supported"
-     iPIDMin=998
-     iPIDMax=998
-     #return
+  7) if ! grep -q "transO7 = 0" $CFGFILE && grep -q "transO7 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO7)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=998
+      iPIDMax=998
+     fi
      ;;
  esac
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
@@ -1789,9 +1813,9 @@ function checkSendGoodsToMainFarm {
 function getProductCountFittingOnField {
  local iPID=$1
  # shellcheck disable=SC2090
- local iPIDDim_x=$(echo $aDIM_X | $JQBIN '."'${iPID}'" | tonumber')
+ local iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
  # shellcheck disable=SC2090
- local iPIDDim_y=$(echo $aDIM_Y | $JQBIN '."'${iPID}'" | tonumber')
+ local iPIDDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iPID}'"')
  echo $((120 / (iPIDDim_x * iPIDDim_y)))
 }
 
@@ -1870,7 +1894,7 @@ function checkPowerUps {
  else
   # there are active powerups
   for iCount in $(seq 0 $((iActivePowerUps - 1))); do
-   iActivePowerUp=$($JQBIN '.updateblock.farms.powerups.active | keys['$iCount'] | tonumber' $FARMDATAFILE)
+   iActivePowerUp=$($JQBIN -r '.updateblock.farms.powerups.active | keys['$iCount']' $FARMDATAFILE)
    if [ $iActivePowerUp -eq $iPowerUp ]; then
     echo "Requested power-up #${iPowerUp} is already in use"
     return
@@ -1951,8 +1975,8 @@ function checkRipePlotOnField {
 }
 
 function checkRunningMegaFieldJob {
- local iJobEnd=$($JQBIN '.updateblock.megafield.job_endtime | tonumber' $FARMDATAFILE)
- local iJobStart=$($JQBIN '.updateblock.megafield.job_start | tonumber' $FARMDATAFILE)
+ local iJobEnd=$($JQBIN -r '.updateblock.megafield.job_endtime' $FARMDATAFILE)
+ local iJobStart=$($JQBIN -r '.updateblock.megafield.job_start' $FARMDATAFILE)
  if [ $iJobStart -gt 0 ] && [ $iJobEnd -eq 0 ]; then
   return 0
  fi
@@ -2062,7 +2086,7 @@ function megaFieldPlantNP {
  local iUnlockedPlotsCount=$(getUnlockedMegaFieldPlotCount)
  while [ "$iCount" -le "$iFreePlots" ]; do
    while [ "$iCount2" -lt "$iUnlockedPlotsCount" ]; do
-    sUnlockedPlotName=$($JQBIN '.updateblock.megafield.area_free | keys['$iCount2'] | tonumber' $FARMDATAFILE)
+    sUnlockedPlotName=$($JQBIN -r '.updateblock.megafield.area_free | keys['$iCount2']' $FARMDATAFILE)
     bPlotOccupied=$($JQBIN '.updateblock.megafield.area["'$sUnlockedPlotName'"]? | type == "object"' $FARMDATAFILE)
     # if all the plots are free, the query returns an empty array which can't be indexed
     # hence the -z test. don't remove it ;)
@@ -2475,8 +2499,8 @@ function redeemPuzzlePartsPacks {
  iPackCount=$($JQBIN '.updateblock.farmersmarket.pets.packs | length' $FARMDATAFILE)
  if [ $iPackCount -gt 0 ]; then
   for iCount in $(seq 0 $((iPackCount - 1))); do
-   iType=$($JQBIN '.updateblock.farmersmarket.pets.packs | keys['$iCount'] | tonumber' $FARMDATAFILE)
-   iPackCount=$($JQBIN '.updateblock.farmersmarket.pets.packs["'$iType'"] | tonumber' $FARMDATAFILE)
+   iType=$($JQBIN -r '.updateblock.farmersmarket.pets.packs | keys['$iCount']' $FARMDATAFILE)
+   iPackCount=$($JQBIN -r '.updateblock.farmersmarket.pets.packs["'$iType'"]' $FARMDATAFILE)
    echo "Redeeming $iPackCount puzzle parts pack(s) of type ${iType}..."
    for iCount2 in $(seq 1 $iPackCount); do
     sendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
@@ -2844,6 +2868,27 @@ function checkActiveGuildJobForPlayer {
   return 0
  fi
  return 1
+}
+
+function removeWeed {
+ local iFarm=$1
+ local iPosition=$2
+ local bIsActiveField
+ local iPlot
+ local aPlots
+ bIsActiveField=$($JQBIN -r '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"] | .buildingid == "1" and .status == "1"' $FARMDATAFILE)
+ if [ "$bIsActiveField" = "true" ]; then
+  getInnerInfoData $TMPFILE $iFarm $iPosition gardeninit
+  aPlots=$($JQBIN -r '.datablock[1] | .[]? | select(.buildingid? == "u").teil_nr?' $TMPFILE)
+  if [ -n "$aPlots" ]; then
+   echo -n "Removing weed on farm ${iFarm}, position ${iPosition}..."
+   for iPlot in $aPlots; do
+    sendAJAXFarmRequest "mode=garden_removeweed&farm=${iFarm}&position=${iPosition}&id=${iPlot}&tile=${iPlot}"
+    echo -n "."
+   done
+   echo
+  fi
+ fi
 }
 
 function checkLoginNews {

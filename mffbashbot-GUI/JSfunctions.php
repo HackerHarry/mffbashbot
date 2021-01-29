@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-20 Harun "Harry" Basalamah
+// Copyright 2016-21 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -160,13 +160,14 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto'];
+ 'vehiclemgmt7', 'transO7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle', 'cowracepvptoggle',
- 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
- 'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle'];
+ 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
+ 'cowracepvptoggle', 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle',
+ 'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
+ 'calendareventtoggle', 'trimlogstocktoggle', 'removeweedtoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)

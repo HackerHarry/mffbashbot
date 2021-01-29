@@ -1,6 +1,6 @@
 <?php
 // Save functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-20 Harun "Harry" Basalamah
+// Copyright 2016-21 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
@@ -139,6 +139,7 @@ switch ($farm) {
   $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
   $configContents['vehiclemgmt7'] = $_POST["vehiclemgmt7"];
+  $configContents['transO7'] = $_POST["transO7"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
   $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
@@ -160,6 +161,8 @@ switch ($farm) {
   $configContents['docalendarevent'] = $_POST["calendareventtoggle"];
   $configContents['autobuyrefillto'] = $_POST["autobuyrefillto"];
   $configContents['doinfinitequest'] = $_POST["infinitequesttoggle"];
+  $configContents['trimlogstock'] = $_POST["trimlogstocktoggle"];
+  $configContents['removeweed'] = $_POST["removeweedtoggle"];
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);

@@ -1,6 +1,6 @@
 <?php
 // Buttons file for My Free Farm Bash Bot (front end)
-// Copyright 2016-20 Harun "Harry" Basalamah
+// Copyright 2016-21 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // This program is free software: you can redistribute it and/or modify
@@ -37,7 +37,9 @@ $togglesarray = [
 "docowracepvp" => "cowracepvptoggle",
 "excluderank1cow" => "excluderank1cowtoggle",
 "dofoodcontest" => "foodcontesttoggle",
-"doinfinitequest" => "infinitequesttoggle"
+"doinfinitequest" => "infinitequesttoggle",
+"trimlogstock" => "trimlogstocktoggle",
+"removeweed" => "removeweedtoggle"
 ];
 
 $toggledesc = [
@@ -60,7 +62,9 @@ $strings['startcowrace'],
 $strings['startcowracepvp'],
 $strings['excluderank1cow'],
 $strings['feedsecontestant'],
-$strings['sendrosieshopping']
+$strings['sendrosieshopping'],
+$strings['trimlogstock'],
+$strings['removeweed']
 ];
 
 $toggledesc_tt = [
@@ -83,7 +87,9 @@ $strings['startcowrace-tt'],
 $strings['startcowracepvp-tt'],
 $strings['excluderank1cow-tt'],
 $strings['feedsecontestant-tt'],
-$strings['sendrosieshopping-tt']
+$strings['sendrosieshopping-tt'],
+$strings['trimlogstock-tt'],
+$strings['removeweed-tt']
 ];
 
 print "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>";
@@ -105,7 +111,6 @@ print "<button class=\"btn btn-outline-dark btn-sm\" id=\"optbtn\" onclick=\"sho
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"opt2btn\" onclick=\"showHideOptions('options2pane'); return false;\">{$strings['moreoptions']}...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"flowerarrangementsbtn\" onclick=\"showHideOptions('flowerarrangementspane'); return false;\">{$strings['flowerarrangements']}...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"cowslotsbtn\" onclick=\"showHideOptions('racecowslotspane'); return false;\">{$strings['racecowslots']}...</button>\n";
-print "<button class=\"btn btn-outline-dark btn-sm\" id=\"fruitstallslotsbtn\" onclick=\"showHideOptions('fruitstallspane'); return false;\">{$strings['fruitstallslots']}...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"autobuybtn\" onclick=\"showHideOptions('autobuypane'); return false;\">{$strings['stockmgmt']}...</button>\n";
 print "<button class=\"btn btn-outline-dark btn-sm\" id=\"butterflybtn\" onclick=\"showHideOptions('butterflybuypane'); return false;\">{$strings['butterflies']}...</button>\n";
 print "<hr>\n";
@@ -169,12 +174,30 @@ print "<option value=\"14\" id=\"vehicle14\">{$strings['drone']}</option>\n";
 print "<option value=\"15\" id=\"vehicle15\">{$strings['airplane']}</option></select>&nbsp;{$strings['autotransport7']}";
 print "</td></tr>";
 print "<tr><td>";
+print "<select id=\"transO7\" name=\"transO7\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"tO70\">Sleep</option>\n";
+CreateOptionsWithID("tO7", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
+print "</select>&nbsp;{$strings['autotransportO7']}";
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"vetjobdifficulty\" name=\"vetjobdifficulty\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"vjdiff0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"vjdiff1\">{$strings['vetjobeasy']}</option>\n";
 print "<option value=\"2\" id=\"vjdiff2\">{$strings['vetjobmedium']}</option>\n";
 print "<option value=\"3\" id=\"vjdiff3\">{$strings['vetjobhard']}</option></select>&nbsp;{$strings['restartvetjob']}\n";
 print "</td></tr>";
+// fruit stall slots
+print "<tr><th>{$strings['fruitstallslots']}</th></tr>\n";
+for ($i = 1; $i <= 4; $i++) {
+ print "<tr><td>";
+ print "<select id=\"fruitstallslot$i\" name=\"fruitstallslot$i\" onchange=\"saveMisc();\">";
+ print "<option value=\"0\" id=\"fs0\">Sleep</option>\n";
+ // indizes, die bereits als "o"-wert existieren dürfen nicht mit verschiedenem index erneut erzeugt werden
+ // daher bekommt der obststand ein eigenes präfix
+ CreateOptionsWithID("fs", 1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 108, 109, 112, 113, 114, 115, 126, 127, 128, 153, 154, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
+ print "</select>&nbsp;{$strings['slot']}&nbsp;$i";
+ print "</td></tr>";
+}
 if ($farmdata["updateblock"]["farmersmarket"]["pos"][4]["name"]) {
  print "<tr><th>{$farmdata["updateblock"]["farmersmarket"]["pos"][4]["name"]}</th></tr>\n";
  print "<tr><td>";
@@ -391,9 +414,9 @@ print "<script type=\"text/javascript\">\n";
 global $configContents;
 $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'dopuzzleparts', 'sendfarmiesaway',
-'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway',
+'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway', 'transO7',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
-'dodeliveryevent', 'doolympiaevent', 'doseedbox', 'docowracepvp',
+'dodeliveryevent', 'doolympiaevent', 'doseedbox', 'docowracepvp', 'trimlogstock',
 'dodonkey', 'docowrace', 'excluderank1cow', 'dofoodcontest', 'restartvetjob',
 'docalendarevent', 'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
@@ -408,7 +431,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17',
 'autobuybutterflies', 'speciesbait1', 'speciesbait2', 'speciesbait3',
 'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
-'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3' ];
+'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed' ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -434,6 +457,9 @@ print "document.getElementById('vehiclemgmt6').selectedIndex = document.getEleme
 $savedValue = $configContents['vehiclemgmt7'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt7').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['transO7'];
+$savedValue = "tO7" . $savedValue;
+print "document.getElementById('transO7').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['restartvetjob'];
 $savedValue = "vjdiff" . $savedValue;
 print "document.getElementById('vetjobdifficulty').selectedIndex = document.getElementById('$savedValue').index;\n";
