@@ -128,7 +128,7 @@ echo '#!/usr/bin/env bash
 cd
 sudo /etc/init.d/lighttpd start' >startallbots.sh
 
-chmod +x startallbots.sh
+chmod 775 startallbots.sh
 # create .screenrc
 if [ ! -f ~/.screenrc ]; then
  echo 'hardstatus alwayslastline
