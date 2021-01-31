@@ -1,6 +1,5 @@
 <?php
 // Most buildings names are extracted from LIVE DATA and can hence not be found here
-
 //Ферми и области
 $farmFriendlyName = 
 [
@@ -16,14 +15,12 @@ $farmFriendlyName =
 'forestry' => 'Лесовъдство', 
 'foodworld' => 'Пикник Област', 
 'city2' => 'Подингтън'];
-
 //Продукти от Лесовъдство
 $forestryBuildingFriendlyName = 
 [
 'Дъскорезница', 
 'Дърводелство', 
 'Лесовъдство'];
-
 //Продукти от Пикник област
 $foodworldBuildingFriendlyName = 
 [
@@ -31,14 +28,12 @@ $foodworldBuildingFriendlyName =
 'Щанд за бързо хранене', 
 'Магазин за сладки', 
 'Салон за сладолед' ];
-
 //Продукти от фермата за понита
 $ponyfarmproductlist = 
 [
 2 => "2-часов хак", 
 4 => "4-часов хак", 
 8 => "8-часов хак"];
-
 //Мега поле
 $megafieldvehicleslist = 
 [
@@ -52,7 +47,6 @@ $megafieldvehicleslist =
 8 => "Прецизен комбайн", 
 9 => "Компютърно управлявана комбайна", 
 10 => "Комбайн-O-Трон 2000"];
-
 //Чудовищен плод
 $monsterlist = 
 [
@@ -77,7 +71,6 @@ $monsterlist =
 24 => "Екстремна тор", 
 25 => "Луксозна тор", 
 26 => "Органична тор"];
-
 //Продукти
 $foodworldproductlist = 
 [
@@ -145,7 +138,6 @@ $foodworldproductlist =
 62 => "Манго-Маракуя Кейк", 
 63 => "Бананов Кейк", 
 64 => "Ревен Кейк"];
-
 //Други струни 
 $strings['mill'] = 'Мелница';
 $strings['pleasewait'] = 'Моля изчакайте...';
@@ -266,5 +258,10 @@ $strings['startcowracepvp-tt'] = 'Стартирай PvP състезания с
 $strings['excluderank1cow-tt'] = 'Пропусни обучението на крави, които са стигнали ниво 1';
 $strings['feedsecontestant-tt'] = 'Бързо хранене може да бъде открито на фермерският пазар';
 $strings['sendrosieshopping-tt'] = 'Изпрати Рози да пазарува дистанционно (Ниво 49 и нагоре)';
+$strings['autotransportO7'] = 'Транспортирай от Ферма 7';
+$strings['trimlogstock'] = 'Унищожаване на дънери';
+$strings['trimlogstock-tt'] = 'Ако не можете да прибирате дървета, тази опция може да помогне да унищожите част от инвентара';
+$strings['removeweed'] = 'Премахни плевели веднъж';
+$strings['removeweed-tt'] = 'Премахва плевели, камъни, дънери и хлебарки от полетата';
 // $strings[''] = '';
 ?>
