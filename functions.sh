@@ -2845,7 +2845,7 @@ function checkFruitStall {
   if [ "$sSlotType" != "number" ]; then
    # refill slot
    iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
-   iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iLevel}'"].fillsum' $FARMDATAFILE)
+   iAmount=$($JQBIN '.updateblock.map.stall.config.level["1"]["'${iLevel}'"].fillsum' $FARMDATAFILE)
    echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
    sendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
   fi
