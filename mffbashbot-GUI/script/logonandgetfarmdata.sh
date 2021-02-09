@@ -86,6 +86,11 @@ sed -i 's/,}/}/' $FORMULAS
 
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
+aNEWS=$($JQBIN -r '.updateblock.menue.news? | .[]? | select(.login == "1").nnr' $FARMDATAFILE)
+# mark news as read
+for iNEWS in $aNEWS; do
+ wget -v -o "$LOGFILE" --output-document=/dev/null --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&nnr=${iNEWS}&opt1=1&action=setnewsunread"
+done
 wget -v -o "$LOGFILE" --output-document="$FOREDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/forestry.php?rid=${RID}&action=initforestry"
 wget -v -o "$LOGFILE" --output-document="$FOODDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "http://s${MFFSERVER}.${DOMAIN}/ajax/foodworld.php?action=foodworld_init&id=0&table=0&chair=0&rid=${RID}"
 
