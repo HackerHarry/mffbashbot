@@ -217,7 +217,7 @@ while [ $INDEX -lt $NUMDIRS ]; do
      touch ${DIRS[$INDEX]}/light
      touch ${DIRS[$INDEX]}/water
      ;;
-   *pets | *vet | *cowracing)
+   *pets | *vet | *cowracing | *fishing)
      touch ${DIRS[$INDEX]}/1
      touch ${DIRS[$INDEX]}/2
      touch ${DIRS[$INDEX]}/3
