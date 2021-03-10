@@ -168,8 +168,12 @@ switch ($farm) {
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
   for ($i = 1; $i <= 15; $i++)
    $configContents['racecowslot' . $i] = $_POST["racecowslot" . $i];
-  for ($i = 1; $i <= 4; $i++)
+  for ($i = 1; $i <= 4; $i++) {
    $configContents['fruitstallslot' . $i] = $_POST["fruitstallslot" . $i];
+   if ($i == 4)
+    break;
+   $configContents['fruitstall2slot' . $i] = $_POST["fruitstall2slot" . $i];
+  }
   if (!empty($_POST["autobuyitems"]))
    $configContents['autobuyitems'] = str_replace(",", " ", $_POST["autobuyitems"]);
   else

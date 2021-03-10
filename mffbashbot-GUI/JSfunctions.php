@@ -193,6 +193,10 @@ function saveMisc() {
  for (i = 1; i <= 4; i++) {
   v = document.getElementById("fruitstallslot" + i);
   sData += "&fruitstallslot" + i + "=" + v.options[v.selectedIndex].value;
+  if (i == 4)
+   break;
+  v = document.getElementById("fruitstall2slot" + i);
+  sData += "&fruitstall2slot" + i + "=" + v.options[v.selectedIndex].value;
  }
  var aFishingstuff = ['speciesbait', 'raritybait', 'fishinggear', 'preferredbait'];
  for (i = 1; i <= 3; i++) {
