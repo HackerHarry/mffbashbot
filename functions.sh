@@ -2820,7 +2820,12 @@ function checkLoginBonus {
 
 function checkFruitStall {
  local iSlot=$1
- local iPID=$(getConfigValue fruitstallslot${iSlot})
+ local iStall=$2
+ local iTemp
+ if [ $iStall -eq 2 ]; then
+  iTemp=2
+ fi
+ local iPID=$(getConfigValue fruitstall${iTemp}slot${iSlot})
  local iLevel
  local iAmount
  local iCurrentEpoch
@@ -2836,21 +2841,21 @@ function checkFruitStall {
  local sSlotType=$($JQBIN -r '.updateblock.map.stall.data | type' $FARMDATAFILE 2>/dev/null)
  if [ "$sSlotType" = "object" ]; then
   # ANY reward ready for pickup?
-  local sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].reward | type' $FARMDATAFILE 2>/dev/null)
+  local sSlotType=$($JQBIN -r '.updateblock.map.stall.data["'${iStall}'"].reward | type' $FARMDATAFILE 2>/dev/null)
   if [ "$sSlotType" = "object" ]; then
-   echo "Collecting fruit stall reward..."
-   sendAJAXFarmRequestOverwrite "position=1&mode=stall_get_reward" && sleep 1
+   echo "Collecting fruit stall ${iStall} reward..."
+   sendAJAXFarmRequestOverwrite "position=${iStall}&mode=stall_get_reward" && sleep 1
   fi
-  sSlotType=$($JQBIN -r '.updateblock.map.stall.data["1"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
+  sSlotType=$($JQBIN -r '.updateblock.map.stall.data["'${iStall}'"].slots["'${iSlot}'"].amount? | type' $FARMDATAFILE 2>/dev/null)
   if [ "$sSlotType" != "number" ]; then
    # refill slot
-   iLevel=$($JQBIN '.updateblock.map.stall.data["1"].level' $FARMDATAFILE)
-   iAmount=$($JQBIN '.updateblock.map.stall.config.level["1"]["'${iLevel}'"].fillsum' $FARMDATAFILE)
-   echo "Posting ${iAmount} items to fruit stall slot ${iSlot}..."
-   sendAJAXFarmRequest "position=1&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
+   iLevel=$($JQBIN '.updateblock.map.stall.data["'${iStall}'"].level' $FARMDATAFILE)
+   iAmount=$($JQBIN '.updateblock.map.stall.config.level["'${iStall}'"]["'${iLevel}'"].fillsum' $FARMDATAFILE)
+   echo "Posting ${iAmount} items to fruit stall ${iStall}, slot ${iSlot}..."
+   sendAJAXFarmRequest "position=${iStall}&slot=${iSlot}&pid=${iPID}&amount=${iAmount}&mode=stall_fill_slot"
   fi
   # boosters are not taken into account - or are they? ;)
-  iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["1"].farmi_last' $FARMDATAFILE)
+  iLastFarmieEpoch=$($JQBIN -r '.updateblock.map.stall.data["'${iStall}'"].farmi_last' $FARMDATAFILE)
   iNextFarmieEpoch=$((iLastFarmieEpoch + iFarmieInterval))
   iCurrentEpoch=$(date +"%s")
   iSecsToNextFarmie=$((iNextFarmieEpoch - iCurrentEpoch))

@@ -521,7 +521,12 @@ while (true); do
  if [ $PLAYERLEVELNUM -ge 9 ]; then
   for SLOT in {1..4}; do
    if ! grep -q "fruitstallslot${SLOT} = 0" $CFGFILE && grep -q "fruitstallslot${SLOT} = " $CFGFILE; then
-    checkFruitStall ${SLOT}
+    checkFruitStall ${SLOT} 1
+   fi
+   if [ $PLAYERLEVELNUM -ge 13 ] && [ $PREMIUM -eq 1 ] && [ $SLOT -lt 4 ]; then
+    if ! grep -q "fruitstall2slot${SLOT} = 0" $CFGFILE && grep -q "fruitstall2slot${SLOT} = " $CFGFILE; then
+     checkFruitStall ${SLOT} 2
+    fi
    fi
   done
  fi

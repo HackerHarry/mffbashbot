@@ -72,6 +72,9 @@ fruitstallslot1 = 0
 fruitstallslot2 = 0
 fruitstallslot3 = 0
 fruitstallslot4 = 0
+fruitstall2slot1 = 0
+fruitstall2slot2 = 0
+fruitstall2slot3 = 0
 vehiclemgmt7 = 0
 transO7 = 0
 autobuyrefillto = 0
@@ -217,7 +220,7 @@ while [ $INDEX -lt $NUMDIRS ]; do
      touch ${DIRS[$INDEX]}/light
      touch ${DIRS[$INDEX]}/water
      ;;
-   *pets | *vet | *cowracing)
+   *pets | *vet | *cowracing | *fishing)
      touch ${DIRS[$INDEX]}/1
      touch ${DIRS[$INDEX]}/2
      touch ${DIRS[$INDEX]}/3
