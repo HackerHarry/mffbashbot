@@ -259,7 +259,7 @@ function startFactory {
     iPID=6
     ;;
   *)
-    logToFile "startFactory: Unknown PID"
+    logToFile "${FUNCNAME}: Unknown PID"
     return
     ;;
  esac
@@ -559,7 +559,7 @@ function doForestry {
    echo "Destroying $iSurplus items of log type #${iPID}"
    sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
   else
-   logToFile "doForestry: max. capacity reached, not harvesting"
+   logToFile "${FUNCNAME}: max. capacity reached, not harvesting"
    return
   fi
  fi
@@ -641,7 +641,7 @@ function checkMunchiesAtTables {
    elif [ "$sJSONDataType" = "array" ]; then
     bMunchieReady=$($JQBIN '.datablock.tables['${iTable}']."chairs"."'${iChair}'".ready? == 1' $FARMDATAFILE)
    else
-    logToFile "checkMunchiesAtTables: Unknown JSON data type: ${sJSONDataType}"
+    logToFile "${FUNCNAME}: Unknown JSON data type: ${sJSONDataType}"
     break 2
    fi
    if [ "$bMunchieReady" = "true" ]; then
@@ -1033,7 +1033,7 @@ function checkCowRacePvP {
   fi
  done
  if [ $iCow -eq 0 ]; then
-  logToFile "checkCowRacePvP: No suitable cow available for PvP cow race"
+  logToFile "${FUNCNAME}: No suitable cow available for PvP cow race"
   return
  fi
  # ready to rock
@@ -1042,7 +1042,7 @@ function checkCowRacePvP {
  for sBodyPart in head body foot; do
   iEquipmentID=$(getCowEquipmentID $sBodyPart $sEnvironment)
   if [ "$iEquipmentID" = "-1" ]; then
-   logToFile "checkCowRacePvP: Could not get equipment for your cow's $sBodyPart"
+   logToFile "${FUNCNAME}: Could not get equipment for your cow's $sBodyPart"
    continue
   fi
   sendAJAXFarmRequest "id=${iEquipmentID}&slot=${iCowSlot}&mode=cowracing_equipitem"
@@ -1272,7 +1272,7 @@ function doFisherman {
   # no item available, buy it, if it's not a coin-item
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "false" ]; then
-   logToFile "doFisherman: refusing to buy coin item"
+   logToFile "${FUNCNAME}: refusing to buy coin item"
    return
   fi
   echo "Buying fishing gear #${iFishinggear}..."
@@ -1570,7 +1570,7 @@ function checkButterflies {
        ;;
    20) iReleaseValue=24
        ;;
-    *) logToFile "checkButterflies: Invalid iMaxFeed value"
+    *) logToFile "${FUNCNAME}: Invalid iMaxFeed value"
        return
        ;;
   esac
@@ -1627,7 +1627,7 @@ function checkButterflyMatch {
  local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
  local _iButterfly
  if [ "$iButterfly" = "null" ]; then
-  logToFile "checkButterflyMatch: Error reading butterfly house slot ${iSlot}"
+  logToFile "${FUNCNAME}: Error reading butterfly house slot ${iSlot}"
   return 1
  fi
  for _iButterfly in $aButterfies; do
@@ -1649,7 +1649,7 @@ function getButterflyHouseDeco {
  fi
  local bQuestIsString=$($JQBIN '.updateblock.farmersmarket.butterfly.data.last_questid? | type == "string"' $FARMDATAFILE)
  if [ "$bQuestIsString" = "false" ]; then
-  logToFile "getButterflyHouseDeco: Cannot buy decoration"
+  logToFile "${FUNCNAME}: Cannot buy decoration"
   return
  fi
  local iQuest=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.last_questid?' $FARMDATAFILE)
@@ -2002,7 +2002,7 @@ function getMegaFieldHarvesterDelay {
  local iHarvestDevice=$1
  local iHarvesterDelay=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].duration // 0' $FARMDATAFILE)
  if [ $iHarvesterDelay -eq 0 ]; then
-  logToFile "getMegaFieldHarvesterDelay: Unknown harvest device"
+  logToFile "${FUNCNAME}: Unknown harvest device"
  fi
  echo $iHarvesterDelay
 }
@@ -2018,7 +2018,7 @@ function checkMegaFieldEmptyHarvestDevice {
   if [ $iVehicleBought -eq 0 ]; then
    bIsCoinItem=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].coins? | type == "number"' $FARMDATAFILE)
    if [ "$bIsCoinItem" = "true" ]; then
-    logToFile "checkMegaFieldEmptyHarvestDevice: refusing to buy coin item"
+    logToFile "${FUNCNAME}: refusing to buy coin item"
     echo 2
     return
    fi
@@ -2028,7 +2028,7 @@ function checkMegaFieldEmptyHarvestDevice {
    echo 1
    return
   else
-   logToFile "checkMegaFieldEmptyHarvestDevice: Not buying new vehicle since it's already been bought this iteration!"
+   logToFile "${FUNCNAME}: Not buying new vehicle since it's already been bought this iteration!"
    echo 1
    return
   fi
@@ -2334,7 +2334,7 @@ function getAnimalsFastestCureForDisease {
    54) echo 402
       # Furchtbare Beule
       ;;
-   *) logToFile "getAnimalsFastestCureForDisease: Unknown disease id"
+   *) logToFile "${FUNCNAME}: Unknown disease id"
       echo 0
       ;;
  esac
@@ -2641,7 +2641,7 @@ function checkStockRefill {
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
   if [ $iAmountToBuy -eq $iRefillAmount ]; then
    # in order to prevent erroneous purchases, player needs to own at least one item
-   logToFile "checkStockRefill: refusing to buy $iAmountToBuy items of item #${iPID}"
+   logToFile "${FUNCNAME}: refusing to buy $iAmountToBuy items of item #${iPID}"
    continue
   fi
   # check, if player can buy the item
