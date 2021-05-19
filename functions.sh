@@ -2795,6 +2795,37 @@ function checkCalendarEvent {
  sendAJAXFarmRequest "field=${iDay}&mode=calendar_openfield"
 }
 
+function checkPentecostEvent {
+ local iWaterNeeded
+ local iWaterAvailable
+ local iFertiliserNeeded
+ local iFertiliserAvailable
+ local bPentecostEventRunning=$($JQBIN '.updateblock.menue.pentecostevent != 0' $FARMDATAFILE)
+ if [ "$bPentecostEventRunning" = "false" ]; then
+  return
+ fi
+ iWaterNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.water.amount' $FARMDATAFILE)
+ iFertiliserNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.fertilizer.amount' $FARMDATAFILE)
+ if checkTimeRemaining '.updateblock.menue.pentecostevent.data.water_remain'; then
+  iWaterAvailable=$($JQBIN '.updateblock.menue.pentecostevent.data.water' $FARMDATAFILE)
+  if [ $iWaterAvailable -ge $iWaterNeeded ] 2>/dev/null; then
+   echo "Using water on peony bush..."
+   sendAJAXFarmRequest "type=water&mode=pentecostevent_care"
+  else
+   echo "Not enough water available for the peony bush"
+  fi
+ fi
+ if checkTimeRemaining '.updateblock.menue.pentecostevent.data.fertilizer_remain'; then
+  iFertiliserAvailable=$($JQBIN '.updateblock.menue.pentecostevent.data.fertilizer' $FARMDATAFILE)
+  if [ $iFertiliserAvailable -ge $iFertiliserNeeded ] 2>/dev/null; then
+   echo "Using fertiliser on peony bush..."
+   sendAJAXFarmRequest "type=fertilizer&mode=pentecostevent_care"
+  else
+   echo "Not enough fertiliser available for the peony bush"
+  fi
+ fi
+}
+
 function checkLoginBonus {
  local iLoginCount=$($JQBIN '.updateblock.menue.loginbonus.data.count?' $FARMDATAFILE)
  local bLoginBonusDone=$($JQBIN '.updateblock.menue.loginbonus.data.rewards["'$iLoginCount'"].done > 0' $FARMDATAFILE)

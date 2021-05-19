@@ -238,5 +238,7 @@ $strings['trimlogstock'] = 'Destroy logs if needed';
 $strings['trimlogstock-tt'] = 'If a tree harvest would exceed the stock capacity, this feature can destroy the surplus';
 $strings['removeweed'] = 'Remove weed once';
 $strings['removeweed-tt'] = 'Removes weed, rocks, stumps and cockroaches on fields';
+$strings['careforpeonybush'] = 'Peonies event: Apply water and fertiliser';
+$strings['careforpeonybush-tt'] = 'Takes care of your peony bush by using water and fertiliser on it';
 // $strings[''] = '';
 ?>
