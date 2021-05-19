@@ -238,5 +238,7 @@ $strings['trimlogstock'] = 'Baumstämme bei Bedarf zerstören';
 $strings['trimlogstock-tt'] = 'Sollte eine Baumernte die Lagerkapazität überfordern, kann hier der Übeschuss zerstört werden';
 $strings['removeweed'] = 'Unkraut einmalig beseitigen';
 $strings['removeweed-tt'] = 'Beseitigt einmalig Unkraut, Steine, Stümpfe und Kakerlaken auf Feldern';
+$strings['careforpeonybush'] = 'Pfingstrosen-Event: Wasser und Dünger anwenden';
+$strings['careforpeonybush-tt'] = 'Kippt während eines laufenden Pfingstrosen-Events Wasser und Dünger über die Pfingstrose';
 // $strings[''] = '';
 ?>

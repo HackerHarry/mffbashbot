@@ -152,6 +152,7 @@ switch ($farm) {
   $configContents['dobutterflies'] = $_POST["butterflytoggle"];
   $configContents['dodeliveryevent'] = $_POST["deliveryeventtoggle"];
   $configContents['doolympiaevent'] = $_POST["olympiaeventtoggle"];
+  $configContents['dopentecostevent'] = $_POST["pentecosteventtoggle"];
   $configContents['doseedbox'] = $_POST["redeemdailyseedboxtoggle"];
   $configContents['dodonkey'] = $_POST["donkeytoggle"];
   $configContents['docowrace'] = $_POST["cowracetoggle"];

@@ -271,5 +271,7 @@ $strings['trimlogstock'] = 'Унищожаване на дънери';
 $strings['trimlogstock-tt'] = 'Ако не можете да прибирате дървета, тази опция може да помогне да унищожите част от инвентара';
 $strings['removeweed'] = 'Премахни плевели веднъж';
 $strings['removeweed-tt'] = 'Премахва плевели, камъни, дънери и хлебарки от полетата';
+$strings['careforpeonybush'] = 'No translation available';
+$strings['careforpeonybush-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

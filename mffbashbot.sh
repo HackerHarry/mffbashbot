@@ -516,6 +516,11 @@ while (true); do
   echo "Checking for running delivery event..."
   checkDeliveryEvent
  fi
+
+ if grep -q "dopentecostevent = 1" $CFGFILE; then
+  echo "Checking for running pentecost event..."
+  checkPentecostEvent
+ fi
  # checkFruitStall _might_ change the contents of FARMDATAFILE using sendAJAXFarmRequestOverwrite()
  # this is to prevent collecting the stall reward multiple times during one iteration
  if [ $PLAYERLEVELNUM -ge 9 ]; then
