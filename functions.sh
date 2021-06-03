@@ -683,7 +683,7 @@ function checkMunchies {
   # get tables that are neither locked or blocked
   aTables=$($JQBIN -r '.datablock.tables | .[] | select(.block != 1 and .locked != 1).id' $FARMDATAFILE)
   for iTable in $aTables; do
-   # find a free chair - the logical or for .id is needed cuz the source data is inconsistent as of 11/2019
+   # find a free chair - the logical "or" for .id is needed cuz the source data is inconsistent as of 11/2019
    iChair=$($JQBIN 'first(.datablock.tables | .[] | select(.id == '${iTable}' or .id == "'${iTable}'").chairs| tostream | select(length == 2)  as [$key, $value] | if ($key[0] | tonumber < 3) and $value == [] then $key[-1] | tonumber else empty end)' $FARMDATAFILE)
    if [ -n "$iChair" ]; then
     echo "Sitting munchie with ID ${iID} down at table ${iTable}, chair ${iChair}..."
@@ -1243,15 +1243,47 @@ function startFishing {
  local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
  if ! grep -q "preferredbait${iSlot} = 0" $CFGFILE && grep -q "preferredbait${iSlot} = " $CFGFILE; then
   # player has a food preference
+  local iNeededItem
+  local iNeededAmount
+  local iAmountInStock
   local iPreferredPID=$(getConfigValue preferredbait${iSlot})
-  local iNeededItem=$($JQBIN -r '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items | keys[0]' $FARMDATAFILE)
-  local iNeededAmount=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items["'${iNeededItem}'"]' $FARMDATAFILE)
-  local iAmountInStock=$($JQBIN '.updateblock.farmersmarket.fishing.data.stock["'${iNeededItem}'"]?' $FARMDATAFILE)
-  if [ "$iAmountInStock" != "null" ]; then
-   if [ $iAmountInStock -ge $iNeededAmount ]; then
-    echo "Producing a preferred item..."
-    iPID=$iPreferredPID
-    SKIPQUEUEUPDATE=1
+  if ! grep -q "preferredbait${iSlot} = 2886" $CFGFILE; then
+   # individual preference takes precedence
+   iNeededItem=$($JQBIN -r '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items | keys[0]' $FARMDATAFILE)
+   iNeededAmount=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items["'${iNeededItem}'"]' $FARMDATAFILE)
+   iAmountInStock=$($JQBIN '.updateblock.farmersmarket.fishing.data.stock["'${iNeededItem}'"]?' $FARMDATAFILE)
+   if [ "$iAmountInStock" != "null" ]; then
+    if [ $iAmountInStock -ge $iNeededAmount ]; then
+     echo "Producing a preferred item..."
+     iPID=$iPreferredPID
+     SKIPQUEUEUPDATE=1
+    fi
+   fi
+  else
+   # food preference is set to auto (2886)
+   local aPIDs
+   local bIsCoinItem
+   local iLevel=$($JQBIN '.updateblock.farmersmarket.fishing.data.level' $FARMDATAFILE)
+   if [ $iLevel -ge 2 ]; then
+    aPIDs=$($JQBIN '.updateblock.farmersmarket.fishing.config.products | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "level" and $value <= '${iLevel}' then ($key[-2] | tonumber) else empty end | if . != 900 and . != 912 then . else empty end' $FARMDATAFILE)
+    for iPreferredPID in $aPIDs; do
+     bIsCoinItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].coins? | type == "number" ' $FARMDATAFILE)
+     if [ "$bIsCoinItem" = "true" ]; then
+      # skip coin items
+      continue
+     fi
+     iNeededItem=$($JQBIN -r '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items | keys[0]' $FARMDATAFILE)
+     iNeededAmount=$($JQBIN '.updateblock.farmersmarket.fishing.config.products["'${iPreferredPID}'"].needs.items["'${iNeededItem}'"]' $FARMDATAFILE)
+     iAmountInStock=$($JQBIN '.updateblock.farmersmarket.fishing.data.stock["'${iNeededItem}'"]?' $FARMDATAFILE)
+     if [ "$iAmountInStock" != "null" ]; then
+      if [ $iAmountInStock -ge $iNeededAmount ]; then
+       echo "Producing an auto-selected item..."
+       iPID=$iPreferredPID
+       SKIPQUEUEUPDATE=1
+       break
+      fi
+     fi
+    done
    fi
   fi
  fi
@@ -1264,14 +1296,14 @@ function doFisherman {
  local iRaritybait=$(getConfigValue raritybait${iSlot})
  local iFishinggear=$(getConfigValue fishinggear${iSlot})
  local iItem
- local bIsMoneyItem
+ local bIsCoinItem
  local sSelection
  sendAJAXFarmRequestOverwrite "slot=${iSlot}&mode=fishing_finish_fishing" && sleep 1
  iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[]? | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
  if [ "$iItem" == "null" ]; then
   # no item available, buy it, if it's not a coin-item
-  bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].money? | type == "number"' $FARMDATAFILE)
-  if [ "$bIsMoneyItem" = "false" ]; then
+  bIsCoinItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].coins? | type == "number"' $FARMDATAFILE)
+  if [ "$bIsCoinItem" = "true" ]; then
    logToFile "${FUNCNAME}: refusing to buy coin item"
    return
   fi
