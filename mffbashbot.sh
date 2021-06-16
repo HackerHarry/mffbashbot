@@ -165,7 +165,7 @@ while (true); do
  # remove lingering cookies
  rm $COOKIEFILE 2>/dev/null
  NANOVALUE=$(($(date +%s%N) / 1000000))
- LOGOFFURL="http://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
+ LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
  AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
@@ -194,6 +194,7 @@ while (true); do
 
  # trap signals for clean logoff and file system cleanup
  trap exitBot SIGINT SIGTERM
+ trap restartBot SIGHUP
 
  echo "Getting farm status..."
  getFarmData $FARMDATAFILE
@@ -263,8 +264,6 @@ while (true); do
      echo "Checking for pending tasks on Mega Field..."
      if checkRipePlotOnMegaField ; then
       doFarm ${FARM} ${POSITION} 0
-      # this takes some time, that's why we're refreshing the farm data
-      getFarmData $FARMDATAFILE
       continue
      fi
     fi
@@ -416,7 +415,6 @@ while (true); do
      startButterflies $SLOT
     fi
    done
-  getFarmData $FARMDATAFILE
   fi
  fi
  # cow racing production
@@ -521,8 +519,6 @@ while (true); do
   echo "Checking for running pentecost event..."
   checkPentecostEvent
  fi
- # checkFruitStall _might_ change the contents of FARMDATAFILE using sendAJAXFarmRequestOverwrite()
- # this is to prevent collecting the stall reward multiple times during one iteration
  if [ $PLAYERLEVELNUM -ge 9 ]; then
   for SLOT in {1..4}; do
    if ! grep -q "fruitstallslot${SLOT} = 0" $CFGFILE && grep -q "fruitstallslot${SLOT} = " $CFGFILE; then
