@@ -18,9 +18,9 @@ function WGETREQ {
  local sHTTPReq=$1
  local sResponse
  sResponse=$(wget -nv -T10 -o - --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
- echo "$sResponse" | if grep "dbfehler\.php"; then
+ echo "$sResponse" | if grep -q "dbfehler\.php"; then
   echo "$sResponse" >>$LOGFILE
-  kill -SIGHUP $BASHPID
+  kill -SIGHUP "$$"
  else
   echo "$sResponse" >>$LOGFILE
  fi
@@ -35,22 +35,33 @@ AJAXMAIN="${AJAXURL}main.php?rid=${RID}&"
 AJAXGUILD="${AJAXURL}guild.php?rid=${RID}&"
 
 function exitBot {
+ local sSignal=$1
  echo -e "\n"
- logToFile "${FUNCNAME}: Caught an exit signal"
+ logToFile "Caught a SIG${sSignal} signal"
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
+  echo "Cleaning up..."
   rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-6]-[1-6]
  fi
- echo "Exiting..."
- exit 0
+ case "$sSignal" in
+    INT)
+        echo "Committing suicide using SIGINT..."
+        trap - SIGINT
+        kill -SIGINT "$$"
+        ;;
+    TERM)
+        echo "Exiting..."
+        exit 0
+        ;;
+ esac
 }
 
 function restartBot {
  # experimental
  # this gets called if the response to an AJAX request contains "dbfehler.php"
  echo -e "\n"
- logToFile "${FUNCNAME}: Backend database seems to have a problem"
+ logToFile "Backend database seems to have a problem"
  # we do not log off here, since the backend has most likely invalidated our session anyway
   rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-6]-[1-6]
   echo "Restarting bot..."
@@ -3021,9 +3032,9 @@ function sendAJAXFarmUpdateRequest {
  local sAJAXSuffix=$1
  local sResponse
  sResponse=$(wget -nv -T10 -o - --output-document=$TMPFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix})
- echo "$sResponse" | if grep "dbfehler\.php"; then
+ echo "$sResponse" | if grep -q "dbfehler\.php"; then
   echo "$sResponse" >>$LOGFILE
-  kill -SIGHUP $BASHPID
+  kill -SIGHUP "$$"
  else
   echo "$sResponse" >>$LOGFILE
  fi

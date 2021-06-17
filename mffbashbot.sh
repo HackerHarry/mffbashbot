@@ -193,7 +193,8 @@ while (true); do
  source ../functions.sh
 
  # trap signals for clean logoff and file system cleanup
- trap exitBot SIGINT SIGTERM
+ trap "exitBot INT" SIGINT
+ trap "exitBot TERM" SIGTERM
  trap restartBot SIGHUP
 
  echo "Getting farm status..."
