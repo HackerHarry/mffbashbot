@@ -240,5 +240,9 @@ $strings['removeweed'] = 'Unkraut einmalig beseitigen';
 $strings['removeweed-tt'] = 'Beseitigt einmalig Unkraut, Steine, Stümpfe und Kakerlaken auf Feldern';
 $strings['careforpeonybush'] = 'Pfingstrosen-Event: Wasser und Dünger anwenden';
 $strings['careforpeonybush-tt'] = 'Kippt während eines laufenden Pfingstrosen-Events Wasser und Dünger über die Pfingstrose';
+$strings['farmremoved'] = 'Farm wurde entfernt';
+$strings['farmdeletionfailed'] = 'Löschen der Farm fehlgeschlagen!';
+$strings['passwordmismatch'] = 'Passwörter stimmen nicht überein';
+$strings['checkconfirmbox'] = 'Bitte das CONFIRM Kästchen anhaken';
 // $strings[''] = '';
 ?>

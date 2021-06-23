@@ -2706,7 +2706,11 @@ function checkStockRefill {
 }
 
 function checkButterflyBonus {
- local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today' $FARMDATAFILE)
+ local iToday=$($JQBIN '.updateblock.farmersmarket.butterfly.data.today?' $FARMDATAFILE)
+ if [ -z "$iToday" ] || [ "$iToday" = "null" ]; then
+  # place doesn't exist
+  return
+ fi
  local aKeys
  local iKey
  aKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "last" and ($value < '$iToday' or $value == null) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)

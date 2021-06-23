@@ -240,5 +240,9 @@ $strings['removeweed'] = 'No translation available';
 $strings['removeweed-tt'] = 'No translation available';
 $strings['careforpeonybush'] = 'No translation available';
 $strings['careforpeonybush-tt'] = 'No translation available';
+$strings['farmremoved'] = 'No translation available';
+$strings['farmdeletionfailed'] = 'No translation available';
+$strings['passwordmismatch'] = 'No translation available';
+$strings['checkconfirmbox'] = 'No translation available';
 // $strings[''] = '';
 ?>
