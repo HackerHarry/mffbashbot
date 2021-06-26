@@ -54,9 +54,11 @@ if (empty($_POST["language"]) && empty($_POST["action"])) {
   print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
   print "<input type=\"hidden\" name=\"lang\" value=\"$lang\">";
   print "</form>";
+  exit(0);
  }
  else
   print "1;<h4><font color=\"darkred\">{$strings['logonfailed']}</font></h4>\n";
+  exit(1);
 }
 
 if (!empty($_POST["language"]) && empty($_POST["action"])) {
