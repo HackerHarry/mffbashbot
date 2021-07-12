@@ -485,6 +485,7 @@ while (true); do
  if grep -q "sendflowerfarmiesaway = 1" $CFGFILE; then
   echo "Checking for waiting flower farmies..."
   checkFarmies flowerfarmie
+  # checkFlowerFarmies
  fi
 
  # daily actions

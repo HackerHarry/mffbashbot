@@ -835,6 +835,48 @@ function doFarmersMarketFlowerPots {
  done
 }
 
+function checkFlowerFarmies {
+# unused function. sells stuff to flower farmies
+ local iFarmieCount=$($JQBIN '.updateblock.farmersmarket.farmis? | length' $FARMDATAFILE)
+ if [ $iFarmieCount -eq 0 ]; then
+  return
+ fi
+ local iID
+ local iCount=0
+ local iCount2
+ local iItemCount
+ local iPID
+ local iAmountNeeded
+ local iAmountInStock
+ local bCanBeServed
+ while [ $iCount -lt $iFarmieCount ]; do
+  bCanBeServed="true"
+  # get cart length
+  iCount2=0
+  iItemCount=$($JQBIN '.updateblock.farmersmarket.farmis['${iCount}'].cart | length' $FARMDATAFILE)
+  while [ $iCount2 -lt $iItemCount ]; do
+   iPID=$($JQBIN '.updateblock.farmersmarket.farmis['${iCount}'].cart['${iCount2}'].pid' $FARMDATAFILE)
+   iAmountInStock=$(getPIDAmountFromStock $iPID 1)
+   iAmountNeeded=$($JQBIN '.updateblock.farmersmarket.farmis['${iCount}'].cart['${iCount2}'].amount' $FARMDATAFILE)
+   if [ $iAmountInStock -lt $iAmountNeeded ]; then
+    bCanBeServed="false"
+    break
+   fi
+   iCount2=$((iCount2 + 1))
+  done
+  if [ "$bCanBeServed" = "false" ]; then
+   iCount=$((iCount + 1))
+   continue
+  fi
+   # serve flower farmie
+   iID=$($JQBIN -r '.updateblock.farmersmarket.farmis['${iCount}'].id' $FARMDATAFILE)
+   echo "Serving flower farmie with ID ${iID}..."
+   sendAJAXFarmUpdateRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=1"
+   sleep 1
+   iCount=$((iCount + 1))
+ done
+}
+
 function harvestMonsterFruitHelper {
  :
 }
@@ -1932,14 +1974,13 @@ function checkPowerUps {
   return
  fi
  local iActivePowerUp
+ local iAmountInStock
+ local bCanBeActivated="false"
  local iCount
  local iPowerUp=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  local iActivePowerUps=$($JQBIN '.updateblock.farms.powerups.active | keys | length' $FARMDATAFILE)
  if [ $iActivePowerUps -eq 0 ]; then
-  echo "Activating power-up #${iPowerUp}..."
-  sendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
-  updateQueue ${iFarm} ${iPosition} ${iSlot}
-  return
+  bCanBeActivated="true"
  else
   # there are active powerups
   for iCount in $(seq 0 $((iActivePowerUps - 1))); do
@@ -1949,9 +1990,18 @@ function checkPowerUps {
     return
    fi
   done
-  echo "Activating power-up #${iPowerUp}..."
-  sendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
-  updateQueue ${iFarm} ${iPosition} ${iSlot}
+  bCanBeActivated="true"
+ fi
+ if [ "$bCanBeActivated" = "true" ]; then
+  iAmountInStock=$(getPowerUpAmountFromStock $iPowerUp)
+  if [ $iAmountInStock -gt 0 ]; then
+   echo "Activating power-up #${iPowerUp}..."
+   sendAJAXFarmRequest "mode=activatepowerup&farm=1&position=1&id=${iPowerUp}&formula=${iPowerUp}"
+   updateQueue ${iFarm} ${iPosition} ${iSlot}
+   return
+  else
+   logToFile "${FUNCNAME}: Power-up #${iPowerUp} not in stock!"
+  fi
  fi
 }
 
@@ -3018,6 +3068,13 @@ function getPIDAmountFromStock {
  local iFarm=$2
  local iPIDCount=$($JQBIN '(.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid? == "'${iPID}'").amount | tonumber) // 0' $FARMDATAFILE)
  echo $iPIDCount
+}
+
+function getPowerUpAmountFromStock {
+ # returns the amount of a given power up
+ local iPowerUp=$1
+ local iPowerUpCount=$($JQBIN -r '.updateblock.farms.powerups.rack["'${iPowerUp}'"].rack // 0' $FARMDATAFILE)
+ echo $iPowerUpCount
 }
 
 function getConfigValue {
