@@ -42,7 +42,7 @@ $password = $_POST["password"];
 print "1;<h4><font color=\"yellow\">{$strings['pleasewait']}</font></h4>;";
 //ob_flush();
 flush();
-if (empty($_POST["language"])) {
+if (empty($_POST["language"]) && empty($_POST["action"])) {
  // this is a logon request
  system("script/logonandgetfarmdata.sh " . $username . " " . $password . " " . $server . " " . $lang, $retval);
  if ( $retval == 0 ) {
@@ -54,12 +54,14 @@ if (empty($_POST["language"])) {
   print "<input type=\"hidden\" name=\"farm\" value=\"1\">";
   print "<input type=\"hidden\" name=\"lang\" value=\"$lang\">";
   print "</form>";
+  exit(0);
  }
  else
   print "1;<h4><font color=\"darkred\">{$strings['logonfailed']}</font></h4>\n";
+  exit(1);
 }
-else
-{
+
+if (!empty($_POST["language"]) && empty($_POST["action"])) {
  // this is an "add farm" request
  $lang = $_POST["language"];
  include 'config.php';
@@ -73,5 +75,33 @@ else
  }
  else
   print "1;<h4><font color=\"darkred\">{$strings['farmadditionfailed']}</font></h4>\n";
+}
+else {
+ // this is a "remove farm" request
+ if ($_POST["confirm"] !== "true") {
+    print "1;<h4><font color=\"darkred\">{$strings['checkconfirmbox']}</font></h4>\n";
+    exit(1);
+ }
+ include 'config.php';
+ system("script/removefarm.sh " . $username . " " . $password . " " . $server . " " . $gamepath, $retval);
+ switch ($retval) {
+ case 0:
+        print "0;<h4><font color=\"lime\">{$strings['farmremoved']}</font></h4>;";
+        ob_flush();
+        flush();
+        print "<form name=\"jump2farm\" method=\"get\" action='index.php'>";
+        print "</form>";
+        break;
+ case 1:
+        print "1;<h4><font color=\"darkred\">{$strings['farmdeletionfailed']}</font></h4>\n";
+        ob_flush();
+        flush();
+        break;
+ case 2:
+        print "1;<h4><font color=\"darkred\">{$strings['passwordmismatch']}</font></h4>\n";
+        ob_flush();
+        flush();
+        break;
+ }
 }
 ?>

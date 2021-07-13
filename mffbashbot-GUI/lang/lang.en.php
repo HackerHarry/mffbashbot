@@ -240,5 +240,9 @@ $strings['removeweed'] = 'Remove weed once';
 $strings['removeweed-tt'] = 'Removes weed, rocks, stumps and cockroaches on fields';
 $strings['careforpeonybush'] = 'Peonies event: Apply water and fertiliser';
 $strings['careforpeonybush-tt'] = 'Takes care of your peony bush by using water and fertiliser on it';
+$strings['farmremoved'] = 'Farm has been removed';
+$strings['farmdeletionfailed'] = 'Failed to delete the farm!';
+$strings['passwordmismatch'] = 'Passwords do not match!';
+$strings['checkconfirmbox'] = 'Please check the CONFIRM checkbox';
 // $strings[''] = '';
 ?>

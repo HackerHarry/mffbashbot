@@ -295,19 +295,19 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
   print "<tr><td>";
   print "<select id=\"preferredbait1\" name=\"preferredbait1\" onchange=\"saveMisc();\">";
   print "<option value=\"0\" id=\"pb10\">Sleep</option>\n";
-  CreateOptionsWithID("pb1", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("pb1", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
   print "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 1";
   print "</td></tr>\n";
   print "<tr><td>";
   print "<select id=\"preferredbait2\" name=\"preferredbait2\" onchange=\"saveMisc();\">";
   print "<option value=\"0\" id=\"pb20\">Sleep</option>\n";
-  CreateOptionsWithID("pb2", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("pb2", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
   print "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 2";
   print "</td></tr>\n";
   print "<tr><td>";
   print "<select id=\"preferredbait3\" name=\"preferredbait3\" onchange=\"saveMisc();\">";
   print "<option value=\"0\" id=\"pb30\">Sleep</option>\n";
-  CreateOptionsWithID("pb3", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("pb3", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
   print "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 3";
   print "</td></tr>\n";
  } else {

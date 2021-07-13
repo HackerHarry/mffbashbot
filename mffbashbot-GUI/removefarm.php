@@ -1,5 +1,5 @@
 <?php
-// Index file for My Free Farm Bash Bot (front end)
+// This file is part of My Free Farm Bash Bot (front end)
 // Copyright 2016-21 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
@@ -21,7 +21,7 @@ include 'functions.php';
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
  <head>
-  <title>My Free Farm Bash Bot - Log on</title>
+  <title>My Free Farm Bash Bot - Remove farm</title>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
   <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -29,11 +29,12 @@ include 'functions.php';
  </head>
  <body id="main_body" class="main_body text-center">
   <script type="text/javascript">
-   function validateLogon() {
-    var sUser = document.forms.logon.username.value;
-    var sPass = document.forms.logon.password.value;
-    var iServer = document.forms.logon.server.value;
-    var sData = "username=" + sUser + "&server=" + iServer + "&password=" + sPass;
+   function removeFarm() {
+    var sUser = document.forms.removefarm.username.value;
+    var sPass = document.forms.removefarm.password.value;
+    var iServer = document.forms.removefarm.server.value;
+    var bConfirm = document.getElementById('confirm').checked;
+    var sData = "username=" + sUser  + "&server=" + iServer + "&action=removefarm&password=" + sPass + "&confirm=" + bConfirm;
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
      if (xhttp.readyState != null && (xhttp.readyState < 3 || xhttp.status != 200))
@@ -41,23 +42,23 @@ include 'functions.php';
      parts = xhttp.responseText.split(";");
      if (parts[2])
       if (parts[2] == 0) {
-       document.getElementById("logonstatus").innerHTML = parts[3] + parts[4];
+       document.getElementById("removefarmstatus").innerHTML = parts[3] + parts[4];
        setTimeout(function(){ document.forms.jump2farm.submit(); }, 3000);
        return;
       }
       else if (parts[2] == 1) {
-       document.getElementById("logonstatus").innerHTML = parts[3];
+       document.getElementById("removefarmstatus").innerHTML = parts[3];
        return;
       }
      if (parts[0] == 1)
-      document.getElementById("logonstatus").innerHTML = parts[1];
+      document.getElementById("removefarmstatus").innerHTML = parts[1];
     }
     xhttp.open("POST", "validate.php", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(sData);
     return false;
    }
-
+   
    function setFarmNo(farmname) {
    var farmno = [];
 <?php
@@ -66,21 +67,20 @@ include 'config.php';
 system('cd ' . $gamepath . ' ; for farm in $(ls -d */ | tr -d \'/\'); do echo -n "   farmno[\"$farm\"] = "; grep server $farm/config.ini | awk \'{ printf "%i", $3 }\'; echo ";"; done');
 unset($username);
 ?>
-   document.forms.logon.serverdummy.options[farmno[farmname]].selected = true;
-   document.forms.logon.server.value = farmno[farmname];
+   document.forms.removefarm.serverdummy.options[farmno[farmname]].selected = true;
+   document.forms.removefarm.server.value = farmno[farmname];
    return true;
    }
   </script>
-  <h1>My Free Farm Bash Bot</h1>
+  <h1>- Farm</h1>
   <div class="form-group">
    <div class="offset-sm-5 col-sm-2">
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html" role="button">Forum</a>
-    <a class="btn btn-outline-dark btn-sm" href="addfarm.php" role="button">+ Farm</a>
-    <a class="btn btn-outline-dark btn-sm" href="removefarm.php" role="button">- Farm</a>
+    <a class="btn btn-outline-dark btn-sm" onclick="history.back()" role="button">Back</a>
    </div>
   </div>
-  <div id="logonstatus"><br></div>
-  <form name="logon" method="post" action="">
+  <div id="removefarmstatus"><br></div>
+  <form name="removefarm" method="post" action="">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
      <select name="serverdummy" class="form-control" disabled><option value="0">Server</option><option value="1">1</option><option value="2">2</option>
@@ -97,7 +97,7 @@ unset($username);
    <input type="hidden" name="server" value="0">
    <div class="form-group">
     <div class="offset-sm-5 col-sm-2">
-     <select name="username" class="form-control" onchange="return setFarmNo(document.forms.logon.username.options[document.forms.logon.username.options.selectedIndex].value);">
+     <select name="username" class="form-control" onchange="return setFarmNo(document.forms.removefarm.username.options[document.forms.removefarm.username.options.selectedIndex].value);">
      <option value="0" selected>Farm</option>
 <?php
 $username = "./";
@@ -113,7 +113,10 @@ unset($username);
      <input class="form-control" type="password" name="password" placeholder="Password">
     </div>
    </div>
-   <button type="submit" class="btn btn-lg btn-danger" value="submit" onclick="return validateLogon();">Start !</button>
+   <button type="submit" class="btn btn-lg btn-danger" value="submit" onclick="return removeFarm();">DELETE!</button>
+   <input type="checkbox" id="confirm" name="confirm" value="Confirm">&nbsp;CONFIRM<br><br>
+   <div class="alert alert-danger" role="alert">Please note, that deleting a farm <strong>cannot be undone</strong>!</div><br>
+   <div class="alert alert-danger" role="alert">Beachte bitte, dass das L&ouml;schen einer Farm <strong>nicht r&uuml;ckg&auml;ngig gemacht werden kann</strong>!</div>   
   </form>
  </body>
 </html>
