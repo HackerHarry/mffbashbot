@@ -42,16 +42,18 @@ function exitBot {
   echo "Logging off..."
   WGETREQ "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-6]-[1-6]
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-6]-[1-6]
  fi
  case "$sSignal" in
     INT)
         echo "Committing suicide using SIGINT..."
         trap - SIGINT
+        rm -f "$PIDFILE"
         kill -SIGINT "$$"
         ;;
     TERM)
         echo "Exiting..."
+        rm -f "$PIDFILE"
         exit 0
         ;;
  esac
