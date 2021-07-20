@@ -21,9 +21,6 @@ Seit einiger Zeit werden 'Berater' und 'Automat' von [@linus--tux](https://githu
 
 Alle nötigen Informationen stehen im [mffbashbot Wiki](https://github.com/HackerHarry/mffbashbot/wiki).
 
-Sollte sich jemand verpflichtet fühlen etwas für meine Arbeit zu spenden,<br>
-gebe ich gerne meine PayPal-Daten weiter.
-
 Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
 
 ---
@@ -44,9 +41,6 @@ Adviser is still a loyal comapanion to me.<br>
 'Adviser' and 'Automaton' are being developed by [@linus--tux](https://github.com/linus--tux) these days.
 
 All the info you might need, can be found in the [mffbashbot wiki](https://github.com/HackerHarry/mffbashbot/wiki).
-
-If you feel obliged to make a donation for my work, i'll happily transmit my<br>
-PayPal details.
 
 Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
 
