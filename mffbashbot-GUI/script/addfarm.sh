@@ -77,6 +77,7 @@ fruitstall2slot2 = 0
 fruitstall2slot3 = 0
 vehiclemgmt7 = 0
 transO7 = 0
+dopentecostevent = 0
 autobuyrefillto = 0
 autobuyitems = 0
 doinfinitequest = 0
@@ -112,7 +113,18 @@ preferredbait1 = 0
 preferredbait2 = 0
 preferredbait3 = 0
 trimlogstock = 0
-removeweed = 0"
+removeweed = 0
+harvestvine = 0
+harvestvineinautumn = 0
+restartvine = 0
+removevine = 0
+weathermitigation = 0
+summercut = 0
+wintercut = 0
+vinedefoliation = 0
+vinefertiliser = 0
+vinewater = 0
+buyvinetillsunny = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

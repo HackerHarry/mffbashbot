@@ -164,6 +164,17 @@ switch ($farm) {
   $configContents['doinfinitequest'] = $_POST["infinitequesttoggle"];
   $configContents['trimlogstock'] = $_POST["trimlogstocktoggle"];
   $configContents['removeweed'] = $_POST["removeweedtoggle"];
+  $configContents['buyvinetillsunny'] = $_POST["buyvinetillsunnytoggle"];
+  $configContents['harvestvine'] = $_POST["harvestvinetoggle"];
+  $configContents['harvestvineinautumn'] = $_POST["harvestvineinautumntoggle"];
+  $configContents['restartvine'] = $_POST["restartvinetoggle"];
+  $configContents['removevine'] = $_POST["removevinetoggle"];
+  $configContents['weathermitigation'] = $_POST["weathermitigation"];
+  $configContents['summercut'] = $_POST["summercut"];
+  $configContents['wintercut'] = $_POST["wintercut"];
+  $configContents['vinedefoliation'] = $_POST["vinedefoliation"];
+  $configContents['vinefertiliser'] = $_POST["vinefertiliser"];
+  $configContents['vinewater'] = $_POST["vinewater"];
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);

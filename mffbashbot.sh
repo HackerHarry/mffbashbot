@@ -234,7 +234,7 @@ while (true); do
  for FARM in {1..7}; do
   PLACEEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
   if [ "$PLACEEXISTS" = "false" ]; then
-   echo "Skipping farm ${FARM}"
+   # echo "Skipping farm ${FARM}"
    continue
   fi
   echo "Checking for pending tasks on farm ${FARM}..."
@@ -243,13 +243,13 @@ while (true); do
    # skip premium fields for non-premium users
    if [ "$NONPREMIUM" = "NP" ]; then
     if $JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].premium?' $FARMDATAFILE | grep -q '1'; then
-     echo "Skipping farm ${FARM}, position ${POSITION}"
+     # echo "Skipping farm ${FARM}, position ${POSITION}"
      continue
     fi
    fi
    # skip empty position or fields if playerlevel < 4
    if [ "$BUILDINGID" = "0" ] || [[ $PLAYERLEVELNUM -lt 4 && "$BUILDINGID" = "1" ]]; then
-    echo "Skipping farm ${FARM}, position ${POSITION}"
+    # echo "Skipping farm ${FARM}, position ${POSITION}"
     continue
    fi
    # add/remove queues on demand
@@ -464,6 +464,13 @@ while (true); do
    done
   fi
  fi
+ # vineyard
+ if [ $PLAYERLEVELNUM -ge 46 ]; then
+  PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.vineyard | type' $FARMDATAFILE 2>/dev/null)
+  if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
+   checkVineYard
+  fi
+ fi
 
  # transport vehicle handling
  if ! grep -q "vehiclemgmt5 = 0" $CFGFILE && grep -q "vehiclemgmt5 = " $CFGFILE; then
@@ -657,7 +664,7 @@ while (true); do
  echo "Logging off..."
  WGETREQ "$LOGOFFURL"
  # housekeeping -- adjust to your liking
- rm -f "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-6]-[1-6]
+ rm -f "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-7]-[1-6]
  echo -n "Time stamp: "
  date "+%A, %d. %B %Y - %H:%Mh" | tee $LASTRUNFILE
  # consider time delta

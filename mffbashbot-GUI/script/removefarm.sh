@@ -29,7 +29,7 @@ MFFUSER=$1
 MFFPASS=$2
 MFFSERVER=$3
 GAMEPATH=$4
-STARTSCRIPT="$GAMEPATH"/../../startallbots.sh
+STARTSCRIPT="${GAMEPATH%$MFFUSER}"/../startallbots.sh
 
 if ! [ -d "$GAMEPATH" ]; then
  # game path doesn't exist
