@@ -16,8 +16,9 @@
 
 function WGETREQ {
  local sHTTPReq=$1
+ local sOut=${2:-/dev/null}
  local sResponse
- sResponse=$(wget -nv -T10 -o - --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
+ sResponse=$(wget -nv -T10 -o - --output-document="$sOut" --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
  echo "$sResponse" | if grep -q "dbfehler\.php"; then
   echo "$sResponse" >>$LOGFILE
   kill -SIGHUP "$$"
@@ -40,9 +41,10 @@ function exitBot {
  logToFile "Caught a SIG${sSignal} signal"
  if [ -e "$STATUSFILE" ]; then
   echo "Logging off..."
-  WGETREQ "$LOGOFFURL"
+  # don't use WGETREQ as we wouldn't like to doublekill ourself
+  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-6]-[1-6]
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-7]-[1-6]
  fi
  case "$sSignal" in
     INT)
@@ -65,40 +67,40 @@ function restartBot {
  echo -e "\n"
  logToFile "Backend database seems to have a problem"
  # we do not log off here, since the backend has most likely invalidated our session anyway
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-6]-[1-6]
-  echo "Restarting bot..."
-  cd ..
-  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-7]-[1-6]
+ echo "Restarting bot..."
+ cd ..
+ exec /usr/bin/env bash mffbashbot.sh $MFFUSER
 }
 
 function getFarmData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=getfarms&farm=1&position=0"
+ WGETREQ "${AJAXFARM}mode=getfarms&farm=1&position=0" $sFile
 }
 
 function getForestryData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOREST}action=initforestry"
+ WGETREQ "${AJAXFOREST}action=initforestry" $sFile
 }
 
 function getFoodWorldData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFOOD}action=foodworld_init&id=0&table=0&chair=0"
+ WGETREQ "${AJAXFOOD}action=foodworld_init&id=0&table=0&chair=0" $sFile
 }
 
 function getLotteryData {
  sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=initlottery"
+ WGETREQ "${AJAXCITY}city=2&mode=initlottery" $sFile
 }
 
 function getWindMillData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}city=2&mode=windmillinit"
+ WGETREQ "${AJAXCITY}city=2&mode=windmillinit" $sFile
 }
 
 function getPanData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=showpan&farm=1&position=0"
+ WGETREQ "${AJAXFARM}mode=showpan&farm=1&position=0" $sFile
 }
 
 function getInnerInfoData {
@@ -106,22 +108,22 @@ function getInnerInfoData {
  local iFarm=$2
  local iPosition=$3
  local sMode=$4
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=${sMode}&farm=${iFarm}&position=${iPosition}"
+ WGETREQ "${AJAXFARM}mode=${sMode}&farm=${iFarm}&position=${iPosition}" $sFile
 }
 
 function getOlympiaData {
  sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXMAIN}action=olympia_init"
+ WGETREQ "${AJAXMAIN}action=olympia_init" $sFile
 }
 
 function getCalendarData {
  sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXFARM}mode=calendar_init"
+ WGETREQ "${AJAXFARM}mode=calendar_init" $sFile
 }
 
 function getMerchantData {
  local sFile=$1
- wget -nv -T10 -a $LOGFILE --output-document=$sFile --user-agent="$AGENT" --load-cookies $COOKIEFILE "${AJAXCITY}shopid=1&mode=shopinit"
+ WGETREQ "${AJAXCITY}shopid=1&mode=shopinit" $sFile
 }
 
 function doFarm {
@@ -1377,6 +1379,194 @@ function doFisherman {
  sSelection="%7B%22category%22%3A${iSpeciesbait}%2C%22rarity%22%3A${iRaritybait}%2C%22item%22%3A${iItem}%7D"
  echo "Starting fishing session in slot ${iSlot}..."
  sendAJAXFarmUpdateRequest "slot=${iSlot}&selection=${sSelection}&mode=fishing_start_fishing"
+}
+
+function checkVineYard {
+ local aSlots
+ local iSlot
+ local iSeason
+ local iFreeBarrelSlot
+ local iVineAge
+ local iVineType
+# local aCare
+ local iCare
+ local iOption
+ local sSummerCut=$(getConfigValue summercut)
+ local sWinterCut=$(getConfigValue wintercut)
+ local iWeatherMitigation=$(getConfigValue weathermitigation)
+ local iHarvestVine=$(getConfigValue harvestvine)
+ local iHarvestInAutumn=$(getConfigValue harvestvineinautumn)
+ local iRestartVine=$(getConfigValue restartvine)
+ local iRemoveVine=$(getConfigValue removevine) # this means after the 4th year
+ local iBuyVineTillSunny=$(getConfigValue buyvinetillsunny)
+ aSlots=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants | keys | .[]' $FARMDATAFILE)
+ for iSlot in $aSlots; do
+  if checkTimeRemaining '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].remain'; then
+   # season is over
+   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
+   case "$iSeason" in
+    1)
+    # summer is next
+    startVineYardSeason $iSlot $((iSeason + 1))
+    if [ "${sSummerCut:-0}" != "0" ]; then
+     echo "Performing $sSummerCut summer cut on vine in slot ${iSlot}..."
+     sendAJAXFarmRequest "slot=${iSlot}&id=2&option=${sSummerCut}&mode=vineyard_plant_select_care"
+    fi
+    if ! checkVineYardWeather $iSlot; then
+     checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+    fi
+    checkVineYardCare $iSlot
+    continue
+    ;;
+    2)
+    # autumn is next
+    startVineYardSeason $iSlot $((iSeason + 1))
+    if checkVineYardWeather $iSlot; then
+     # weather is fine
+     checkVineYardCare $iSlot
+     continue
+    fi
+    if [ "${iHarvestInAutumn:-0}" = "0" ]; then
+     checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+     checkVineYardCare $iSlot
+     continue
+    fi
+    ;;
+   esac
+   # season must be 3 or 4 from here, other cases are covered above
+   if [ "${iHarvestVine:-0}" = "0" ]; then
+    return
+   fi
+   # it's harvest time from here
+   iFreeBarrelSlot=$($JQBIN -r '[.updateblock.farmersmarket.vineyard.data.barrels | to_entries[] | select(.value.data | type != "object").value.slot][0] // 0' $FARMDATAFILE)
+   if [ $iFreeBarrelSlot -eq 0 ]; then
+    logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
+    return
+   fi
+   echo "Harvesting vine in slot $iSlot into barrel in slot ${iFreeBarrelSlot}..."
+   sendAJAXFarmUpdateRequest "slot=${iSlot}&slot2=${iFreeBarrelSlot}&mode=vineyard_plant_harvest" && sleep 1
+   if [ "${iRestartVine:-0}" = "0" ]; then
+    return
+   fi
+   if [ "${iRemoveVine:-0}" != "0" ]; then
+    iVineAge=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].year' $FARMDATAFILE)
+    iVineType=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].type' $FARMDATAFILE)
+    if [ $iVineAge -ge 4 ]; then
+     echo -n "Removing and re-buying vine of type #${iVineType} in slot ${iSlot}..."
+     sendAJAXFarmRequest "slot=${iSlot}&mode=vineyard_remove_plant" && sleep 1
+     sendAJAXFarmUpdateRequest "type=plants&slot=${iSlot}&id=${iVineType}&mode=vineyard_buy_shop_item" && sleep 1
+     # vine starts automatically after purchase
+     if [ "${iBuyVineTillSunny:-0}" = "0" ]; then
+      echo
+      if ! checkVineYardWeather $iSlot; then
+       checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+      fi
+     else
+      while (! checkVineYardWeather $iSlot); do
+       echo -n "."
+       sendAJAXFarmRequest "slot=${iSlot}&mode=vineyard_remove_plant" && sleep 1
+       sendAJAXFarmUpdateRequest "type=plants&slot=${iSlot}&id=${iVineType}&mode=vineyard_buy_shop_item" && sleep 1
+      done
+      echo
+     fi
+     checkVineYardCare $iSlot
+     continue
+    fi
+   fi
+   # data has changed, re-read value
+   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
+   if [ $iSeason -eq 3 ]; then # harvesting in autumn needs an extra step
+    startVineYardSeason $iSlot $((iSeason + 1))
+   fi
+   if [ "${sWinterCut:-0}" != "0" ]; then
+    echo "Performing ${sWinterCut} winter cut on vine in slot $iSlot"
+    sendAJAXFarmRequest "slot=${iSlot}&id=${sWinterCut}&mode=vineyard_plant_wintercut"
+   fi
+   startVineYardSeason $iSlot 1
+   if ! checkVineYardWeather $iSlot; then
+    checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+   fi
+   checkVineYardCare $iSlot
+   continue
+  fi
+#  aCare=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].care | to_entries[] | select(.value.duration > 0) | select(.value.remain <= 0).key' $FARMDATAFILE)
+  for iCare in 3 4 5; do
+   if checkTimeRemaining '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].care["'${iCare}'"].remain'; then
+    iOption=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].care["'${iCare}'"].option' $FARMDATAFILE)
+    case "$iCare" in
+     3) echo "Performing defoliation on vine in slot ${iSlot}..."
+        ;;
+     4) echo "Applying fertiliser on vine in slot ${iSlot}..."
+        ;;
+     5) echo "Watering vine in slot ${iSlot}..."
+        ;;
+    esac
+    sendAJAXFarmRequest "slot=${iSlot}&id=${iCare}&option=${iOption}&mode=vineyard_plant_select_care"
+   fi
+  done
+ done
+}
+
+function startVineYardSeason {
+ local iSlot=$1
+ local iSeason=$2
+ local sSeason
+ case "$iSeason" in
+  1) sSeason=spring
+     ;;
+  2) sSeason=summer
+     ;;
+  3) sSeason=autumn
+     ;;
+  4) sSeason=winter
+     ;;
+ esac
+ echo "Starting $sSeason season on vine in slot ${iSlot}..."
+ sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=vineyard_start_season" && sleep 1
+}
+
+function checkVineYardWeather {
+ # returns true if the weather in a given vine slot is sunny
+ local iSlot=$1
+ local sWeather=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].weather' $FARMDATAFILE)
+ if [ "$sWeather" != "sunny" ]; then
+  return 1
+ fi
+ return 0
+}
+
+function checkVineYardCare {
+ local iSlot=$1
+ local iDefoliation=$(getConfigValue vinedefoliation)
+ local iFertiliser=$(getConfigValue vinefertiliser)
+ local iWater=$(getConfigValue vinewater)
+ if [ "${iDefoliation:-0}" != "0" ]; then
+  echo "Performing defoliation on vine in slot ${iSlot}..."
+  sendAJAXFarmRequest "slot=${iSlot}&id=3&option=${iDefoliation}&mode=vineyard_plant_select_care"
+ fi
+ if [ "${iFertiliser:-0}" != "0" ]; then
+  echo "Applying fertiliser on vine in slot ${iSlot}..."
+  sendAJAXFarmRequest "slot=${iSlot}&id=4&option=${iFertiliser}&mode=vineyard_plant_select_care"
+ fi
+ if [ "${iWater:-0}" != "0" ]; then
+  echo "Watering vine in slot ${iSlot}..."
+  sendAJAXFarmRequest "slot=${iSlot}&id=5&option=${iWater}&mode=vineyard_plant_select_care"
+ fi
+}
+
+function checkVineYardWeatherMitigation {
+ local iSlot=$1
+ local iWeatherMitigation=$2
+ local sPercentage
+ if [ $iWeatherMitigation -ne 0 ]; then
+  if [ $iWeatherMitigation -eq 1 ]; then
+   sPercentage="50%"
+  else
+   sPercentage="100%"
+  fi
+  echo "Using ${sPercentage} weather mitigation on vine in slot ${iSlot}..."
+  sendAJAXFarmRequest "slot=${iSlot}&type=${iWeatherMitigation}&mode=vineyard_buy_weathertool"
+ fi
 }
 
 function harvestMegaField {
@@ -2843,8 +3033,15 @@ function checkLottery {
 function checkDeliveryEvent {
  local iPointsNeeded
  local iPointsAvailable
+ local iMaxPoints
+ local iPointsSaved
  local bDeliveryEventRunning=$($JQBIN '.updateblock.menue.deliveryevent != 0' $FARMDATAFILE)
  if [ "$bDeliveryEventRunning" = "false" ]; then
+  return
+ fi
+ iMaxPoints=$($JQBIN '.updateblock.menue.deliveryevent.config.maxpoints' $FARMDATAFILE)
+ iPointsSaved=$($JQBIN '.updateblock.menue.deliveryevent.data.saved' $FARMDATAFILE)
+ if [ $iPointsSaved -ge $iMaxPoints ] 2>/dev/null; then
   return
  fi
  iPointsNeeded=$($JQBIN '.updateblock.menue.deliveryevent.config.spots | .[] | select(.points <= 250).points' $FARMDATAFILE)
@@ -3068,8 +3265,9 @@ function getPIDAmountFromStock {
  # returns the amount of items found in stock on a given farm
  local iPID=$1
  local iFarm=$2
- local iPIDCount=$($JQBIN '(.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid? == "'${iPID}'").amount | tonumber) // 0' $FARMDATAFILE)
+ local iPIDCount=$($JQBIN -r '[.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid? == "'${iPID}'").amount][0] // 0' $FARMDATAFILE)
  echo $iPIDCount
+ # encapsulation: see issue #64
 }
 
 function getPowerUpAmountFromStock {
@@ -3120,6 +3318,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *cowracing*)
         $JQBIN -s 'del(.[0].updateblock.farmersmarket.cowracing.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *vineyard*)
+        $JQBIN -s 'del(.[0].updateblock.farmersmarket.vineyard.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *)
         $JQBIN -s '.[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

@@ -40,7 +40,12 @@ $togglesarray = [
 "dofoodcontest" => "foodcontesttoggle",
 "doinfinitequest" => "infinitequesttoggle",
 "trimlogstock" => "trimlogstocktoggle",
-"removeweed" => "removeweedtoggle"
+"removeweed" => "removeweedtoggle",
+"harvestvine" => "harvestvinetoggle",
+"harvestvineinautumn" => "harvestvineinautumntoggle",
+"restartvine" => "restartvinetoggle",
+"removevine" => "removevinetoggle",
+"buyvinetillsunny" => "buyvinetillsunnytoggle"
 ];
 
 $toggledesc = [
@@ -66,7 +71,12 @@ $strings['excluderank1cow'],
 $strings['feedsecontestant'],
 $strings['sendrosieshopping'],
 $strings['trimlogstock'],
-$strings['removeweed']
+$strings['removeweed'],
+$strings['harvestvine'],
+$strings['harvestvineinautumn'],
+$strings['restartvine'],
+$strings['removevine'],
+$strings['buyvinetillsunny']
 ];
 
 $toggledesc_tt = [
@@ -92,7 +102,12 @@ $strings['excluderank1cow-tt'],
 $strings['feedsecontestant-tt'],
 $strings['sendrosieshopping-tt'],
 $strings['trimlogstock-tt'],
-$strings['removeweed-tt']
+$strings['removeweed-tt'],
+$strings['harvestvine-tt'],
+$strings['harvestvineinautumn-tt'],
+$strings['restartvine-tt'],
+$strings['removevine-tt'],
+$strings['buyvinetillsunny-tt']
 ];
 
 print "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>";
@@ -316,6 +331,56 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
 } else {
  print "<tr><th>{$strings['notavailable']}</th></tr>";
 }
+if ($farmdata["updateblock"]["farmersmarket"]["pos"][10]["name"]) {
+ print "<tr><th>{$farmdata["updateblock"]["farmersmarket"]["pos"][10]["name"]}</th></tr>\n";
+ if ($farmdata["updateblock"]["farmersmarket"]["vineyard"]) {
+  print "<tr><td>";
+  print "<select id=\"weathermitigation\" name=\"weathermitigation\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"wm0\">Sleep</option>\n";
+  print "<option value=\"1\" id=\"wm1\">50%</option>\n";
+  print "<option value=\"2\" id=\"wm2\">100%</option></select>&nbsp;{$strings['weathermitigation']}\n";
+  print "</td></tr>\n";
+  print "<tr><td>";
+  print "<select id=\"summercut\" name=\"summercut\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"sc0\">Sleep</option>\n";
+  print "<option value=\"middle\" id=\"scmiddle\">{$strings['middle']}</option>\n";
+  print "<option value=\"short\" id=\"scshort\">{$strings['short']}</option>\n";
+  print "<option value=\"long\" id=\"sclong\">{$strings['long']}</option></select>&nbsp;{$strings['summercut']}\n";
+  print "</td></tr>\n";
+  print "<tr><td>";
+  print "<select id=\"wintercut\" name=\"wintercut\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"wc0\">Sleep</option>\n";
+  print "<option value=\"middle\" id=\"wcmiddle\">{$strings['middle']}</option>\n";
+  print "<option value=\"short\" id=\"wcshort\">{$strings['short']}</option>\n";
+  print "<option value=\"long\" id=\"wclong\">{$strings['long']}</option></select>&nbsp;{$strings['wintercut']}\n";
+  print "</td></tr>\n";
+  print "<tr><td>";
+  print "<select id=\"vinedefoliation\" name=\"vinedefoliation\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"vd0\">Sleep</option>\n";
+  print "<option value=\"1\" id=\"vd1\">{$strings['leafstripping']}</option>\n";
+  print "<option value=\"2\" id=\"vd2\">{$strings['sproutremoval']}</option>\n";
+  print "<option value=\"3\" id=\"vd3\">{$strings['grapethinning']}</option></select>&nbsp;{$strings['applytoallvines']}\n";
+  print "</td></tr>\n";
+  print "<tr><td>";
+  print "<select id=\"vinefertiliser\" name=\"vinefertiliser\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"vf0\">Sleep</option>\n";
+  print "<option value=\"1\" id=\"vf1\">{$strings['standardfertiliser']}</option>\n";
+  print "<option value=\"2\" id=\"vf2\">{$strings['powerfertiliser']}</option>\n";
+  print "<option value=\"3\" id=\"vf3\">{$strings['specialfertiliser']}</option></select>&nbsp;{$strings['applytoallvines']}\n";
+  print "</td></tr>\n";
+  print "<tr><td>";
+  print "<select id=\"vinewater\" name=\"vinewater\" onchange=\"saveMisc();\">";
+  print "<option value=\"0\" id=\"vw0\">Sleep</option>\n";
+  print "<option value=\"1\" id=\"vw1\">{$strings['waterbucket']}</option>\n";
+  print "<option value=\"2\" id=\"vw2\">{$strings['wateringcan']}</option>\n";
+  print "<option value=\"3\" id=\"vw3\">{$strings['waterhose']}</option></select>&nbsp;{$strings['applytoallvines']}\n";
+  print "</td></tr>\n";
+ } else {
+  print "<tr><th>{$strings['notavailable']}</th></tr>";
+ }
+} else {
+ print "<tr><th>{$strings['notavailable']}</th></tr>";
+}
 print "</table>\n";
 print "</div>\n";
 // race cow slots
@@ -428,7 +493,10 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'flowerarrangementslot15', 'flowerarrangementslot16', 'flowerarrangementslot17',
 'autobuybutterflies', 'speciesbait1', 'speciesbait2', 'speciesbait3',
 'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
-'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed' ];
+'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed',
+'harvestvine', 'harvestvineinautumn', 'restartvine', 'removevine', 'weathermitigation',
+'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater', 'buyvinetillsunny'
+ ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -466,6 +534,24 @@ print "document.getElementById('lottoggle').selectedIndex = document.getElementB
 $savedValue = $configContents['autobuyrefillto'];
 $savedValue = "autobuyrefillto" . $savedValue;
 print "document.getElementById('autobuyrefillto').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['weathermitigation'];
+$savedValue = "wm" . $savedValue;
+print "document.getElementById('weathermitigation').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['summercut'];
+$savedValue = "sc" . $savedValue;
+print "document.getElementById('summercut').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['wintercut'];
+$savedValue = "wc" . $savedValue;
+print "document.getElementById('wintercut').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['vinedefoliation'];
+$savedValue = "vd" . $savedValue;
+print "document.getElementById('vinedefoliation').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['vinefertiliser'];
+$savedValue = "vf" . $savedValue;
+print "document.getElementById('vinefertiliser').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['vinewater'];
+$savedValue = "vw" . $savedValue;
+print "document.getElementById('vinewater').selectedIndex = document.getElementById('$savedValue').index;\n";
 
 reset($togglesarray);
 for ($i = 0; $i < count($togglesarray); $i++) {
