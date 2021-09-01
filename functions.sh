@@ -1443,6 +1443,11 @@ function checkVineYard {
     logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
     return
    fi
+   # data has changed, re-read value
+   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
+   if [ $iSeason -eq 3 ]; then # take care of vine one last time before harvest in autumn
+    checkVineYardCare $iSlot
+   fi
    echo "Harvesting vine in slot $iSlot into barrel in slot ${iFreeBarrelSlot}..."
    sendAJAXFarmUpdateRequest "slot=${iSlot}&slot2=${iFreeBarrelSlot}&mode=vineyard_plant_harvest" && sleep 1
    if [ "${iRestartVine:-0}" = "0" ]; then
@@ -1473,8 +1478,6 @@ function checkVineYard {
      continue
     fi
    fi
-   # data has changed, re-read value
-   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
    if [ $iSeason -eq 3 ]; then # harvesting in autumn needs an extra step
     startVineYardSeason $iSlot $((iSeason + 1))
    fi
