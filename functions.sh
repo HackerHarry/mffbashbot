@@ -18,8 +18,10 @@ function WGETREQ {
  local sHTTPReq=$1
  local sOut=${2:-/dev/null}
  local sResponse
+ local retVal
  sResponse=$(wget -nv -T10 -o - --output-document="$sOut" --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
- echo "$sResponse" | if grep -q "dbfehler\.php"; then
+ retVal=$?
+ echo "$sResponse" | if grep -q "dbfehler\.php" || [ $retVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
   kill -SIGHUP "$$"
  else
@@ -62,11 +64,12 @@ function exitBot {
 }
 
 function restartBot {
- # experimental
  # this gets called if the response to an AJAX request contains "dbfehler.php"
+ # or if wget returns a non-zero value
  echo -e "\n"
- logToFile "Backend database seems to have a problem"
- # we do not log off here, since the backend has most likely invalidated our session anyway
+ logToFile "My Free Farm Bash Bot encountered a problem"
+ echo "Attempting to log off..."
+ wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-7]-[1-6]
  echo "Restarting bot..."
  cd ..
@@ -1437,14 +1440,18 @@ function checkVineYard {
    if [ "${iHarvestVine:-0}" = "0" ]; then
     return
    fi
+   # data has changed, re-read value
+   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
    # it's harvest time from here
    iFreeBarrelSlot=$($JQBIN -r '[.updateblock.farmersmarket.vineyard.data.barrels | to_entries[] | select(.value.data | type != "object").value.slot][0] // 0' $FARMDATAFILE)
    if [ $iFreeBarrelSlot -eq 0 ]; then
     logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
+    if [ $iSeason -eq 3 ]; then # take care of vine if harvest fails in autumn
+     checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+     checkVineYardCare $iSlot
+    fi
     return
    fi
-   # data has changed, re-read value
-   iSeason=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].season' $FARMDATAFILE)
    if [ $iSeason -eq 3 ]; then # take care of vine one last time before harvest in autumn
     checkVineYardCare $iSlot
    fi
@@ -3292,11 +3299,12 @@ function sendAJAXFarmRequest {
 }
 
 function sendAJAXFarmUpdateRequest {
- # experimental: update farmdata with server response
  local sAJAXSuffix=$1
  local sResponse
+ local retVal
  sResponse=$(wget -nv -T10 -o - --output-document=$TMPFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix})
- echo "$sResponse" | if grep -q "dbfehler\.php"; then
+ retVal=$?
+ echo "$sResponse" | if grep -q "dbfehler\.php" || [ $retVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
   kill -SIGHUP "$$"
  else
