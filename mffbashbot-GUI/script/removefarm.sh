@@ -30,6 +30,7 @@ MFFPASS=$2
 MFFSERVER=$3
 GAMEPATH=$4
 STARTSCRIPT="${GAMEPATH%$MFFUSER}"/../startallbots.sh
+LCONF=/etc/lighttpd/lighttpd.conf
 
 if ! [ -d "$GAMEPATH" ]; then
  # game path doesn't exist
@@ -73,7 +74,8 @@ else
  echo '#!/usr/bin/env bash
 /usr/sbin/lighttpd -f '$LCONF >$STARTSCRIPT
 fi
-echo "screen -DRS mffbashbot -X quit && sleep 3 >/dev/null" >>$STARTSCRIPT
+echo "screen -DRS mffbashbot -X quit >/dev/null" >>$STARTSCRIPT
+echo "sleep 3 && screen -wipe mffbashbot >/dev/null" >>$STARTSCRIPT
 echo "echo \"Starting farm ${aFARMS[0]}...\"" >>$STARTSCRIPT
 echo "screen -dmS mffbashbot -t ${aFARMS[0]} bash -c 'cd ~/mffbashbot; ./mffbashbot.sh ${aFARMS[0]}'" >>$STARTSCRIPT
 if [ $FARMCOUNT -ge 1 ]; then

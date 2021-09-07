@@ -98,7 +98,6 @@ flowerarrangementslot14 = 0
 flowerarrangementslot15 = 0
 flowerarrangementslot16 = 0
 flowerarrangementslot17 = 0
-doinfinitequest = 0
 autobuybutterflies = 0
 speciesbait1 = 0
 raritybait1 = 0
@@ -269,7 +268,8 @@ else
  echo '#!/usr/bin/env bash
 /usr/sbin/lighttpd -f '$LCONF >$STARTSCRIPT
 fi
-echo "screen -DRS mffbashbot -X quit && sleep 3 >/dev/null" >>$STARTSCRIPT
+echo "screen -DRS mffbashbot -X quit >/dev/null" >>$STARTSCRIPT
+echo "sleep 3 && screen -wipe mffbashbot >/dev/null" >>$STARTSCRIPT
 echo "echo \"Starting farm ${aFARMS[0]}...\"" >>$STARTSCRIPT
 echo "screen -dmS mffbashbot -t ${aFARMS[0]} bash -c 'cd ~/mffbashbot; ./mffbashbot.sh ${aFARMS[0]}'" >>$STARTSCRIPT
 if [ $FARMCOUNT -ge 1 ]; then

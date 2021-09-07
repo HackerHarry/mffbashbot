@@ -8,7 +8,7 @@ Ein Bot für das Browser-Spiel "My Free Farm".
 Es sei an dieser Stelle deutlichst darauf hingewiesen, dass der Gebrauch<br>
 von Bots gegen die AGB des Betreibers verstösst und u.a. eine Löschung<br>
 des Spielerkontos zur Folge haben kann!<br>
-Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**. Ihr wurdet gewarnt.
+Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**.
 
 Auch möchte ich euch ermutigen, die Farmspiel-Entwickler durch den Kauf von<br>
 Coins zu unterstützen.
@@ -30,7 +30,7 @@ A bot for the browser game "My Free Farm".
 
 Be advised, that the usage of bots is against the game provider's terms and<br>
 conditions. Your game account may be suspended.<br>
-Use the bot scripts at your **own risk**. You have been warned.
+Use the bot scripts at your **own risk**.
 
 I want to encourage you, to support the game designers by purchasing coins.
 
