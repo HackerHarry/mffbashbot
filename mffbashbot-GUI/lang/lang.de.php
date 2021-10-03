@@ -164,7 +164,7 @@ $strings['nonsense'] = 'Diese Auswahl macht wenig Sinn...';
 $strings['missingamount'] = 'Die Anzahl fehlt!';
 $strings['updateavailable'] = 'Update verfügbar: ';
 $strings['updateto'] = 'Aktualisieren auf';
-$strings['confirmupdate'] = 'Diese Aktion löst ein Update aus, welches gewöhnlich nur wenige Sekunden dauert.\nStelle sicher, dass der Bot nicht arbeitet wenn Du OK klickst.\n15 Sekunden nach Klick auf OK wirst Du zur Anmeldung geleitet.\n\nMöchtest Du fortfahren?';
+$strings['confirmupdate'] = 'Diese Aktion löst ein Update aus, welches gewöhnlich nur wenige Sekunden dauert.\nStelle sicher, dass der Bot pausiert wenn Du OK klickst.\n15 Sekunden nach Klick auf OK wirst Du zur Anmeldung geleitet.\n\nMöchtest Du fortfahren?';
 $strings['botisupdating'] = 'am aktualisieren';
 $strings['saynotoflowerfarmies'] = 'Alle Blumenfarmis mit "Nein" beantworten';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/wiki/History" target="_blank">Versionshistorie (Nur in Englisch)</a>';
@@ -270,5 +270,7 @@ $strings['specialfertiliser'] = 'Spezial-Dünger';
 $strings['waterbucket'] = $monsterlist[1];
 $strings['wateringcan'] = $monsterlist[2];
 $strings['waterhose'] = 'Wasserschlauch';
+$strings['vinefullservice'] = 'Weinflaschen befüllen und verkaufen';
+$strings['vinefullservice-tt'] = 'Wenn bei der Ernte kein Fass frei ist, wird das Fass mit höchstem Reifegrad in Flaschen abgefüllt, ggf. ein Fass des selben Typs nachgekauft und verkauft wird beim Händler bei Bedarf Wein der niedrigsten Qualität';
 // $strings[''] = '';
 ?>

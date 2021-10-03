@@ -270,5 +270,7 @@ $strings['specialfertiliser'] = 'No translation available';
 $strings['waterbucket'] = $monsterlist[1];
 $strings['wateringcan'] = $monsterlist[2];
 $strings['waterhose'] = 'No translation available';
+$strings['vinefullservice'] = 'No translation available';
+$strings['vinefullservice-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

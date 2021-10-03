@@ -132,7 +132,8 @@ chmod 775 startallbots.sh
 # create .screenrc
 if [ ! -f ~/.screenrc ]; then
  echo 'hardstatus alwayslastline
-hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"
+defscrollback 5000' >~/.screenrc
 fi
 echo
 echo "Done! Start the bot with ./startallbots.sh after adding farms using your browser."

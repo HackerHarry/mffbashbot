@@ -303,5 +303,7 @@ $strings['specialfertiliser'] = 'Специална тор';
 $strings['waterbucket'] = $monsterlist[1];
 $strings['wateringcan'] = $monsterlist[2];
 $strings['waterhose'] = 'Маркуч за поливане';
+$strings['vinefullservice'] = 'No translation available';
+$strings['vinefullservice-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>

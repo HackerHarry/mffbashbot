@@ -74,7 +74,8 @@ chmod +x startallbots.sh
 # create .screenrc
 if [ ! -f ~/.screenrc ]; then
  echo 'hardstatus alwayslastline
-hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"' >~/.screenrc
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y}"
+defscrollback 5000' >~/.screenrc
 fi
 # set a larger font for mintty
 # hmm. doesn't exist at run time :/

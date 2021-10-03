@@ -270,5 +270,7 @@ $strings['specialfertiliser'] = 'Special fertiliser';
 $strings['waterbucket'] = $monsterlist[1];
 $strings['wateringcan'] = $monsterlist[2];
 $strings['waterhose'] = 'Water Hose';
+$strings['vinefullservice'] = 'Fill and sell wine bottles';
+$strings['vinefullservice-tt'] = 'If no free barrel iss available, the most mature wine will be bottled, barrels of the same type are repurchased and wine of the lowest quality is sold to the trader, if needed';
 // $strings[''] = '';
 ?>

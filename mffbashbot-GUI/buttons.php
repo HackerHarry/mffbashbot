@@ -45,7 +45,8 @@ $togglesarray = [
 "harvestvineinautumn" => "harvestvineinautumntoggle",
 "restartvine" => "restartvinetoggle",
 "removevine" => "removevinetoggle",
-"buyvinetillsunny" => "buyvinetillsunnytoggle"
+"buyvinetillsunny" => "buyvinetillsunnytoggle",
+"vinefullservice" => "vinefullservicetoggle"
 ];
 
 $toggledesc = [
@@ -76,7 +77,8 @@ $strings['harvestvine'],
 $strings['harvestvineinautumn'],
 $strings['restartvine'],
 $strings['removevine'],
-$strings['buyvinetillsunny']
+$strings['buyvinetillsunny'],
+$strings['vinefullservice']
 ];
 
 $toggledesc_tt = [
@@ -107,7 +109,8 @@ $strings['harvestvine-tt'],
 $strings['harvestvineinautumn-tt'],
 $strings['restartvine-tt'],
 $strings['removevine-tt'],
-$strings['buyvinetillsunny-tt']
+$strings['buyvinetillsunny-tt'],
+$strings['vinefullservice-tt']
 ];
 
 print "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>";
@@ -495,8 +498,9 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
 'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed',
 'harvestvine', 'harvestvineinautumn', 'restartvine', 'removevine', 'weathermitigation',
-'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater', 'buyvinetillsunny'
- ];
+'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
+'buyvinetillsunny', 'vinefullservice'
+];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))

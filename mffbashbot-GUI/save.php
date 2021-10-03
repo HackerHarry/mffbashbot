@@ -175,6 +175,7 @@ switch ($farm) {
   $configContents['vinedefoliation'] = $_POST["vinedefoliation"];
   $configContents['vinefertiliser'] = $_POST["vinefertiliser"];
   $configContents['vinewater'] = $_POST["vinewater"];
+  $configContents['vinefullservice'] = $_POST["vinefullservicetoggle"];
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);
