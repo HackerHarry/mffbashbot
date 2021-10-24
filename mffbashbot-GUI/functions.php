@@ -83,6 +83,9 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         if ($farm == 6)
          CreateOptions(700, 701, 702, 703, 704, 705, 706, 707, 708, 709);
         else
+        if ($farm == 8)
+         CreateOptions(950, 951, 952, 953, 954, 955, 956, 957);
+        else
          CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 17, 18, 19, 20, 21, 22, 23, 24, 26, 29, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 97, 104, 107, 108, 109, 112, 113, 114, 115, 126, 127, 128, 129, 153, 154, 158, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
         print "</select>\n";
         break;
@@ -203,6 +206,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateOptions(750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         break;
+  case 23:
+        // Sushi-Bar
+        print "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985);
+        print "</select>\n";
+        break;
   case "flowerarea":
         // Blumenwiese
         print "<option value=\"sleep\">Sleep</option>\n";
@@ -298,9 +307,10 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans25":
   case "trans26":
   case "trans27":
-        // Transport -> Farm 5 / 6 / 7
+  case "trans28":
+        // Transport -> Farm 5 / 6 / 7 / 8
         print "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759);
         print "</select>\n";
         print "<input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
@@ -360,6 +370,7 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
   case "trans25":
   case "trans26":
   case "trans27":
+  case "trans28":
 	$buildingType = "AutoTrans";
 	break;
   case "powerups":
@@ -432,6 +443,9 @@ function GetBuildingTypeForBuildingID($buildingID) {
   case 21:
 	return "TeaFactory";
 	break;
+  case 23:
+	return "SushiBar";
+	break;
   default:
 	return "unsupported";
   }
@@ -468,6 +482,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "Fishing":
    case "FuelStation":
    case "TeaFactory":
+   case "SushiBar":
    case "KnittingMill":
    case "OilMill":
    $queueItemFriendlyName = $productlist[intval($queueItem)];

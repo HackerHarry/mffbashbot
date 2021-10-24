@@ -46,7 +46,7 @@ function exitBot {
   # don't use WGETREQ as we wouldn't like to doublekill ourself
   wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-7]-[1-6]
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6]
  fi
  case "$sSignal" in
     INT)
@@ -70,7 +70,7 @@ function restartBot {
  logToFile "My Free Farm Bash Bot encountered a problem"
  echo "Attempting to log off..."
  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-7]-[1-6]
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6]
  echo "Restarting bot..."
  cd ..
  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
@@ -884,6 +884,32 @@ function checkFlowerFarmies {
  done
 }
 
+function checkSushiBarFarmies {
+ local aServedFarmies
+ local iServedFarmie
+ local aFarmieNeededCategories
+ local sFarmieNeededCategory
+ local iFarmieNeedsAmount
+ local iFarmieHasAmount
+ aServedFarmies=$($JQBIN -r '.updateblock.sushibar.farmis | to_entries[] | select(.value.data.have | type == "object").value.slot' $FARMDATAFILE)
+ # cycle through farmies who have been served at least once
+ for iServedFarmie in $aServedFarmies; do
+  aFarmieNeededCategories=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys[]' $FARMDATAFILE)
+  for sFarmieNeededCategory in $aFarmieNeededCategories; do
+   iFarmieNeedsAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need["'${sFarmieNeededCategory}'"]' $FARMDATAFILE)
+   iFarmieHasAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.have["'${sFarmieNeededCategory}'"] // 0' $FARMDATAFILE)
+   if [ $iFarmieNeedsAmount -ne $iFarmieHasAmount ]; then
+    break
+   fi
+   # we have a prospect
+   if checkTimeRemaining '.updateblock.sushibar.farmis["'${iServedFarmie}'"].eat.remain'; then
+    echo "Collecting sushi bar farmie in slot #${iServedFarmie}"
+    sendAJAXFarmUpdateRequest "slot=${iServedFarmie}&mode=sushibar_finishfarmi"
+   fi
+  done
+ done
+}
+
 function harvestMonsterFruitHelper {
  :
 }
@@ -1136,14 +1162,14 @@ function getCowRating {
  sCowAdv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_pro' $FARMDATAFILE)
  sCowDisadv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_con' $FARMDATAFILE)
  iCowLevelSpeed=$($JQBIN '.updateblock.farmersmarket.cowracing.config.level["'$iCowLevel'"].speed' $FARMDATAFILE)
- iCowRating=$(awk 'BEGIN{print ('${iCowSpeed}' + '${iCowLevelSpeed}') * 100}')
+ iCowRating=$(awk 'BEGIN { print ('${iCowSpeed}' + '${iCowLevelSpeed}') * 100 }')
  # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75%
  if [ "$sEnvironment" = "$sCowAdv" ]; then
-  iCowRating=$(awk 'BEGIN{print int('${iCowRating}' * 1.0375 * 100)}')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 1.0375 * 100) }')
   echo $iCowRating
   return
  elif [ "$sEnvironment" = "$sCowDisadv" ]; then
-  iCowRating=$(awk 'BEGIN{print int('${iCowRating}' * 0.9625 * 100)}')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 0.9625 * 100) }')
   echo $iCowRating
   return
  fi
@@ -1391,7 +1417,6 @@ function checkVineYard {
  local iFreeBarrelSlot
  local iVineAge
  local iVineType
-# local aCare
  local iCare
  local iOption
  local sSummerCut=$(getConfigValue summercut)
@@ -1402,6 +1427,7 @@ function checkVineYard {
  local iRestartVine=$(getConfigValue restartvine)
  local iRemoveVine=$(getConfigValue removevine) # this means after the 4th year
  local iBuyVineTillSunny=$(getConfigValue buyvinetillsunny)
+ local iVineFullService=$(getConfigValue vinefullservice)
  aSlots=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.plants | keys | .[]' $FARMDATAFILE)
  for iSlot in $aSlots; do
   if checkTimeRemaining '.updateblock.farmersmarket.vineyard.data.plants["'${iSlot}'"].remain'; then
@@ -1445,12 +1471,27 @@ function checkVineYard {
    # it's harvest time from here
    iFreeBarrelSlot=$($JQBIN -r '[.updateblock.farmersmarket.vineyard.data.barrels | to_entries[] | select(.value.data | type != "object").value.slot][0] // 0' $FARMDATAFILE)
    if [ $iFreeBarrelSlot -eq 0 ]; then
-    logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
-    if [ $iSeason -eq 3 ]; then # take care of vine if harvest fails in autumn
-     checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
-     checkVineYardCare $iSlot
+    if [ "${iVineFullService:-0}" = "0" ]; then
+     logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
+     if [ $iSeason -eq 3 ]; then # take care of vine if harvest fails in autumn
+      checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+      checkVineYardCare $iSlot
+     fi
+     return
     fi
-    return
+    # do the full service on stock, barrels and vine...
+    if getFreeBarrelSlot; then
+     # getFreeBarrelSlot returned 0
+     logToFile "${FUNCNAME}: Cannot harvest, there was a problem with either bottling or selling!"
+     if [ $iSeason -eq 3 ]; then
+      checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
+      checkVineYardCare $iSlot
+     fi
+     return
+    else
+     # getFreeBarrelSlot returned a now free slot
+     iFreeBarrelSlot=$?
+    fi
    fi
    if [ $iSeason -eq 3 ]; then # take care of vine one last time before harvest in autumn
     checkVineYardCare $iSlot
@@ -1550,13 +1591,13 @@ function checkVineYardCare {
  local iDefoliation=$(getConfigValue vinedefoliation)
  local iFertiliser=$(getConfigValue vinefertiliser)
  local iWater=$(getConfigValue vinewater)
+ if [ "${iFertiliser:-0}" != "0" ]; then # fertiliser comes first since it has negative quality impact
+  echo "Applying fertiliser on vine in slot ${iSlot}..."
+  sendAJAXFarmRequest "slot=${iSlot}&id=4&option=${iFertiliser}&mode=vineyard_plant_select_care"
+ fi
  if [ "${iDefoliation:-0}" != "0" ]; then
   echo "Performing defoliation on vine in slot ${iSlot}..."
   sendAJAXFarmRequest "slot=${iSlot}&id=3&option=${iDefoliation}&mode=vineyard_plant_select_care"
- fi
- if [ "${iFertiliser:-0}" != "0" ]; then
-  echo "Applying fertiliser on vine in slot ${iSlot}..."
-  sendAJAXFarmRequest "slot=${iSlot}&id=4&option=${iFertiliser}&mode=vineyard_plant_select_care"
  fi
  if [ "${iWater:-0}" != "0" ]; then
   echo "Watering vine in slot ${iSlot}..."
@@ -1577,6 +1618,86 @@ function checkVineYardWeatherMitigation {
   echo "Using ${sPercentage} weather mitigation on vine in slot ${iSlot}..."
   sendAJAXFarmRequest "slot=${iSlot}&type=${iWeatherMitigation}&mode=vineyard_buy_weathertool"
  fi
+}
+
+function getFreeBarrelSlot {
+ local aSlots
+ local iSlot
+ local iRemaining
+ local iMaxRipeningTime
+ local iType
+ local iPercent
+ local iBarrelSlot
+ local iBarrelType
+ local iAmount
+ local iBottles
+ local iStockCapacity
+ local iStockSlotsUsed
+ local iStockSlotsAvailable
+ local iBottles2Sell
+ local iBottleID
+ local iDurability
+ local iSlotProspect=0
+ local iBottlingMinPercent=20
+ # don't bother jq with ".updateblock.farmersmarket.vineyard.config.constants.barrel_unfill_min_percent" here
+ aSlots=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels | keys | .[]' $FARMDATAFILE)
+ for iSlot in $aSlots; do
+  iRemaining=$($JQBIN '.updateblock.farmersmarket.vineyard.data.barrels["'${iSlot}'"].data.remain' $FARMDATAFILE)
+  iType=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iSlot}'"].type' $FARMDATAFILE)
+  iMaxRipeningTime=$($JQBIN '.updateblock.farmersmarket.vineyard.config.barrels["'${iType}'"].time' $FARMDATAFILE)
+  iPercent=$(awk 'BEGIN { printf "%.2f", sqrt(100 - '${iRemaining}' * 100 / '${iMaxRipeningTime}') * 10 }')
+  if [ ${iPercent%.*} -lt 20 ]; then
+   continue
+  fi
+  if awk 'BEGIN { exit !('${iPercent}' > '${iSlotProspect}') }'; then
+   iSlotProspect=$iPercent
+   iBarrelSlot=$iSlot
+   iBarrelType=$iType
+  fi
+ done
+ if [ ${iSlotProspect%.*} -eq 0 ]; then
+  # none of the barrels could be emptied
+  return 0
+ fi
+ iAmount=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iBarrelSlot}'"].data.amount' $FARMDATAFILE)
+ iBottles=$(awk 'BEGIN { printf "%d", ('${iAmount}' / 10)^0.8 * 0.4 + 1.5 }')
+ # original equation is "Math.round(Math.pow((a / 10), 0.8) * 0.4) + 1"
+ # we need to emulate JavaScript's Math.round() function, that's why we have to add an extra .5
+ # see https://unix.stackexchange.com/questions/444292/rounding-off-to-nearest-number
+ iStockCapacity=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.stock_level' $FARMDATAFILE)
+ iStockCapacity=$($JQBIN '.updateblock.farmersmarket.vineyard.config.levels_stock["'${iStockCapacity}'"].max' $FARMDATAFILE)
+ if [ $iBottles -gt $iStockCapacity ]; then
+  # more bottles to fill than the stock can hold.
+  # doubtful this ever happens
+  return 0
+ fi
+ iStockSlotsUsed=$($JQBIN '[.updateblock.farmersmarket.vineyard.data.stock | .[].amount | tonumber] | add // 0' $FARMDATAFILE)
+ iStockSlotsAvailable=$((iStockCapacity - iStockSlotsUsed))
+ if [ $iStockSlotsAvailable -lt $iBottles ]; then
+  # sell bottles to trader
+  iBottles2Sell=$((iBottles - iStockSlotsAvailable))
+  echo -n "Selling $iBottles2Sell bottles of wine to trader..."
+  while [ $iBottles2Sell -gt 0 ]; do
+   # sell 'em one by one
+   iBottleID=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.stock | min_by(.quality).id' $FARMDATAFILE)
+   sendAJAXFarmUpdateRequest "id=${iBottleID}&amount=1&mode=vineyard_expert_sell"
+   echo -n "."
+   sleep 1
+   iBottles2Sell=$((--iBottles2Sell))
+  done
+  echo
+ fi
+ # empty a barrel
+ # save durability state
+ iDurability=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iBarrelSlot}'"].durability' $FARMDATAFILE)
+ echo "Emptying barrel in slot ${iBarrelSlot}..."
+ sendAJAXFarmUpdateRequest "slot=${iBarrelSlot}&mode=vineyard_unfill_barrels_slot"
+ if [ $iDurability -eq 1 ]; then
+  # re-buy barrel
+  echo "Buying a barrel of type #${iBarrelType} for slot ${iBarrelSlot}..."
+  sendAJAXFarmUpdateRequest "type=barrels&slot=${iBarrelSlot}&id=${iBarrelType}&mode=vineyard_buy_shop_item"
+ fi
+ return ${iBarrelSlot}
 }
 
 function harvestMegaField {
@@ -1744,6 +1865,55 @@ function startWindMill {
  local iSlot=$3
  local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
  sendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
+}
+
+function checkSushiBarPlates {
+ local sCategory
+ local iPID
+ local iSlot
+ local iPIDCount
+ for sCategory in soup salad sushi dessert; do
+  if checkFreePlates; then
+#   echo "DEBUG: no free plates left on train"
+   return
+  fi
+  iPID=$(getConfigValue sushibar${sCategory})
+  if [ "${iPID:-0}" = "0" ]; then
+   # no preference or value missing
+   continue
+  fi
+  if checkCategoryOnPlate ${sCategory}; then
+#   echo "DEBUG: ${sCategory} already present"
+   continue
+  fi
+  iPIDCount=$(getPIDAmountFromStock $iPID 8)
+  if [ $iPIDCount -le 0 ]; then
+   logToFile "${FUNCNAME}: Cannot place dish! No dishes of type #${iPID} in stock"
+   continue
+  fi
+  iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
+  echo "Placing dish #${iPID} onto plate #${iSlot}"
+  sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_settrainslot" && sleep 1
+ done
+}
+
+function checkFreePlates {
+ local iFreePlates=$($JQBIN '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key] | length' $FARMDATAFILE)
+ return $iFreePlates
+}
+
+function checkCategoryOnPlate {
+ local sCategory=$1
+ local sCategoryOnPlate
+ local iDish
+ local aDishes=$($JQBIN '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "number")).value.pid] | unique[]' $FARMDATAFILE)
+ for iDish in $aDishes; do
+  sCategoryOnPlate=$($JQBIN -r '.updateblock.sushibar.config.products["'${iDish}'"].category' $FARMDATAFILE)
+  if [ "$sCategoryOnPlate" = "$sCategory" ]; then
+   return 0
+  fi
+ done
+ return 1
 }
 
 function doInfiniteQuest {
@@ -2057,6 +2227,9 @@ function checkSendGoodsToMainFarm {
       iPIDMax=998
      fi
      ;;
+  8) iPIDMin=950
+     iPIDMax=957
+     ;;
  esac
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
  for iPID in $aPIDs; do
@@ -2325,7 +2498,7 @@ function checkMegaFieldEmptyHarvestDevice {
    fi
    # buy a brand new one if empty
    echo "Buying new vehicle #${iHarvestDevice}..." >&2 # this is very ugly.
-   sendAJAXFarmRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
+   sendAJAXFarmUpdateRequest "mode=megafield_vehicle_buy&farm=1&position=1&id=${iHarvestDevice}&vid=${iHarvestDevice}"
    echo 1
    return
   else
@@ -2463,6 +2636,25 @@ function harvestMegaField2x2 {
   fi
  iPlot=$((iPlot + 1))
  done
+}
+
+function harvestSushiBar {
+ local iSlot=$3
+ iSlot=$((iSlot + 1))
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=sushibar_harvestproduction"
+}
+
+function startSushiBar {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ iSlot=$((iSlot + 1))
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_startproduction"
+}
+
+function startSushiBarNP {
+ startSushiBar $1 $2 $3
 }
 
 function getAnimalQueueLength {
@@ -2702,6 +2894,8 @@ function checkQueueCount {
       ;;
   20) iQueuesInGame=$(getQueueCount20 $iFarm $iPosition)
       ;;
+  23) iQueuesInGame=$(getQueueCount23)
+      ;;
    *) iQueuesInGame=1
       ;;
  esac
@@ -2726,7 +2920,7 @@ function getQueueCountInFS {
 function getMaxQueuesForBuildingID {
  local iBuildingID=$1
  case "$iBuildingID" in
-  13|14|16|20|21)
+  13|14|16|20|21|23)
      echo 3
      ;;
   *)
@@ -2770,6 +2964,19 @@ function getQueueCount20 {
  # building ID 20 can have 4 slots, we only handle 3
  for iCount in 2 3; do
   sBlocked=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
+  if [ "$sBlocked" = "null" ]; then
+   iSlots=$((iSlots + 1))
+  fi
+ done
+ echo $iSlots
+}
+
+function getQueueCount23 {
+ local iCount
+ local iSlots=1
+ local sBlocked
+ for iCount in 2 3; do
+  sBlocked=$($JQBIN '.updateblock.sushibar.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
   if [ "$sBlocked" = "null" ]; then
    iSlots=$((iSlots + 1))
   fi
@@ -3332,6 +3539,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *vineyard*)
         $JQBIN -s 'del(.[0].updateblock.farmersmarket.vineyard.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *sushibar*)
+        $JQBIN -s 'del(.[0].updateblock.sushibar) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *)
         $JQBIN -s '.[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

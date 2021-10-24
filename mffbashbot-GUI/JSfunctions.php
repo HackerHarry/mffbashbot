@@ -160,9 +160,9 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'transO7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
+ 'vehiclemgmt7', 'vehiclemgmt8', 'transO7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
  'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
- 'vinefertiliser', 'vinewater'];
+ 'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi', 'sushibardessert'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
@@ -171,7 +171,7 @@ function saveMisc() {
  'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
  'calendareventtoggle', 'pentecosteventtoggle', 'trimlogstocktoggle', 'removeweedtoggle',
  'harvestvinetoggle', 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
- 'buyvinetillsunnytoggle'];
+ 'buyvinetillsunnytoggle', 'vinefullservicetoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
@@ -258,7 +258,7 @@ function saveConfig() {
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];

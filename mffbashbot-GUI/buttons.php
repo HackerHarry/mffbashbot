@@ -45,7 +45,8 @@ $togglesarray = [
 "harvestvineinautumn" => "harvestvineinautumntoggle",
 "restartvine" => "restartvinetoggle",
 "removevine" => "removevinetoggle",
-"buyvinetillsunny" => "buyvinetillsunnytoggle"
+"buyvinetillsunny" => "buyvinetillsunnytoggle",
+"vinefullservice" => "vinefullservicetoggle"
 ];
 
 $toggledesc = [
@@ -76,7 +77,8 @@ $strings['harvestvine'],
 $strings['harvestvineinautumn'],
 $strings['restartvine'],
 $strings['removevine'],
-$strings['buyvinetillsunny']
+$strings['buyvinetillsunny'],
+$strings['vinefullservice']
 ];
 
 $toggledesc_tt = [
@@ -107,14 +109,15 @@ $strings['harvestvine-tt'],
 $strings['harvestvineinautumn-tt'],
 $strings['restartvine-tt'],
 $strings['removevine-tt'],
-$strings['buyvinetillsunny-tt']
+$strings['buyvinetillsunny-tt'],
+$strings['vinefullservice-tt']
 ];
 
 print "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>";
 print "<form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">\n";
 print "<input type=\"hidden\" name=\"farm\" value=\"$farm\">\n";
 print "<input type=\"hidden\" name=\"username\" value=\"$username\">\n";
-for ($i = 1; $i <= 7; $i++)
+for ($i = 1; $i <= 8; $i++)
  print "<input type=\"image\" src=\"image/navi_farm$i.png\" class=\"navilink\" title=\"$farmFriendlyName[$i]\" name=\"$i\" onclick=\"document.venueselect.farm.value = '$i'; this.form.submit();\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket']}\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
 print "<input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket2']}\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">\n";
@@ -192,6 +195,15 @@ print "<option value=\"14\" id=\"vehicle14\">{$strings['drone']}</option>\n";
 print "<option value=\"15\" id=\"vehicle15\">{$strings['airplane']}</option></select>&nbsp;{$strings['autotransport7']}";
 print "</td></tr>";
 print "<tr><td>";
+print "<select id=\"vehiclemgmt8\" name=\"vehiclemgmt8\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"vehicle0\">Sleep</option>\n";
+print "<option value=\"16\" id=\"vehicle16\">{$strings['rowingboat']}</option>\n";
+print "<option value=\"17\" id=\"vehicle17\">{$strings['swampboat']}</option>\n";
+print "<option value=\"18\" id=\"vehicle18\">{$strings['barge']}</option>\n";
+print "<option value=\"19\" id=\"vehicle19\">{$strings['waterhelicopter']}</option>\n";
+print "<option value=\"20\" id=\"vehicle20\">{$strings['containership']}</option></select>&nbsp;{$strings['autotransport8']}";
+print "</td></tr>";
+print "<tr><td>";
 print "<select id=\"transO7\" name=\"transO7\" onchange=\"saveMisc();\">";
 print "<option value=\"0\" id=\"tO70\">Sleep</option>\n";
 CreateOptionsWithID("tO7", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
@@ -203,6 +215,32 @@ print "<option value=\"0\" id=\"vjdiff0\">Sleep</option>\n";
 print "<option value=\"1\" id=\"vjdiff1\">{$strings['vetjobeasy']}</option>\n";
 print "<option value=\"2\" id=\"vjdiff2\">{$strings['vetjobmedium']}</option>\n";
 print "<option value=\"3\" id=\"vjdiff3\">{$strings['vetjobhard']}</option></select>&nbsp;{$strings['restartvetjob']}\n";
+print "</td></tr>";
+// sushi bar
+print "<tr><th>{$strings['sushibar']}</th></tr>\n";
+print "<tr><td>";
+print "<select id=\"sushibarsoup\" name=\"sushibarsoup\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"sushibarsoup0\">Sleep</option>\n";
+CreateOptionsWithID("o", 974, 975, 976, 977);
+print "</select>&nbsp;{$strings['sushibarsoup']}";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"sushibarsalad\" name=\"sushibarsalad\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"sushibarsalad0\">Sleep</option>\n";
+CreateOptionsWithID("o", 978, 979, 980, 981);
+print "</select>&nbsp;{$strings['sushibarsalad']}";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"sushibarsushi\" name=\"sushibarsushi\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"sushibarsushi0\">Sleep</option>\n";
+CreateOptionsWithID("o", 970, 971, 972, 973);
+print "</select>&nbsp;{$strings['sushibarsushi']}";
+print "</td></tr>";
+print "<tr><td>";
+print "<select id=\"sushibardessert\" name=\"sushibardessert\" onchange=\"saveMisc();\">";
+print "<option value=\"0\" id=\"sushibardessert0\">Sleep</option>\n";
+CreateOptionsWithID("o", 982, 983, 984, 985);
+print "</select>&nbsp;{$strings['sushibardessert']}";
 print "</td></tr>";
 // fruit stall slots
 print "<tr><th>{$strings['fruitstallslots']} 1</th></tr>\n";
@@ -474,7 +512,7 @@ print "<script type=\"text/javascript\">\n";
 
 global $configContents;
 $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
-'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'dopuzzleparts', 'sendfarmiesaway',
+'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'vehiclemgmt8', 'dopuzzleparts', 'sendfarmiesaway',
 'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway', 'transO7',
 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
 'dodeliveryevent', 'doolympiaevent', 'dopentecostevent', 'doseedbox', 'docowracepvp', 'trimlogstock',
@@ -495,8 +533,10 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'raritybait1', 'raritybait2', 'raritybait3', 'fishinggear1', 'fishinggear2',
 'fishinggear3', 'preferredbait1', 'preferredbait2', 'preferredbait3', 'removeweed',
 'harvestvine', 'harvestvineinautumn', 'restartvine', 'removevine', 'weathermitigation',
-'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater', 'buyvinetillsunny'
- ];
+'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
+'buyvinetillsunny', 'vinefullservice', 'sushibarsoup', 'sushibarsalad',
+'sushibarsushi', 'sushibardessert'
+];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -522,6 +562,9 @@ print "document.getElementById('vehiclemgmt6').selectedIndex = document.getEleme
 $savedValue = $configContents['vehiclemgmt7'];
 $savedValue = "vehicle" . $savedValue;
 print "document.getElementById('vehiclemgmt7').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['vehiclemgmt8'];
+$savedValue = "vehicle" . $savedValue;
+print "document.getElementById('vehiclemgmt8').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['transO7'];
 $savedValue = "tO7" . $savedValue;
 print "document.getElementById('transO7').selectedIndex = document.getElementById('$savedValue').index;\n";
@@ -558,6 +601,14 @@ $savedValue = $configContents['vinewater'];
 $savedValue = "vw" . $savedValue;
 print "if (document.getElementById('vinewater') !== null)\n";
 print " document.getElementById('vinewater').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['sushibarsoup'];
+print " document.getElementById('sushibarsoup').selectedIndex = document.getElementById('o$savedValue').index;\n";
+$savedValue = $configContents['sushibarsalad'];
+print " document.getElementById('sushibarsalad').selectedIndex = document.getElementById('o$savedValue').index;\n";
+$savedValue = $configContents['sushibarsushi'];
+print " document.getElementById('sushibarsushi').selectedIndex = document.getElementById('o$savedValue').index;\n";
+$savedValue = $configContents['sushibardessert'];
+print " document.getElementById('sushibardessert').selectedIndex = document.getElementById('o$savedValue').index;\n";
 
 reset($togglesarray);
 for ($i = 0; $i < count($togglesarray); $i++) {

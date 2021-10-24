@@ -77,6 +77,12 @@ unset($username);
     <a class="btn btn-outline-dark btn-sm" href="http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html" role="button">Forum</a>
     <a class="btn btn-outline-dark btn-sm" href="addfarm.php" role="button">+ Farm</a>
     <a class="btn btn-outline-dark btn-sm" href="removefarm.php" role="button">- Farm</a>
+<?php
+if (file_exists("schmetterlings-rechner.html"))
+ print "    <a class=\"btn btn-outline-dark btn-sm\" href=\"schmetterlings-rechner.html\" role=\"button\">Schmetterlings-Rechner</a>";
+if (file_exists("klubauftrag-mengenberechnung.html"))
+ print "    <a class=\"btn btn-outline-dark btn-sm\" href=\"klubauftrag-mengenberechnung.html\" role=\"button\">Klubauftrag Mengenberechnung</a>";
+?>
    </div>
   </div>
   <div id="logonstatus"><br></div>
