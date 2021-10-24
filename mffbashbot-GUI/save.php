@@ -35,6 +35,7 @@ switch ($farm) {
  case 5:
  case 6:
  case 7:
+ case 8:
   // Normal farms
   for ($position = 1; $position <= 6; $position++) {
    if (strrpos($queue[$position - 1], "-") !== false) {
@@ -105,8 +106,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27"];
-  for ($poscount = 0; $poscount < 6; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28"];
+  for ($poscount = 0; $poscount < 7; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
@@ -139,6 +140,7 @@ switch ($farm) {
   $configContents['vehiclemgmt5'] = $_POST["vehiclemgmt5"];
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
   $configContents['vehiclemgmt7'] = $_POST["vehiclemgmt7"];
+  $configContents['vehiclemgmt8'] = $_POST["vehiclemgmt8"];
   $configContents['transO7'] = $_POST["transO7"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
@@ -176,6 +178,11 @@ switch ($farm) {
   $configContents['vinefertiliser'] = $_POST["vinefertiliser"];
   $configContents['vinewater'] = $_POST["vinewater"];
   $configContents['vinefullservice'] = $_POST["vinefullservicetoggle"];
+  $configContents['sushibarsoup'] = $_POST["sushibarsoup"];
+  $configContents['sushibarsalad'] = $_POST["sushibarsalad"];
+  $configContents['sushibarsushi'] = $_POST["sushibarsushi"];
+  $configContents['sushibardessert'] = $_POST["sushibardessert"];
+
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);
   // if (isset($configContents['crslots2feed'])) unset($configContents['crslots2feed']);

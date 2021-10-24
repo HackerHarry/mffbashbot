@@ -46,7 +46,7 @@ function exitBot {
   # don't use WGETREQ as we wouldn't like to doublekill ourself
   wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-7]-[1-6]
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6]
  fi
  case "$sSignal" in
     INT)
@@ -70,7 +70,7 @@ function restartBot {
  logToFile "My Free Farm Bash Bot encountered a problem"
  echo "Attempting to log off..."
  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-7]-[1-6]
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6]
  echo "Restarting bot..."
  cd ..
  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
@@ -881,6 +881,32 @@ function checkFlowerFarmies {
    sendAJAXFarmUpdateRequest "mode=handleflowerfarmi&farm=1&position=1&id=${iID}&farmi=${iID}&status=1"
    sleep 1
    iCount=$((iCount + 1))
+ done
+}
+
+function checkSushiBarFarmies {
+ local aServedFarmies
+ local iServedFarmie
+ local aFarmieNeededCategories
+ local sFarmieNeededCategory
+ local iFarmieNeedsAmount
+ local iFarmieHasAmount
+ aServedFarmies=$($JQBIN -r '.updateblock.sushibar.farmis | to_entries[] | select(.value.data.have | type == "object").value.slot' $FARMDATAFILE)
+ # cycle through farmies who have been served at least once
+ for iServedFarmie in $aServedFarmies; do
+  aFarmieNeededCategories=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys[]' $FARMDATAFILE)
+  for sFarmieNeededCategory in $aFarmieNeededCategories; do
+   iFarmieNeedsAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need["'${sFarmieNeededCategory}'"]' $FARMDATAFILE)
+   iFarmieHasAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.have["'${sFarmieNeededCategory}'"] // 0' $FARMDATAFILE)
+   if [ $iFarmieNeedsAmount -ne $iFarmieHasAmount ]; then
+    break
+   fi
+   # we have a prospect
+   if checkTimeRemaining '.updateblock.sushibar.farmis["'${iServedFarmie}'"].eat.remain'; then
+    echo "Collecting sushi bar farmie in slot #${iServedFarmie}"
+    sendAJAXFarmUpdateRequest "slot=${iServedFarmie}&mode=sushibar_finishfarmi"
+   fi
+  done
  done
 }
 
@@ -1841,6 +1867,55 @@ function startWindMill {
  sendAJAXCityRequest "city=2&mode=windmillstartproduction&formula=${iPID}&slot=${iSlot}"
 }
 
+function checkSushiBarPlates {
+ local sCategory
+ local iPID
+ local iSlot
+ local iPIDCount
+ for sCategory in soup salad sushi dessert; do
+  if checkFreePlates; then
+#   echo "DEBUG: no free plates left on train"
+   return
+  fi
+  iPID=$(getConfigValue sushibar${sCategory})
+  if [ "${iPID:-0}" = "0" ]; then
+   # no preference or value missing
+   continue
+  fi
+  if checkCategoryOnPlate ${sCategory}; then
+#   echo "DEBUG: ${sCategory} already present"
+   continue
+  fi
+  iPIDCount=$(getPIDAmountFromStock $iPID 8)
+  if [ $iPIDCount -le 0 ]; then
+   logToFile "${FUNCNAME}: Cannot place dish! No dishes of type #${iPID} in stock"
+   continue
+  fi
+  iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
+  echo "Placing dish #${iPID} onto plate #${iSlot}"
+  sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_settrainslot" && sleep 1
+ done
+}
+
+function checkFreePlates {
+ local iFreePlates=$($JQBIN '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key] | length' $FARMDATAFILE)
+ return $iFreePlates
+}
+
+function checkCategoryOnPlate {
+ local sCategory=$1
+ local sCategoryOnPlate
+ local iDish
+ local aDishes=$($JQBIN '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "number")).value.pid] | unique[]' $FARMDATAFILE)
+ for iDish in $aDishes; do
+  sCategoryOnPlate=$($JQBIN -r '.updateblock.sushibar.config.products["'${iDish}'"].category' $FARMDATAFILE)
+  if [ "$sCategoryOnPlate" = "$sCategory" ]; then
+   return 0
+  fi
+ done
+ return 1
+}
+
 function doInfiniteQuest {
  local iCount
  local iPIDCount
@@ -2151,6 +2226,9 @@ function checkSendGoodsToMainFarm {
       iPIDMin=998
       iPIDMax=998
      fi
+     ;;
+  8) iPIDMin=950
+     iPIDMax=957
      ;;
  esac
  aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
@@ -2560,6 +2638,25 @@ function harvestMegaField2x2 {
  done
 }
 
+function harvestSushiBar {
+ local iSlot=$3
+ iSlot=$((iSlot + 1))
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=sushibar_harvestproduction"
+}
+
+function startSushiBar {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ iSlot=$((iSlot + 1))
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_startproduction"
+}
+
+function startSushiBarNP {
+ startSushiBar $1 $2 $3
+}
+
 function getAnimalQueueLength {
  local iAnimalQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE)
  return $iAnimalQueueLength
@@ -2797,6 +2894,8 @@ function checkQueueCount {
       ;;
   20) iQueuesInGame=$(getQueueCount20 $iFarm $iPosition)
       ;;
+  23) iQueuesInGame=$(getQueueCount23)
+      ;;
    *) iQueuesInGame=1
       ;;
  esac
@@ -2821,7 +2920,7 @@ function getQueueCountInFS {
 function getMaxQueuesForBuildingID {
  local iBuildingID=$1
  case "$iBuildingID" in
-  13|14|16|20|21)
+  13|14|16|20|21|23)
      echo 3
      ;;
   *)
@@ -2865,6 +2964,19 @@ function getQueueCount20 {
  # building ID 20 can have 4 slots, we only handle 3
  for iCount in 2 3; do
   sBlocked=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"]["'${iPosition}'"].data.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
+  if [ "$sBlocked" = "null" ]; then
+   iSlots=$((iSlots + 1))
+  fi
+ done
+ echo $iSlots
+}
+
+function getQueueCount23 {
+ local iCount
+ local iSlots=1
+ local sBlocked
+ for iCount in 2 3; do
+  sBlocked=$($JQBIN '.updateblock.sushibar.data.slots["'${iCount}'"].block?' $FARMDATAFILE 2>/dev/null)
   if [ "$sBlocked" = "null" ]; then
    iSlots=$((iSlots + 1))
   fi
@@ -3427,6 +3539,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *vineyard*)
         $JQBIN -s 'del(.[0].updateblock.farmersmarket.vineyard.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *sushibar*)
+        $JQBIN -s 'del(.[0].updateblock.sushibar) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *)
         $JQBIN -s '.[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

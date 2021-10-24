@@ -123,7 +123,13 @@ wintercut = 0
 vinedefoliation = 0
 vinefertiliser = 0
 vinewater = 0
-buyvinetillsunny = 0"
+buyvinetillsunny = 0
+vinefullservice = 0
+vehiclemgmt8 = 0
+sushibarsoup = 0
+sushibarsalad = 0
+sushibarsushi = 0
+sushibardessert = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely
@@ -178,10 +184,17 @@ DIRS=( 1/1
 7/4
 7/5
 7/6
+8/1
+8/2
+8/3
+8/4
+8/5
+8/6
 city2/powerups
 city2/trans25
 city2/trans26
 city2/trans27
+city2/trans28
 city2/tools
 city2/windmill
 farmersmarket/flowerarea
