@@ -888,25 +888,31 @@ function checkSushiBarFarmies {
  local aServedFarmies
  local iServedFarmie
  local aFarmieNeededCategories
+ local iFarmieNeededCategoriesCount
  local sFarmieNeededCategory
  local iFarmieNeedsAmount
  local iFarmieHasAmount
+ local iCount
  aServedFarmies=$($JQBIN -r '.updateblock.sushibar.farmis | to_entries[] | select(.value.data.have | type == "object").value.slot' $FARMDATAFILE)
  # cycle through farmies who have been served at least once
  for iServedFarmie in $aServedFarmies; do
   aFarmieNeededCategories=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys[]' $FARMDATAFILE)
+  iFarmieNeededCategoriesCount=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys | length' $FARMDATAFILE)
+  iCount=0
   for sFarmieNeededCategory in $aFarmieNeededCategories; do
    iFarmieNeedsAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need["'${sFarmieNeededCategory}'"]' $FARMDATAFILE)
    iFarmieHasAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.have["'${sFarmieNeededCategory}'"] // 0' $FARMDATAFILE)
-   if [ $iFarmieNeedsAmount -ne $iFarmieHasAmount ]; then
-    break
+   if [ $iFarmieNeedsAmount -eq $iFarmieHasAmount ]; then
+    iCount=$((iCount + 1))
    fi
+  done
+  if [ $iCount -eq $iFarmieNeededCategoriesCount ]; then
    # we have a prospect
    if checkTimeRemaining '.updateblock.sushibar.farmis["'${iServedFarmie}'"].eat.remain'; then
     echo "Collecting sushi bar farmie in slot #${iServedFarmie}"
     sendAJAXFarmUpdateRequest "slot=${iServedFarmie}&mode=sushibar_finishfarmi"
    fi
-  done
+  fi
  done
 }
 
