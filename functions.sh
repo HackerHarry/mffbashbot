@@ -817,7 +817,7 @@ function doFarmersMarketFlowerPots {
  local iPID
  local iSlot
  # find withered arrangements
- local aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ local aSlots=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots | to_entries[] | select(.value.remain < 0).key' $FARMDATAFILE)
  for iSlot in $aSlots; do
   iPID=$(getConfigValue flowerarrangementslot${iSlot})
   if [ $iPID -ne 0 ]; then
@@ -828,7 +828,7 @@ function doFarmersMarketFlowerPots {
   fi
  done
  # water pots in need
- aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aSlots=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots | to_entries[] | select((.value.waterremain < 1800) and (.value.waterremain > 0)).key' $FARMDATAFILE)
  for iSlot in $aSlots; do
   iPID=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"].pid' $FARMDATAFILE)
   # skip watering of special flowers (214 and up)
@@ -1733,7 +1733,7 @@ function harvestMegaField {
   echo "Stopping work on Mega Field!"
   return
  fi
- aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aPlots=$($JQBIN -r '.updateblock.megafield.area | to_entries[] | select(.value.remain < 0).key' $FARMDATAFILE)
  for iPlot in $aPlots; do
   iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if [ $iVehicleBought -eq 2 ]; then
@@ -2284,11 +2284,26 @@ function checkSendGoodsToMainFarm {
 
 function getProductCountFittingOnField {
  local iPID=$1
+ local sCategory
+ local iPIDDim_x
+ local iPIDDim_y
  # shellcheck disable=SC2090
- local iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
- # shellcheck disable=SC2090
- local iPIDDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iPID}'"')
- echo $((120 / (iPIDDim_x * iPIDDim_y)))
+ sCategory=$(echo $aCAT | $JQBIN -r '."'${iPID}'"')
+ case "$sCategory" in
+  v|ex|alpin|water)
+    # item is plantable
+    # shellcheck disable=SC2090
+    iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
+    # shellcheck disable=SC2090
+    iPIDDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iPID}'"')
+    echo $((120 / (iPIDDim_x * iPIDDim_y)))
+    return
+    ;;
+  *)
+    # see issue #77
+    echo 1
+    ;;
+ esac
 }
 
 function getFieldsOnFarmCount {
@@ -3178,7 +3193,7 @@ function checkButterflyBonus {
  fi
  local aKeys
  local iKey
- aKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "last" and ($value < '$iToday' or $value == null) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aKeys=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.free | to_entries[] | select((.value.last < '$iToday') or (.value.last == null)).key' $FARMDATAFILE)
  if [ -n "$aKeys" ]; then
   if [ "$NONPREMIUM" != "NP" ]; then
    # premium
