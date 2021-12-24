@@ -1169,13 +1169,13 @@ function getCowRating {
  sCowDisadv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_con' $FARMDATAFILE)
  iCowLevelSpeed=$($JQBIN '.updateblock.farmersmarket.cowracing.config.level["'$iCowLevel'"].speed' $FARMDATAFILE)
  iCowRating=$(awk 'BEGIN { print ('${iCowSpeed}' + '${iCowLevelSpeed}') * 100 }')
- # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75%
+ # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75% - changed to 13.75% 12/2021
  if [ "$sEnvironment" = "$sCowAdv" ]; then
-  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 1.0375 * 100) }')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 1.1375 * 100) }')
   echo $iCowRating
   return
  elif [ "$sEnvironment" = "$sCowDisadv" ]; then
-  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 0.9625 * 100) }')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 0.8625 * 100) }')
   echo $iCowRating
   return
  fi
@@ -1277,12 +1277,14 @@ function getCowEquipment {
  local iItem
  local iKey
  local bIsMoneyItem
+ local iSlot
  for iItem in $iSearchPattern; do
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "true" ]; then
+   # we need a slot with a cow in it to make a purchase
+   iSlot=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.cows | keys | .[]][0]' $FARMDATAFILE)
    echo "Buying cow equipment #${iItem}..." >&2 # this is very ugly.
-   sendAJAXFarmUpdateRequest "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
-   # nicer would be to use the correct slot no.
+   sendAJAXFarmUpdateRequest "id=${iItem}&slot=${iSlot}&mode=cowracing_buyitem" && sleep 1
    iKey=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id' $FARMDATAFILE)
    # at this point it should be safe to use this construct. but just to be even safer... ;)
    if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
