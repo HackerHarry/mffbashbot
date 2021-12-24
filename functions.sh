@@ -817,7 +817,7 @@ function doFarmersMarketFlowerPots {
  local iPID
  local iSlot
  # find withered arrangements
- local aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ local aSlots=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots | to_entries[] | select(.value.remain < 0).key' $FARMDATAFILE)
  for iSlot in $aSlots; do
   iPID=$(getConfigValue flowerarrangementslot${iSlot})
   if [ $iPID -ne 0 ]; then
@@ -828,7 +828,7 @@ function doFarmersMarketFlowerPots {
   fi
  done
  # water pots in need
- aSlots=$($JQBIN '.updateblock.farmersmarket.flower_slots.slots | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "waterremain" and ($value < 1800 and $value > 0) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aSlots=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots | to_entries[] | select((.value.waterremain < 1800) and (.value.waterremain > 0)).key' $FARMDATAFILE)
  for iSlot in $aSlots; do
   iPID=$($JQBIN -r '.updateblock.farmersmarket.flower_slots.slots["'${iSlot}'"].pid' $FARMDATAFILE)
   # skip watering of special flowers (214 and up)
@@ -888,25 +888,31 @@ function checkSushiBarFarmies {
  local aServedFarmies
  local iServedFarmie
  local aFarmieNeededCategories
+ local iFarmieNeededCategoriesCount
  local sFarmieNeededCategory
  local iFarmieNeedsAmount
  local iFarmieHasAmount
+ local iCount
  aServedFarmies=$($JQBIN -r '.updateblock.sushibar.farmis | to_entries[] | select(.value.data.have | type == "object").value.slot' $FARMDATAFILE)
  # cycle through farmies who have been served at least once
  for iServedFarmie in $aServedFarmies; do
   aFarmieNeededCategories=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys[]' $FARMDATAFILE)
+  iFarmieNeededCategoriesCount=$($JQBIN -r '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need | keys | length' $FARMDATAFILE)
+  iCount=0
   for sFarmieNeededCategory in $aFarmieNeededCategories; do
    iFarmieNeedsAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.need["'${sFarmieNeededCategory}'"]' $FARMDATAFILE)
    iFarmieHasAmount=$($JQBIN '.updateblock.sushibar.farmis["'${iServedFarmie}'"].data.have["'${sFarmieNeededCategory}'"] // 0' $FARMDATAFILE)
-   if [ $iFarmieNeedsAmount -ne $iFarmieHasAmount ]; then
-    break
+   if [ $iFarmieNeedsAmount -eq $iFarmieHasAmount ]; then
+    iCount=$((iCount + 1))
    fi
+  done
+  if [ $iCount -eq $iFarmieNeededCategoriesCount ]; then
    # we have a prospect
    if checkTimeRemaining '.updateblock.sushibar.farmis["'${iServedFarmie}'"].eat.remain'; then
     echo "Collecting sushi bar farmie in slot #${iServedFarmie}"
     sendAJAXFarmUpdateRequest "slot=${iServedFarmie}&mode=sushibar_finishfarmi"
    fi
-  done
+  fi
  done
 }
 
@@ -1163,13 +1169,13 @@ function getCowRating {
  sCowDisadv=$($JQBIN -r '.updateblock.farmersmarket.cowracing.config.cows["'$iCowType'"].racetype_con' $FARMDATAFILE)
  iCowLevelSpeed=$($JQBIN '.updateblock.farmersmarket.cowracing.config.level["'$iCowLevel'"].speed' $FARMDATAFILE)
  iCowRating=$(awk 'BEGIN { print ('${iCowSpeed}' + '${iCowLevelSpeed}') * 100 }')
- # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75%
+ # since i don't know the exact values for (dis)advantage, i'll define them as (-)3.75% - changed to 13.75% 12/2021
  if [ "$sEnvironment" = "$sCowAdv" ]; then
-  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 1.0375 * 100) }')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 1.1375 * 100) }')
   echo $iCowRating
   return
  elif [ "$sEnvironment" = "$sCowDisadv" ]; then
-  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 0.9625 * 100) }')
+  iCowRating=$(awk 'BEGIN { print int('${iCowRating}' * 0.8625 * 100) }')
   echo $iCowRating
   return
  fi
@@ -1271,12 +1277,14 @@ function getCowEquipment {
  local iItem
  local iKey
  local bIsMoneyItem
+ local iSlot
  for iItem in $iSearchPattern; do
   bIsMoneyItem=$($JQBIN '.updateblock.farmersmarket.cowracing.config.items["'${iItem}'"].money? | type == "number"' $FARMDATAFILE)
   if [ "$bIsMoneyItem" = "true" ]; then
+   # we need a slot with a cow in it to make a purchase
+   iSlot=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.cows | keys | .[]][0]' $FARMDATAFILE)
    echo "Buying cow equipment #${iItem}..." >&2 # this is very ugly.
-   sendAJAXFarmUpdateRequest "id=${iItem}&slot=1&mode=cowracing_buyitem" && sleep 1
-   # nicer would be to use the correct slot no.
+   sendAJAXFarmUpdateRequest "id=${iItem}&slot=${iSlot}&mode=cowracing_buyitem" && sleep 1
    iKey=$($JQBIN -r '[.updateblock.farmersmarket.cowracing.data.items | .[] | select(.type == "'${iItem}'")][0]?.id' $FARMDATAFILE)
    # at this point it should be safe to use this construct. but just to be even safer... ;)
    if [ "$iKey" != "null" ] && [ -n "$iKey" ]; then
@@ -1727,7 +1735,7 @@ function harvestMegaField {
   echo "Stopping work on Mega Field!"
   return
  fi
- aPlots=$($JQBIN '.updateblock.megafield.area | tostream | select(length == 2)  as [$key,$value] | if $key[-1] == "remain" and $value < 0 then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aPlots=$($JQBIN -r '.updateblock.megafield.area | to_entries[] | select(.value.remain < 0).key' $FARMDATAFILE)
  for iPlot in $aPlots; do
   iVehicleBought=$(checkMegaFieldEmptyHarvestDevice $iHarvestDevice $iVehicleBought)
   if [ $iVehicleBought -eq 2 ]; then
@@ -2278,11 +2286,26 @@ function checkSendGoodsToMainFarm {
 
 function getProductCountFittingOnField {
  local iPID=$1
+ local sCategory
+ local iPIDDim_x
+ local iPIDDim_y
  # shellcheck disable=SC2090
- local iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
- # shellcheck disable=SC2090
- local iPIDDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iPID}'"')
- echo $((120 / (iPIDDim_x * iPIDDim_y)))
+ sCategory=$(echo $aCAT | $JQBIN -r '."'${iPID}'"')
+ case "$sCategory" in
+  v|ex|alpin|water)
+    # item is plantable
+    # shellcheck disable=SC2090
+    iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
+    # shellcheck disable=SC2090
+    iPIDDim_y=$(echo $aDIM_Y | $JQBIN -r '."'${iPID}'"')
+    echo $((120 / (iPIDDim_x * iPIDDim_y)))
+    return
+    ;;
+  *)
+    # see issue #77
+    echo 1
+    ;;
+ esac
 }
 
 function getFieldsOnFarmCount {
@@ -3172,7 +3195,7 @@ function checkButterflyBonus {
  fi
  local aKeys
  local iKey
- aKeys=$($JQBIN '.updateblock.farmersmarket.butterfly.data.free | tostream | select(length == 2) as [$key,$value] | if $key[-1] == "last" and ($value < '$iToday' or $value == null) then ($key[-2] | tonumber) else empty end' $FARMDATAFILE)
+ aKeys=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.free | to_entries[] | select((.value.last < '$iToday') or (.value.last == null)).key' $FARMDATAFILE)
  if [ -n "$aKeys" ]; then
   if [ "$NONPREMIUM" != "NP" ]; then
    # premium

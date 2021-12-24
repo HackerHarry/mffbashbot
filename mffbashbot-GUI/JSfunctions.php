@@ -153,7 +153,7 @@ function updateBotStatus() {
  xhttp2.open("POST", "botaction.php", true);
  xhttp2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
  xhttp2.send(sData);
- 
+
  window.setTimeout(updateBotStatus, 30000);
 }
 

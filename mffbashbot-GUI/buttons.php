@@ -294,13 +294,13 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
   print "<tr><td>";
   print "<select id=\"speciesbait1\" name=\"speciesbait1\" onchange=\"saveMisc();\">";
   print "<option value=\"0\" id=\"sb10\">Sleep</option>\n";
-  CreateOptionsWithID("sb1", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+  CreateOptionsWithID("sb1", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 922);
   print "</select>&nbsp;{$strings['speciesbait']} {$strings['slot']} 1";
   print "</td></tr>\n";
   print "<tr><td>";
   print "<select id=\"raritybait1\" name=\"raritybait1\" onchange=\"saveMisc();\">";
   print "<option value=\"0\" id=\"rb10\">Sleep</option>\n";
-  CreateOptionsWithID("rb1", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("rb1", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 923);
   print "</select>&nbsp;{$strings['raritybait']} {$strings['slot']} 1";
   print "</td></tr>\n";
   print "<tr><td>";
