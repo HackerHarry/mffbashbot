@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-21 Harun "Harry" Basalamah
+// Copyright 2016-22 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -9,18 +9,8 @@
 // quoting MDM: "Code samples added on or after August 20, 2010 are in the public domain. No licensing notice is necessary, but if you need one, you can [...]"
 // :)
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// For license see LICENSE file
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 echo <<<EOT
 <script type="text/javascript">
@@ -134,27 +124,24 @@ function removeOptionAll(elSelDest) {
 
 function updateBotStatus() {
  var sUser = document.venueselect.username.value;
- var sData = "username=" + sUser + "&action=getbotstatus";
- xhttp = new XMLHttpRequest();
- xhttp.onreadystatechange = function() {
-  if (xhttp.readyState == 4 && xhttp.status == 200)
-   document.getElementById("botstatus").innerHTML = xhttp.responseText;
- }
- xhttp.open("POST", "botaction.php", true);
- xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- xhttp.send(sData);
-
- sData = "username=" + sUser + "&action=getlastruntime";
- xhttp2 = new XMLHttpRequest();
- xhttp2.onreadystatechange = function() {
-  if (xhttp2.readyState == 4 && xhttp.status == 200)
-   document.getElementById("lastruntime").innerHTML = xhttp2.responseText;
- }
- xhttp2.open("POST", "botaction.php", true);
- xhttp2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
- xhttp2.send(sData);
-
- window.setTimeout(updateBotStatus, 30000);
+ var eSource = new EventSource('botSSE.php?username=' + sUser);
+ eSource.onerror = function() {
+  document.getElementById("botstatus").innerHTML = "[{$strings['pleasewait']}]";
+ };
+ eSource.addEventListener("botstatus", function(e) {
+  document.getElementById("botstatus").innerHTML = e.data;
+ }, false);
+ eSource.addEventListener("lastbotruntime", function(e) {
+  document.getElementById("lastruntime").innerHTML = e.data;
+ }, false);
+ eSource.addEventListener("lastboterror", function(e) {
+//  if (e.data === "noerror") {
+//   document.getElementById("bottombar").style.display = "none";
+//   return;
+//  }
+  document.getElementById("lasterror").innerHTML = e.data;
+  document.getElementById("bottombar").style.display = "block";
+ }, false);
 }
 
 function saveMisc() {

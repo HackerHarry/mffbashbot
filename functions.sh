@@ -1,18 +1,7 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-21 Harun "Harry" Basalamah
+# Copyright 2016-22 Harun "Harry" Basalamah
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# For license see LICENSE file
 
 function WGETREQ {
  local sHTTPReq=$1
@@ -46,7 +35,7 @@ function exitBot {
   # don't use WGETREQ as we wouldn't like to doublekill ourself
   wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6]
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
  fi
  case "$sSignal" in
     INT)
@@ -70,7 +59,7 @@ function restartBot {
  logToFile "My Free Farm Bash Bot encountered a problem"
  echo "Attempting to log off..."
  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6]
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
  echo "Restarting bot..."
  cd ..
  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
@@ -296,7 +285,7 @@ function startFactory {
     iPID=6
     ;;
   *)
-    logToFile "${FUNCNAME}: Unknown PID"
+    logToFile "${FUNCNAME}: Unknown PID $iPID"
     return
     ;;
  esac
@@ -590,7 +579,7 @@ function doForestry {
    echo "Destroying $iSurplus items of log type #${iPID}"
    sendAJAXForestryRequest "action=schredder&productid=${iPID}&amount=${iSurplus}"
   else
-   logToFile "${FUNCNAME}: max. capacity reached, not harvesting"
+   logToFile "${FUNCNAME}: Max. capacity reached, not harvesting"
    return
   fi
  fi
@@ -672,7 +661,7 @@ function checkMunchiesAtTables {
    elif [ "$sJSONDataType" = "array" ]; then
     bMunchieReady=$($JQBIN '.datablock.tables['${iTable}']."chairs"."'${iChair}'".ready? == 1' $FARMDATAFILE)
    else
-    logToFile "${FUNCNAME}: Unknown JSON data type: ${sJSONDataType}"
+    logToFile "${FUNCNAME}: Unknown JSON data type ${sJSONDataType}"
     break 2
    fi
    if [ "$bMunchieReady" = "true" ]; then
@@ -1395,16 +1384,25 @@ function doFisherman {
  local iSpeciesbait=$(getConfigValue speciesbait${iSlot})
  local iRaritybait=$(getConfigValue raritybait${iSlot})
  local iFishinggear=$(getConfigValue fishinggear${iSlot})
+ local iAmountInStock
  local iItem
  local bIsCoinItem
  local sSelection
+ local iPID
+ for iPID in $iSpeciesbait $iRaritybait; do
+  iAmountInStock=$(getPIDAmountFromStock $iPID 1)
+  if [ $iAmountInStock -le 0 ]; then
+   logToFile "${FUNCNAME}: Lacking equipment, Item #${iPID} not in stock"
+   return
+  fi
+ done
  sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=fishing_finish_fishing" && sleep 1
  iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[]? | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
  if [ "$iItem" == "null" ]; then
   # no item available, buy it, if it's not a coin-item
   bIsCoinItem=$($JQBIN '.updateblock.farmersmarket.fishing.config.items["'${iFishinggear}'"].coins? | type == "number"' $FARMDATAFILE)
   if [ "$bIsCoinItem" = "true" ]; then
-   logToFile "${FUNCNAME}: refusing to buy coin item"
+   logToFile "${FUNCNAME}: Refusing to buy coin item"
    return
   fi
   echo "Buying fishing gear #${iFishinggear}..."
@@ -1480,7 +1478,7 @@ function checkVineYard {
    iFreeBarrelSlot=$($JQBIN -r '[.updateblock.farmersmarket.vineyard.data.barrels | to_entries[] | select(.value.data | type != "object").value.slot][0] // 0' $FARMDATAFILE)
    if [ $iFreeBarrelSlot -eq 0 ]; then
     if [ "${iVineFullService:-0}" = "0" ]; then
-     logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel!"
+     logToFile "${FUNCNAME}: Cannot harvest, there's no free barrel"
      if [ $iSeason -eq 3 ]; then # take care of vine if harvest fails in autumn
       checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
       checkVineYardCare $iSlot
@@ -1490,7 +1488,7 @@ function checkVineYard {
     # do the full service on stock, barrels and vine...
     if getFreeBarrelSlot; then
      # getFreeBarrelSlot returned 0
-     logToFile "${FUNCNAME}: Cannot harvest, there was a problem with either bottling or selling!"
+     logToFile "${FUNCNAME}: Cannot harvest, there was a problem with either bottling or selling"
      if [ $iSeason -eq 3 ]; then
       checkVineYardWeatherMitigation $iSlot ${iWeatherMitigation:-0}
       checkVineYardCare $iSlot
@@ -1724,7 +1722,7 @@ function harvestMegaField {
      iHarvestDevice=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
      case "$iHarvestDevice" in
       5|7|9|10)
-         logToFile "${FUNCNAME}: You need a 1x1 device after the 2x2 one - cannot continue"
+         logToFile "${FUNCNAME}: You need a 1x1 device after the 2x2 one - cannot continue harvesting"
          return
          ;;
      esac
@@ -1792,14 +1790,14 @@ function startMegaField {
     # plant on all free plots
     megaFieldPlant${NONPREMIUM} $iPID $iFreePlots
    else
-    logToFile "${FUNCNAME}: Cannot plant! Not enough crop in stock"
+    logToFile "${FUNCNAME}: Cannot plant, not enough crop in stock"
    fi
    return
   fi
   if checkMegaFieldPIDAmount $iPID $iAmountToGo $iAmount; then
    megaFieldPlant${NONPREMIUM} $iPID $iAmountToGo
   else
-   logToFile "${FUNCNAME}: Cannot plant! Not enough crop in stock"
+   logToFile "${FUNCNAME}: Cannot plant, not enough crop in stock"
    return
   fi
   # call function again since there are still free plots
@@ -1896,7 +1894,7 @@ function checkSushiBarPlates {
   fi
   iPIDCount=$(getPIDAmountFromStock $iPID 8)
   if [ $iPIDCount -le 0 ]; then
-   logToFile "${FUNCNAME}: Cannot place dish! No dishes of type #${iPID} in stock"
+   logToFile "${FUNCNAME}: Cannot place dish, no dishes of type #${iPID} in stock"
    continue
   fi
   iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
@@ -2398,7 +2396,7 @@ function checkPowerUps {
    updateQueue ${iFarm} ${iPosition} ${iSlot}
    return
   else
-   logToFile "${FUNCNAME}: Power-up #${iPowerUp} not in stock!"
+   logToFile "${FUNCNAME}: Power-up #${iPowerUp} not in stock"
   fi
  fi
 }
@@ -2499,7 +2497,7 @@ function getMegaFieldHarvesterDelay {
  local iHarvestDevice=$1
  local iHarvesterDelay=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].duration // 0' $FARMDATAFILE)
  if [ $iHarvesterDelay -eq 0 ]; then
-  logToFile "${FUNCNAME}: Unknown harvest device"
+  logToFile "${FUNCNAME}: Unknown harvest device $iHarvestDevice"
  fi
  echo $iHarvesterDelay
 }
@@ -2515,7 +2513,7 @@ function checkMegaFieldEmptyHarvestDevice {
   if [ $iVehicleBought -eq 0 ]; then
    bIsCoinItem=$($JQBIN '.updateblock.megafield.vehicle_slots["'${iHarvestDevice}'"].coins? | type == "number"' $FARMDATAFILE)
    if [ "$bIsCoinItem" = "true" ]; then
-    logToFile "${FUNCNAME}: refusing to buy coin item"
+    logToFile "${FUNCNAME}: Refusing to buy coin item"
     echo 2
     return
    fi
@@ -2525,7 +2523,7 @@ function checkMegaFieldEmptyHarvestDevice {
    echo 1
    return
   else
-   logToFile "${FUNCNAME}: Not buying new vehicle since it's already been bought this iteration!"
+   logToFile "${FUNCNAME}: Not buying new vehicle since it's already been bought this iteration"
    echo 1
    return
   fi
@@ -2850,7 +2848,7 @@ function getAnimalsFastestCureForDisease {
    54) echo 402
       # Furchtbare Beule
       ;;
-   *) logToFile "${FUNCNAME}: Unknown disease id"
+   *) logToFile "${FUNCNAME}: Unknown disease id $iDiseaseID"
       echo 0
       ;;
  esac
@@ -3172,7 +3170,7 @@ function checkStockRefill {
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
   if [ $iAmountToBuy -eq $iRefillAmount ]; then
    # in order to prevent erroneous purchases, player needs to own at least one item
-   logToFile "${FUNCNAME}: refusing to buy $iAmountToBuy items of item #${iPID}"
+   logToFile "${FUNCNAME}: Refusing to buy $iAmountToBuy items of item #${iPID}"
    continue
   fi
   # check, if player can buy the item
@@ -3601,5 +3599,6 @@ function sendAJAXGuildRequest {
 
 function logToFile {
  local sText="$1"
- echo "$(date '+%F %X') $sText" | tee -a $LOGFILE >&2
+ echo "$(date '+%F %X') $sText" | tee -a $LOGFILE | tee $LASTERRORFILE >&2
+ ERRCOUNT=$((++ERRCOUNT))
 }

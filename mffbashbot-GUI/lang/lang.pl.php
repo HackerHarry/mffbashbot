@@ -285,5 +285,6 @@ $strings['sushibarsoup'] = 'No translation available';
 $strings['sushibarsalad'] = 'No translation available';
 $strings['sushibarsushi'] = 'No translation available';
 $strings['sushibardessert'] = 'No translation available';
+$strings['lasterror'] = 'No translation available';
 // $strings[''] = '';
 ?>

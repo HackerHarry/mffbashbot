@@ -171,7 +171,7 @@ $strings['nonsense'] = 'This choice does not make much sense...';
 $strings['missingamount'] = 'The amount is missing!';
 $strings['updateavailable'] = 'Update available: ';
 $strings['updateto'] = 'Update to';
-$strings['confirmupdate'] = 'This will trigger an update, which should only take a few seconds.\nMake sure the bot is pausing when you click OK.\n15 seconds after you click OK you will be sent to the logon screen.\n\nDo you wish to continue?';
+$strings['confirmupdate'] = 'This will trigger an update, which should only take a few seconds.\nIt is best that the bot is idle when you click OK.\n15 seconds after you click OK you will be sent to the logon screen.\n\nDo you wish to continue?';
 $strings['botisupdating'] = 'updating';
 $strings['saynotoflowerfarmies'] = 'Answer "No" to all Flower Farmies';
 $strings['historyishere'] = '<a href="https://github.com/HackerHarry/mffbashbot/wiki/History" target="_blank">Version history</a>';
@@ -285,5 +285,6 @@ $strings['sushibarsoup'] = 'Put soup onto plate if possible';
 $strings['sushibarsalad'] = 'Put salad onto plate if possible';
 $strings['sushibarsushi'] = 'Put sushi onto plate if possible';
 $strings['sushibardessert'] = 'Put dessert onto plate if possible';
+$strings['lasterror'] = 'Last error';
 // $strings[''] = '';
 ?>

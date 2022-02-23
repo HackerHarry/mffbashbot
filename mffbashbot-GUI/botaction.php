@@ -1,40 +1,17 @@
 <?php
 // Bot action file for My Free Farm Bash Bot (front end)
-// Copyright 2016-21 Harun "Harry" Basalamah
+// Copyright 2016-22 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// For license see LICENSE file
 //
 if (!isset($username))
  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
 $action = $_POST["action"];
 include 'config.php';
 include 'lang.php';
-
+// all that's left is the update trigger.
 switch ($action) {
- case "getbotstatus":
-  if (file_exists($gamepath . "/../updateInProgress"))
-   print "<font color=\"yellow\">{$strings['botisupdating']}</font>";
-  else
-   if (file_exists($gamepath . "/isactive.txt"))
-    print "<font color=\"red\">{$strings['botisactive']}</font>";
-   else
-    print "<font color=\"lime\">{$strings['botisidle']}</font>";
-   break;
- case "getlastruntime":
-  system("cat " . $gamepath . "/lastrun.txt");
-  break;
  case "triggerupdate":
   $username = "./";
   include 'config.php';
@@ -42,7 +19,7 @@ switch ($action) {
   touch($filename);
   // force bot iteration
   unset ($username);
-  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = awurlencode($_POST["username"]);
+  strpos($_POST["username"], ' ') === false ? $username = $_POST["username"] : $username = rawurlencode($_POST["username"]);
   $gamepath .= $username;
   exec("script/wakeupthebot.sh " . $gamepath);
  default:
