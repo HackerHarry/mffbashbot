@@ -21,7 +21,7 @@ LASTERRORFILE=lasterror.txt
 STATUSFILE=isactive.txt
 CFGFILE=config.ini
 PIDFILE=bashpid.txt
-JQBIN=$(which jq)
+JQBIN=$(command -v jq)
 USCRIPTURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/update.sh"
 UTMPFILE=/tmp/mffbot-update.sh
 DONKEYCLAIMED=0
@@ -164,7 +164,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -424,7 +424,6 @@ while (true); do
       checkButterflies $SLOT
      fi
      if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
-      echo "Feeding butterfly in slot ${SLOT}..."
       startButterflies $SLOT
      fi
     done

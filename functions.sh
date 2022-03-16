@@ -1652,7 +1652,7 @@ function getFreeBarrelSlot {
   iType=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iSlot}'"].type' $FARMDATAFILE)
   iMaxRipeningTime=$($JQBIN '.updateblock.farmersmarket.vineyard.config.barrels["'${iType}'"].time' $FARMDATAFILE)
   iPercent=$(awk 'BEGIN { printf "%.2f", sqrt(100 - '${iRemaining}' * 100 / '${iMaxRipeningTime}') * 10 }')
-  if [ ${iPercent%.*} -lt 20 ]; then
+  if [ ${iPercent%.*} -lt $iBottlingMinPercent ]; then
    continue
   fi
   if awk 'BEGIN { exit !('${iPercent}' > '${iSlotProspect}') }'; then
@@ -2008,7 +2008,38 @@ function startPonyFarm {
 
 function startButterflies {
  local iSlot=$1
- sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=butterfly_carebreed"
+ if checkButterflyFeed ${iSlot}; then
+  echo "Feeding butterfly in slot ${iSlot}..."
+  sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=butterfly_carebreed"
+ else
+  logToFile "Not enough food available to feed butterfly in slot ${iSlot}"
+ fi
+}
+
+function checkButterflyFeed {
+ # returns true if currently needed food is sufficiently available
+ local iSlot=$1
+ local iButterfly=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"]?.butterfly?' $FARMDATAFILE)
+ local iCurrentFeed=$($JQBIN -r '.updateblock.farmersmarket.butterfly.data.breed["'${iSlot}'"].count' $FARMDATAFILE)
+ local iCareCount1=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].care_count1' $FARMDATAFILE)
+ local iNeededProduct
+ local iNeededAmount
+ local iAmountInStock
+ if [ $iCurrentFeed -lt $iCareCount1 ]; then
+  iNeededProduct=$($JQBIN -r '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].products1 | keys[0]' $FARMDATAFILE)
+  iNeededAmount=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].products1["'${iNeededProduct}'"]' $FARMDATAFILE)
+ else
+  iNeededProduct=$($JQBIN -r '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].products2 | keys[0]' $FARMDATAFILE)
+  iNeededAmount=$($JQBIN '.updateblock.farmersmarket.butterfly.config.butterflies["'${iButterfly}'"].products2["'${iNeededProduct}'"]' $FARMDATAFILE)
+ fi
+ iAmountInStock=$(getPIDAmountFromStock $iNeededProduct 1)
+ if [ $iAmountInStock -gt $iNeededAmount ]; then
+  # we use -gt 'cause we want to make sure, there's at least one item available after feeding
+  # just in case checkStockRefill() is set to re-buy the item
+  return 0
+ else
+  return 1
+ fi
 }
 
 function checkButterflies {
