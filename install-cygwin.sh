@@ -7,12 +7,12 @@ LCGICONF=/etc/lighttpd/conf.d/cgi.conf
 BOTGUIROOT=/var/www/html/mffbashbot
 
 # jq should be available if mffbashbot-setup.exe was used
-if ! which jq >/dev/null 2>&1; then
+if ! command -v jq &>/dev/null; then
  echo -e "jq could not be found. Cannot continue.\njq konnte nicht gefunden werden. Fortfahren nicht möglich."
  sleep 5
  exit 1
 fi
-JQBIN="$(which jq) -r"
+JQBIN="$(command -v jq) -r"
 
 cd
 echo "Downloading My Free Farm Bash Bot..."

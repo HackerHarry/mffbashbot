@@ -1,20 +1,9 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
-# Copyright 2016-21 Harun "Harry" Basalamah
+# Copyright 2016-22 Harun "Harry" Basalamah
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# For license see LICENSE file
 
 # variable 1 is mandatory
 : ${1:?No MFF username provided}
@@ -55,7 +44,7 @@ rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
 LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
-AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
+AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
 

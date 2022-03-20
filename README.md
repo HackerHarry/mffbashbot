@@ -15,9 +15,7 @@ Coins zu unterstützen.
 
 Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von<br>
 [@Bastian Kanaan](https://github.com/BastianKanaan) gegeben. Sein 'Berater' und 'Automat' leisten vielen Spielern<br>
-treue Dienste. Inspiriert von Bastians Automaten, fing ich an diesen Bot zu<br>
-entwickeln. Bastians Berater ist bis heute für mich unverzichtbar.<br>
-Seit einiger Zeit werden 'Berater' und 'Automat' von [@linus--tux](https://github.com/linus--tux) weiterentwickelt.
+treue Dienste. Inspiriert von Bastians Automaten, fing ich an diesen Bot zu entwickeln.
 
 Alle nötigen Informationen stehen im [mffbashbot Wiki](https://github.com/HackerHarry/mffbashbot/wiki).
 
@@ -36,9 +34,7 @@ I want to encourage you, to support the game designers by purchasing coins.
 
 This bot would not have seen the light of day without the superb work of<br>
 [@Bastian Kanaan](https://github.com/BastianKanaan). His 'Adviser' and 'Automaton' have been working for many gamers<br>
-reliably. Inspired by Bastian's Automaton, i started developing this bot. His<br>
-Adviser is still a loyal comapanion to me.<br>
-'Adviser' and 'Automaton' are being developed by [@linus--tux](https://github.com/linus--tux) these days.
+reliably. Inspired by Bastian's Automaton, i started developing this bot.
 
 All the info you might need, can be found in the [mffbashbot wiki](https://github.com/HackerHarry/mffbashbot/wiki).
 

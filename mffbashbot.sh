@@ -2,20 +2,9 @@
 # shellcheck disable=SC2086,SC2155
 #
 # My Free Farm Bash Bot
-# Copyright 2016-21 Harun "Harry" Basalamah
+# Copyright 2016-22 Harun "Harry" Basalamah
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# For license see LICENSE file
 
 # variable 1 is mandatory
 : ${1:?No MFF username provided}
@@ -28,10 +17,11 @@ OUTFILE=mffbottemp.html
 COOKIEFILE=mffcookies.txt
 FARMDATAFILE=farmdata.txt
 LASTRUNFILE=lastrun.txt
+LASTERRORFILE=lasterror.txt
 STATUSFILE=isactive.txt
 CFGFILE=config.ini
 PIDFILE=bashpid.txt
-JQBIN=$(which jq)
+JQBIN=$(command -v jq)
 USCRIPTURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/update.sh"
 UTMPFILE=/tmp/mffbot-update.sh
 DONKEYCLAIMED=0
@@ -42,6 +32,7 @@ CURRENTEPOCH=0
 SKIPQUEUEUPDATE=0
 WORKERQUEUE=0
 LOGOFFTHRESHOLD=30
+ERRCOUNT=0
 TMPFILE=/tmp/${MFFUSER}-$$
 # get server, password & language
 MFFPASS=$(grep password $CFGFILE | tr -d "'")
@@ -114,6 +105,7 @@ echo $BASHPID > "$PIDFILE"
 
 while (true); do
  WORKERQUEUE=$((++WORKERQUEUE))
+ ERRCOUNT=0
  if [ -f ../updateInProgress ]; then
   echo "Bot update in progress detected. Restarting bot in 3 mins..."
   sleep 3m
@@ -172,7 +164,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -432,7 +424,6 @@ while (true); do
       checkButterflies $SLOT
      fi
      if checkTimeRemaining '.updateblock.farmersmarket.butterfly.data.breed["'${SLOT}'"]?.remain'; then
-      echo "Feeding butterfly in slot ${SLOT}..."
       startButterflies $SLOT
      fi
     done
@@ -710,8 +701,11 @@ while (true); do
  WGETREQ "$LOGOFFURL"
  # housekeeping -- adjust to your liking
  rm -f "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6]
+ if [ $ERRCOUNT -eq 0 ] && [ -f "$LASTERRORFILE" ]; then
+  rm -f "$LASTERRORFILE"
+ fi
  echo -n "Time stamp: "
- date "+%A, %d. %B %Y - %H:%Mh" | tee $LASTRUNFILE
+ date "+%d. %b - %H:%Mh" | tee $LASTRUNFILE
  echo "Pausing $PAUSETIME secs..."
  echo "---"
  rm -f "$STATUSFILE"

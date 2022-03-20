@@ -7,16 +7,16 @@ set -e
 echo "Running apt-get update..."
 sudo apt-get -q update
 
-if ! which jq >/dev/null 2>&1; then
+if ! command -v jq &>/dev/null; then
  echo "Installing jq..."
  sudo apt-get -qq install jq
- if ! which jq >/dev/null 2>&1; then
+ if ! command -v jq &>/dev/null; then
   echo -e "jq could not be found. Cannot continue.\njq konnte nicht gefunden werden. Fortfahren nicht möglich."
   sleep 5
   exit 1
  fi
 fi
-JQBIN="$(which jq) -r"
+JQBIN="$(command -v jq) -r"
 if ! $JQBIN -nj . 2>/dev/null 1>&2; then
  echo -e "This version of jq seems to be too old. Make sure to include jessie-backports\nin your sources.list if you're using Debian Jessie. Cannot continue.\n"
  echo -e "Die jq Version scheint veraltet zu sein. Falls Du Debian Jessie benutzt, füge\nin der sources.list jessie-backports hinzu. Fortfahren nicht möglich."
