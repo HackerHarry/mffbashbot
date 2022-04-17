@@ -300,13 +300,13 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
   <tr><td>
   <select id=\"speciesbait2\" name=\"speciesbait2\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"sb20\">Sleep</option>\n";
-  CreateOptionsWithID("sb2", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+  CreateOptionsWithID("sb2", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 922);
   echo "</select>&nbsp;{$strings['speciesbait']} {$strings['slot']} 2
   </td></tr>
   <tr><td>
   <select id=\"raritybait2\" name=\"raritybait2\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"rb20\">Sleep</option>\n";
-  CreateOptionsWithID("rb2", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("rb2", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 923);
   echo "</select>&nbsp;{$strings['raritybait']} {$strings['slot']} 2
   </td></tr>
   <tr><td>
@@ -318,13 +318,13 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
   <tr><td>
   <select id=\"speciesbait3\" name=\"speciesbait3\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"sb30\">Sleep</option>\n";
-  CreateOptionsWithID("sb3", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911);
+  CreateOptionsWithID("sb3", 900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 922);
   echo "</select>&nbsp;{$strings['speciesbait']} {$strings['slot']} 3
   </td></tr>
   <tr><td>
   <select id=\"raritybait3\" name=\"raritybait3\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"rb30\">Sleep</option>\n";
-  CreateOptionsWithID("rb3", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+  CreateOptionsWithID("rb3", 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 923);
   echo "</select>&nbsp;{$strings['raritybait']} {$strings['slot']} 3
   </td></tr>
   <tr><td>
@@ -336,19 +336,19 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][9]["name"]) {
   <tr><td>
   <select id=\"preferredbait1\" name=\"preferredbait1\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"pb10\">Sleep</option>\n";
-  CreateOptionsWithID("pb1", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
+  CreateOptionsWithID("pb1", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 922, 923, 2886);
   echo "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 1
   </td></tr>
   <tr><td>
   <select id=\"preferredbait2\" name=\"preferredbait2\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"pb20\">Sleep</option>\n";
-  CreateOptionsWithID("pb2", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
+  CreateOptionsWithID("pb2", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 922, 923, 2886);
   echo "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 2
   </td></tr>
   <tr><td>
   <select id=\"preferredbait3\" name=\"preferredbait3\" onchange=\"saveMisc();\">
   <option value=\"0\" id=\"pb30\">Sleep</option>\n";
-  CreateOptionsWithID("pb3", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 2886);
+  CreateOptionsWithID("pb3", 901, 903, 904, 905, 906, 907, 908, 909, 910, 911, 913, 915, 916, 917, 918, 919, 920, 921, 922, 923, 2886);
   echo "</select>&nbsp;{$strings['preferredbait']} {$strings['slot']} 3
   </td></tr>\n";
  } else {

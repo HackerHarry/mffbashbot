@@ -235,7 +235,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "fishing":
         // Anglerhütte
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921);
+        CreateOptions(900, 901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923);
         echo "</select>\n";
         break;
   case "pets":
