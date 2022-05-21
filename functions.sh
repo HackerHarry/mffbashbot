@@ -1706,6 +1706,143 @@ function getFreeBarrelSlot {
  return ${iBarrelSlot}
 }
 
+function harvestScouts {
+ local iSlot=$3
+ sendAJAXFarmRequest "slot=${iSlot}&position=1&mode=scouts_harvestproduction"
+}
+
+function startScouts {
+ local sFarm=$1
+ local sPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${sFarm}/${sPosition}/${iSlot})
+ sendAJAXFarmRequest "slot=${iSlot}&pid=${iPID}&mode=scouts_startproduction"
+}
+
+function checkScouts {
+ local aTasksDone
+ local iTaskID
+ local aTasksPending
+ local sTaskType
+ local iTaskNeededEnergy
+ local iTaskNeededScouts
+ local iAvailableScoutsAmount
+ local jData
+ local iCount
+ local aScoutIDs
+ local iScoutID
+ local iScoutItem
+ local sNeedCategory
+ local iCharityPID
+ local iCharityPIDNeeded
+ local iAmountInStock
+ local iPID=$(getConfigValue scoutfood)
+ aTasksDone=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks[] | select(.remain <= 0).id' $FARMDATAFILE)
+ for iTaskID in $aTasksDone; do
+  echo "Finishing scout task..."
+  sendAJAXFarmUpdateRequest "taskid=${iTaskID}&mode=scouts_finish_task"
+ done
+ aTasksPending=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks[] | select(.data == null).id' $FARMDATAFILE)
+ for iTaskID in $aTasksPending; do
+  iTaskNeededScouts=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].scouts' $FARMDATAFILE)
+  sTaskType=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].type' $FARMDATAFILE)
+  iAvailableScoutsAmount=$($JQBIN '[.updateblock.farmersmarket.scouts.scouts[] | select(.status == "1" and .taskid == "0" and (.skills.'${sTaskType}' | type == "object"))] | length' $FARMDATAFILE)
+  if [ $iAvailableScoutsAmount -lt $iTaskNeededScouts ]; then
+   # no specialised scout available
+   continue
+  fi
+  iTaskNeededEnergy=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].energy' $FARMDATAFILE)
+  aScoutIDs=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts[] | select(.status == "1" and .taskid == "0" and (.skills.'${sTaskType}' | type == "object")).id' $FARMDATAFILE)
+  iCount=1
+  jData='{"scouts":{"1":0},"itemid":0}'
+  for iScoutID in $aScoutIDs; do
+   if ! checkScoutEnergy $iScoutID $iTaskNeededEnergy $iPID; then
+    logToFile "${FUNCNAME}: Unable to feed scout"
+    unset jData
+    break
+   fi
+   jData=$(echo $jData | $JQBIN --compact-output '.scouts["'${iCount}'"]='${iScoutID})
+   iCount=$((++iCount))
+   if [ $iCount -gt $iTaskNeededScouts ]; then
+    break
+   fi
+  done
+  if [ -z "$jData" ]; then
+   continue
+  fi
+  if [ "$sTaskType" = "charity" ]; then # this type is treated differently
+   sNeedCategory=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].need | keys[0]' $FARMDATAFILE)
+   iCharityPIDNeeded=$($JQBIN '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].need["'${sNeedCategory}'"]' $FARMDATAFILE)
+   # this selects non-coin items only
+   iCharityPID=$($JQBIN -r '.updateblock.farmersmarket.scouts.config.products | to_entries | map(select((.value.category == "'${sNeedCategory}'") and (.value.coins | type != "number")).key)[0]' $FARMDATAFILE)
+   iAmountInStock=$(getPIDAmountFromStock $iCharityPID 1)
+   if [ $iAmountInStock -lt $iCharityPIDNeeded ]; then
+    logToFile "${FUNCNAME}: Not enough items of type $sNeedCategory to start $sTaskType task"
+    continue
+   fi
+   jData=$(echo $jData | $JQBIN --compact-output 'del(.itemid) | .pid='${iCharityPID} | $JQBIN -r @uri)
+  else
+   iScoutItem=$(getScoutItem $sTaskType)
+   if [ "$iScoutItem" = "-1" ]; then
+    logToFile "${FUNCNAME}: Purchase of scout item failed"
+    continue
+   fi
+   jData=$(echo $jData | $JQBIN --compact-output '.itemid='${iScoutItem} | $JQBIN -r @uri)
+  fi
+  echo "Starting scout task of type ${sTaskType}..."
+  sendAJAXFarmUpdateRequest "taskid=${iTaskID}&data=${jData}&mode=scouts_start_task"
+ done
+}
+
+function checkScoutEnergy {
+ # returns true if scout has/gets enough energy for a task
+ local iScoutID=$1
+ local iSlot
+ local iTaskNeededEnergy=$2
+ local iPID=$3
+ local iEnergyPerFood=$($JQBIN '.updateblock.farmersmarket.scouts.config.products["'${iPID}'"].energy' $FARMDATAFILE)
+ local iScoutEnergy=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].energy' $FARMDATAFILE)
+ local iFoodDiff
+ local iAmountInStock
+ if [ $iScoutEnergy -ge $iTaskNeededEnergy ]; then
+  return 0
+ fi
+ iFoodDiff=$(((iTaskNeededEnergy + (iEnergyPerFood - 1)) / iEnergyPerFood))
+ iAmountInStock=$(getPIDAmountFromStock $iPID 1)
+ if [ $iAmountInStock -lt $iFoodDiff ]; then
+  # not enough food in stock
+  return 1
+ fi
+ iSlot=$($JQBIN -r '.updateblock.farmersmarket.scouts.data.scout_slots | to_entries[] | select(.value.scoutid == '${iScoutID}').key' $FARMDATAFILE)
+ echo "Refilling scout's energy in slot ${iSlot}..."
+ sendAJAXFarmUpdateRequest "pid=${iPID}&amount=${iFoodDiff}&slot=${iSlot}&mode=scouts_feedscout"
+ return 0
+}
+
+function getScoutItem {
+ local sTaskType=$1
+ local sItem
+ local iItemID
+ # this selects non-coin items that boost the skill needed for the current task
+ sItem=$($JQBIN -r '.updateblock.farmersmarket.scouts.config.items | to_entries | map(select((.value.skills[] | contains("'${sTaskType}'")) and (.value.skill_bonus["'${sTaskType}'"] | type == "number") and (.value.coins | type != "number")).key)[0]' $FARMDATAFILE)
+ # Item in stock?
+ iItemID=$($JQBIN -r '[.updateblock.farmersmarket.scouts.items[] | select(.stock == "1" and .type == "'${sItem}'").id][0]' $FARMDATAFILE)
+ if [ "$iItemID" != "null" ]; then
+  echo $iItemID
+  return
+ fi
+ # buy item
+ echo "Buying new scout item of type ${sItem}..." >&2 # this is still very ugly
+ sendAJAXFarmUpdateRequest "name=${sItem}&mode=scouts_shop_buy"
+ sleep 1
+ iItemID=$($JQBIN -r '[.updateblock.farmersmarket.scouts.items[] | select(.stock == "1" and .type == "'${sItem}'").id][0]' $FARMDATAFILE)
+ if [ "$iItemID" != "null" ]; then
+  echo $iItemID
+  return
+ fi
+ echo "-1"
+}
+
 function harvestMegaField {
  local iFarm=$1
  local iPosition=$2
@@ -2244,8 +2381,8 @@ function checkSendGoodsToMainFarm {
  local iPIDMax
  local aPIDs
  local iFilledFieldCount
- local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
- local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
+ local iVehicleCapacity=$($JQBIN '.updateblock.map.config.vehicles["'${iVehicle}'"].capacity' $FARMDATAFILE)
+ local iVehicleSlotCount=$($JQBIN '.updateblock.map.config.vehicles["'${iVehicle}'"].products' $FARMDATAFILE)
  local iFieldsOnFarmCount=$(getFieldsOnFarmCount $iFarm)
  local aPositions=$($JQBIN -r '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE)
  echo -n "Calculating transport count for route ${iRoute}..."
@@ -2353,8 +2490,8 @@ function checkSendGoodsOffMainFarm {
  local sCart=
  local iTransportCount=0
  local iVehicleSlotsUsed=0
- local iVehicleCapacity=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["capacity"]' $FARMDATAFILE)
- local iVehicleSlotCount=$($JQBIN '.updateblock["map"]["config"]["vehicles"]["'${iVehicle}'"]["products"]' $FARMDATAFILE)
+ local iVehicleCapacity=$($JQBIN '.updateblock.map.config.vehicles["'${iVehicle}'"].capacity' $FARMDATAFILE)
+ local iVehicleSlotCount=$($JQBIN '.updateblock.map.config.vehicles["'${iVehicle}'"].products' $FARMDATAFILE)
  local iPosition=trans2${iFarm}
  local sOldIFS=$IFS
  # ugly static coding... :)
@@ -3591,6 +3728,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *vineyard*)
         $JQBIN -s 'del(.[0].updateblock.farmersmarket.vineyard.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *scouts*)
+        $JQBIN -s 'del(.[0].updateblock.farmersmarket.scouts.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *sushibar*)
         $JQBIN -s 'del(.[0].updateblock.sushibar) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

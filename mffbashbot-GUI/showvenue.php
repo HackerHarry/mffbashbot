@@ -30,7 +30,7 @@ switch ($farm) {
   $position = [0 => ["flowerarea", "", "flowerarea"], 1 => ["nursery", "", "nursery"], 2 => ["monsterfruit", "", "monsterfruit"], 3 => ["pets", "", "pets"], 4 => ["vet", "", "vet"]];
   break;
  case "farmersmarket2":
-  $position = [0 => ["cowracing", "", "cowracing"], 1 => ["fishing", "", "fishing"]];
+  $position = [0 => ["cowracing", $farmersmarket2BuildingFriendlyName[0], "cowracing"], 1 => ["fishing", $farmersmarket2BuildingFriendlyName[1], "fishing"], 2 => ["scouts", $farmersmarket2BuildingFriendlyName[2], "scouts"]];
   break;
  default:
   exit("1");
@@ -42,8 +42,8 @@ for ($pc = 0; $pc < 3; $pc++) {
  $iNumQueues = GetQueueCount($gamepath, $farm, $position[$pc][2]);
  echo "<table id=\"t{$position[$pc][0]}\" class=\"queuetable\" border=\"1\">
  <tr><th colspan=\"$iNumQueues\">";
- if ((preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]))
-  echo (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"][$farm == "farmersmarket2" ? "farmersmarket" : "$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ if (($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]))
+  echo ($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]) . "</th>";
  else
   echo "{$strings['notavailable']}</th>";
  echo "</tr><tr>
@@ -77,8 +77,8 @@ for ($pc = 3; $pc < count($position); $pc++) {
  echo "<table id=\"t{$position[$pc][0]}\" class=\"queuetable\" border=\"1\">";
  // farmers' market uses a different source for its friendly name
  echo "<tr><th colspan=\"$iNumQueues\">";
- if ((preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]))
-  echo (preg_match('/^farmersmarket/', $farm) ? $farmdata["updateblock"]["$farm"]["pos"][$farm == "farmersmarket" ? $pc + 1 : $pc + 8]["name"] : $position[$pc][1]) . "</th>";
+ if (($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]))
+  echo ($farm == "farmersmarket" ? $farmdata["updateblock"]["$farm"]["pos"][$pc + 1]["name"] : $position[$pc][1]) . "</th>";
  else
   echo "{$strings['notavailable']}</th>";
  echo "</tr><tr>

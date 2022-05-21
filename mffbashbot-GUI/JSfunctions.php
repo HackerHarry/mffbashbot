@@ -147,9 +147,10 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vehiclemgmt8', 'transO7', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
- 'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
- 'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi', 'sushibardessert'];
+ 'vehiclemgmt7', 'vehiclemgmt8', 'transO7', 'vetjobdifficulty', 'carefood',
+ 'caretoy', 'careplushy', 'autobuyrefillto', 'weathermitigation', 'summercut',
+ 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater', 'sushibarsoup',
+ 'sushibarsalad', 'sushibarsushi', 'sushibardessert', 'scoutfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
@@ -239,7 +240,7 @@ function saveConfig() {
    if (sFarm == "farmersmarket")
     var fmpos = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"];
    if (sFarm == "farmersmarket2")
-    var fmpos = ["cowracing", "fishing"];
+    var fmpos = ["cowracing", "fishing", "scouts"];
    if (sFarm == "forestry")
     var fmpos = ["sawmill", "carpentry", "forestry"];
    if (sFarm == "foodworld")
