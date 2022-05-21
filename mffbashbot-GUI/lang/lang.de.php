@@ -16,6 +16,7 @@ $farmFriendlyName = [
 'city2' => 'Teichlingen'];
 $forestryBuildingFriendlyName = ['S&auml;gewerk', 'Schreinerei', 'B&auml;umerei'];
 $foodworldBuildingFriendlyName = ['Getr&auml;nkebude', 'Imbissbude', 'Konditorei', 'Eisdiele'];
+$farmersmarket2BuildingFriendlyName = ['Kuh-Rennstall', 'Angelh&uuml;tte', 'Pfadfinder'];
 $monsterlist = [
 1 => "Wassereimer",
 2 => "Gießkanne",
@@ -286,5 +287,6 @@ $strings['sushibarsalad'] = 'Salat auf Teller legen wenn möglich';
 $strings['sushibarsushi'] = 'Sushi auf Teller legen wenn möglich';
 $strings['sushibardessert'] = 'Dessert auf Teller legen wenn möglich';
 $strings['lasterror'] = 'Letzter Fehler';
+$strings['scouttaskfood'] = 'Energie auff&uuml;llen & Aufgaben starten';
 // $strings[''] = '';
 ?>

@@ -32,7 +32,7 @@ $foodworldBuildingFriendlyName =
 'Щанд за бързо хранене', 
 'Магазин за сладки', 
 'Салон за сладолед' ];
-
+$farmersmarket2BuildingFriendlyName = ['No translation available', 'No translation available', 'No translation available'];
 //Продукти от фермата за понита
 $ponyfarmproductlist = 
 [
@@ -319,5 +319,6 @@ $strings['sushibarsalad'] = 'No translation available';
 $strings['sushibarsushi'] = 'No translation available';
 $strings['sushibardessert'] = 'No translation available';
 $strings['lasterror'] = 'No translation available';
+$strings['scouttaskfood'] = 'No translation available';
 // $strings[''] = '';
 ?>

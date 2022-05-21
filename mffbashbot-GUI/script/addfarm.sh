@@ -118,7 +118,8 @@ vehiclemgmt8 = 0
 sushibarsoup = 0
 sushibarsalad = 0
 sushibarsushi = 0
-sushibardessert = 0"
+sushibardessert = 0
+scoutfood = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely
@@ -193,6 +194,7 @@ farmersmarket/pets
 farmersmarket/vet
 farmersmarket2/cowracing
 farmersmarket2/fishing
+farmersmarket2/scouts
 foodworld/1
 foodworld/2
 foodworld/3
@@ -233,7 +235,7 @@ while [ $INDEX -lt $NUMDIRS ]; do
      touch ${DIRS[$INDEX]}/light
      touch ${DIRS[$INDEX]}/water
      ;;
-   *pets | *vet | *cowracing | *fishing)
+   *pets | *vet | *cowracing | *fishing | *scouts)
      touch ${DIRS[$INDEX]}/1
      touch ${DIRS[$INDEX]}/2
      touch ${DIRS[$INDEX]}/3

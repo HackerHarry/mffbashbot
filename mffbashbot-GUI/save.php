@@ -63,7 +63,7 @@ switch ($farm) {
   $position = ["1", "2", "forestry"];
   $farm == "foodworld" ? $position = ["1", "2", "3", "4"] : '';
   $farm == "farmersmarket" ? $position = ["flowerarea", "nursery", "monsterfruit", "pets", "vet"] : '';
-  $farm == "farmersmarket2" ? $position = ["cowracing", "fishing"] : '';
+  $farm == "farmersmarket2" ? $position = ["cowracing", "fishing", "scouts"] : '';
   for ($poscount = 0; $poscount <= (count($position) - 1); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 3 slots
@@ -171,6 +171,7 @@ switch ($farm) {
   $configContents['sushibarsalad'] = $_POST["sushibarsalad"];
   $configContents['sushibarsushi'] = $_POST["sushibarsushi"];
   $configContents['sushibardessert'] = $_POST["sushibardessert"];
+  $configContents['scoutfood'] = $_POST["scoutfood"];
 
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);

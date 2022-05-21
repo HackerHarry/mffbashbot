@@ -407,6 +407,21 @@ if ($farmdata["updateblock"]["farmersmarket"]["pos"][10]["name"]) {
 } else {
  echo "<tr><th>{$strings['notavailable']}</th></tr>";
 }
+if ($farmdata["updateblock"]["farmersmarket"]["pos"][11]["name"]) {
+ echo "<tr><th>{$farmdata["updateblock"]["farmersmarket"]["pos"][11]["name"]}</th></tr>\n";
+ if ($farmdata["updateblock"]["farmersmarket"]["scouts"]) {
+  echo "<tr><td>
+  <select id=\"scoutfood\" name=\"scoutfood\" onchange=\"saveMisc();\">
+  <option value=\"0\" id=\"o0\">Sleep</option>\n";
+  CreateOptionsWithID("o", 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007);
+  echo "</select>&nbsp;{$strings['scouttaskfood']}
+  </td></tr>\n";
+ } else {
+  echo "<tr><th>{$strings['notavailable']}</th></tr>";
+ }
+} else {
+ echo "<tr><th>{$strings['notavailable']}</th></tr>";
+}
 // race cow slots
 echo "</table>
 </div>
@@ -523,7 +538,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'harvestvine', 'harvestvineinautumn', 'restartvine', 'removevine', 'weathermitigation',
 'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
 'buyvinetillsunny', 'vinefullservice', 'sushibarsoup', 'sushibarsalad',
-'sushibarsushi', 'sushibardessert'
+'sushibarsushi', 'sushibardessert', 'scoutfood'
 ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
@@ -597,6 +612,9 @@ $savedValue = $configContents['sushibarsushi'];
 echo " document.getElementById('sushibarsushi').selectedIndex = document.getElementById('o$savedValue').index;\n";
 $savedValue = $configContents['sushibardessert'];
 echo " document.getElementById('sushibardessert').selectedIndex = document.getElementById('o$savedValue').index;\n";
+$savedValue = $configContents['scoutfood'];
+echo "if (document.getElementById('scoutfood') !== null)
+ document.getElementById('scoutfood').selectedIndex = document.getElementById('o$savedValue').index;\n";
 
 reset($togglesarray);
 for ($i = 0; $i < count($togglesarray); $i++) {

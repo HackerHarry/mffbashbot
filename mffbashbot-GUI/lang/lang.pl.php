@@ -16,6 +16,7 @@ $farmFriendlyName = [
 'city2' => 'El Fiszado'];
 $forestryBuildingFriendlyName = ['Tartak', 'Carpentry', 'El drzewado'];
 $foodworldBuildingFriendlyName = ['Stoisko z Napojami', 'Stoisko z Przekąskami', 'Sklep z Ciastami', 'Lodziarnia' ];
+$farmersmarket2BuildingFriendlyName = ['No translation available', 'No translation available', 'No translation available'];
 $monsterlist = [
 1 => "Wiadro z Wodą",
 2 => "Nalewak",
@@ -286,5 +287,6 @@ $strings['sushibarsalad'] = 'No translation available';
 $strings['sushibarsushi'] = 'No translation available';
 $strings['sushibardessert'] = 'No translation available';
 $strings['lasterror'] = 'No translation available';
+$strings['scouttaskfood'] = 'No translation available';
 // $strings[''] = '';
 ?>

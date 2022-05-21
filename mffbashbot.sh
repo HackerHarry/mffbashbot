@@ -482,6 +482,21 @@ while (true); do
     checkVineYard
    fi
   fi
+  # scouts production & tasks
+  if [ $PLAYERLEVELNUM -ge 43 ]; then
+   PLACEEXISTS=$($JQBIN -r '.updateblock.farmersmarket.scouts | type' $FARMDATAFILE 2>/dev/null)
+   if [ "$PLACEEXISTS" != "number" ] && [ "$PLACEEXISTS" != "null" ]; then
+    for SLOT in 1 2 3; do
+     if checkTimeRemaining '.updateblock.farmersmarket.scouts.production["'${SLOT}'"]?["1"]?.remain'; then
+      echo "Doing scouts production slot ${SLOT}..."
+      doFarmersMarket farmersmarket2 scouts ${SLOT}
+     fi
+    done
+   fi
+   if ! grep -q "scoutfood = 0" $CFGFILE && grep -q "scoutfood = " $CFGFILE; then
+    checkScouts
+   fi
+  fi
 
   # transport vehicle handling
   if ! grep -q "vehiclemgmt5 = 0" $CFGFILE && grep -q "vehiclemgmt5 = " $CFGFILE; then
