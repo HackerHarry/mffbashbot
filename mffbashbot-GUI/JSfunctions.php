@@ -147,10 +147,11 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vehiclemgmt8', 'transO7', 'vetjobdifficulty', 'carefood',
- 'caretoy', 'careplushy', 'autobuyrefillto', 'weathermitigation', 'summercut',
- 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater', 'sushibarsoup',
- 'sushibarsalad', 'sushibarsushi', 'sushibardessert', 'scoutfood'];
+ 'vehiclemgmt7', 'vehiclemgmt8', 'transO5', 'transO6', 'transO7', 'transO8',
+ 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto',
+ 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
+ 'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
+ 'sushibardessert', 'scoutfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',

@@ -7,10 +7,10 @@ function WGETREQ {
  local sHTTPReq=$1
  local sOut=${2:-/dev/null}
  local sResponse
- local retVal
+ local iRetVal
  sResponse=$(wget -nv -T10 -o - --output-document="$sOut" --user-agent="$AGENT" --load-cookies $COOKIEFILE $sHTTPReq)
- retVal=$?
- echo "$sResponse" | if grep -q "dbfehler\.php" || [ $retVal -ne 0 ]; then
+ iRetVal=$?
+ echo "$sResponse" | if grep -q "dbfehler\.php" || [ $iRetVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
   kill -SIGHUP "$$"
  else
@@ -1748,7 +1748,7 @@ function checkScouts {
   sTaskType=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].type' $FARMDATAFILE)
   iAvailableScoutsAmount=$($JQBIN '[.updateblock.farmersmarket.scouts.scouts[] | select(.status == "1" and .taskid == "0" and (.skills.'${sTaskType}' | type == "object"))] | length' $FARMDATAFILE)
   if [ $iAvailableScoutsAmount -lt $iTaskNeededScouts ]; then
-   # no specialised scout available
+   # not enough specialised scouts available
    continue
   fi
   iTaskNeededEnergy=$($JQBIN -r '.updateblock.farmersmarket.scouts.tasks["'${iTaskID}'"].energy' $FARMDATAFILE)
@@ -2376,6 +2376,8 @@ function checkSendGoodsToMainFarm {
  local iCropValue
  local sCart=
  local iTransportCount=0
+ local iTransportPercent=0
+ local iTransportPercentNeeded=75
  local iVehicleSlotsUsed=0
  local iPIDMin
  local iPIDMax
@@ -2387,11 +2389,21 @@ function checkSendGoodsToMainFarm {
  local aPositions=$($JQBIN -r '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE)
  echo -n "Calculating transport count for route ${iRoute}..."
  case $iFarm in
-  5) iPIDMin=351
-     iPIDMax=361
+  5) if ! grep -q "transO5 = 0" $CFGFILE && grep -q "transO5 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO5)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=351
+      iPIDMax=361
+     fi
      ;;
-  6) iPIDMin=700
-     iPIDMax=709
+  6) if ! grep -q "transO6 = 0" $CFGFILE && grep -q "transO6 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO6)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=700
+      iPIDMax=709
+     fi
      ;;
   7) if ! grep -q "transO7 = 0" $CFGFILE && grep -q "transO7 = " $CFGFILE; then
       iPIDMin=$(getConfigValue transO7)
@@ -2401,11 +2413,16 @@ function checkSendGoodsToMainFarm {
       iPIDMax=998
      fi
      ;;
-  8) iPIDMin=950
-     iPIDMax=957
+  8) if ! grep -q "transO8 = 0" $CFGFILE && grep -q "transO8 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO8)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=950
+      iPIDMax=957
+     fi
      ;;
  esac
- aPIDs=$($JQBIN '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid | tonumber' $FARMDATAFILE)
+ aPIDs=$($JQBIN -r '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid' $FARMDATAFILE)
  for iPID in $aPIDs; do
   echo -n "."
   iPIDCount=$(getPIDAmountFromStock $iPID $iFarm)
@@ -2434,6 +2451,12 @@ function checkSendGoodsToMainFarm {
   iVehicleSlotsUsed=$((iVehicleSlotsUsed + 1))
   sCart=${sCart}${iVehicleSlotsUsed},${iPID},${iPIDCount}_
   if [ $iVehicleSlotsUsed -eq $iVehicleSlotCount ]; then
+   iTransportPercent=$(awk 'BEGIN { printf "%d", 100 / '${iVehicleCapacity}' * '${iTransportCount}' }')
+   if [ $iTransportPercent -lt $iTransportPercentNeeded ]; then
+    # issue #82
+    echo -e "\n$iTransportPercentNeeded percent load required for transport on route ${iRoute}, no transport started"
+    return
+   fi
    echo -e "\nSending partially loaded vehicle to main farm (no slots left)..."
    sendAJAXFarmRequest "mode=map_sendvehicle&farm=${iFarm}&position=1&route=${iRoute}&vehicle=${iVehicle}&cart=${sCart}"
    return
@@ -3697,10 +3720,10 @@ function sendAJAXFarmRequest {
 function sendAJAXFarmUpdateRequest {
  local sAJAXSuffix=$1
  local sResponse
- local retVal
+ local iRetVal
  sResponse=$(wget -nv -T10 -o - --output-document=$TMPFILE --user-agent="$AGENT" --load-cookies $COOKIEFILE ${AJAXFARM}${sAJAXSuffix})
- retVal=$?
- echo "$sResponse" | if grep -q "dbfehler\.php" || [ $retVal -ne 0 ]; then
+ iRetVal=$?
+ echo "$sResponse" | if grep -q "dbfehler\.php" || [ $iRetVal -ne 0 ]; then
   echo "$sResponse" >>$LOGFILE
   kill -SIGHUP "$$"
  else

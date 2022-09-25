@@ -192,10 +192,28 @@ echo "</select>&nbsp;{$strings['collectloginbonus']}
 <option value=\"20\" id=\"vehicle20\">{$strings['containership']}</option></select>&nbsp;{$strings['autotransport8']}
 </td></tr>
 <tr><td>
+<select id=\"transO5\" name=\"transO5\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"tO50\">Sleep</option>\n";
+CreateOptionsWithID("tO5", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
+echo "</select>&nbsp;{$strings['autotransportO5']}
+</td></tr>
+<tr><td>
+<select id=\"transO6\" name=\"transO6\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"tO60\">Sleep</option>\n";
+CreateOptionsWithID("tO6", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 700, 701, 702, 703, 704, 705, 706, 707, 708, 709, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
+echo "</select>&nbsp;{$strings['autotransportO6']}
+</td></tr>
+<tr><td>
 <select id=\"transO7\" name=\"transO7\" onchange=\"saveMisc();\">
 <option value=\"0\" id=\"tO70\">Sleep</option>\n";
 CreateOptionsWithID("tO7", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
 echo "</select>&nbsp;{$strings['autotransportO7']}
+</td></tr>
+<tr><td>
+<select id=\"transO8\" name=\"transO8\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"tO80\">Sleep</option>\n";
+CreateOptionsWithID("tO8", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985);
+echo "</select>&nbsp;{$strings['autotransportO8']}
 </td></tr>
 <tr><td>
 <select id=\"vetjobdifficulty\" name=\"vetjobdifficulty\" onchange=\"saveMisc();\">
@@ -515,12 +533,14 @@ echo "<script type=\"text/javascript\">\n";
 
 global $configContents;
 $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
-'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'vehiclemgmt8', 'dopuzzleparts', 'sendfarmiesaway',
-'sendforestryfarmiesaway', 'sendmunchiesaway', 'sendflowerfarmiesaway', 'transO7',
-'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks', 'dobutterflies',
-'dodeliveryevent', 'doolympiaevent', 'dopentecostevent', 'doseedbox', 'docowracepvp', 'trimlogstock',
-'dodonkey', 'docowrace', 'excluderank1cow', 'dofoodcontest', 'restartvetjob',
-'docalendarevent', 'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
+'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'vehiclemgmt8',
+'dopuzzleparts', 'sendfarmiesaway', 'sendforestryfarmiesaway',
+'sendmunchiesaway', 'sendflowerfarmiesaway', 'transO5', 'transO6', 'transO7',
+'transO8', 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
+'dobutterflies', 'dodeliveryevent', 'doolympiaevent', 'dopentecostevent',
+'doseedbox', 'docowracepvp', 'trimlogstock', 'dodonkey', 'docowrace',
+'excluderank1cow', 'dofoodcontest', 'restartvetjob', 'docalendarevent',
+'doinfinitequest', 'racecowslot1', 'racecowslot2', 'racecowslot3',
 'racecowslot4', 'racecowslot5', 'racecowslot6', 'racecowslot7', 'racecowslot8',
 'racecowslot9', 'racecowslot10', 'racecowslot11', 'racecowslot12',
 'racecowslot13', 'racecowslot14', 'racecowslot15', 'fruitstallslot1',
@@ -568,9 +588,18 @@ echo "document.getElementById('vehiclemgmt7').selectedIndex = document.getElemen
 $savedValue = $configContents['vehiclemgmt8'];
 $savedValue = "vehicle" . $savedValue;
 echo "document.getElementById('vehiclemgmt8').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['transO5'];
+$savedValue = "tO5" . $savedValue;
+echo "document.getElementById('transO5').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['transO6'];
+$savedValue = "tO6" . $savedValue;
+echo "document.getElementById('transO6').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['transO7'];
 $savedValue = "tO7" . $savedValue;
 echo "document.getElementById('transO7').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['transO8'];
+$savedValue = "tO8" . $savedValue;
+echo "document.getElementById('transO8').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['restartvetjob'];
 $savedValue = "vjdiff" . $savedValue;
 echo "document.getElementById('vetjobdifficulty').selectedIndex = document.getElementById('$savedValue').index;\n";

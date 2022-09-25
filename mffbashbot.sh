@@ -164,7 +164,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101 Firefox/104.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
