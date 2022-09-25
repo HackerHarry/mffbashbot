@@ -130,7 +130,10 @@ switch ($farm) {
   $configContents['vehiclemgmt6'] = $_POST["vehiclemgmt6"];
   $configContents['vehiclemgmt7'] = $_POST["vehiclemgmt7"];
   $configContents['vehiclemgmt8'] = $_POST["vehiclemgmt8"];
+  $configContents['transO5'] = $_POST["transO5"];
+  $configContents['transO6'] = $_POST["transO6"];
   $configContents['transO7'] = $_POST["transO7"];
+  $configContents['transO8'] = $_POST["transO8"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
   $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];
