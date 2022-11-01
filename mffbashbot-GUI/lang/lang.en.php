@@ -229,7 +229,7 @@ $strings['saynotofarmies-tt'] = 'This means farmies on farm one';
 $strings['saynotoforestryfarmies-tt'] = 'Guess what...';
 $strings['saynotomunchies-tt'] = 'These can be found in the picnic area';
 $strings['saynotoflowerfarmies-tt'] = 'Flower farmies can be summoned using flower arrangements at the farmers market';
-$strings['correctqueuenumber-tt'] = 'This adjusts the number of queues on farms one to seven';
+$strings['correctqueuenumber-tt'] = 'This adjusts the number of queues on farms one to eight';
 $strings['useponyenergybar-tt'] = 'If you own a pony farm, you can control usage of energy bars here';
 $strings['butterflypointbonus-tt'] = 'This means butterflies, that have been released to the compund';
 $strings['onehourdelivery-tt'] = 'Start the profitable one-hour-tour whenever possible';
@@ -291,5 +291,7 @@ $strings['sushibarsushi'] = 'Put sushi onto plate if possible';
 $strings['sushibardessert'] = 'Put dessert onto plate if possible';
 $strings['lasterror'] = 'Last error';
 $strings['scouttaskfood'] = 'Refill energy & start tasks';
+$strings['doinsecthotel'] = 'Serve insect hotel';
+$strings['doinsecthotel-tt'] = 'Collects rewards from the cash desk and refills already present food in the warehouse';
 // $strings[''] = '';
 ?>

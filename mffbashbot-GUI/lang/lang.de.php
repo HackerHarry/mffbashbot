@@ -229,7 +229,7 @@ $strings['saynotofarmies-tt'] = 'Gemeint sind die Farmis auf Farm eins';
 $strings['saynotoforestryfarmies-tt'] = 'Keine weitere Erklärung erforderlich';
 $strings['saynotomunchies-tt'] = 'Diese sind im Picknick-Gebiet zu finden';
 $strings['saynotoflowerfarmies-tt'] = 'Blumenfarmis lockt man mit Gestecken auf dem Bauernmarkt an';
-$strings['correctqueuenumber-tt'] = 'Diese Funktion korrigiert die Warteschlangenanzahl auf den Farmen eins bis sieben';
+$strings['correctqueuenumber-tt'] = 'Diese Funktion korrigiert die Warteschlangenanzahl auf den Farmen eins bis acht';
 $strings['useponyenergybar-tt'] = 'Wer einen Ponyhof besitzt, kann mit dieser Option Pony-Kraftriegel zufüttern';
 $strings['butterflypointbonus-tt'] = 'Gemeint sind die Schmetterlinge, die bereits im Gehege des Schmetterlingshauses gelandet sind';
 $strings['onehourdelivery-tt'] = 'Hiermit wird die einträgliche Ein-Stunden-Tour wannimmer möglich gestartet';
@@ -291,5 +291,7 @@ $strings['sushibarsushi'] = 'Sushi auf Teller legen wenn möglich';
 $strings['sushibardessert'] = 'Dessert auf Teller legen wenn möglich';
 $strings['lasterror'] = 'Letzter Fehler';
 $strings['scouttaskfood'] = 'Energie auff&uuml;llen & Aufgaben starten';
+$strings['doinsecthotel'] = 'Insektenhotel bedienen';
+$strings['doinsecthotel-tt'] = 'Sammelt Belohnungen der Kasse ein und füllt wenn möglich vorhandenes Futter im Futterlager nach';
 // $strings[''] = '';
 ?>

@@ -435,6 +435,10 @@ function startFarmNP {
   iPlot=$((iPlot + 1))
   continue
  fi
+ # mark lower plots as occupied if cache not full - issue #86
+ if [ $iCache -lt 4 ]; then
+  setPlotsToOccupied $((iPlot + 12))
+ fi
  sData="${sData}pflanze[]=${iProduct}&feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1)),$((iPlot + 12)),$((iPlot + 13))&"
  sDataWater="${sDataWater}feld[]=${iPlot}&felder[]=${iPlot},$((iPlot + 1)),$((iPlot + 12)),$((iPlot + 13))&"
  iCacheFlag=1
@@ -3065,6 +3069,16 @@ function getFieldPlotReadiness {
  fi
 }
 
+function setPlotsToOccupied {
+ local iPlot=$1
+ local iLabel
+ local fJSONtemp=tmpfile.json
+ # don't mess up existing objects
+ iLabel=$((iPlot + 120))
+ $JQBIN '.datablock[1] += {"'$iLabel'": {"teil_nr": "'$iPlot'"}} |
+         .datablock[1] += {"'$((++iLabel))'": {"teil_nr": "'$((++iPlot))'"}}' $TMPFILE >$fJSONtemp && mv $fJSONtemp $TMPFILE
+}
+
 function getFilledFieldCount {
  # returns the number of fields completely filled with a certain product
  local iFarm=$1
@@ -3509,6 +3523,7 @@ function checkCalendarEvent {
  iDay=$($JQBIN '.datablock.day?' $TMPFILE)
  if ! [ $iDay -gt 0 ] 2>/dev/null; then
   # no valid value for the current event day no.
+  echo
   return
  fi
  iEventDaysCount=$($JQBIN '.datablock.config.fields | length' $TMPFILE)
@@ -3626,6 +3641,50 @@ function checkFruitStall {
    PAUSECORRECTEDAT=$(date +"%s")
   fi
  fi
+}
+
+function checkInsectHotel {
+ local bCheckout
+ local bBuildingExists=$($JQBIN '.updateblock.map.insecthotel.data.id? | type == "string"' $FARMDATAFILE)
+ if [ "$bBuildingExists" = "false" ]; then
+  return
+ fi
+ bCheckout=$($JQBIN '.updateblock.map.insecthotel.data.checkout.points | type == "number"' $FARMDATAFILE)
+ # we only check for available points
+ if [ "$bCheckout" = "true" ]; then
+  echo "Collecting reward from insect hotel..."
+  sendAJAXFarmUpdateRequest "mode=insecthotel_collect_checkout"
+ fi
+}
+
+function checkInsectHotelStock {
+ local aSlots=$($JQBIN -r '.updateblock.map.insecthotel.data.stock | to_entries[] | select((.value.amount > 0)).key' $FARMDATAFILE)
+ local iSlot
+ local iLevel
+ local iPID
+ local iCapacity
+ local iAmount
+ local iLowerThreshold=25
+ local iPercentFull
+ local iAmountToRefill
+ for iSlot in $aSlots; do
+  iAmount=$($JQBIN '.updateblock.map.insecthotel.data.stock["'${iSlot}'"].amount' $FARMDATAFILE)
+  iLevel=$($JQBIN '.updateblock.map.insecthotel.data.stock["'${iSlot}'"].level' $FARMDATAFILE)
+  iCapacity=$($JQBIN '.updateblock.map.insecthotel.config.stock_level["'${iLevel}'"].capacity' $FARMDATAFILE)
+  iPercentFull=$(awk 'BEGIN { printf "%d", 100 / '${iCapacity}' * '${iAmount}' }')
+  if [ $iPercentFull -lt $iLowerThreshold ]; then
+   iPID=$($JQBIN '.updateblock.map.insecthotel.data.stock["'${iSlot}'"].pid' $FARMDATAFILE)
+   iAmountToRefill=$((iCapacity-iAmount))
+   iAmountInStock=$(getPIDAmountFromStock $iPID 1)
+   if [ $iAmountInStock -lt $iAmountToRefill ]; then # hmm. -le would leave 1 in stock...
+    logToFile "${FUNCNAME}: Not enough crop in stock for refill of insect hotel slot #${iSlot}"
+    continue
+   else
+    echo "Refilling insect hotel's slot #${iSlot}..."
+    sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&amount=${iAmountToRefill}&mode=insecthotel_set_stockslot"
+   fi
+  fi
+ done
 }
 
 function checkActiveGuildJobForPlayer {
