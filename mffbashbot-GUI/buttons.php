@@ -34,7 +34,8 @@ $togglesarray = [
 "restartvine" => "restartvinetoggle",
 "removevine" => "removevinetoggle",
 "buyvinetillsunny" => "buyvinetillsunnytoggle",
-"vinefullservice" => "vinefullservicetoggle"
+"vinefullservice" => "vinefullservicetoggle",
+"doinsecthotel" => "doinsecthoteltoggle"
 ];
 
 $toggledesc = [
@@ -66,7 +67,8 @@ $strings['harvestvineinautumn'],
 $strings['restartvine'],
 $strings['removevine'],
 $strings['buyvinetillsunny'],
-$strings['vinefullservice']
+$strings['vinefullservice'],
+$strings['doinsecthotel']
 ];
 
 $toggledesc_tt = [
@@ -98,7 +100,8 @@ $strings['harvestvineinautumn-tt'],
 $strings['restartvine-tt'],
 $strings['removevine-tt'],
 $strings['buyvinetillsunny-tt'],
-$strings['vinefullservice-tt']
+$strings['vinefullservice-tt'],
+$strings['doinsecthotel-tt']
 ];
 
 echo "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>
@@ -558,7 +561,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'harvestvine', 'harvestvineinautumn', 'restartvine', 'removevine', 'weathermitigation',
 'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
 'buyvinetillsunny', 'vinefullservice', 'sushibarsoup', 'sushibarsalad',
-'sushibarsushi', 'sushibardessert', 'scoutfood'
+'sushibarsushi', 'sushibardessert', 'scoutfood', 'doinsecthotel'
 ];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)

@@ -291,5 +291,7 @@ $strings['sushibarsushi'] = 'No translation available';
 $strings['sushibardessert'] = 'No translation available';
 $strings['lasterror'] = 'No translation available';
 $strings['scouttaskfood'] = 'No translation available';
+$strings['doinsecthotel'] = 'No translation available';
+$strings['doinsecthotel-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>
