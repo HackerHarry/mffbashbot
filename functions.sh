@@ -3658,7 +3658,7 @@ function checkInsectHotel {
 }
 
 function checkInsectHotelStock {
- local aSlots=$($JQBIN -r '.updateblock.map.insecthotel.data.stock | to_entries[] | select((.value.amount > 0)).key' $FARMDATAFILE)
+ local aSlots=$($JQBIN -r '.updateblock.map.insecthotel.data.stock | to_entries[] | select((.value.amount >= 0)).key' $FARMDATAFILE)
  local iSlot
  local iLevel
  local iPID

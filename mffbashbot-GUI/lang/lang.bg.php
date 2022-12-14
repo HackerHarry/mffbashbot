@@ -32,7 +32,7 @@ $foodworldBuildingFriendlyName =
 'Щанд за бързо хранене', 
 'Магазин за сладки', 
 'Салон за сладолед' ];
-$farmersmarket2BuildingFriendlyName = ['No translation available', 'No translation available', 'No translation available'];
+$farmersmarket2BuildingFriendlyName = ['Обор за крави състезатели', 'Рибарска колиба', 'Скаути'];
 //Продукти от фермата за понита
 $ponyfarmproductlist = 
 [
@@ -180,11 +180,11 @@ $strings['tuktuk'] = 'Триколка';
 $strings['sprinter'] = 'Спринтер';
 $strings['drone'] = 'Дрон';
 $strings['airplane'] = 'Самолет';
-$strings['rowingboat'] = 'No translation available';
-$strings['swampboat'] = 'No translation available';
-$strings['barge'] = 'No translation available';
-$strings['waterhelicopter'] = 'No translation available';
-$strings['containership'] = 'No translation available';
+$strings['rowingboat'] = 'Лодка за гребане';
+$strings['swampboat'] = 'Блатна лодка';
+$strings['barge'] = 'Шлеп';
+$strings['waterhelicopter'] = 'Водоносен хеликоптер';
+$strings['containership'] = 'Контейнеровоз';
 $strings['autotransport5'] = 'Транспортиране на стоки от/към Ферма 5';
 $strings['autotransport6'] = 'Транспортиране на стоки от/към Ферма 6';
 $strings['autotransport7'] = 'Транспортиране на стоки от/към Ферма 7';
@@ -323,7 +323,7 @@ $strings['sushibarsushi'] = 'Сложи суши на чиния ако е въ�
 $strings['sushibardessert'] = 'Суши бар десерт';
 $strings['lasterror'] = 'Предна грешка';
 $strings['scouttaskfood'] = 'Презареди енергия и стартирай задачи';
-$strings['doinsecthotel'] = 'No translation available';
-$strings['doinsecthotel-tt'] = 'No translation available';
+$strings['doinsecthotel'] = 'Обслужи хотел за насекоми';
+$strings['doinsecthotel-tt'] = 'Обслужи хотел за насекоми';
 // $strings[''] = '';
 ?>
