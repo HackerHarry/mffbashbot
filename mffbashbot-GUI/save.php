@@ -1,6 +1,6 @@
 <?php
 // Save functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-22 Harun "Harry" Basalamah
+// Copyright 2016-23 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -95,8 +95,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28"];
-  for ($poscount = 0; $poscount < 7; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "eventgarden"];
+  for ($poscount = 0; $poscount < 8; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);

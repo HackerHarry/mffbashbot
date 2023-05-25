@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Adds a farm to the bot folder
-# Copyright 2016-22 Harun "Harry" Basalamah
+# Copyright 2016-23 Harun "Harry" Basalamah
 #
 # For license see LICENSE file
 
@@ -191,6 +191,7 @@ city2/trans27
 city2/trans28
 city2/tools
 city2/windmill
+city2/eventgarden
 farmersmarket/flowerarea
 farmersmarket/monsterfruit
 farmersmarket/nursery

@@ -146,6 +146,11 @@ $foodworldproductlist =
 62 => "Манго-Маракуя Кейк", 
 63 => "Бананов Кейк", 
 64 => "Ревен Кейк"];
+$eventgardenproductlist = [
+"pentecost1" => "No translation available",
+"pentecost2" => "No translation available",
+"pentecost3" => "No translation available",
+"pentecost4" => "No translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
@@ -325,5 +330,6 @@ $strings['lasterror'] = 'Предна грешка';
 $strings['scouttaskfood'] = 'Презареди енергия и стартирай задачи';
 $strings['doinsecthotel'] = 'Обслужи хотел за насекоми';
 $strings['doinsecthotel-tt'] = 'Обслужи хотел за насекоми';
+$strings['eventgarden'] = 'No translation available';
 // $strings[''] = '';
 ?>

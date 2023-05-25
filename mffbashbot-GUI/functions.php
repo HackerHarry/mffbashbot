@@ -1,6 +1,6 @@
 <?php
 // Functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-22 Harun "Harry" Basalamah
+// Copyright 2016-23 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -58,6 +58,11 @@ function CreateFishingGearOptions() {
  $prefix = array_shift($arr);
  foreach ($arr as $i)
 	echo "<option id=\"$prefix$i\" value=\"$i\">{$farmdata["updateblock"]["farmersmarket"]["fishing"]["config"]["items"][$i]["name"]}</option>\n";
+}
+function CreateEventGardenOptions() {
+ global $eventgardenproductlist;
+ foreach (func_get_args() as $i)
+  echo "<option value=\"$i\">$eventgardenproductlist[$i]</option>\n";
 }
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  echo "<select id=\"itempos$position\" name=\"itempos$position\">\n";
@@ -315,6 +320,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
         echo "</select>\n";
         break;
+  case "eventgarden":
+        // Event-Acker
+        echo "<option value=\"sleep\">Sleep</option>\n";
+        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4");
+        echo "</select>\n";
+        break;
   default:
         // nicht unterstuetzte auswahl
         echo "<option value=\"sleep\">Sleep</option></select>\n";
@@ -376,6 +387,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "tools":
 	$buildingType = "Tools";
+	break;
+  case "eventgarden":
+	$buildingType = "EventGarden";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -466,6 +480,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  global $megafieldvehicleslist;
  global $windmillproductlist;
  global $ponyfarmproductlist;
+ global $eventgardenproductlist;
  if ($queueItem == "sleep\n")
   $queueItemFriendlyName = "Sleep";
  else {
@@ -512,6 +527,9 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "PonyFarm":
    $queueItemFriendlyName = $ponyfarmproductlist[intval($queueItem)];
+   break;
+   case "EventGarden":
+   $queueItemFriendlyName = $eventgardenproductlist[rtrim($queueItem)];
    break;
    default:
    $queueItemFriendlyName = "Sleep";
