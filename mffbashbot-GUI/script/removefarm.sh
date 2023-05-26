@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Removes a farm from the bot folder
-# Copyright 2016-22 Harun "Harry" Basalamah
+# Copyright 2016-23 Harun "Harry" Basalamah
 #
 # For license see LICENSE file
 

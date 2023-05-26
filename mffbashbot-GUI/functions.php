@@ -1,6 +1,6 @@
 <?php
 // Functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-22 Harun "Harry" Basalamah
+// Copyright 2016-23 Harun "Harry" Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -58,6 +58,11 @@ function CreateFishingGearOptions() {
  $prefix = array_shift($arr);
  foreach ($arr as $i)
 	echo "<option id=\"$prefix$i\" value=\"$i\">{$farmdata["updateblock"]["farmersmarket"]["fishing"]["config"]["items"][$i]["name"]}</option>\n";
+}
+function CreateEventGardenOptions() {
+ global $eventgardenproductlist;
+ foreach (func_get_args() as $i)
+  echo "<option value=\"$i\">$eventgardenproductlist[$i]</option>\n";
 }
 function CreateSelectionsForBuildingID($BuildingID, $position) {
  echo "<select id=\"itempos$position\" name=\"itempos$position\">\n";
@@ -305,7 +310,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "trans28":
         // Transport -> Farm 5 / 6 / 7 / 8
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957);
+        CreateOptions(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 26, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 92, 93, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957);
         echo "</select>
         <input id=\"amountpos$position\" name=\"amountpos$position\" type=\"text\" maxlength=\"5\" size=\"5\">\n";
         break;
@@ -313,6 +318,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         // Werkzeuge
         echo "<option value=\"sleep\">Sleep</option>\n";
         CreateForestryOptions(200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215);
+        echo "</select>\n";
+        break;
+  case "eventgarden":
+        // Event-Acker
+        echo "<option value=\"sleep\">Sleep</option>\n";
+        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4");
         echo "</select>\n";
         break;
   default:
@@ -376,6 +387,9 @@ function PlaceQueues($gamepath, $farm, $position, $QueueNum) {
 	break;
   case "tools":
 	$buildingType = "Tools";
+	break;
+  case "eventgarden":
+	$buildingType = "EventGarden";
 	break;
   case "1": // this has to be the last case before the default!
   case "2": // otherwise it would mess up buildings found in "1" ,"2", "3" and "4" folders
@@ -466,6 +480,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
  global $megafieldvehicleslist;
  global $windmillproductlist;
  global $ponyfarmproductlist;
+ global $eventgardenproductlist;
  if ($queueItem == "sleep\n")
   $queueItemFriendlyName = "Sleep";
  else {
@@ -512,6 +527,9 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    break;
    case "PonyFarm":
    $queueItemFriendlyName = $ponyfarmproductlist[intval($queueItem)];
+   break;
+   case "EventGarden":
+   $queueItemFriendlyName = $eventgardenproductlist[rtrim($queueItem)];
    break;
    default:
    $queueItemFriendlyName = "Sleep";

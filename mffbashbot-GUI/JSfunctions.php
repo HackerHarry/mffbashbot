@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-22 Harun "Harry" Basalamah
+// Copyright 2016-23 Harun "Harry" Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -247,7 +247,7 @@ function saveConfig() {
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "eventgarden"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];
