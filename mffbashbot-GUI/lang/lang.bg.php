@@ -147,10 +147,10 @@ $foodworldproductlist =
 63 => "Бананов Кейк", 
 64 => "Ревен Кейк"];
 $eventgardenproductlist = [
-"pentecost1" => "No translation available",
-"pentecost2" => "No translation available",
-"pentecost3" => "No translation available",
-"pentecost4" => "No translation available"];
+"pentecost1" => "Петдесетница 1",
+"pentecost2" => "Петдесетница 2",
+"pentecost3" => "Петдесетница 3",
+"pentecost4" => "Петдесетница 4"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
@@ -330,6 +330,6 @@ $strings['lasterror'] = 'Предна грешка';
 $strings['scouttaskfood'] = 'Презареди енергия и стартирай задачи';
 $strings['doinsecthotel'] = 'Обслужи хотел за насекоми';
 $strings['doinsecthotel-tt'] = 'Обслужи хотел за насекоми';
-$strings['eventgarden'] = 'No translation available';
+$strings['eventgarden'] = 'Събитие поле';
 // $strings[''] = '';
 ?>

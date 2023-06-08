@@ -3573,9 +3573,9 @@ function checkPentecostEvent {
   return
  fi
  # take care of plants in event garden
- getEventGardenData $TMPFILE
- bEventGardenIsUsable=$($JQBIN '.datablock.data.remain > 0' $TMPFILE)
+ bEventGardenIsUsable=$($JQBIN '.updateblock.menue.pentecostevent.data.remain > 0' $FARMDATAFILE)
  if [ "$bEventGardenIsUsable" = "true" ]; then
+  getEventGardenData $TMPFILE
   if checkRipePlotInEventGarden; then
    echo "Doing event field..."
    doFarm city2 eventgarden 0
