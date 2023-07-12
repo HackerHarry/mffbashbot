@@ -176,6 +176,7 @@ switch ($farm) {
   $configContents['sushibardessert'] = $_POST["sushibardessert"];
   $configContents['scoutfood'] = $_POST["scoutfood"];
   $configContents['doinsecthotel'] = $_POST["doinsecthoteltoggle"];
+  $configContents['doeventgarden'] = $_POST["doeventgardentoggle"];
 
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);

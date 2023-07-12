@@ -524,6 +524,14 @@ while (true); do
    # checkFlowerFarmies
   fi
 
+  if grep -q "doeventgarden = 1" $CFGFILE; then
+   echo "Checking for pending tasks in event garden..."
+   if ! checkEventGarden; then
+    # turn off event garden feature
+    sed -i 's/doeventgarden = 1/doeventgarden = 0/' $CFGFILE
+   fi
+  fi
+
   # daily actions
   if ! grep -q "dodog = 0" $CFGFILE && grep -q "dodog = " $CFGFILE; then
    echo -n "Checking for daily dog bonus..."

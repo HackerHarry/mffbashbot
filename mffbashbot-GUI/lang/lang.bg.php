@@ -150,7 +150,10 @@ $eventgardenproductlist = [
 "pentecost1" => "Петдесетница 1",
 "pentecost2" => "Петдесетница 2",
 "pentecost3" => "Петдесетница 3",
-"pentecost4" => "Петдесетница 4"];
+"pentecost4" => "Петдесетница 4",
+"waterbattle1" => "No translation available",
+"waterbattle2" => "No translation available",
+"waterbattle3" => "No translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
@@ -331,5 +334,7 @@ $strings['scouttaskfood'] = 'Презареди енергия и стартир
 $strings['doinsecthotel'] = 'Обслужи хотел за насекоми';
 $strings['doinsecthotel-tt'] = 'Обслужи хотел за насекоми';
 $strings['eventgarden'] = 'Събитие поле';
+$strings['doeventgarden'] = 'No translation available';
+$strings['doeventgarden-tt'] = 'No translation available';
 // $strings[''] = '';
 ?>
