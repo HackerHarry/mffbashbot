@@ -323,7 +323,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "eventgarden":
         // Event-Acker
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4");
+        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4", "waterbattle1", "waterbattle2", "waterbattle3");
         echo "</select>\n";
         break;
   default:

@@ -1545,7 +1545,7 @@ function checkVineYard {
     startVineYardSeason $iSlot $((iSeason + 1))
    fi
    if [ "${sWinterCut:-0}" != "0" ]; then
-    echo "Performing ${sWinterCut} winter cut on vine in slot $iSlot"
+    echo "Performing ${sWinterCut} winter cut on vine in slot ${iSlot}..."
     sendAJAXFarmRequest "slot=${iSlot}&id=${sWinterCut}&mode=vineyard_plant_wintercut"
    fi
    startVineYardSeason $iSlot 1
@@ -3563,7 +3563,6 @@ function checkCalendarEvent {
 }
 
 function checkPentecostEvent {
- local bEventGardenIsUsable
  local iWaterNeeded
  local iWaterAvailable
  local iFertiliserNeeded
@@ -3571,15 +3570,6 @@ function checkPentecostEvent {
  local bPentecostEventRunning=$($JQBIN '.updateblock.menue.pentecostevent != 0' $FARMDATAFILE)
  if [ "$bPentecostEventRunning" = "false" ]; then
   return
- fi
- # take care of plants in event garden
- getEventGardenData $TMPFILE
- bEventGardenIsUsable=$($JQBIN '.datablock.data.remain > 0' $TMPFILE)
- if [ "$bEventGardenIsUsable" = "true" ]; then
-  if checkRipePlotInEventGarden; then
-   echo "Doing event field..."
-   doFarm city2 eventgarden 0
-  fi
  fi
  iWaterNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.water.amount' $FARMDATAFILE)
  iFertiliserNeeded=$($JQBIN '.updateblock.menue.pentecostevent.config.exchange.fertilizer.amount' $FARMDATAFILE)
@@ -3601,6 +3591,20 @@ function checkPentecostEvent {
    echo "Not enough fertiliser available for the peony bush"
   fi
  fi
+}
+
+function checkEventGarden {
+ local bEventGardenIsUsable
+ getEventGardenData $TMPFILE
+ bEventGardenIsUsable=$($JQBIN '.datablock?.data?.remain? > 0' $TMPFILE 2>/dev/null)
+ if [ -z "$bEventGardenIsUsable" ] || [ "$bEventGardenIsUsable" = "false" ]; then
+  return 1
+ fi
+ if checkRipePlotInEventGarden; then
+  echo "Doing event field..."
+  doFarm city2 eventgarden 0
+ fi
+ return 0
 }
 
 function checkLoginBonus {
@@ -3749,7 +3753,7 @@ function removeWeed {
 }
 
 function checkRipePlotInEventGarden {
- local bHasNegatives=$($JQBIN '[.datablock.data.tiles[] | select(.remain < 0)][0] | type == "object"' $TMPFILE)
+ local bHasNegatives=$($JQBIN '[.datablock.data.tiles?[] | select(.remain < 0)][0] | type == "object"' $TMPFILE)
  if [ "$bHasNegatives" = "true" ]; then
   return 0
  fi
