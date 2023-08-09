@@ -821,7 +821,7 @@ function doFarmersMarketFlowerPots {
   if [ $iPID -ne 0 ]; then
    sendAJAXFarmRequest "mode=flowerslot_remove&farm=1&position=1&set=${iSlot}:1,"
    sleep 1
-   echo "Planting arrangement ${iPID} to flower pot ${iSlot}..."
+   echo "Planting arrangement ${iPID} in flower pot ${iSlot}..."
    sendAJAXFarmRequest "mode=flowerslot_plant&farm=1&position=1&set=${iSlot}:${iPID},"
   fi
  done
@@ -1661,6 +1661,7 @@ function getFreeBarrelSlot {
   iType=$($JQBIN -r '.updateblock.farmersmarket.vineyard.data.barrels["'${iSlot}'"].type' $FARMDATAFILE)
   iMaxRipeningTime=$($JQBIN '.updateblock.farmersmarket.vineyard.config.barrels["'${iType}'"].time' $FARMDATAFILE)
   iPercent=$(awk 'BEGIN { printf "%.2f", sqrt(100 - '${iRemaining}' * 100 / '${iMaxRipeningTime}') * 10 }')
+  iPercent=${iPercent/,/.} # overcome locales with a ',' as decimal point
   if [ ${iPercent%.*} -lt $iBottlingMinPercent ]; then
    continue
   fi
