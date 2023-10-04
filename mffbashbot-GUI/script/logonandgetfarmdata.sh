@@ -44,7 +44,7 @@ rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
 LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
-AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/113.0"
+AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/115.0"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
 
@@ -75,7 +75,7 @@ sed -i 's/,}/}/' $FORMULAS
 
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "https://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"
-aNEWS=$($JQBIN -r '.updateblock.menue.news? | .[]? | select(.login == "1").nnr' $FARMDATAFILE)
+aNEWS=$(jq -r '.updateblock.menue.news? | .[]? | select(.login == "1").nnr' $FARMDATAFILE)
 # mark news as read
 for iNEWS in $aNEWS; do
  wget -v -o "$LOGFILE" --output-document=/dev/null --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "https://s${MFFSERVER}.${DOMAIN}/ajax/main.php?rid=${RID}&nnr=${iNEWS}&opt1=1&action=setnewsunread"

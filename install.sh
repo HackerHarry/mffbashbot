@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install script for My Free Farm Bash Bot on GNU/Linux
-# Tested on Debian Jessie, Stretch, Ubuntu 16.04.1 LTS, Linux Mint 19
+# Tested on Debian 8 - 12, Ubuntu 16.04.1 LTS, Linux Mint 19, Devuan 5
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 set -e
 
@@ -34,7 +34,7 @@ case $DVER in
  8.*|*essie*)
   PHPV=php5-cgi
   ;;
- 9.*|10.*|*tretch*|*uster*|*sid*)
+ 9.*|10.*|11.*|12.*|*tretch*|*uster*|*ookworm*|*sid*)
   PHPV=php-cgi
   ;;
 esac
@@ -65,6 +65,11 @@ echo "Setting permissions..."
 find . -type d -exec chmod 775 {} +
 find . -type f -exec chmod 664 {} +
 chmod +x *.sh
+case $DVER in
+ 12.*|*ookworm*|*sid*)
+  chmod g+rx ~
+  ;;
+esac
 
 echo "Configuring lighttpd..."
 if grep -q 'server\.document-root\s\+=\s\+"/var/www"' $LCONF; then
