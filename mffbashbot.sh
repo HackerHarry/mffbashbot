@@ -228,7 +228,7 @@ while (true); do
    checkTools city2 tools 0
   fi
 
-  for FARM in {1..8}; do
+  for FARM in {1..9}; do
    PLACEEXISTS=$($JQBIN '.updateblock.farms.farms | has("'${FARM}'")' $FARMDATAFILE)
    if [ "$PLACEEXISTS" = "false" ]; then
     # echo "Skipping farm ${FARM}"
@@ -511,6 +511,9 @@ while (true); do
   fi
   if ! grep -q "vehiclemgmt8 = 0" $CFGFILE && grep -q "vehiclemgmt8 = " $CFGFILE; then
    checkVehiclePosition 8 4
+  fi
+  if ! grep -q "vehiclemgmt9 = 0" $CFGFILE && grep -q "vehiclemgmt9 = " $CFGFILE; then
+   checkVehiclePosition 9 5
   fi
 
   if grep -q "sendfarmiesaway = 1" $CFGFILE; then
