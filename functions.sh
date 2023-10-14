@@ -2431,6 +2431,14 @@ function checkSendGoodsToMainFarm {
       iPIDMax=957
      fi
      ;;
+  9) if ! grep -q "transO9 = 0" $CFGFILE && grep -q "transO9 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO9)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=998
+      iPIDMax=998
+     fi
+     ;;
  esac
  aPIDs=$($JQBIN -r '.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select((.pid | tonumber) >= '${iPIDMin}' and (.pid | tonumber) <= '${iPIDMax}').pid' $FARMDATAFILE)
  for iPID in $aPIDs; do

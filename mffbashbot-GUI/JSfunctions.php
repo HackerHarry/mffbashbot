@@ -147,9 +147,9 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vehiclemgmt8', 'transO5', 'transO6', 'transO7', 'transO8',
- 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto',
- 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
+ 'vehiclemgmt7', 'vehiclemgmt8', 'vehiclemgmt9', 'transO5', 'transO6', 'transO7',
+ 'transO8', 'transO9', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
+ 'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
  'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
  'sushibardessert', 'scoutfood'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
@@ -247,7 +247,7 @@ function saveConfig() {
    if (sFarm == "foodworld")
     var fmpos = ["sodastall", "snackbooth", "pastryshop", "icecreamparlour"];
    if (sFarm == "city2")
-    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "eventgarden"];
+    var fmpos = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "trans29", "eventgarden"];
 
    for (k = 0; k <= (fmpos.length - 1); k++) {
     var i = fmpos[k];

@@ -111,7 +111,7 @@ echo "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>
 <form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">
 <input type=\"hidden\" name=\"farm\" value=\"$farm\">
 <input type=\"hidden\" name=\"username\" value=\"$username\">\n";
-for ($i = 1; $i <= 8; $i++)
+for ($i = 1; $i <= 9; $i++)
  echo "<input type=\"image\" src=\"image/navi_farm$i.png\" class=\"navilink\" title=\"$farmFriendlyName[$i]\" name=\"$i\" onclick=\"document.venueselect.farm.value = '$i'; this.form.submit();\">\n";
 echo "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket']}\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">
 <input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket2']}\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">
@@ -198,6 +198,15 @@ echo "</select>&nbsp;{$strings['collectloginbonus']}
 <option value=\"20\" id=\"vehicle20\">{$strings['containership']}</option></select>&nbsp;{$strings['autotransport8']}
 </td></tr>
 <tr><td>
+<select id=\"vehiclemgmt9\" name=\"vehiclemgmt9\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"vehicle0\">Sleep</option>
+<option value=\"21\" id=\"vehicle21\">{$strings['lorry']}</option>
+<option value=\"22\" id=\"vehicle22\">{$strings['steamtrain']}</option>
+<option value=\"23\" id=\"vehicle23\">{$strings['diesellocomotive']}</option>
+<option value=\"24\" id=\"vehicle24\">{$strings['expresstrain']}</option>
+<option value=\"25\" id=\"vehicle25\">{$strings['freighttrain']}</option></select>&nbsp;{$strings['autotransport9']}
+</td></tr>
+<tr><td>
 <select id=\"transO5\" name=\"transO5\" onchange=\"saveMisc();\">
 <option value=\"0\" id=\"tO50\">Sleep</option>\n";
 CreateOptionsWithID("tO5", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
@@ -220,6 +229,12 @@ echo "</select>&nbsp;{$strings['autotransportO7']}
 <option value=\"0\" id=\"tO80\">Sleep</option>\n";
 CreateOptionsWithID("tO8", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834, 950, 951, 952, 953, 954, 955, 956, 957, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985);
 echo "</select>&nbsp;{$strings['autotransportO8']}
+</td></tr>
+<tr><td>
+<select id=\"transO9\" name=\"transO9\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"tO90\">Sleep</option>\n";
+CreateOptionsWithID("tO9", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 91, 97, 104, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 151, 152, 153, 154, 155, 156, 157, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 750, 751, 752, 753, 754, 755, 756, 757, 758, 759, 820, 821, 822, 823, 824, 825, 826, 827, 828, 829, 830, 831, 832, 833, 834);
+echo "</select>&nbsp;{$strings['autotransportO9']}
 </td></tr>
 <tr><td>
 <select id=\"vetjobdifficulty\" name=\"vetjobdifficulty\" onchange=\"saveMisc();\">
@@ -539,10 +554,10 @@ echo "<script type=\"text/javascript\">\n";
 
 global $configContents;
 $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
-'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'vehiclemgmt8',
+'dolot', 'vehiclemgmt5', 'vehiclemgmt6', 'vehiclemgmt7', 'vehiclemgmt8', 'vehiclemgmt9',
 'dopuzzleparts', 'sendfarmiesaway', 'sendforestryfarmiesaway',
 'sendmunchiesaway', 'sendflowerfarmiesaway', 'transO5', 'transO6', 'transO7',
-'transO8', 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
+'transO8', 'transO9', 'correctqueuenum', 'useponyenergybar', 'redeempuzzlepacks',
 'dobutterflies', 'dodeliveryevent', 'doolympiaevent', 'dopentecostevent',
 'doseedbox', 'docowracepvp', 'trimlogstock', 'dodonkey', 'docowrace',
 'excluderank1cow', 'dofoodcontest', 'restartvetjob', 'docalendarevent',
@@ -594,6 +609,9 @@ echo "document.getElementById('vehiclemgmt7').selectedIndex = document.getElemen
 $savedValue = $configContents['vehiclemgmt8'];
 $savedValue = "vehicle" . $savedValue;
 echo "document.getElementById('vehiclemgmt8').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['vehiclemgmt9'];
+$savedValue = "vehicle" . $savedValue;
+echo "document.getElementById('vehiclemgmt9').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['transO5'];
 $savedValue = "tO5" . $savedValue;
 echo "document.getElementById('transO5').selectedIndex = document.getElementById('$savedValue').index;\n";
@@ -606,6 +624,9 @@ echo "document.getElementById('transO7').selectedIndex = document.getElementById
 $savedValue = $configContents['transO8'];
 $savedValue = "tO8" . $savedValue;
 echo "document.getElementById('transO8').selectedIndex = document.getElementById('$savedValue').index;\n";
+$savedValue = $configContents['transO9'];
+$savedValue = "tO9" . $savedValue;
+echo "document.getElementById('transO9').selectedIndex = document.getElementById('$savedValue').index;\n";
 $savedValue = $configContents['restartvetjob'];
 $savedValue = "vjdiff" . $savedValue;
 echo "document.getElementById('vetjobdifficulty').selectedIndex = document.getElementById('$savedValue').index;\n";
