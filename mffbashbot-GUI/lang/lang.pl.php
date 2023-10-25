@@ -133,8 +133,10 @@ $eventgardenproductlist = [
 "tinkergame3" => "No translation available",
 "tinkergame4" => "No translation available",
 "tinkergame5" => "No translation available",
-"tinkergame6" => "No translation available"];
-
+"tinkergame6" => "No translation available",
+"invasion1" => "No translation available",
+"invasion2" => "No translation available",
+"invasion3" => "No translation available"];
 $strings['mill'] = 'Młyn';
 $strings['pleasewait'] = 'Proszę zaczekać...';
 $strings['logonfailed'] = 'Logowanie zakończone nie powodzeniem!';

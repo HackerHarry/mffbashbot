@@ -163,7 +163,10 @@ $eventgardenproductlist = [
 "tinkergame3" => "No translation available",
 "tinkergame4" => "No translation available",
 "tinkergame5" => "No translation available",
-"tinkergame6" => "No translation available"];
+"tinkergame6" => "No translation available",
+"invasion1" => "No translation available",
+"invasion2" => "No translation available",
+"invasion3" => "No translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
@@ -286,7 +289,7 @@ $strings['saynotofarmies-tt'] = 'Откажи на всички фермерче
 $strings['saynotoforestryfarmies-tt'] = 'Откажи на всички фермерчета от Лесовъдство';
 $strings['saynotomunchies-tt'] = 'Откажи на всички клиенти от Пикник областта';
 $strings['saynotoflowerfarmies-tt'] = 'Откажи на всипки цвеари фермери';
-$strings['correctqueuenumber-tt'] = 'Промени номера на опашките във фермите (от 1 до 8)';
+$strings['correctqueuenumber-tt'] = 'Промени номера на опашките във фермите (от 1 до 9)';
 $strings['useponyenergybar-tt'] = 'Ако притежавате ферма за понита, може да регулирате използването на "бар за понита" тук';
 $strings['butterflypointbonus-tt'] = 'Това означава, че пеперудите ще бъдат освободени';
 $strings['onehourdelivery-tt'] = 'Стартиране на печеливша едночасова доставка когато е възможно';

@@ -97,7 +97,7 @@ switch ($farm) {
 
  case "city2":
   $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "trans29", "eventgarden"];
-  for ($poscount = 0; $poscount < 8; $poscount++) {
+  for ($poscount = 0; $poscount < 9; $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
