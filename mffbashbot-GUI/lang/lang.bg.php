@@ -166,7 +166,13 @@ $eventgardenproductlist = [
 "tinkergame6" => "No translation available",
 "invasion1" => "No translation available",
 "invasion2" => "No translation available",
-"invasion3" => "No translation available"];
+"invasion3" => "No translation available",
+"giftdeliveryevent1" => "No translation available",
+"giftdeliveryevent2" => "No translation available",
+"giftdeliveryevent3" => "No translation available",
+"olympia1" => "No translation available",
+"olympia2" => "No translation available",
+"olympia3" => "No translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
