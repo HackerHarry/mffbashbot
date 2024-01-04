@@ -3531,16 +3531,19 @@ function checkDeliveryEvent {
 
 function checkOlympiaEvent {
  getOlympiaData $FARMDATAFILE
- local iBerriesNeeded=20
+ sleep 2
+ local iMaxBerries=$($JQBIN '.datablock.config.berries_full // 99999' $FARMDATAFILE) # make sure we get a number
+ local iBerriesNeeded=$((iMaxBerries / 10))
  local iBerriesAvailable
  local iEnergy
  local iOlympiayEventRemain=$($JQBIN '.datablock.remain?' $FARMDATAFILE)
  if [ $iOlympiayEventRemain -gt 0 ] 2>/dev/null; then
-  iBerriesAvailable=$($JQBIN '.datablock.data.berries' $FARMDATAFILE)
+  iBerriesAvailable=$($JQBIN '.datablock.data.berries // 0' $FARMDATAFILE)
   iEnergy=$($JQBIN '.datablock.energy' $FARMDATAFILE)
   if [ $iEnergy -lt 100 ] && [ $iBerriesAvailable -ge $iBerriesNeeded ]; then
    echo "Re-filling 10% energy..."
    sendAJAXMainRequest "amount=10&action=olympia_entry"
+   echo "DEBUG: Energy = $iEnergy"
   fi
  fi
 }
@@ -3607,7 +3610,11 @@ function checkEventGarden {
  getEventGardenData $TMPFILE
  bEventGardenIsUsable=$($JQBIN '.datablock?.data?.remain? > 0' $TMPFILE 2>/dev/null)
  if [ -z "$bEventGardenIsUsable" ] || [ "$bEventGardenIsUsable" = "false" ]; then
-  return 1
+  # 2nd check
+  bEventGardenIsUsable=$($JQBIN '.updateblock.missingproductions.eventgarden["1"] != 0' $FARMDATAFILE 2>/dev/null)
+  if [ "$bEventGardenIsUsable" = "false" ]; then
+   return 1
+  fi
  fi
  if checkRipePlotInEventGarden; then
   echo "Doing event field..."
