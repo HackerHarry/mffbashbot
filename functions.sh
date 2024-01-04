@@ -3543,7 +3543,7 @@ function checkOlympiaEvent {
   if [ $iEnergy -lt 100 ] && [ $iBerriesAvailable -ge $iBerriesNeeded ]; then
    echo "Re-filling 10% energy..."
    sendAJAXMainRequest "amount=10&action=olympia_entry"
-   echo "DEBUG: Energy = $iEnergy"
+#   echo "DEBUG: Energy = $iEnergy"
   fi
  fi
 }
