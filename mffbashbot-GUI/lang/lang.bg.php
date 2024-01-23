@@ -172,7 +172,12 @@ $eventgardenproductlist = [
 "giftdeliveryevent3" => "Пъстър подарък растение",
 "olympia1" => "Шоколадови-Холи",
 "olympia2" => "Шоколадови-кактус",
-"olympia3" => "Шоколадови-роза"];
+"olympia3" => "Шоколадови-роза",
+"cropaction1" => "no translation available",
+"cropaction2" => "no translation available",
+"cropaction3" => "no translation available",
+"cropaction4" => "no translation available",
+"cropaction5" => "no translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';

@@ -142,7 +142,13 @@ $eventgardenproductlist = [
 "giftdeliveryevent3" => "No translation available",
 "olympia1" => "No translation available",
 "olympia2" => "No translation available",
-"olympia3" => "No translation available"];
+"olympia3" => "No translation available",
+"cropaction1" => "no translation available",
+"cropaction2" => "no translation available",
+"cropaction3" => "no translation available",
+"cropaction4" => "no translation available",
+"cropaction5" => "no translation available"];
+
 $strings['mill'] = 'Młyn';
 $strings['pleasewait'] = 'Proszę zaczekać...';
 $strings['logonfailed'] = 'Logowanie zakończone nie powodzeniem!';
