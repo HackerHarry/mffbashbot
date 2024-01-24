@@ -173,11 +173,11 @@ $eventgardenproductlist = [
 "olympia1" => "Шоколадови-Холи",
 "olympia2" => "Шоколадови-кактус",
 "olympia3" => "Шоколадови-роза",
-"cropaction1" => "no translation available",
-"cropaction2" => "no translation available",
-"cropaction3" => "no translation available",
-"cropaction4" => "no translation available",
-"cropaction5" => "no translation available"];
+"cropaction1" => "Супер-Слънчоглед",
+"cropaction2" => "Супер-Морков",
+"cropaction3" => "Супер-Царевица",
+"cropaction4" => "Супер-Соя",
+"cropaction5" => "Супер-Жито"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
