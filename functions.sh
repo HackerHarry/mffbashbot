@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-23 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -1766,7 +1766,7 @@ function checkScouts {
   iCount=1
   jData='{"scouts":{"1":0},"itemid":0}'
   for iScoutID in $aScoutIDs; do
-   if ! checkScoutEnergy $iScoutID $iTaskNeededEnergy $iPID; then
+   if ! checkScoutEnergy $iScoutID $iTaskNeededEnergy $iPID $sTaskType; then
     logToFile "${FUNCNAME}: Unable to feed scout"
     unset jData
     break
@@ -1810,10 +1810,22 @@ function checkScoutEnergy {
  local iSlot
  local iTaskNeededEnergy=$2
  local iPID=$3
+ local sTaskType=$4
+ local sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].type' $FARMDATAFILE) # can also receive a float
  local iEnergyPerFood=$($JQBIN '.updateblock.farmersmarket.scouts.config.products["'${iPID}'"].energy' $FARMDATAFILE)
  local iScoutEnergy=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].energy' $FARMDATAFILE)
  local iFoodDiff
  local iAmountInStock
+ # issue #106
+ if [ "$sDebuffValue" = "energy" ]; then
+  sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].skill' $FARMDATAFILE)
+  if [ "$sDebuffValue" = "$sTaskType" ]; then
+   # re-calculate needed energy
+   sDebuffValue=$($JQBIN -r '.updateblock.farmersmarket.scouts.scouts["'${iScoutID}'"].traits["debuff"].amount' $FARMDATAFILE)
+   # need to emulate JS' Math.ceil() here
+   iTaskNeededEnergy=$(awk 'BEGIN { printf "%.0f", ('${iTaskNeededEnergy}' * ('${sDebuffValue}' + 1)) + 0.5 }')
+  fi
+ fi
  if [ $iScoutEnergy -ge $iTaskNeededEnergy ]; then
   return 0
  fi

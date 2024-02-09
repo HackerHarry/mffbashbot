@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
-# Copyright 2016-23 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 
