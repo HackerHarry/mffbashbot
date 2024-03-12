@@ -177,7 +177,12 @@ $eventgardenproductlist = [
 "cropaction2" => "Супер-Морков",
 "cropaction3" => "Супер-Царевица",
 "cropaction4" => "Супер-Соя",
-"cropaction5" => "Супер-Жито"];
+"cropaction5" => "Супер-Жито",
+"rainbowevent1" => "no translation available",
+"rainbowevent2" => "no translation available",
+"rainbowevent3" => "no translation available",
+"rainbowevent4" => "no translation available",
+"rainbowevent5" => "no translation available"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';

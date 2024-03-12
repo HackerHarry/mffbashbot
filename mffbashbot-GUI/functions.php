@@ -324,7 +324,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "eventgarden":
         // Event-Acker
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4", "waterbattle1", "waterbattle2", "waterbattle3", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame1", "tinkergame2", "tinkergame3", "tinkergame4", "tinkergame5", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5");
+        CreateEventGardenOptions("pentecost1", "pentecost2", "pentecost3", "pentecost4", "waterbattle1", "waterbattle2", "waterbattle3", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame1", "tinkergame2", "tinkergame3", "tinkergame4", "tinkergame5", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5");
         echo "</select>\n";
         break;
   default:

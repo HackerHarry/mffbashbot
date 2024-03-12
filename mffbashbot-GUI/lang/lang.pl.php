@@ -147,8 +147,12 @@ $eventgardenproductlist = [
 "cropaction2" => "no translation available",
 "cropaction3" => "no translation available",
 "cropaction4" => "no translation available",
-"cropaction5" => "no translation available"];
-
+"cropaction5" => "no translation available",
+"rainbowevent1" => "no translation available",
+"rainbowevent2" => "no translation available",
+"rainbowevent3" => "no translation available",
+"rainbowevent4" => "no translation available",
+"rainbowevent5" => "no translation available"];
 $strings['mill'] = 'Młyn';
 $strings['pleasewait'] = 'Proszę zaczekać...';
 $strings['logonfailed'] = 'Logowanie zakończone nie powodzeniem!';

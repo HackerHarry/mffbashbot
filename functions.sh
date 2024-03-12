@@ -3544,7 +3544,7 @@ function checkDeliveryEvent {
 function checkOlympiaEvent {
  getOlympiaData $FARMDATAFILE
  sleep 2
- local iMaxBerries=$($JQBIN '.datablock.config.berries_full // 99999' $FARMDATAFILE) # make sure we get a number
+ local iMaxBerries=$($JQBIN '.datablock.config?.berries_full? // 99999' $FARMDATAFILE) # make sure we get a number
  local iBerriesNeeded=$((iMaxBerries / 10))
  local iBerriesAvailable
  local iEnergy
