@@ -178,11 +178,15 @@ $eventgardenproductlist = [
 "cropaction3" => "Супер-Царевица",
 "cropaction4" => "Супер-Соя",
 "cropaction5" => "Супер-Жито",
-"rainbowevent1" => "no translation available",
-"rainbowevent2" => "no translation available",
-"rainbowevent3" => "no translation available",
-"rainbowevent4" => "no translation available",
-"rainbowevent5" => "no translation available"];
+
+// Translation is not provided by Upjers - Product names are in English. I'll monitor. - Fauster
+"rainbowevent1" => "Leprechaun Mushroom",
+"rainbowevent2" => "Snake Vine",
+"rainbowevent3" => "Gold Cauldron Lily",
+"rainbowevent4" => "Horseshoe Tulip",
+"rainbowevent5" => "Rainbow Clover"];
+//* Close comment. 
+
 
 //Други струни 
 $strings['mill'] = 'Мелница';
