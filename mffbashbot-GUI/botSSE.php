@@ -1,6 +1,6 @@
 <?php
 // Server-sent events file for My Free Farm Bash Bot (front end)
-// Copyright 2016-23 Harun "Harry" Basalamah
+// Copyright 2016-24 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file

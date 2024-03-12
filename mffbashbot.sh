@@ -2,7 +2,7 @@
 # shellcheck disable=SC2086,SC2155
 #
 # My Free Farm Bash Bot
-# Copyright 2016-23 Harun "Harry" Basalamah
+# Copyright 2016-24 Harry Basalamah
 #
 # For license see LICENSE file
 
