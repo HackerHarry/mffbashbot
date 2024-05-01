@@ -183,11 +183,11 @@ $eventgardenproductlist = [
 "rainbowevent3" => "Златен котел Лили",
 "rainbowevent4" => "Лале подкова",
 "rainbowevent5" => "Дъга детелина",
-"collectevent1" => "no translation available",
-"collectevent2" => "no translation available",
-"collectevent3" => "no translation available",
-"collectevent4" => "no translation available",
-"collectevent5" => "no translation available"];
+"collectevent1" => "Черешов цвят - Храст",
+"collectevent2" => "Черешов цвят - Бор",
+"collectevent3" => "Черешов цвят - Бамбук",
+"collectevent4" => "Черешов цвят - Сукуленти",
+"collectevent5" => "Черешов цвят - Цветове"];
 
 //Други струни 
 $strings['mill'] = 'Мелница';
