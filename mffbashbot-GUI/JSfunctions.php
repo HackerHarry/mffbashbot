@@ -25,15 +25,15 @@ function sanityCheck(elSel, elSelDest, amountpos) {
   return false;
  }
  if (elSel.id == "itemposmonsterfruit") {
-  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 7 && !(elSelDest.id == "qselmonsterfruit3")) {
+  if (elSel.selectedIndex >= 1 && elSel.selectedIndex <= 12 && !(elSelDest.id == "qselmonsterfruit3")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }
-  if (elSel.selectedIndex >= 8 && elSel.selectedIndex <= 14 && !(elSelDest.id == "qselmonsterfruit2")) {
+  if (elSel.selectedIndex >= 13 && elSel.selectedIndex <= 24 && !(elSelDest.id == "qselmonsterfruit2")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }
-  if (elSel.selectedIndex >= 15 && !(elSelDest.id == "qselmonsterfruit1")) {
+  if (elSel.selectedIndex >= 25 && !(elSelDest.id == "qselmonsterfruit1")) {
    alert("{$strings['wrongqueue']}");
    return false;
   }

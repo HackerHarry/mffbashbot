@@ -24,8 +24,9 @@ function CreateOptionsWithIDfromArray($arr) {
 }
 function CreateMonsterOptions() {
  global $monsterlist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$monsterlist[$i]</option>\n";
+ if (isset($monsterlist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$monsterlist[$i]</option>\n";
 }
 function CreateForestryOptions() {
  global $forestryproductlist;
@@ -34,13 +35,15 @@ function CreateForestryOptions() {
 }
 function CreateFoodworldOptions() {
  global $foodworldproductlist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$foodworldproductlist[$i]</option>\n";
+ if (isset($foodworldproductlist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$foodworldproductlist[$i]</option>\n";
 }
 function CreateMegaFieldOptions() {
  global $megafieldvehicleslist;
- foreach (func_get_args() as $i)
-  echo "<option value=\"$i\">$megafieldvehicleslist[$i]</option>\n";
+ if (isset($megafieldvehicleslist[1]))
+    foreach (func_get_args() as $i)
+        echo "<option value=\"$i\">$megafieldvehicleslist[$i]</option>\n";
 }
 function CreateWindMillOptions() {
  global $windmillproductlist;
@@ -222,7 +225,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "monsterfruit":
         // Monsterfruchtzucht
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateMonsterOptions(1, 2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26);
+        CreateMonsterOptions(1, 2, 3, 4, 5, 6, 7, 27, 28, 29, 30, 31, 10, 11, 12, 13, 14, 15, 16, 32, 33, 34, 35, 36, 20, 21, 22, 23, 24, 25, 26, 37, 38, 39, 40, 41);
         echo "</select>\n";
         break;
   case "vet":
