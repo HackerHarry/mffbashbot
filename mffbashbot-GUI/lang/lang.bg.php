@@ -278,5 +278,7 @@ $strings['doinsecthotel-tt'] = 'Обслужи хотел за насекоми'
 $strings['eventgarden'] = 'Събитие поле';
 $strings['doeventgarden'] = 'Обслужи поле за събитие';
 $strings['doeventgarden-tt'] = 'Накарайте бота да обслужва опашката за събитиени полета в Пондсвил.';
+$strings['dogreenhouse'] = 'n/a';
+$strings['dogreenhouse-tt'] = 'n/a';
 // $strings[''] = '';
 ?>

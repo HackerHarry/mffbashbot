@@ -95,6 +95,11 @@ function getPanData {
  WGETREQ "${AJAXFARM}mode=showpan&farm=1&position=0" $sFile
 }
 
+function getGreenHouseData {
+ local sFile=$1
+ WGETREQ "${AJAXFARM}mode=greenhouse_init" $sFile
+}
+
 function getInnerInfoData {
  local sFile=$1
  local iFarm=$2
@@ -3282,6 +3287,14 @@ function redeemPuzzlePartsPacks {
     sendAJAXFarmRequest "mode=pets_open_pack&type=${iType}"
    done
   done
+ fi
+}
+
+function checkGreenHouseBonus {
+ getGreenHouseData $FARMDATAFILE
+ if checkTimeRemaining '.datablock.data.remain'; then
+  echo "Collecting points bonus from green house..."
+  sendAJAXFarmRequest "mode=greenhouse_get_bonus"
  fi
 }
 

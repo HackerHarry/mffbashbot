@@ -254,5 +254,7 @@ $strings['doinsecthotel-tt'] = 'wskazówki dotyczące budowy hotelu dla owadów'
 $strings['eventgarden'] = 'ogród eventowy';
 $strings['doeventgarden'] = 'zrób ogród eventowy';
 $strings['doeventgarden-tt'] = 'wskazówki dotyczące ogrodu eventowego';
+$strings['dogreenhouse'] = 'n/a';
+$strings['dogreenhouse-tt'] = 'n/a';
 // $strings[''] = '';
 ?>
