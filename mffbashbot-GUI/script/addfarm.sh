@@ -126,7 +126,8 @@ sushibardessert = 0
 scoutfood = 0
 doinsecthotel = 0
 doeventgarden = 0
-vehiclemgmt9 = 0"
+vehiclemgmt9 = 0
+dogreenhouse = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

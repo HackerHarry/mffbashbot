@@ -103,6 +103,14 @@ checkSoftwareVersions
 umask 002
 echo $BASHPID > "$PIDFILE"
 
+# this is just a goodie. _might_ require kernel.sched_autogroup_enabled to be set to '0'
+# 19 would be the highest nice level (lowest prio), -19 would be the lowest nice level as in 'not nice at all for hogging more CPU time'
+# uncomment and set to your needs, if needed
+#if command -v renice &>/dev/null; then
+# NICELVL=19
+# renice -n $NICELVL $$
+#fi
+
 while (true); do
  WORKERQUEUE=$((++WORKERQUEUE))
  ERRCOUNT=0
@@ -619,6 +627,11 @@ while (true); do
   if grep -q "doseedbox = 1" $CFGFILE; then
    echo "Checking for points bonus from seed box..."
    checkPanBonus
+  fi
+
+  if grep -q "dogreenhouse = 1" $CFGFILE; then
+   echo "Checking for points bonus from green house..."
+   checkGreenHouseBonus
   fi
 
   if [ $PLAYERLEVELNUM -ge 8 ]; then

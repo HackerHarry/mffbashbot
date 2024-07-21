@@ -254,5 +254,7 @@ $strings['doinsecthotel-tt'] = 'Collects rewards from the cash desk and refills 
 $strings['eventgarden'] = 'Event Field';
 $strings['doeventgarden'] = 'Serve Event Field';
 $strings['doeventgarden-tt'] = 'Makes the bot serve the Event Fields queue in Pondsville';
+$strings['dogreenhouse'] = 'Collect greenhouse points bonus';
+$strings['dogreenhouse-tt'] = 'This bonus can be collected every 23 hours';
 // $strings[''] = '';
 ?>

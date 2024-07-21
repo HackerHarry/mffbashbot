@@ -254,5 +254,7 @@ $strings['doinsecthotel-tt'] = 'Sammelt Belohnungen der Kasse ein und füllt wen
 $strings['eventgarden'] = 'Event-Acker';
 $strings['doeventgarden'] = 'Event-Acker bedienen';
 $strings['doeventgarden-tt'] = 'Wenn aktiviert, wird die Warteschlange des Event-Ackers in Teichlingen bedient';
+$strings['dogreenhouse'] = 'Gewächshaus-Punktebonus einsammeln';
+$strings['dogreenhouse-tt'] = 'Alle 23 Stunden kann dieser Bonus einkassiert werden';
 // $strings[''] = '';
 ?>
