@@ -35,7 +35,7 @@ function exitBot {
   # don't use WGETREQ as we wouldn't like to doublekill ourself
   wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   echo "Cleaning up..."
-  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
+  rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$TMPFILE"-*-[1-6] "$LASTERRORFILE"
  fi
  case "$sSignal" in
     INT)
@@ -59,7 +59,7 @@ function restartBot {
  logToFile "My Free Farm Bash Bot encountered a problem"
  echo "Attempting to log off..."
  wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
- rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-[5-8]-[1-6] "$LASTERRORFILE"
+ rm -f "$STATUSFILE" "$COOKIEFILE" "$FARMDATAFILE" "$OUTFILE" "$TMPFILE" "$PIDFILE" "$TMPFILE"-*-[1-6] "$LASTERRORFILE"
  echo "Restarting bot..."
  cd ..
  exec /usr/bin/env bash mffbashbot.sh $MFFUSER
@@ -2454,6 +2454,14 @@ function checkSendGoodsToMainFarm {
      else
       iPIDMin=998
       iPIDMax=998
+     fi
+     ;;
+  10) if ! grep -q "transO10 = 0" $CFGFILE && grep -q "transO10 = " $CFGFILE; then
+      iPIDMin=$(getConfigValue transO10)
+      iPIDMax=$iPIDMin
+     else
+      iPIDMin=1100
+      iPIDMax=1106
      fi
      ;;
  esac

@@ -26,6 +26,7 @@ switch ($farm) {
  case 7:
  case 8:
  case 9:
+ case 10:
   // Normal farms
   for ($position = 1; $position <= 6; $position++) {
    if (strrpos($queue[$position - 1], "-") !== false) {
@@ -96,8 +97,8 @@ switch ($farm) {
  break;
 
  case "city2":
-  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "trans29", "eventgarden"];
-  for ($poscount = 0; $poscount < 9; $poscount++) {
+  $position = ["windmill", "trans25", "trans26", "powerups", "tools", "trans27", "trans28", "trans29", "trans210", "eventgarden"];
+  for ($poscount = 0; $poscount < count($position); $poscount++) {
    if (strrpos($queue[$poscount], "-") !== false) {
     $slots = explode("-", $queue[$poscount]); // handle 2 slots
     $slot1 = explode(" ", $slots[0]);
@@ -132,11 +133,13 @@ switch ($farm) {
   $configContents['vehiclemgmt7'] = $_POST["vehiclemgmt7"];
   $configContents['vehiclemgmt8'] = $_POST["vehiclemgmt8"];
   $configContents['vehiclemgmt9'] = $_POST["vehiclemgmt9"];
+  $configContents['vehiclemgmt10'] = $_POST["vehiclemgmt10"];
   $configContents['transO5'] = $_POST["transO5"];
   $configContents['transO6'] = $_POST["transO6"];
   $configContents['transO7'] = $_POST["transO7"];
   $configContents['transO8'] = $_POST["transO8"];
   $configContents['transO9'] = $_POST["transO9"];
+  $configContents['transO10'] = $_POST["transO10"];
   $configContents['restartvetjob'] = $_POST["vetjobdifficulty"];
   $configContents['dopuzzleparts'] = $_POST["puzzlepartstoggle"];
   $configContents['sendfarmiesaway'] = $_POST["farmiestoggle"];

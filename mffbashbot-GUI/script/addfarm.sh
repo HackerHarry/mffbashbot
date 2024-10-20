@@ -70,6 +70,7 @@ transO6 = 0
 transO7 = 0
 transO8 = 0
 transO9 = 0
+transO10 = 0
 dopentecostevent = 0
 autobuyrefillto = 0
 autobuyitems = 0
@@ -127,7 +128,8 @@ scoutfood = 0
 doinsecthotel = 0
 doeventgarden = 0
 vehiclemgmt9 = 0
-dogreenhouse = 0"
+dogreenhouse = 0
+vehiclemgmt10 = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely
@@ -194,12 +196,19 @@ DIRS=( 1/1
 9/4
 9/5
 9/6
+10/1
+10/2
+10/3
+10/4
+10/5
+10/6
 city2/powerups
 city2/trans25
 city2/trans26
 city2/trans27
 city2/trans28
 city2/trans29
+city2/trans210
 city2/tools
 city2/windmill
 city2/eventgarden
