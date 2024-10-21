@@ -218,6 +218,7 @@ $strings['autotransportO6'] = 'autotransport O6';
 $strings['autotransportO7'] = 'autotransport O7';
 $strings['autotransportO8'] = 'autotransport O8';
 $strings['autotransportO9'] = 'autotransport O9';
+$strings['autotransportO10'] = 'autotransport O10';
 $strings['trimlogstock'] = 'przytnij zapasy drewna';
 $strings['trimlogstock-tt'] = 'wskazówki dotyczące przycinania zapasów drewna';
 $strings['removeweed'] = 'usuń chwasty';
