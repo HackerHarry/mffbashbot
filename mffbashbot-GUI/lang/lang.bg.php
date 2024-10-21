@@ -242,6 +242,7 @@ $strings['autotransportO6'] = 'Транспортирай от Ферма 6';
 $strings['autotransportO7'] = 'Транспортирай от Ферма 7';
 $strings['autotransportO8'] = 'Транспортирай от Ферма 8';
 $strings['autotransportO9'] = 'Транспортирай от Ферма 9';
+$strings['autotransportO10'] = 'Транспортирай от Ферма 10';
 $strings['trimlogstock'] = 'Унищожаване на дънери';
 $strings['trimlogstock-tt'] = 'Ако не можете да прибирате дървета, тази опция може да помогне да унищожите част от инвентара';
 $strings['removeweed'] = 'Премахни плевели веднъж';

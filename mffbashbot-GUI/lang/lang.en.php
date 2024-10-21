@@ -218,6 +218,7 @@ $strings['autotransportO6'] = 'Transport this off of farm 6';
 $strings['autotransportO7'] = 'Transport this off of farm 7';
 $strings['autotransportO8'] = 'Transport this off of farm 8';
 $strings['autotransportO9'] = 'Transport this off of farm 9';
+$strings['autotransportO10'] = 'Transport this off of farm 10';
 $strings['trimlogstock'] = 'Destroy logs if needed';
 $strings['trimlogstock-tt'] = 'If a tree harvest would exceed the stock capacity, this feature can destroy the surplus';
 $strings['removeweed'] = 'Remove weed once';

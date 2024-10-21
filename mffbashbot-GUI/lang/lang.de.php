@@ -218,6 +218,7 @@ $strings['autotransportO6'] = 'Abtransportieren von Farm 6';
 $strings['autotransportO7'] = 'Abtransportieren von Farm 7';
 $strings['autotransportO8'] = 'Abtransportieren von Farm 8';
 $strings['autotransportO9'] = 'Abtransportieren von Farm 9';
+$strings['autotransportO10'] = 'Abtransportieren von Farm 10';
 $strings['trimlogstock'] = 'Baumstämme bei Bedarf zerstören';
 $strings['trimlogstock-tt'] = 'Sollte eine Baumernte die Lagerkapazität überfordern, kann hier der Übeschuss zerstört werden';
 $strings['removeweed'] = 'Unkraut einmalig beseitigen';
