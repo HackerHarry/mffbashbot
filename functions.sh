@@ -2086,6 +2086,86 @@ function checkCategoryOnPlate {
  return 1
 }
 
+function checkOven {
+ local iPID
+ local iPIDCount
+ local iSafetyCount
+ local aSlots="1 2 3"
+ local iSlot
+ local iSlotLevel
+ local iSlotCapacity
+ local iLevel=$($JQBIN '.updateblock.spicehouse.data.level' $FARMDATAFILE)
+ local iLevelNeeded
+ local jData='{}'
+ for iSlot in $aSlots; do
+  iLevelNeeded=$($JQBIN '.updateblock.spicehouse.config.oven["'${iSlot}'"].level' $FARMDATAFILE)
+  if [ $iLevelNeeded -gt $iLevel ]; then
+   continue
+  fi
+  iPID=$(getConfigValue ovenslot${iSlot})
+  if [ "${iPID:-0}" = "0" ]; then
+   continue
+  fi
+  iSlotLevel=$($JQBIN '.updateblock.spicehouse.data.oven_slots["'${iSlot}'"].level' $FARMDATAFILE)
+  iSlotCapacity=$($JQBIN '.updateblock.spicehouse.config.oven_levels["'${iSlotLevel}'"].capacity' $FARMDATAFILE)
+  iPIDCount=$(getPIDAmountFromStock $iPID 10)
+  iSafetyCount=$(getProductCountFittingOnField $iPID)
+  if [ $((iPIDCount - iSlotCapacity )) -lt $iSafetyCount ]; then
+   logToFile "${FUNCNAME}: Not enough crop in stock for oven slot ${iSlot}"
+   continue
+  fi
+  # we can fill the JSON array
+  jData=$(echo $jData | $JQBIN --compact-output '.["'${iSlot}'"]["1"].pid='${iPID}' | .["'${iSlot}'"]["1"].amount='${iSlotCapacity})
+ done
+ if [ "$jData" = "{}" ]; then
+  # nothing to do
+  return
+ fi
+ jData=$(echo $jData | $JQBIN --compact-output '.' | $JQBIN -r @uri)
+ echo "Heating up the oven..."
+ sendAJAXFarmUpdateRequest "setup=${jData}&mode=spicehouse_start_oven"
+}
+
+function checkSpiceMill {
+ local iSlot=$1
+ local iPID
+ local iLevel=$($JQBIN '.updateblock.spicehouse.data.level' $FARMDATAFILE)
+ local iLevelNeeded
+ local iCurrentTime
+ local iStartTime
+ local iDeltaTime
+ local iItemsDone
+ local iDuration
+ local iAmount
+ local iRemaining
+ iLevelNeeded=$($JQBIN '.updateblock.spicehouse.config.mill["'${iSlot}'"].level' $FARMDATAFILE)
+ if [ $iLevelNeeded -gt $iLevel ]; then
+  return 1
+ fi
+ iStartTime=$($JQBIN -r '.updateblock.spicehouse.data.mill_slots["'${iSlot}'"].start | type' $FARMDATAFILE)
+ if [ "$iStartTime" != "number" ]; then
+  return 1
+ fi
+ # slot is in operation
+ iPID=$($JQBIN '.updateblock.spicehouse.data.mill_slots["'${iSlot}'"].pid' $FARMDATAFILE)
+ iDuration=$($JQBIN '.updateblock.spicehouse.config.products["'${iPID}'"].duration' $FARMDATAFILE)
+ iStartTime=$($JQBIN '.updateblock.spicehouse.data.mill_slots["'${iSlot}'"].start' $FARMDATAFILE)
+ iCurrentTime=$($JQBIN '.updateblock.spicehouse.data.time' $FARMDATAFILE)
+ iDeltaTime=$((iCurrentTime - iStartTime))
+ iItemsDone=$((iDeltaTime / iDuration))
+ iAmount=$($JQBIN '.updateblock.spicehouse.data.mill_slots["'${iSlot}'"].amount_original' $FARMDATAFILE)
+ if [ $iItemsDone -lt $iAmount ]; then
+  iRemaining=$(((iStartTime + iDuration * iAmount) - iCurrentTime))
+  if [ $iRemaining -lt $PAUSETIME ]; then
+   PAUSETIME=$iRemaining
+   PAUSECORRECTEDAT=$(date +"%s")
+  fi
+  # not all of the thrown in goods have been milled yet
+  return 1
+ fi
+ return 0
+}
+
 function doInfiniteQuest {
  local iCount
  local iPIDCount
@@ -2524,7 +2604,7 @@ function getProductCountFittingOnField {
  # shellcheck disable=SC2090
  sCategory=$(echo $aCAT | $JQBIN -r '."'${iPID}'"')
  case "$sCategory" in
-  v|ex|alpin|water)
+  v|ex|alpin|water|spice)
     # item is plantable
     # shellcheck disable=SC2090
     iPIDDim_x=$(echo $aDIM_X | $JQBIN -r '."'${iPID}'"')
@@ -2924,6 +3004,37 @@ function startEventGarden {
  sendAJAXFarmRequest "plant=${iPID}&mode=eventgarden_autoplant"
 }
 
+function harvestSpiceHouse {
+ local iSlot=$3
+ iSlot=$((++iSlot))
+ sendAJAXFarmRequest "slot=${iSlot}&mode=spicehouse_clear_mill"
+}
+
+function startSpiceHouseNP {
+ startSpiceHouse $1 $2 $3
+}
+
+function startSpiceHouse {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ local iSlotLevel
+ local iSlotCapacity
+ # tests as to whether a slot can be served is done in checkSpiceMill(), so no testing here
+ # find out what we have to throw in
+ iPID=$($JQBIN -r '.updateblock.spicehouse.config.products | to_entries[] | select(.value.transform == '${iPID}').key' $FARMDATAFILE)
+ iSlot=$((++iSlot))
+ iSlotLevel=$($JQBIN '.updateblock.spicehouse.data.mill_slots["'${iSlot}'"].level' $FARMDATAFILE)
+ iSlotCapacity=$($JQBIN '.updateblock.spicehouse.config.mill_levels["'${iSlotLevel}'"].capacity' $FARMDATAFILE)
+ iPIDCount=$(getPIDAmountFromStock $iPID 10)
+ if [ $iPIDCount -lt $iSlotCapacity ]; then
+  logToFile "${FUNCNAME}: Not enough crop in stock for mill slot ${iSlot}"
+  return
+ fi
+ sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&amount=${iSlotCapacity}&mode=spicehouse_set_millslot"
+}
+
 function startEventGardenNP {
  startEventGarden $1 $2 $3
 }
@@ -3177,6 +3288,8 @@ function checkQueueCount {
       ;;
   23) iQueuesInGame=$(getQueueCount23)
       ;;
+  24) iQueuesInGame=$(getQueueCount24)
+      ;;
    *) iQueuesInGame=1
       ;;
  esac
@@ -3201,7 +3314,7 @@ function getQueueCountInFS {
 function getMaxQueuesForBuildingID {
  local iBuildingID=$1
  case "$iBuildingID" in
-  13|14|16|20|21|23)
+  13|14|16|20|21|23|24)
      echo 3
      ;;
   *)
@@ -3263,6 +3376,19 @@ function getQueueCount23 {
   fi
  done
  echo $iSlots
+}
+
+function getQueueCount24 {
+ local iLevel=$($JQBIN '.updateblock.spicehouse.data.level' $FARMDATAFILE)
+ if [ $iLevel -ge 11 ]; then
+  echo 3
+  return
+ fi
+ if [ $iLevel -ge 5 ]; then
+  echo 2
+  return
+ fi
+ echo 1
 }
 
 function addQueuesToPosition {
@@ -3908,6 +4034,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *sushibar*)
         $JQBIN -s 'del(.[0].updateblock.sushibar) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *spicehouse*)
+        $JQBIN -s 'del(.[0].updateblock.spicehouse.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *)
         $JQBIN -s '.[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

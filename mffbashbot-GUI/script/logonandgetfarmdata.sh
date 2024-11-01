@@ -44,7 +44,7 @@ rm $COOKIEFILE 2>/dev/null
 NANOVALUE=$(echo $(($(date +%s%N)/1000000)))
 LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
 POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
-AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0"
+AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
 POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 VERURL="https://raw.githubusercontent.com/HackerHarry/mffbashbot/master/version.txt"
 

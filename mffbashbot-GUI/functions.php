@@ -212,6 +212,12 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         CreateOptions(970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985);
         echo "</select>\n";
         break;
+  case 24:
+        // Spice house mill
+        echo "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126);
+        echo "</select>\n";
+        break;
   case "flowerarea":
         // Blumenwiese
         echo "<option value=\"sleep\">Sleep</option>\n";
@@ -331,7 +337,7 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
   case "eventgarden":
         // Event-Acker
         echo "<option value=\"sleep\">Sleep</option>\n";
-        CreateEventGardenOptions("pentecost1", "pentecost5", "pentecost2", "pentecost6", "pentecost3", "pentecost7", "pentecost4", "pentecost8", "waterbattle1", "waterbattle2", "waterbattle3", "waterbattle4", "waterbattle5", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame7", "tinkergame1", "tinkergame8", "tinkergame2", "tinkergame9", "tinkergame3", "tinkergame10", "tinkergame4", "tinkergame11", "tinkergame5", "tinkergame12", "tinkergame6", "invasion1", "invasion2", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5", "collectevent1", "collectevent2", "collectevent3", "collectevent4", "collectevent5");
+        CreateEventGardenOptions("pentecost1", "pentecost5", "pentecost2", "pentecost6", "pentecost3", "pentecost7", "pentecost4", "pentecost8", "waterbattle1", "waterbattle2", "waterbattle3", "waterbattle4", "waterbattle5", "icedeliveryevent1", "icedeliveryevent2", "icedeliveryevent3", "tinkergame7", "tinkergame1", "tinkergame8", "tinkergame2", "tinkergame9", "tinkergame3", "tinkergame10", "tinkergame4", "tinkergame11", "tinkergame5", "tinkergame12", "tinkergame6", "invasion1", "invasion4", "invasion2", "invasion5", "invasion3", "giftdeliveryevent1", "giftdeliveryevent2", "giftdeliveryevent3", "olympia1", "olympia2", "olympia3", "cropaction1", "cropaction2", "cropaction3", "cropaction4", "cropaction5", "rainbowevent1", "rainbowevent2", "rainbowevent3", "rainbowevent4", "rainbowevent5", "collectevent1", "collectevent2", "collectevent3", "collectevent4", "collectevent5");
         echo "</select>\n";
         break;
   default:
@@ -468,6 +474,9 @@ function GetBuildingTypeForBuildingID($buildingID) {
   case 23:
 	return "SushiBar";
 	break;
+  case 24:
+	return "SpiceHouse";
+	break;
   default:
 	return "unsupported";
   }
@@ -507,6 +516,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "FuelStation":
    case "TeaFactory":
    case "SushiBar":
+   case "SpiceHouse":
    case "KnittingMill":
    case "OilMill":
    $queueItemFriendlyName = $productlist[intval($queueItem)];

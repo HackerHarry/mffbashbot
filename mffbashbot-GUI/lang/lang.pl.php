@@ -50,7 +50,9 @@ $eventgardenproductlist = [
 "tinkergame12" => "Gra Tinkera 12",
 "tinkergame6" => "Gra Tinkera 6",
 "invasion1" => "Inwazja 1",
+"invasion4" => "Inwazja 4",
 "invasion2" => "Inwazja 2",
+"invasion5" => "Inwazja 5",
 "invasion3" => "Inwazja 3",
 "giftdeliveryevent1" => "Dostawa Prezentów 1",
 "giftdeliveryevent2" => "Dostawa Prezentów 2",
@@ -271,5 +273,6 @@ $strings['doeventgarden'] = 'zrób ogród eventowy';
 $strings['doeventgarden-tt'] = 'wskazówki dotyczące ogrodu eventowego';
 $strings['dogreenhouse'] = 'n/a';
 $strings['dogreenhouse-tt'] = 'n/a';
+$strings['spicehouseoven'] = 'n/a';
 // $strings[''] = '';
 ?>
