@@ -50,7 +50,9 @@ $eventgardenproductlist = [
 "tinkergame12" => "Green Trumpet Lily",
 "tinkergame6" => "Big Trumpet Plant",
 "invasion1" => "Marshmallow Hibiscus",
+"invasion4" => "Chocolate Cattail",
 "invasion2" => "Chewing Gum Sunflower",
+"invasion5" => "Chocolate Mushroom",
 "invasion3" => "Chocolate Buttons Hydrangea",
 "giftdeliveryevent1" => "Striped Gift Grass",
 "giftdeliveryevent2" => "Christmas Box Begonia",
@@ -271,5 +273,6 @@ $strings['doeventgarden'] = 'Serve Event Field';
 $strings['doeventgarden-tt'] = 'Makes the bot serve the Event Fields queue in Pondsville';
 $strings['dogreenhouse'] = 'Collect greenhouse points bonus';
 $strings['dogreenhouse-tt'] = 'This bonus can be collected every 23 hours';
+$strings['spicehouseoven'] = 'Spice House oven';
 // $strings[''] = '';
 ?>

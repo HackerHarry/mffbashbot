@@ -151,7 +151,7 @@ function saveMisc() {
  'transO8', 'transO9', 'transO10', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
  'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
  'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
- 'sushibardessert', 'scoutfood'];
+ 'sushibardessert', 'scoutfood', 'ovenslot1', 'ovenslot2', 'ovenslot3'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
  'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',

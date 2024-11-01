@@ -72,7 +72,9 @@ $eventgardenproductlist = [
 "tinkergame12" => "n/a",
 "tinkergame6" => "Голяма тромпетен растение",
 "invasion1" => "Маршмелоу хибискус",
+"invasion4" => "n/a",
 "invasion2" => "Слънчогледова дъвка",
+"invasion5" => "n/a",
 "invasion3" => "Хризантемови дъвчащи бонбони",
 "giftdeliveryevent1" => "Тревна панделка за подарък",
 "giftdeliveryevent2" => "Коледна кутия Бегония",
@@ -295,5 +297,6 @@ $strings['doeventgarden'] = 'Обслужи поле за събитие';
 $strings['doeventgarden-tt'] = 'Накарайте бота да обслужва опашката за събитиени полета в Пондсвил.';
 $strings['dogreenhouse'] = 'n/a';
 $strings['dogreenhouse-tt'] = 'n/a';
+$strings['spicehouseoven'] = 'n/a';
 // $strings[''] = '';
 ?>

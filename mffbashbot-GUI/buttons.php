@@ -287,6 +287,26 @@ echo "</select>&nbsp;{$strings['sushibarsushi']}
 CreateOptionsWithID("o", 982, 983, 984, 985);
 echo "</select>&nbsp;{$strings['sushibardessert']}
 </td></tr>";
+// spice house oven
+echo "<tr><th>{$strings['spicehouseoven']}</th></tr>
+<tr><td>
+<select id=\"ovenslot1\" name=\"ovenslot1\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"os0\">Sleep</option>\n";
+CreateOptionsWithID("os", 113, 701, 703, 1100, 1101, 1102, 1103, 1104, 1105, 1106);
+echo "</select>&nbsp;{$strings['slot']} 1
+</td></tr>
+<tr><td>
+<select id=\"ovenslot2\" name=\"ovenslot2\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"2os0\">Sleep</option>\n";
+CreateOptionsWithID("2os", 113, 701, 703, 1100, 1101, 1102, 1103, 1104, 1105, 1106);
+echo "</select>&nbsp;{$strings['slot']} 2
+</td></tr>
+<tr><td>
+<select id=\"ovenslot3\" name=\"ovenslot3\" onchange=\"saveMisc();\">
+<option value=\"0\" id=\"3os0\">Sleep</option>\n";
+CreateOptionsWithID("3os", 113, 701, 703, 1100, 1101, 1102, 1103, 1104, 1105, 1106);
+echo "</select>&nbsp;{$strings['slot']} 3
+</td></tr>";
 // fruit stall slots
 echo "<tr><th>{$strings['fruitstallslots']} 1</th></tr>\n";
 for ($i = 1; $i <= 4; $i++) {
@@ -598,7 +618,7 @@ $expectedKeys = [ 'carefood', 'caretoy', 'careplushy', 'dodog', 'dologinbonus',
 'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
 'buyvinetillsunny', 'vinefullservice', 'sushibarsoup', 'sushibarsalad',
 'sushibarsushi', 'sushibardessert', 'scoutfood', 'doinsecthotel', 'doeventgarden',
-'dogreenhouse'];
+'dogreenhouse', 'ovenslot1', 'ovenslot2', 'ovenslot3'];
 // make sure missing options don't mess up the options' display
 for ($i = 0; $i < count($expectedKeys); $i++)
  if (!isset($configContents[$expectedKeys[$i]]))
@@ -692,6 +712,12 @@ $savedValue = $configContents['sushibarsushi'];
 echo " document.getElementById('sushibarsushi').selectedIndex = document.getElementById('o$savedValue').index;\n";
 $savedValue = $configContents['sushibardessert'];
 echo " document.getElementById('sushibardessert').selectedIndex = document.getElementById('o$savedValue').index;\n";
+$savedValue = $configContents['ovenslot1'];
+echo " document.getElementById('ovenslot1').selectedIndex = document.getElementById('os$savedValue').index;\n";
+$savedValue = $configContents['ovenslot2'];
+echo " document.getElementById('ovenslot2').selectedIndex = document.getElementById('2os$savedValue').index;\n";
+$savedValue = $configContents['ovenslot3'];
+echo " document.getElementById('ovenslot3').selectedIndex = document.getElementById('3os$savedValue').index;\n";
 $savedValue = $configContents['scoutfood'];
 echo "if (document.getElementById('scoutfood') !== null)
  document.getElementById('scoutfood').selectedIndex = document.getElementById('o$savedValue').index;\n";

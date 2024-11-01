@@ -172,7 +172,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -288,6 +288,22 @@ while (true); do
      done
     checkSushiBarPlates
     continue
+    fi
+    if [ "$BUILDINGID" = "24" ]; then
+     # spice house
+     echo "Checking for pending tasks in spice house..."
+     if checkTimeRemaining '.updateblock.spicehouse.data.oven.remain'; then
+      echo "Collecting dried goods from oven..."
+      sendAJAXFarmUpdateRequest "mode=spicehouse_open_oven" && sleep 1
+      checkOven
+     fi
+     aSLOTS="1 2 3"
+     for SLOT in $aSLOTS; do
+      if checkSpiceMill $SLOT; then
+       echo "Doing spice house mill ${SLOT}..."
+       doFarm ${FARM} ${POSITION} $((SLOT - 1))
+      fi
+     done
     fi
     # shellcheck disable=SC2046
     if [ $(getMaxQueuesForBuildingID $BUILDINGID) -eq 3 ]; then

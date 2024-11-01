@@ -50,7 +50,9 @@ $eventgardenproductlist = [
 "tinkergame12" => "Trötengrünlilie",
 "tinkergame6" => "Große Trötenpflanze",
 "invasion1" => "Marshmallow-Hibiskus",
+"invasion4" => "Schokolade-Kolben",
 "invasion2" => "Kaugummi-Sonnenblume",
+"invasion5" => "Schokolade-Champignon",
 "invasion3" => "Schokolinsen-Hortensien",
 "giftdeliveryevent1" => "Gestreiftes Geschenkgras",
 "giftdeliveryevent2" => "Weihnachtsbox-Begonie",
@@ -271,5 +273,6 @@ $strings['doeventgarden'] = 'Event-Acker bedienen';
 $strings['doeventgarden-tt'] = 'Wenn aktiviert, wird die Warteschlange des Event-Ackers in Teichlingen bedient';
 $strings['dogreenhouse'] = 'Gewächshaus-Punktebonus einsammeln';
 $strings['dogreenhouse-tt'] = 'Alle 23 Stunden kann dieser Bonus einkassiert werden';
+$strings['spicehouseoven'] = 'Gewürzhaus Ofen';
 // $strings[''] = '';
 ?>
