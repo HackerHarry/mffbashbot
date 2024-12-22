@@ -38,6 +38,7 @@ VERSIONAVAILABLE=/tmp/mffbot-version-available.txt
 PRODUCTS=/tmp/products-${MFFLANG}.txt
 FORESTRYPRODUCTS=/tmp/forestryproducts-${MFFLANG}.txt
 FORMULAS=/tmp/formulas-${MFFLANG}.txt
+EVTGARDENCROP=/tmp/eventgardencrop-${MFFLANG}.txt
 
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -72,6 +73,8 @@ done
 echo "}" >>$FORMULAS
 # PHP is allergic to that last comma...
 sed -i 's/,}/}/' $FORMULAS
+# create list of available event garden crop
+grep 'var products_eventgarden =' $OUTFILE | sed  's/var products_eventgarden = //'  | sed 's/};/}/' | jq '[. | to_entries[] | { (.key): .value.name }] | add' >$EVTGARDENCROP
 
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "https://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"

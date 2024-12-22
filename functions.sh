@@ -128,6 +128,11 @@ function getEventGardenData {
  WGETREQ "${AJAXFARM}mode=eventgarden_init" $sFile
 }
 
+function getSpiceHouseData {
+ local sFile=$1
+ WGETREQ "${AJAXFARM}mode=spicehouse_init" $sFile
+}
+
 function doFarm {
  # read function from queue file
  local iFarm=$1
@@ -2062,7 +2067,7 @@ function checkSushiBarPlates {
    continue
   fi
   iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
-  echo "Placing dish #${iPID} onto plate #${iSlot}"
+  echo "Placing dish #${iPID} onto plate #${iSlot}..."
   sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_settrainslot" && sleep 1
  done
 }
@@ -2446,6 +2451,27 @@ function checkFarmies {
      for iID in $aFarmies; do
       echo "Sending munchie with ID ${iID} away..."
       sendAJAXFoodworldRequest "action=kick&id=${iID}&table=0&chair=0"
+     done
+     ;;
+  spicehousefarmie)
+     local iSlot
+     local aPIDs
+     local iPID
+     local iAmountNeeded
+     local iAmountInStock
+     local aSlots=$($JQBIN -r '.updateblock.spicehouse.data.customers | if (. | type) == "object" then (. | keys[]) else empty end' $FARMDATAFILE)
+     for iSlot in $aSlots; do
+      # this assumes that the key names align with the slot numbers
+      aPIDs=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data | keys[]' $FARMDATAFILE)
+      for iPID in $aPIDs; do
+       iAmountNeeded=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data["'${iPID}'"]' $FARMDATAFILE)
+       iAmountInStock=$(getPIDAmountFromStock $iPID 10)
+       if [ $iAmountNeeded -ge $iAmountInStock ]; then
+        echo "Sending spice house farmie in slot ${iSlot} away..."
+        sendAJAXFarmRequest "slot=${iSlot}&mode=spicehouse_deny_customer"
+        break
+       fi
+      done
      done
      ;;
  esac
@@ -3434,85 +3460,31 @@ function checkGreenHouseBonus {
 
 function checkPanBonus {
  # function by jbond47, update by maiblume & jbond47
- getPanData "$FARMDATAFILE"
- local iToday=$($JQBIN '.datablock["11"].today' $FARMDATAFILE)
- local iSheepCount=$($JQBIN '.datablock["11"].collections.heros | length' $FARMDATAFILE)
- local iLastBonus
+ # 2024 update based on update by Niknak
+ local aCollections
+ local sCollection
+ local iAmountNeeded
+ local iAmountInStock
  local bValue
- # Hero Sheep Bonus
- if [ $iSheepCount -eq 12 ]; then # requires all 12 super sheep
-  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.heros' $FARMDATAFILE)
-  if [ $iLastBonus = "null" ]; then
-   iLastBonus=0
+ local iLastBonus
+ getPanData $FARMDATAFILE
+ local iToday=$($JQBIN '.datablock.paymentitemcollection.today' $FARMDATAFILE)
+ aCollections=$($JQBIN -r '.datablock.paymentitemcollection.collections | keys[]' $FARMDATAFILE)
+ for sCollection in $aCollections; do
+  iAmountInStock=$($JQBIN '.datablock.paymentitemcollection.collections["'${sCollection}'"] | length' $FARMDATAFILE)
+  iAmountNeeded=$($JQBIN '.datablock.paymentitemcollection.config.collection["'${sCollection}'"] | length' $FARMDATAFILE)
+  if [ $iAmountInStock -ne $iAmountNeeded ]; then
+   continue
+   # collection is not complete
   fi
-  echo -n "Hero sheep..."
+  iLastBonus=$($JQBIN '.datablock.paymentitemcollection.lastbonus.'${sCollection}' // 0' $FARMDATAFILE)
   if [ $iToday -gt $iLastBonus ]; then
-   echo "available, claiming it..."
-   sendAJAXFarmRequest "type=heros&mode=paymentitemcollection_bonus"
-  else
-   echo "already claimed"
+   echo "Collecting points bonus from $sCollection sheep collection..."
+   sendAJAXFarmRequest "type=${sCollection}&mode=paymentitemcollection_bonus"
+   # this seemingly collects all bonus points, regardless of how many full collections are available - hence the break
+   break
   fi
- fi
- # Horror Sheep Bonus
- iSheepCount=$($JQBIN '.datablock["11"].collections.horror | length' $FARMDATAFILE)
- if [ $iSheepCount -eq 9 ]; then # requires all 9 horror sheep
-  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.horror' $FARMDATAFILE)
-  if [ $iLastBonus = "null" ]; then
-   iLastBonus=0
-  fi
-  echo -n "Horror sheep..."
-  if [ $iToday -gt $iLastBonus ]; then
-   echo "available, claiming it..."
-   sendAJAXFarmRequest "type=horror&mode=paymentitemcollection_bonus"
-  else
-   echo "already claimed"
-  fi
- fi
- # Sport Sheep Bonus
- iSheepCount=$($JQBIN '.datablock["11"].collections.sport | length' $FARMDATAFILE)
- if [ $iSheepCount -eq 9 ]; then # requires all 9 sport sheep
-  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.sport' $FARMDATAFILE)
-  if [ $iLastBonus = "null" ]; then
-   iLastBonus=0
-  fi
-  echo -n "Sport sheep..."
-  if [ $iToday -gt $iLastBonus ]; then
-   echo "available, claiming it..."
-   sendAJAXFarmRequest "type=sport&mode=paymentitemcollection_bonus"
-  else
-   echo "already claimed"
-  fi
- fi
- # Beach Sheep Bonus
- iSheepCount=$($JQBIN '.datablock["11"].collections.beach | length' $FARMDATAFILE)
- if [ $iSheepCount -eq 9 ]; then # requires all 9 beach sheep
-  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.beach' $FARMDATAFILE)
-  if [ $iLastBonus = "null" ]; then
-   iLastBonus=0
-  fi
-  echo -n "Beach sheep..."
-  if [ $iToday -gt $iLastBonus ]; then
-   echo "available, claiming it..."
-   sendAJAXFarmRequest "type=beach&mode=paymentitemcollection_bonus"
-  else
-   echo "already claimed"
-  fi
- fi
- # Fantasy Sheep Bonus
- iSheepCount=$($JQBIN '.datablock["11"].collections.fantasy | length' $FARMDATAFILE)
- if [ $iSheepCount -eq 9 ]; then # requires all 9 fantasy sheep
-  iLastBonus=$($JQBIN '.datablock["11"].lastbonus.fantasy' $FARMDATAFILE)
-  if [ $iLastBonus = "null" ]; then
-   iLastBonus=0
-  fi
-  echo -n "Fantasy sheep..."
-  if [ $iToday -gt $iLastBonus ]; then
-   echo "available, claiming it..."
-   sendAJAXFarmRequest "type=fantasy&mode=paymentitemcollection_bonus"
-  else
-   echo "already claimed"
-  fi
- fi
+ done
  # Portal Rabbit Points
  bValue=$($JQBIN '.datablock["1"].gifts | has("289")' $FARMDATAFILE)
  if [ "$bValue" = "true" ]; then
@@ -3877,6 +3849,7 @@ function checkInsectHotelStock {
  local iLowerThreshold=25
  local iPercentFull
  local iAmountToRefill
+ local iAmountInStock
  for iSlot in $aSlots; do
   iAmount=$($JQBIN '.updateblock.map.insecthotel.data.stock["'${iSlot}'"].amount' $FARMDATAFILE)
   iLevel=$($JQBIN '.updateblock.map.insecthotel.data.stock["'${iSlot}'"].level' $FARMDATAFILE)
