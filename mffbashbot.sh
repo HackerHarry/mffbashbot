@@ -714,6 +714,14 @@ while (true); do
    echo "Checking for munchies sitting at tables..."
    checkMunchiesAtTables
   fi
+  if [ $PLAYERLEVELNUM -ge 52 ]; then
+   # spice house farmies
+   if grep -q "sendspicehousefarmiesaway = 1" $CFGFILE; then
+    echo "Checking for waiting spice house farmies..."
+    getSpiceHouseData $FARMDATAFILE
+    checkFarmies spicehousefarmie
+   fi
+  fi
   # this is the only building with a queue in city 2, and it's unlikely for this
   # to ever change, hence static coding
   if [ $PLAYERLEVELNUM -ge 8 ]; then

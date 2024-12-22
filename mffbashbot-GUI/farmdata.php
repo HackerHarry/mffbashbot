@@ -11,6 +11,7 @@ $versionavailable = file_get_contents("/tmp/mffbot-version-available.txt");
 ($JSON = file_get_contents("/tmp/forestryproducts-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $forestryproductlist = (json_decode($JSON, true));
 ($JSON = file_get_contents("/tmp/fooddata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $fooddata = (json_decode($JSON, true));
 ($JSON = file_get_contents("/tmp/formulas-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $windmillproductlist = (json_decode($JSON, true));
+($JSON = file_get_contents("/tmp/eventgardencrop-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $eventgardenproductlist = (json_decode($JSON, true));
 
 // monster fruit
 $megafruitObjects = array("water", "light", "fertilize");

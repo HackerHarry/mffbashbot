@@ -147,21 +147,23 @@ function updateBotStatus() {
 function saveMisc() {
  var i, j, v;
  var aOptions = ['lottoggle', 'loginbonus', 'vehiclemgmt5', 'vehiclemgmt6',
- 'vehiclemgmt7', 'vehiclemgmt8', 'vehiclemgmt9', 'vehiclemgmt10', 'transO5', 'transO6', 'transO7',
- 'transO8', 'transO9', 'transO10', 'vetjobdifficulty', 'carefood', 'caretoy', 'careplushy',
- 'autobuyrefillto', 'weathermitigation', 'summercut', 'wintercut', 'vinedefoliation',
- 'vinefertiliser', 'vinewater', 'sushibarsoup', 'sushibarsalad', 'sushibarsushi',
- 'sushibardessert', 'scoutfood', 'ovenslot1', 'ovenslot2', 'ovenslot3'];
+ 'vehiclemgmt7', 'vehiclemgmt8', 'vehiclemgmt9', 'vehiclemgmt10', 'transO5',
+ 'transO6', 'transO7', 'transO8', 'transO9', 'transO10', 'vetjobdifficulty',
+ 'carefood', 'caretoy', 'careplushy', 'autobuyrefillto', 'weathermitigation',
+ 'summercut', 'wintercut', 'vinedefoliation', 'vinefertiliser', 'vinewater',
+ 'sushibarsoup', 'sushibarsalad', 'sushibarsushi', 'sushibardessert',
+ 'scoutfood', 'ovenslot1', 'ovenslot2', 'ovenslot3'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
- 'munchiestoggle', 'flowerfarmiestoggle', 'correctqueuenumtoggle',
- 'ponyenergybartoggle', 'redeempuzzlepartstoggle', 'butterflytoggle',
- 'deliveryeventtoggle', 'olympiaeventtoggle', 'infinitequesttoggle',
- 'cowracepvptoggle', 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle',
- 'cowracetoggle', 'foodcontesttoggle', 'excluderank1cowtoggle',
- 'calendareventtoggle', 'pentecosteventtoggle', 'trimlogstocktoggle', 'removeweedtoggle',
- 'harvestvinetoggle', 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
- 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle', 'doeventgardentoggle',
- 'greenhousetoggle'];
+ 'munchiestoggle', 'flowerfarmiestoggle', 'spicehousefarmiestoggle',
+ 'correctqueuenumtoggle', 'ponyenergybartoggle', 'redeempuzzlepartstoggle',
+ 'butterflytoggle', 'deliveryeventtoggle', 'olympiaeventtoggle',
+ 'infinitequesttoggle', 'cowracepvptoggle', 'redeemdailyseedboxtoggle',
+ 'dogtoggle', 'donkeytoggle', 'cowracetoggle', 'foodcontesttoggle',
+ 'excluderank1cowtoggle', 'calendareventtoggle', 'pentecosteventtoggle',
+ 'trimlogstocktoggle', 'removeweedtoggle', 'harvestvinetoggle',
+ 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
+ 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle',
+ 'doeventgardentoggle', 'greenhousetoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
