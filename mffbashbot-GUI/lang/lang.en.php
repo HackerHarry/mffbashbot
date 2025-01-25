@@ -1,24 +1,6 @@
 <?php
 // Most buildings names are extracted from LIVE DATA and can hence not be found here
-$farmFriendlyName = [
-'1' => 'Farm 1',
-'2' => 'Farm 2',
-'3' => 'Farm 3',
-'4' => 'Farm 4',
-'5' => 'Farm 5',
-'6' => 'Farm 6',
-'7' => 'Farm 7',
-'8' => 'Farm 8',
-'9' => 'Farm 9',
-'10' => 'Farm 10',
-'farmersmarket' => 'Farmers\' Market',
-'farmersmarket2' => 'Farmers\' Market 2',
-'forestry' => 'Forestry',
-'foodworld' => 'Picnic Area',
-'city2' => 'Pondsville'];
-$forestryBuildingFriendlyName = ['Saw mill', 'Carpentry', 'Forestry'];
-$foodworldBuildingFriendlyName = ['Soda stall', 'Snack booth', 'Pastry shop', 'Ice cream parlour' ];
-$farmersmarket2BuildingFriendlyName = ['Cow Racing Barn', 'Fishing Shack', 'Scouts'];
+// Some strings get extracted upon login, other strings get extracted from individual farm data
 $ponyfarmproductlist = [2 => "2-hour hack", 4 => "4-hour hack", 8 => "8-hour hack"];
 $strings['mill'] = 'Wind mill';
 $strings['pleasewait'] = 'Please hold...';

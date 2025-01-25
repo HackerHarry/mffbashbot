@@ -1,6 +1,6 @@
 <?php
 // Show venue file for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -21,16 +21,16 @@ switch ($farm) {
   $position = [0 => ["windmill", $strings['mill'], "windmill"], 1 => ["trans25", $strings['trans25'], "trans25"], 2 => ["trans26", $strings['trans26'], "trans26"], 3 => ["powerups", $strings['powerups'], "powerups"], 4 => ["tools", $strings['tools'], "tools"], 5 => ["trans27", $strings['trans27'], "trans27"], 6 => ["trans28", $strings['trans28'], "trans28"], 7 => ["trans29", $strings['trans29'], "trans29"], 8 => ["trans210", $strings['trans210'], "trans210"], 9 => ["eventgarden", $strings['eventgarden'], "eventgarden"]];
   break;
  case "foodworld":
-  $position = [0 => ["sodastall", $foodworldBuildingFriendlyName[0], "1"], 1 => ["snackbooth", $foodworldBuildingFriendlyName[1], "2"], 2 => ["pastryshop", $foodworldBuildingFriendlyName[2], "3"], 3 => ["icecreamparlour", $foodworldBuildingFriendlyName[3], "4"]];
+  $position = [0 => ["sodastall", $strings['foodworldBuildingFriendlyName'][0], "1"], 1 => ["snackbooth", $strings['foodworldBuildingFriendlyName'][1], "2"], 2 => ["pastryshop", $strings['foodworldBuildingFriendlyName'][2], "3"], 3 => ["icecreamparlour", $strings['foodworldBuildingFriendlyName'][3], "4"]];
   break;
  case "forestry":
-  $position = [0 => ["sawmill", $forestryBuildingFriendlyName[0], "1"], 1 => ["carpentry", $forestryBuildingFriendlyName[1], "2"], 2 => ["forestry", $forestryBuildingFriendlyName[2], "forestry"]];
+  $position = [0 => ["sawmill", $strings['forestryBuildingFriendlyName'][0], "1"], 1 => ["carpentry", $strings['forestryBuildingFriendlyName'][1], "2"], 2 => ["forestry", $strings['forestryBuildingFriendlyName'][2], "forestry"]];
   break;
  case "farmersmarket":
   $position = [0 => ["flowerarea", "", "flowerarea"], 1 => ["nursery", "", "nursery"], 2 => ["monsterfruit", "", "monsterfruit"], 3 => ["pets", "", "pets"], 4 => ["vet", "", "vet"]];
   break;
  case "farmersmarket2":
-  $position = [0 => ["cowracing", $farmersmarket2BuildingFriendlyName[0], "cowracing"], 1 => ["fishing", $farmersmarket2BuildingFriendlyName[1], "fishing"], 2 => ["scouts", $farmersmarket2BuildingFriendlyName[2], "scouts"]];
+  $position = [0 => ["cowracing", $strings['farmersmarket2BuildingFriendlyName'][0], "cowracing"], 1 => ["fishing", $strings['farmersmarket2BuildingFriendlyName'][1], "fishing"], 2 => ["scouts", $strings['farmersmarket2BuildingFriendlyName'][2], "scouts"]];
   break;
  default:
   exit("1");

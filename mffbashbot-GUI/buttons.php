@@ -1,6 +1,6 @@
 <?php
 // Buttons file for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -113,17 +113,17 @@ $strings['doeventgarden-tt'],
 $strings['dogreenhouse-tt']
 ];
 
-echo "<h1>{$strings['youareat']} {$farmFriendlyName["$farm"]}</h1>
+echo "<h1>{$strings['youareat']} {$strings['farmFriendlyName']["$farm"]}</h1>
 <form name=\"venueselect\" method=\"post\" action=\"showfarm.php\" style=\"margin-bottom:5px;\">
 <input type=\"hidden\" name=\"farm\" value=\"$farm\">
 <input type=\"hidden\" name=\"username\" value=\"$username\">\n";
 for ($i = 1; $i <= 10; $i++)
- echo "<input type=\"image\" src=\"image/navi_farm$i.png\" class=\"navilink\" title=\"$farmFriendlyName[$i]\" name=\"$i\" onclick=\"document.venueselect.farm.value = '$i'; this.form.submit();\">\n";
-echo "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket']}\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">
-<input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"{$farmFriendlyName['farmersmarket2']}\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">
-<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"{$farmFriendlyName['forestry']}\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showvenue.php'; this.form.submit()\">
-<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"{$farmFriendlyName['foodworld']}\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showvenue.php'; this.form.submit()\">
-<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"{$farmFriendlyName['city2']}\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showvenue.php'; this.form.submit()\">
+ echo "<input type=\"image\" src=\"image/navi_farm$i.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName'][$i]}\" name=\"$i\" onclick=\"document.venueselect.farm.value = '$i'; this.form.submit();\">\n";
+echo "<input type=\"image\" src=\"image/farmersmarket.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName']['farmersmarket']}\" name=\"farmersmarket\" onclick=\"document.venueselect.farm.value='farmersmarket'; document.venueselect.action='showvenue.php'; this.form.submit()\">
+<input type=\"image\" src=\"image/farmersmarket2.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName']['farmersmarket2']}\" name=\"farmersmarket2\" onclick=\"document.venueselect.farm.value='farmersmarket2'; document.venueselect.action='showvenue.php'; this.form.submit()\">
+<input type=\"image\" src=\"image/forestry.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName']['forestry']}\" name=\"forestry\" onclick=\"document.venueselect.farm.value='forestry'; this.form.action='showvenue.php'; this.form.submit()\">
+<input type=\"image\" src=\"image/foodworld.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName']['foodworld']}\" name=\"foodworld\" onclick=\"document.venueselect.farm.value='foodworld'; this.form.action='showvenue.php'; this.form.submit()\">
+<input type=\"image\" src=\"image/navi_city2.png\" class=\"navilink\" title=\"{$strings['farmFriendlyName']['city2']}\" name=\"city2\" onclick=\"document.venueselect.farm.value='city2'; this.form.action='showvenue.php'; this.form.submit()\">
 <input type=\"image\" src=\"image/runbot.png\" class=\"navilink\" name=\"runbot\" title=\"{$strings['forcebotstart']}\" onclick=\"document.venueselect.farm.value='runbot'; this.form.submit()\">&nbsp;
 <input type=\"button\" name=\"logon\" class=\"btn btn-warning btn-sm logonbtn\" value=\"{$strings['logon']}\" onclick=\"this.form.action='index.php'; this.form.submit()\">
 <br><br>\n";

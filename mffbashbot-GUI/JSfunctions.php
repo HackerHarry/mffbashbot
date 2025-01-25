@@ -1,6 +1,6 @@
 <?php
 // Dynamic JavaScript for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // some parts shamelessly stolen and adapted from
 // http://www.mredkj.com/tutorials/tutorial005.html
 // quoting Keith Jenci: "Code marked as public domain is without copyright, and can be used without restriction."
@@ -347,6 +347,16 @@ function showHideOptions(element) {
   (document.getElementById(element)).style.display = "inline-block";
   return false;
  }
+}
+
+function checkAmountPos(idx) {
+ if (document.getElementById("amountpos" + idx) == null)
+  return false;
+ var ipos=document.getElementById("itempos" + idx);
+// delete amount if "Sleep" is selected
+ if (ipos.options.selectedIndex == 0)
+  document.getElementById("amountpos" + idx).value = "";
+ return false;
 }
 
 function confirmUpdate() {

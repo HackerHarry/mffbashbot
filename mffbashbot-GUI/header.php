@@ -1,6 +1,6 @@
 <?php
 // Header file for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -8,7 +8,7 @@
 echo "<!DOCTYPE html>
 <html>
 <head>
-<title>My Free Farm Bash Bot - {$farmFriendlyName["$farm"]}</title>
+<title>My Free Farm Bash Bot - {$strings['farmFriendlyName']["$farm"]}</title>
 <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">
 <link href=\"https://fonts.googleapis.com/css?family=Open+Sans&display=swap\" rel=\"stylesheet\">
 <link href=\"css/bootstrap.css\" rel=\"stylesheet\" type=\"text/css\">

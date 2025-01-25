@@ -1,6 +1,6 @@
 <?php
 // Data file for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -12,7 +12,7 @@ $versionavailable = file_get_contents("/tmp/mffbot-version-available.txt");
 ($JSON = file_get_contents("/tmp/fooddata-" . $username . ".txt")) ===  false ? header("Location: index.php") : $fooddata = (json_decode($JSON, true));
 ($JSON = file_get_contents("/tmp/formulas-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $windmillproductlist = (json_decode($JSON, true));
 ($JSON = file_get_contents("/tmp/eventgardencrop-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $eventgardenproductlist = (json_decode($JSON, true));
-
+($JSON = file_get_contents("/tmp/mffstrings-" . $lang . ".txt")) ===  false ? header("Location: index.php") : $strings += (json_decode($JSON, true));
 // monster fruit
 $megafruitObjects = array("water", "light", "fertilize");
 $monsterlist = array();
