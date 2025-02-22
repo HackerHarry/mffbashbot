@@ -1,6 +1,6 @@
 <?php
 // Functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-24 Harry Basalamah
+// Copyright 2016-25 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -68,7 +68,7 @@ function CreateEventGardenOptions() {
   echo "<option value=\"$key\">$value</option>\n";
 }
 function CreateSelectionsForBuildingID($BuildingID, $position) {
- echo "<select id=\"itempos$position\" name=\"itempos$position\">\n";
+ echo "<select id=\"itempos$position\" name=\"itempos$position\" onchange=\"checkAmountPos('$position');\">\n";
  switch ($BuildingID) {
   case 1:
         // Acker

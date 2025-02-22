@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is part of My Free Farm Bash Bot (front end)
 # Logon to MFF and load farm info
-# Copyright 2016-24 Harry Basalamah
+# Copyright 2016-25 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -39,6 +39,7 @@ PRODUCTS=/tmp/products-${MFFLANG}.txt
 FORESTRYPRODUCTS=/tmp/forestryproducts-${MFFLANG}.txt
 FORMULAS=/tmp/formulas-${MFFLANG}.txt
 EVTGARDENCROP=/tmp/eventgardencrop-${MFFLANG}.txt
+MFFSTRINGS=/tmp/mffstrings-${MFFLANG}.txt
 
 # remove lingering cookies
 rm $COOKIEFILE 2>/dev/null
@@ -75,6 +76,70 @@ echo "}" >>$FORMULAS
 sed -i 's/,}/}/' $FORMULAS
 # create list of available event garden crop
 grep 'var products_eventgarden =' $OUTFILE | sed  's/var products_eventgarden = //'  | sed 's/};/}/' | jq '[. | to_entries[] | { (.key): .value.name }] | add' >$EVTGARDENCROP
+
+# strings
+# we need to preserve single quotes (') within strings
+iMaxFarm=10
+sValue=$(grep "var farmname = " $OUTFILE | sed "s/var farmname = //" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+jData='{"farmFriendlyName":{},"forestryBuildingFriendlyName":[],"foodworldBuildingFriendlyName":[],"farmersmarket2BuildingFriendlyName":[]}'
+for n in $(seq 1 $iMaxFarm); do
+ jData=$(echo $jData | jq --compact-output '.farmFriendlyName["'$n'"]="'"$sValue $n"'"')
+done
+
+aVars=("t_farmers_market = "
+"t_feature_name.forestry = "
+"t_feature_name.foodworld = "
+"var cityname2 = ")
+
+aStringVars=( farmersmarket
+forestry
+foodworld
+city2 )
+
+iIndex=0
+for STR in "${aVars[@]}"; do
+ sValue=$(grep "$STR" $OUTFILE | sed "s/$STR//" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+ jData=$(echo $jData | jq --compact-output '.farmFriendlyName["'${aStringVars[$iIndex]}'"]="'"$sValue"'"')
+ iIndex=$((++iIndex))
+done
+# Bauernmarkt 2
+sValue=$(grep "t_farmers_market = " $OUTFILE | sed "s/t_farmers_market = //" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+jData=$(echo $jData | jq --compact-output '.farmFriendlyName["farmersmarket2"]="'"$sValue"' 2"')
+# Baumerei
+# zuerst das sägewerk
+jTemp=$(grep "var forestry_bld = " $OUTFILE | sed "s/var forestry_bld = //" | tr -d ';')
+sValue=$(echo $jTemp | jq '.["1"]' | sed -e 's/<[^>]*>//g')
+# element einem array hinzufügen
+jData=$(echo $jData | jq '.forestryBuildingFriendlyName |= . + ['"$sValue"']')
+# schreinerei
+sValue=$(echo $jTemp | jq '.["2"]' | sed -e 's/<[^>]*>//g')
+jData=$(echo $jData | jq '.forestryBuildingFriendlyName |= . + ['"$sValue"']')
+# zuletzt die baumerei
+sValue=$(grep "t_feature_name.forestry = " $OUTFILE | sed "s/t_feature_name.forestry = //" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+jData=$(echo $jData | jq '.forestryBuildingFriendlyName |= . + ["'"$sValue"'"]')
+unset jTemp
+# picknickarea
+aVars=("t_foodworld_pos1 = "
+"t_foodworld_pos2 = "
+"t_foodworld_pos4 = "
+"t_foodworld_pos3 = ")
+
+for STR in "${aVars[@]}"; do
+ sValue=$(grep "$STR" $OUTFILE | sed "s/$STR//" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+ jData=$(echo $jData | jq '.foodworldBuildingFriendlyName |= . + ["'"$sValue"'"]')
+done
+
+# bauernmarkt 2
+aVars=("t_feature_name.cowracing = "
+"t_feature_name.fishing = "
+"t_feature_name.scouts = ")
+
+for STR in "${aVars[@]}"; do
+ sValue=$(grep "$STR" $OUTFILE | sed "s/$STR//" | tr -d '\\;\r' | sed "s/^'//;s/'$//")
+ jData=$(echo $jData | jq '.farmersmarket2BuildingFriendlyName |= . + ["'"$sValue"'"]')
+done
+
+echo $jData | jq '.' >$MFFSTRINGS
 
 # get farm status
 wget -v -o "$LOGFILE" --output-document="$FARMDATAFILE" --user-agent="$AGENT" --load-cookies "$COOKIEFILE" "https://s${MFFSERVER}.${DOMAIN}/ajax/farm.php?rid=${RID}&mode=getfarms&farm=1&position=0"

@@ -1,24 +1,6 @@
 <?php
 // Die meisten Werte kommen aus den LIVE Daten und stehen ergo NICHT hier
-$farmFriendlyName = [
-'1' => 'Farm 1',
-'2' => 'Farm 2',
-'3' => 'Farm 3',
-'4' => 'Farm 4',
-'5' => 'Farm 5',
-'6' => 'Farm 6',
-'7' => 'Farm 7',
-'8' => 'Farm 8',
-'9' => 'Farm 9',
-'10' => 'Farm 10',
-'farmersmarket' => 'Bauernmarkt',
-'farmersmarket2' => 'Bauernmarkt 2',
-'forestry' => 'B&auml;umerei',
-'foodworld' => 'Picknickarea',
-'city2' => 'Teichlingen'];
-$forestryBuildingFriendlyName = ['S&auml;gewerk', 'Schreinerei', 'B&auml;umerei'];
-$foodworldBuildingFriendlyName = ['Getr&auml;nkebude', 'Imbissbude', 'Konditorei', 'Eisdiele'];
-$farmersmarket2BuildingFriendlyName = ['Kuh-Rennstall', 'Angelh&uuml;tte', 'Pfadfinder'];
+// Einige Daten werden bei Anmeldung extrahiert, andere aus den individuellen Farmdaten gewonnen
 $ponyfarmproductlist = [2 => "2 Std. Ausritt", 4 => "4 Std. Ausritt", 8 => "8 Std. Ausritt"];
 $strings['mill'] = 'M&uuml;hle';
 $strings['pleasewait'] = 'Bitte warten...';

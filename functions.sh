@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-24 Harry Basalamah
+# Copyright 2016-25 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -1411,7 +1411,8 @@ function doFisherman {
  for iPID in $iSpeciesbait $iRaritybait; do
   iAmountInStock=$(getPIDAmountFromStock $iPID 1)
   if [ $iAmountInStock -le 0 ]; then
-   logToFile "${FUNCNAME}: Lacking equipment, Item #${iPID} not in stock"
+   iPID=$(getNameFromPID $iPID)
+   logToFile "${FUNCNAME}: Lacking equipment, Item ${iPID} not in stock"
    return
   fi
  done
@@ -2063,7 +2064,8 @@ function checkSushiBarPlates {
   fi
   iPIDCount=$(getPIDAmountFromStock $iPID 8)
   if [ $iPIDCount -le 0 ]; then
-   logToFile "${FUNCNAME}: Cannot place dish, no dishes of type #${iPID} in stock"
+   iPID=$(getNameFromPID $iPID)
+   logToFile "${FUNCNAME}: Cannot place dish, no dishes of type ${iPID} in stock"
    continue
   fi
   iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
@@ -3536,7 +3538,8 @@ function checkStockRefill {
   iAmountToBuy=$((iRefillAmount - iAmountInStock))
   if [ $iAmountToBuy -eq $iRefillAmount ]; then
    # in order to prevent erroneous purchases, player needs to own at least one item
-   logToFile "${FUNCNAME}: Refusing to buy $iAmountToBuy items of item #${iPID}"
+   iPID=$(getNameFromPID $iPID)
+   logToFile "${FUNCNAME}: Refusing to buy $iAmountToBuy items of item ${iPID}"
    continue
   fi
   # check, if player can buy the item
@@ -3947,6 +3950,19 @@ function getPIDAmountFromStock {
  local iPIDCount=$($JQBIN -r '[.updateblock.stock.stock["'${iFarm}'"] | .[] | .[] | select(.pid? == "'${iPID}'").amount][0] // 0' $FARMDATAFILE)
  echo $iPIDCount
  # encapsulation: see issue #64
+}
+
+function getNameFromPID {
+ local iPID=$1
+ local sFile=/tmp/products-${MFFLANG}.txt
+ local sName
+ if [ -f "$sFile" ]; then
+  sName=$($JQBIN -r '.["'${iPID}'"]' $sFile)
+  echo "$sName"
+  return
+ else
+  echo "#${iPID}"
+ fi
 }
 
 function getPowerUpAmountFromStock {
