@@ -3471,7 +3471,7 @@ function checkPanBonus {
  local iLastBonus
  getPanData $FARMDATAFILE
  local iToday=$($JQBIN '.datablock.paymentitemcollection.today' $FARMDATAFILE)
- aCollections=$($JQBIN -r '.datablock.paymentitemcollection.collections | keys[]' $FARMDATAFILE)
+ aCollections=$($JQBIN -r '.datablock.paymentitemcollection | select(.collections != null) | .collections | keys[]' $FARMDATAFILE)
  for sCollection in $aCollections; do
   iAmountInStock=$($JQBIN '.datablock.paymentitemcollection.collections["'${sCollection}'"] | length' $FARMDATAFILE)
   iAmountNeeded=$($JQBIN '.datablock.paymentitemcollection.config.collection["'${sCollection}'"] | length' $FARMDATAFILE)
