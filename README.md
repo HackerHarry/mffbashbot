@@ -40,4 +40,7 @@ All the info you might need, can be found in the [mffbashbot wiki](https://githu
 
 Questions and comments can be posted to the [forum](http://myfreefarm-berater.forumprofi.de/f15-Bash-Bot.html).
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FHackerHarry%2Fmffbashbot&count_bg=%2362AE28&title_bg=%23555555&icon=probot.svg&icon_color=%23E7E7E7&title=Hits+today+%2F+total&edge_flat=false)](https://hits.seeyoufarm.com)
+hits.seeyoufarm.com went down at some point. I noticed this in 07/2025 and<br>
+hadn't kept track of the visitor count, so... let's start over.
+
+![Hits](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2FHackerHarry%2Fmffbashbot&label=Hits+today+%2F+total&icon=robot&color=%2362ae28&message=&style=flat&tz=UTC)
