@@ -155,15 +155,15 @@ function saveMisc() {
  'scoutfood', 'ovenslot1', 'ovenslot2', 'ovenslot3'];
  var aToggles = ['puzzlepartstoggle', 'farmiestoggle', 'forestryfarmiestoggle',
  'munchiestoggle', 'flowerfarmiestoggle', 'spicehousefarmiestoggle',
- 'correctqueuenumtoggle', 'ponyenergybartoggle', 'redeempuzzlepartstoggle',
- 'butterflytoggle', 'deliveryeventtoggle', 'olympiaeventtoggle',
- 'infinitequesttoggle', 'cowracepvptoggle', 'redeemdailyseedboxtoggle',
- 'dogtoggle', 'donkeytoggle', 'cowracetoggle', 'foodcontesttoggle',
- 'excluderank1cowtoggle', 'calendareventtoggle', 'pentecosteventtoggle',
- 'trimlogstocktoggle', 'removeweedtoggle', 'harvestvinetoggle',
- 'harvestvineinautumntoggle', 'restartvinetoggle', 'removevinetoggle',
- 'buyvinetillsunnytoggle', 'vinefullservicetoggle', 'doinsecthoteltoggle',
- 'doeventgardentoggle', 'greenhousetoggle'];
+ 'dospicehousefarmiestoggle', 'correctqueuenumtoggle', 'ponyenergybartoggle',
+ 'redeempuzzlepartstoggle', 'butterflytoggle', 'deliveryeventtoggle',
+ 'olympiaeventtoggle', 'infinitequesttoggle', 'cowracepvptoggle',
+ 'redeemdailyseedboxtoggle', 'dogtoggle', 'donkeytoggle', 'cowracetoggle',
+ 'foodcontesttoggle', 'excluderank1cowtoggle', 'calendareventtoggle',
+ 'pentecosteventtoggle', 'trimlogstocktoggle', 'removeweedtoggle',
+ 'harvestvinetoggle', 'harvestvineinautumntoggle', 'restartvinetoggle',
+ 'removevinetoggle', 'buyvinetillsunnytoggle', 'vinefullservicetoggle',
+ 'doinsecthoteltoggle', 'doeventgardentoggle', 'greenhousetoggle'];
  var sUser = document.venueselect.username.value;
  var sData = "username=" + sUser + "&farm=savemisc";
 // abusing farm parameter :)
@@ -175,6 +175,8 @@ function saveMisc() {
    sData += "&" + aOptions[i] + "=0";
   }
  }
+ if (!document.getElementById("spicehousefarmiestoggle").checked)
+  document.getElementById("dospicehousefarmiestoggle").checked = false; // this cannot exist without the other
  for (i = 0; i < aToggles.length; i++) {
   document.getElementById(aToggles[i]).checked ? sData += "&" + aToggles[i] + "=1" : sData += "&" + aToggles[i] + "=0";
  }

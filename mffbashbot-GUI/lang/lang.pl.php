@@ -202,5 +202,7 @@ $strings['dogreenhouse-tt'] = 'n/a';
 $strings['spicehouseoven'] = 'n/a';
 $strings['saynotospicehousefarmies'] = 'n/a';
 $strings['saynotospicehousefarmies-tt'] = 'n/a';
+$strings['servespicehousefarmies'] = 'n/a';
+$strings['servespicehousefarmies-tt'] = 'n/a';
 // $strings[''] = '';
 ?>

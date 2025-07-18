@@ -203,5 +203,7 @@ $strings['dogreenhouse-tt'] = 'Alle 23 Stunden kann dieser Bonus einkassiert wer
 $strings['spicehouseoven'] = 'Gewürzhaus Ofen';
 $strings['saynotospicehousefarmies'] = 'Nicht bedienbare Gewürzhaus-Kunden wegschicken';
 $strings['saynotospicehousefarmies-tt'] = 'Schickt nur Kunden weg, für die nicht genug Ware im Lager ist - Es muss MEHR Ware als gefordert am Lager sein';
+$strings['servespicehousefarmies'] = 'Gewürzhaus-Kunden bedienen';
+$strings['servespicehousefarmies-tt'] = 'Diese Funktion ist für Spieler gedacht, die Questreihe sechs abgeschlossen haben und FUNKTIONIERT NUR WENN nicht bedienbare Gewürzhaus-Kunden weggeschickt werden!';
 // $strings[''] = '';
 ?>

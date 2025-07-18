@@ -28,6 +28,7 @@ sendforestryfarmiesaway = 0
 sendmunchiesaway = 0
 sendflowerfarmiesaway = 0
 sendspicehousefarmiesaway = 0
+dospicehousefarmies = 0
 correctqueuenum = 0
 useponyenergybar = 0
 redeempuzzlepacks = 0

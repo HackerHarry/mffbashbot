@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install script for My Free Farm Bash Bot on GNU/Linux
-# Tested on Debian 8 - 12, Ubuntu 16.04.1 LTS, Linux Mint 19, Devuan 5
+# Tested on Debian 8 - 12, Ubuntu 16.04.1 LTS, Linux Mint 19 & 21, Devuan 5
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 set -e
 

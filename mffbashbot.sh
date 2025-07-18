@@ -154,7 +154,7 @@ while (true); do
  PAUSETIME=600
  if [ -f dontrunbot ]; then
   echo -n "Time stamp: "
-  date "+%A, %d. %B %Y - %H:%Mh"
+  date "+%d. %b - %H:%Mh"
   echo "Run blocker detected. Pausing $PAUSETIME secs..."
   echo "---"
   sleep ${PAUSETIME}
@@ -172,7 +172,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -186,6 +186,8 @@ while (true); do
  # at least test if this was successful
  if [ -z "$RID" ]; then
   echo "FATAL: RID could not be retrieved. Pausing 5 minutes before next attempt..."
+  echo -n "Time stamp: "
+  date "+%d. %b - %H:%Mh"
   # try and logoff.. just in case
   wget -nv -T10 -a $LOGFILE --output-document=/dev/null --user-agent="$AGENT" --load-cookies $COOKIEFILE "$LOGOFFURL"
   rm -f "$STATUSFILE"
