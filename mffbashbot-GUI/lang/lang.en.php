@@ -203,5 +203,7 @@ $strings['dogreenhouse-tt'] = 'This bonus can be collected every 23 hours';
 $strings['spicehouseoven'] = 'Spice House oven';
 $strings['saynotospicehousefarmies'] = 'Send spice house customers away, who cannot be served';
 $strings['saynotospicehousefarmies-tt'] = 'This sends only customers away if there\'s not enough goods in stock - there need to be MORE goods in stock than needed';
+$strings['servespicehousefarmies'] = 'Serve spice house customers';
+$strings['servespicehousefarmies-tt'] = 'This feature is intended for players who have completed quest serial six and ONLY WORKS IF unserviceable spice house customers are sent away!';
 // $strings[''] = '';
 ?>

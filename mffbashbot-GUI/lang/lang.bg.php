@@ -210,5 +210,7 @@ $strings['dogreenhouse-tt'] = 'Този бонус може да бъде съб
 $strings['spicehouseoven'] = 'Домашна фурна с подправки';
 $strings['saynotospicehousefarmies'] = 'Отпрати клиентите, които не могат да бъдат обслужени';
 $strings['saynotospicehousefarmies-tt'] = 'Това премахва клиентите, за които няма достатъчна наличност на продукти';
+$strings['servespicehousefarmies'] = 'n/a';
+$strings['servespicehousefarmies-tt'] = 'n/a';
 // $strings[''] = '';
 ?>

@@ -147,6 +147,8 @@ switch ($farm) {
   $configContents['sendmunchiesaway'] = $_POST["munchiestoggle"];
   $configContents['sendflowerfarmiesaway'] = $_POST["flowerfarmiestoggle"];
   $configContents['sendspicehousefarmiesaway'] = $_POST["spicehousefarmiestoggle"];
+  $configContents['dospicehousefarmies'] = $_POST["dospicehousefarmiestoggle"];
+  if ($configContents['sendspicehousefarmiesaway'] == '0') $configContents['dospicehousefarmies'] = '0';
   $configContents['correctqueuenum'] = $_POST["correctqueuenumtoggle"];
   $configContents['useponyenergybar'] = $_POST["ponyenergybartoggle"];
   $configContents['redeempuzzlepacks'] = $_POST["redeempuzzlepartstoggle"];

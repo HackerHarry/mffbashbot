@@ -582,7 +582,7 @@ function doForestry {
  fi
  local iLogCapacity=$($JQBIN '.datablock[2]["1"].capacity' $FARMDATAFILE)
  local iPID=$($JQBIN -r '.datablock[1][0].productid' $FARMDATAFILE)
- local iAmountToHarvest=$($JQBIN -r '.datablock[1] | .[] | select(.productid == "'${iPID}'" and .remain == 0).productid' $FARMDATAFILE | wc -l)
+ local iAmountToHarvest=$($JQBIN -r '[.datablock[1] | .[] | select(.productid == "'${iPID}'" and .remain == 0).productid] | length' $FARMDATAFILE)
  # log's PIDs are different from the seed's PIDs
   case "$iPID" in
    [1-5]) iPID=$((iPID + 20))
@@ -2173,6 +2173,38 @@ function checkSpiceMill {
  return 0
 }
 
+function checkSpicehouseFarmies {
+ # this function is called after it's been established, that a customer can be served
+ local iSlot=$1
+ local aPIDs
+ local iPID
+ local iAmountNeeded
+ local iAmountInStock
+ local iSafetyCount
+ # main farm data is not available at this point, so we use a fixed multiplier
+ local iSafetyMultiplier=3
+ local sCategory
+ aPIDs=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data | keys[]' $FARMDATAFILE)
+ for iPID in $aPIDs; do
+  sCategory=$(echo $aCAT | $JQBIN -r '."'${iPID}'"')
+  if [ "$sCategory" != "spice" ]; then
+   # we only bother with items that can be planted on fields on farm 10
+   continue
+  fi
+  iAmountNeeded=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data["'${iPID}'"]' $FARMDATAFILE)
+  iAmountInStock=$(getPIDAmountFromStock $iPID 10)
+  iSafetyCount=$(getProductCountFittingOnField $iPID)
+  # hold back some crop for fields
+  iSafetyCount=$((iSafetyCount * iSafetyMultiplier + iAmountNeeded))
+  if [ $iAmountInStock -lt $iSafetyCount ]; then
+   # not enough crop in stock
+   return
+  fi
+ done
+ echo "Serving spice house farmie in slot ${iSlot}..."
+ sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=spicehouse_accept_customer"
+}
+
 function doInfiniteQuest {
  local iCount
  local iPIDCount
@@ -2456,6 +2488,7 @@ function checkFarmies {
      done
      ;;
   spicehousefarmie)
+     local bCanBeServed
      local iSlot
      local aPIDs
      local iPID
@@ -2464,6 +2497,7 @@ function checkFarmies {
      local aSlots=$($JQBIN -r '.updateblock.spicehouse.data.customers | if (. | type) == "object" then (. | keys[]) else empty end' $FARMDATAFILE)
      for iSlot in $aSlots; do
       # this assumes that the key names align with the slot numbers
+      bCanBeServed="true"
       aPIDs=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data | keys[]' $FARMDATAFILE)
       for iPID in $aPIDs; do
        iAmountNeeded=$($JQBIN -r '.updateblock.spicehouse.data.customers["'${iSlot}'"].data["'${iPID}'"]' $FARMDATAFILE)
@@ -2471,9 +2505,15 @@ function checkFarmies {
        if [ $iAmountNeeded -ge $iAmountInStock ]; then
         echo "Sending spice house farmie in slot ${iSlot} away..."
         sendAJAXFarmRequest "slot=${iSlot}&mode=spicehouse_deny_customer"
+        bCanBeServed="false"
         break
        fi
       done
+      if grep -q "dospicehousefarmies = 1" $CFGFILE; then
+       if [ "$bCanBeServed" = "true" ]; then
+        checkSpicehouseFarmies $iSlot
+       fi
+      fi
      done
      ;;
  esac
@@ -2497,6 +2537,8 @@ function checkVehiclePosition {
    checkSendGoodsToMainFarm $iVehicle $iFarm $iRoute
   fi
  else
+  # set PAUSETIME if needed
+  checkTimeRemaining '.updateblock.map.vehicles["'${iRoute}'"]["'${iVehicle}'"].remain'
   echo "en route"
  fi
 }
@@ -2650,7 +2692,7 @@ function getProductCountFittingOnField {
 
 function getFieldsOnFarmCount {
  local iFarm=$1
- local iFieldsOnFarm=$($JQBIN '.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position' $FARMDATAFILE | wc -l)
+ local iFieldsOnFarm=$($JQBIN '[.updateblock.farms.farms["'${iFarm}'"] | .[] | select(.buildingid == "1" and .status == "1").position] | length' $FARMDATAFILE)
  echo $iFieldsOnFarm
 }
 
@@ -2903,7 +2945,7 @@ function getMegaFieldAmountToGoInSlot {
   echo $iSeeminglyNeeded
   return
  fi
- iPIDOnBusyPlots=$($JQBIN '.updateblock.megafield.area | .[] | select(.pid == '$iPID').pid' $FARMDATAFILE | wc -l)
+ iPIDOnBusyPlots=$($JQBIN '[.updateblock.megafield.area | .[] | select(.pid == '$iPID').pid] | length' $FARMDATAFILE)
  echo $((iSeeminglyNeeded - iPIDOnBusyPlots))
  # in theory, this amount can't be less than zero
 }
