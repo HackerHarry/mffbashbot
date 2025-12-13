@@ -190,6 +190,7 @@ switch ($farm) {
   $configContents['ovenslot1'] = $_POST["ovenslot1"];
   $configContents['ovenslot2'] = $_POST["ovenslot2"];
   $configContents['ovenslot3'] = $_POST["ovenslot3"];
+  $configContents['dotrains'] = $_POST["dotrainstoggle"];
 
   // clean up deprecated variables
   // if (isset($configContents['megafieldinstantplant'])) unset($configContents['megafieldinstantplant']);

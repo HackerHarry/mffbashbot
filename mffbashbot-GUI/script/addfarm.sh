@@ -134,7 +134,8 @@ dogreenhouse = 0
 vehiclemgmt10 = 0
 ovenslot1 = 0
 ovenslot2 = 0
-ovenslot3 = 0"
+ovenslot3 = 0
+dotrains = 0"
 
 if ! uname -a | grep -qi "cygwin"; then
  ISLINUX=mostlikely

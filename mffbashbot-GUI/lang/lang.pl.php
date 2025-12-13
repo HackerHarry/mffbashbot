@@ -204,5 +204,7 @@ $strings['saynotospicehousefarmies'] = 'powiedz nie klient przypraw';
 $strings['saynotospicehousefarmies-tt'] = 'powiedz nie klient przypraw';
 $strings['servespicehousefarmies'] = 'zrób zadanie klient przypraw';
 $strings['servespicehousefarmies-tt'] = 'zrób zadanie klient przypraw';
+$strings['dotrains'] = 'n/a';
+$strings['dotrains-tt'] = 'n/a';
 // $strings[''] = '';
 ?>

@@ -205,5 +205,7 @@ $strings['saynotospicehousefarmies'] = 'Send spice house customers away, who can
 $strings['saynotospicehousefarmies-tt'] = 'This sends only customers away if there\'s not enough goods in stock - there need to be MORE goods in stock than needed';
 $strings['servespicehousefarmies'] = 'Serve spice house customers';
 $strings['servespicehousefarmies-tt'] = 'This feature is intended for players who have completed quest serial six and ONLY WORKS IF unserviceable spice house customers are sent away!';
+$strings['dotrains'] = 'Load and dispatch trains';
+$strings['dotrains-tt'] = 'Trains are only loaded and dispatched if all prerequisites are met';
 // $strings[''] = '';
 ?>

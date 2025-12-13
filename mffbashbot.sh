@@ -172,7 +172,7 @@ while (true); do
  NANOVALUE=$(($(date +%s%N) / 1000000))
  LOGOFFURL="https://s${MFFSERVER}.${DOMAIN}/main.php?page=logout&logoutbutton=1"
  POSTURL="https://www.${DOMAIN}/ajax/createtoken2.php?n=${NANOVALUE}"
- AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:137.0) Gecko/20100101 Firefox/137.0"
+ AGENT="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0"
  # There's another AGENT string in logonandgetfarmdata.sh (!)
  POSTDATA="server=${MFFSERVER}&username=${MFFUSER}&password=${MFFPASS}&ref=&retid="
 
@@ -294,7 +294,7 @@ while (true); do
     if [ "$BUILDINGID" = "24" ]; then
      # spice house
      echo "Checking for pending tasks in spice house..."
-     if checkTimeRemaining '.updateblock.spicehouse.data.oven.remain'; then
+     if checkTimeRemaining '.updateblock.spicehouse.data.oven.remain?'; then
       echo "Collecting dried goods from oven..."
       sendAJAXFarmUpdateRequest "mode=spicehouse_open_oven" && sleep 1
       checkOven
@@ -628,6 +628,19 @@ while (true); do
     if checkTimeRemaining '.updateblock.queststatus.infinite.data.quest.remain'; then
      doInfiniteQuest
     fi
+   fi
+  fi
+
+  if [ $PLAYERLEVELNUM -ge 15 ]; then
+   if grep -q "dotrains = 1" $CFGFILE; then
+    echo "Checking for pending tasks at the freight terminal..."
+    for FARM in {1..4}; do # abuse FARM for STATION
+     for SLOT in {1..4}; do
+      if checkTimeRemaining '.updateblock.train.data.plans["'${FARM}'"]?["'${SLOT}'"]?.remain'; then
+        checkTrains $FARM $SLOT
+      fi
+     done
+    done
    fi
   fi
 
