@@ -917,7 +917,7 @@ function checkSushiBarFarmies {
   if [ $iCount -eq $iFarmieNeededCategoriesCount ]; then
    # we have a prospect
    if checkTimeRemaining '.updateblock.sushibar.farmis["'${iServedFarmie}'"].eat.remain'; then
-    echo "Collecting sushi bar farmie in slot #${iServedFarmie}"
+    echo "Collecting sushi bar farmie in slot ${iServedFarmie}"
     sendAJAXFarmUpdateRequest "slot=${iServedFarmie}&mode=sushibar_finishfarmi"
    fi
   fi
@@ -2069,7 +2069,7 @@ function checkSushiBarPlates {
    continue
   fi
   iSlot=$($JQBIN -r '[.updateblock.sushibar.data.train | to_entries[] | select((.value.buy_time | type == "number") and (.value.pid | type == "null")).key][0]' $FARMDATAFILE)
-  echo "Placing dish #${iPID} onto plate #${iSlot}..."
+  echo "Placing dish ${iPID} onto plate ${iSlot}..."
   sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&mode=sushibar_settrainslot" && sleep 1
  done
 }
@@ -2203,6 +2203,145 @@ function checkSpicehouseFarmies {
  done
  echo "Serving spice house farmie in slot ${iSlot}..."
  sendAJAXFarmUpdateRequest "slot=${iSlot}&mode=spicehouse_accept_customer"
+}
+
+function checkTrains {
+ local iStation=$1
+ local iSlot=$2
+ local iTrader=$($JQBIN -r '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"].traders[0]' $FARMDATAFILE)
+ if ! checkTimeRemaining '.updateblock.train.data.traders["'${iTrader}'"].remain'; then
+  return # trader not ready
+ fi
+ local iPID
+ local aPIDs
+ local iAmountInStock
+ local iAmountNeeded
+ local iAmountHave
+ local iCarriageIndex
+ local iCarriageID
+ local sCarriageVariant
+ local iCarriageCapacity
+ local iTrainID
+ local sTrainVariant
+ local iCarriagesTrainCanPull
+ local iSlotsAvailable
+ local iSlot2Fill
+ local iNeededDurability
+ local iDurability
+ local iNeededEnergy
+ local iEnergy
+ # prepare the data template
+ # what we send to servers is not what we get back. there's data type mismatch and more.
+ # in order to make our request seem genuine, we're pulling this stunt...
+ local jData=$($JQBIN '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"]' $FARMDATAFILE | jq --compact-output '. |= { step: 4,
+ station: .station, slot: .slot, routes: .routes[0], trader: [(.traders[0] |
+ tostring)], stats: { duration: .duration | tonumber, durability: .durability |
+ tonumber, energy: .energy | tonumber }, train: .train, wagons: {} } + . |
+ .station |= tonumber | .slot |= tonumber | .duration |= tonumber | .energy |=
+ tonumber | .durability |= tonumber | .train |= tonumber | .wagons = {} |
+ del(.id, .unr, .reward, .duration_save, .createdate, .finishdate, .remain,
+ .traders, .duration, .durability, .energy)')
+ echo "Collecting reward from station ${iStation}, slot ${iSlot}..."
+ sendAJAXFarmUpdateRequest "station=${iStation}&slot=${iSlot}&mode=train_claim_station_slot" && sleep 2
+ aPIDs=$($JQBIN -r '.updateblock.train.data.traders["'${iTrader}'"].cart | keys[] | tonumber' $FARMDATAFILE)
+ for iPID in $aPIDs; do
+  iAmountInStock=$(getPIDAmountFromStock $iPID 1)
+  iAmountNeeded=$($JQBIN '.updateblock.train.data.traders["'${iTrader}'"].cart["'${iPID}'"].need' $FARMDATAFILE)
+  iAmountHave=$($JQBIN '.updateblock.train.data.traders["'${iTrader}'"].cart["'${iPID}'"].have' $FARMDATAFILE)
+  iAmountNeeded=$((iAmountNeeded - iAmountHave))
+  if [ $iAmountInStock -lt $iAmountNeeded ]; then
+   logToFile "${FUNCNAME}: Train cannot be loaded, not enough crop in stock"
+   return
+  fi
+ done
+ iTrainID=$(echo $jData | $JQBIN -r '.train')
+ iNeededDurability=$(echo $jData | $JQBIN -r '.stats.durability')
+ iNeededEnergy=$(echo $jData | $JQBIN -r '.stats.energy')
+ iDurability=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].durability' $FARMDATAFILE)
+ iEnergy=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].energy' $FARMDATAFILE)
+ if [ $((iDurability - iNeededDurability)) -le 0 ] || [ $((iEnergy - iNeededEnergy)) -le 0 ]; then
+  logToFile "${FUNCNAME}: Train cannot be loaded, engine has insufficient durability or energy"
+  return
+ fi
+ sTrainVariant=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].name' $FARMDATAFILE)
+ iCarriagesTrainCanPull=$($JQBIN -r '.updateblock.train.config.trains["'${sTrainVariant}'"].wagons' $FARMDATAFILE)
+ iCarriageIndex=0
+ iSlot2Fill=1
+ # get an id of a carriage
+ read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
+ if [ $iCarriageID = "null" ]; then
+  logToFile "${FUNCNAME}: No suitable carriage found"
+  return
+ fi
+ for iPID in $aPIDs; do
+  iAmountNeeded=$($JQBIN '.updateblock.train.data.traders["'${iTrader}'"].cart["'${iPID}'"].need' $FARMDATAFILE)
+  iAmountHave=$($JQBIN '.updateblock.train.data.traders["'${iTrader}'"].cart["'${iPID}'"].have' $FARMDATAFILE)
+  iAmountNeeded=$((iAmountNeeded - iAmountHave))
+  if [ $iAmountNeeded -le 0 ]; then
+   continue
+  fi
+  # overflow handling
+  while [ $iCarriageCapacity -le $iAmountNeeded ]; do
+   jData=$(echo $jData | $JQBIN --compact-output '.wagons["'$((iCarriageIndex + 1))'"].id='${iCarriageID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].pid='${iPID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].amount='${iCarriageCapacity})
+   iAmountNeeded=$((iAmountNeeded - iCarriageCapacity))
+   if [ $iAmountNeeded -le 0 ]; then
+    continue
+   fi
+   # get new carriage
+   iCarriageIndex=$((++iCarriageIndex))
+   if [ $((iCarriageIndex + 1)) -gt $iCarriagesTrainCanPull ]; then
+    jData=$(echo $jData | $JQBIN --compact-output '.' | $JQBIN -r @uri)
+    echo "Sending train from station ${iStation}, slot ${iSlot} to trader ${iTrader}..."
+    sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
+    return
+   fi
+   read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
+   if [ $iCarriageID = "null" ]; then
+    logToFile "${FUNCNAME}: Train cannot be assembled, out of suitable carriages"
+    return
+   fi
+   iSlot2Fill=1
+  done
+  # non-overflow handling
+  jData=$(echo $jData | $JQBIN --compact-output '.wagons["'$((iCarriageIndex + 1))'"].id='${iCarriageID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].pid='${iPID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].amount='${iAmountNeeded})
+  iSlot2Fill=$((++iSlot2Fill))
+  iCarriageCapacity=$((iCarriageCapacity - iAmountNeeded))
+  if [ $iSlot2Fill -gt $iSlotsAvailable ]; then
+   iCarriageIndex=$((++iCarriageIndex))
+   if [ $((iCarriageIndex + 1)) -gt $iCarriagesTrainCanPull ]; then
+    jData=$(echo $jData | $JQBIN --compact-output '.' | $JQBIN -r @uri)
+    echo "Sending train from station ${iStation}, slot ${iSlot} to trader ${iTrader}..."
+    sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
+    return
+   fi
+   read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
+   if [ $iCarriageID = "null" ]; then
+    logToFile "${FUNCNAME}: Train cannot be assembled, out of suitable carriages"
+    return
+   fi
+   iSlot2Fill=1
+  fi
+ done
+ #echo -e "jData = \n$jData"
+ jData=$(echo $jData | $JQBIN --compact-output '.' | $JQBIN -r @uri)
+ echo "Sending train from station ${iStation}, slot ${iSlot} to trader ${iTrader}..."
+ sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
+}
+
+function getCarriage {
+ local iStation=$1
+ local iCarriageIndex=$2
+ local iNeededDurability=$3
+ local iCarriageID
+ local iCarriageCapacity
+ local sCarriageVariant
+ local iSlotsAvailable
+ # get and id of a suitable carriage
+ iCarriageID=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0" and (.durability | tonumber) >= '${iNeededDurability}')]['${iCarriageIndex}'].id' $FARMDATAFILE)
+ iCarriageCapacity=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0")]['${iCarriageIndex}'].maxcapacity' $FARMDATAFILE)
+ sCarriageVariant=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0")]['${iCarriageIndex}'].name' $FARMDATAFILE)
+ iSlotsAvailable=$($JQBIN -r '.updateblock.train.config.trains["'${sCarriageVariant}'"].slots' $FARMDATAFILE)
+ echo "$iCarriageID $iCarriageCapacity $sCarriageVariant $iSlotsAvailable"
 }
 
 function doInfiniteQuest {
@@ -3553,6 +3692,18 @@ function checkPanBonus {
    echo "already claimed"
   fi
  fi
+ # Worker Bee Points
+ bValue=$($JQBIN '.datablock["1"].gifts | has("1364")' $FARMDATAFILE)
+ if [ "$bValue" = "true" ]; then
+  echo -n "Worker Bee..."
+  bValue=$($JQBIN '.datablock["1"].gifts."1364" | has("giver")' $FARMDATAFILE)
+  if [ "$bValue" = "true" ]; then
+   echo "available, claiming it..."
+   sendAJAXCityRequest "city=0&mode=giverpresent&id=1364"
+  else
+   echo "already claimed"
+  fi
+ fi
 }
 
 function checkStockRefill {
@@ -3876,7 +4027,7 @@ function checkInsectHotel {
  if [ "$bBuildingExists" = "false" ]; then
   return
  fi
- bCheckout=$($JQBIN '.updateblock.map.insecthotel.data.checkout.points | type == "number"' $FARMDATAFILE)
+ bCheckout=$($JQBIN '.updateblock.map.insecthotel.data.checkout.points | type == "number" and . > 0' $FARMDATAFILE)
  # we only check for available points
  if [ "$bCheckout" = "true" ]; then
   echo "Collecting reward from insect hotel..."
@@ -3905,10 +4056,10 @@ function checkInsectHotelStock {
    iAmountToRefill=$((iCapacity-iAmount))
    iAmountInStock=$(getPIDAmountFromStock $iPID 1)
    if [ $iAmountInStock -lt $iAmountToRefill ]; then # hmm. -le would leave 1 in stock...
-    logToFile "${FUNCNAME}: Not enough crop in stock for refill of insect hotel slot #${iSlot}"
+    logToFile "${FUNCNAME}: Not enough crop in stock for refill of insect hotel slot ${iSlot}"
     continue
    else
-    echo "Refilling insect hotel's slot #${iSlot}..."
+    echo "Refilling insect hotel's slot ${iSlot}..."
     sendAJAXFarmUpdateRequest "slot=${iSlot}&pid=${iPID}&amount=${iAmountToRefill}&mode=insecthotel_set_stockslot"
    fi
   fi
@@ -4068,6 +4219,9 @@ function sendAJAXFarmUpdateRequest {
         ;;
     *spicehouse*)
         $JQBIN -s 'del(.[0].updateblock.spicehouse.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
+        ;;
+    *train_*)
+        $JQBIN -s 'del(.[0].updateblock.train.data) | .[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE
         ;;
     *)
         $JQBIN -s '.[0] * .[1]' $FARMDATAFILE $TMPFILE >$OUTFILE

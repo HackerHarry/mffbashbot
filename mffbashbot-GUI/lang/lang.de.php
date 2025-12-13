@@ -205,5 +205,7 @@ $strings['saynotospicehousefarmies'] = 'Nicht bedienbare Gewürzhaus-Kunden wegs
 $strings['saynotospicehousefarmies-tt'] = 'Schickt nur Kunden weg, für die nicht genug Ware im Lager ist - Es muss MEHR Ware als gefordert am Lager sein';
 $strings['servespicehousefarmies'] = 'Gewürzhaus-Kunden bedienen';
 $strings['servespicehousefarmies-tt'] = 'Diese Funktion ist für Spieler gedacht, die Questreihe sechs abgeschlossen haben und FUNKTIONIERT NUR WENN nicht bedienbare Gewürzhaus-Kunden weggeschickt werden!';
+$strings['dotrains'] = 'Züge beladen und abschicken';
+$strings['dotrains-tt'] = 'Züge werden nur unter ganz bestimmten Bedingungen automatisch beladen und abgeschickt';
 // $strings[''] = '';
 ?>

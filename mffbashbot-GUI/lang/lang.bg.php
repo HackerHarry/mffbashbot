@@ -212,5 +212,7 @@ $strings['saynotospicehousefarmies'] = 'Отпрати клиентите, ко�
 $strings['saynotospicehousefarmies-tt'] = 'Това премахва клиентите, за които няма достатъчна наличност на продукти';
 $strings['servespicehousefarmies'] = 'n/a';
 $strings['servespicehousefarmies-tt'] = 'n/a';
+$strings['dotrains'] = 'n/a';
+$strings['dotrains-tt'] = 'n/a';
 // $strings[''] = '';
 ?>
