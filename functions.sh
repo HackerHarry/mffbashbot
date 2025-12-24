@@ -1430,7 +1430,7 @@ function doFisherman {
   iItem=$($JQBIN -r '[.updateblock.farmersmarket.fishing.data.items | .[] | select(.type == "'${iFishinggear}'" and .stock == "1").id][0]' $FARMDATAFILE)
  fi
  # request requires encoded JSON data
- # sSelection=$(echo '{"category":'${iSpeciesbait}',"rarity":'${iRaritybait}',"item":'${iItem}'}' | jq -r @uri)
+ # sSelection=$(echo '{"category":'${iSpeciesbait}',"rarity":'${iRaritybait}',"item":'${iItem}'}' | $JQBIN -r @uri)
  sSelection="%7B%22category%22%3A${iSpeciesbait}%2C%22rarity%22%3A${iRaritybait}%2C%22item%22%3A${iItem}%7D"
  echo "Starting fishing session in slot ${iSlot}..."
  sendAJAXFarmUpdateRequest "slot=${iSlot}&selection=${sSelection}&mode=fishing_start_fishing"
@@ -2233,7 +2233,7 @@ function checkTrains {
  # prepare the data template
  # what we send to servers is not what we get back. there's data type mismatch and more.
  # in order to make our request seem genuine, we're pulling this stunt...
- local jData=$($JQBIN '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"]' $FARMDATAFILE | jq --compact-output '. |= { step: 4,
+ local jData=$($JQBIN '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"]' $FARMDATAFILE | $JQBIN --compact-output '. |= { step: 4,
  station: .station, slot: .slot, routes: .routes[0], trader: [(.traders[0] |
  tostring)], stats: { duration: .duration | tonumber, durability: .durability |
  tonumber, energy: .energy | tonumber }, train: .train, wagons: {} } + . |
@@ -2241,6 +2241,13 @@ function checkTrains {
  tonumber | .durability |= tonumber | .train |= tonumber | .wagons = {} |
  del(.id, .unr, .reward, .duration_save, .createdate, .finishdate, .remain,
  .traders, .duration, .durability, .energy)')
+ # get the carriage variant we'll be using for the current slot
+ iCarriageID=$($JQBIN -r '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"].wagons["1"].id' $FARMDATAFILE)
+ sCarriageVariant=$($JQBIN -r '.updateblock.train.data.trains["'${iCarriageID}'"].name?' $FARMDATAFILE)
+ if [ "$sCarriageVariant" = "null" ]; then
+  logToFile "${FUNCNAME}: Carriage variant could not be determined for slot $iSlot at station $iStation"
+  return
+ fi
  echo "Collecting reward from station ${iStation}, slot ${iSlot}..."
  sendAJAXFarmUpdateRequest "station=${iStation}&slot=${iSlot}&mode=train_claim_station_slot" && sleep 2
  aPIDs=$($JQBIN -r '.updateblock.train.data.traders["'${iTrader}'"].cart | keys[] | tonumber' $FARMDATAFILE)
@@ -2268,8 +2275,8 @@ function checkTrains {
  iCarriageIndex=0
  iSlot2Fill=1
  # get an id of a carriage
- read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
- if [ $iCarriageID = "null" ]; then
+ read iCarriageID iCarriageCapacity iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability $sCarriageVariant)
+ if [ "$iCarriageID" = "null" ]; then
   logToFile "${FUNCNAME}: No suitable carriage found"
   return
  fi
@@ -2295,8 +2302,8 @@ function checkTrains {
     sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
     return
    fi
-   read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
-   if [ $iCarriageID = "null" ]; then
+   read iCarriageID iCarriageCapacity iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability $sCarriageVariant)
+   if [ "$iCarriageID" = "null" ]; then
     logToFile "${FUNCNAME}: Train cannot be assembled, out of suitable carriages"
     return
    fi
@@ -2314,8 +2321,8 @@ function checkTrains {
     sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
     return
    fi
-   read iCarriageID iCarriageCapacity sCarriageVariant iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability)
-   if [ $iCarriageID = "null" ]; then
+   read iCarriageID iCarriageCapacity iSlotsAvailable <<<$(getCarriage $iStation $iCarriageIndex $iNeededDurability $sCarriageVariant)
+   if [ "$iCarriageID" = "null" ]; then
     logToFile "${FUNCNAME}: Train cannot be assembled, out of suitable carriages"
     return
    fi
@@ -2332,16 +2339,15 @@ function getCarriage {
  local iStation=$1
  local iCarriageIndex=$2
  local iNeededDurability=$3
+ local sCarriageVariant=$4
  local iCarriageID
  local iCarriageCapacity
- local sCarriageVariant
  local iSlotsAvailable
- # get and id of a suitable carriage
- iCarriageID=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0" and (.durability | tonumber) >= '${iNeededDurability}')]['${iCarriageIndex}'].id' $FARMDATAFILE)
- iCarriageCapacity=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0")]['${iCarriageIndex}'].maxcapacity' $FARMDATAFILE)
- sCarriageVariant=$($JQBIN -r '[.updateblock.train.data.trains[]|select(.station == "'${iStation}'" and (.name | startswith("wagon")) and .plan == "0")]['${iCarriageIndex}'].name' $FARMDATAFILE)
+ # get an id of a suitable carriage
+ iCarriageID=$($JQBIN -r '[.updateblock.train.data.trains[] | select(.station == "'${iStation}'" and .name == "'${sCarriageVariant}'" and .plan == "0" and (.durability | tonumber) >= '${iNeededDurability}')]['${iCarriageIndex}'].id' $FARMDATAFILE)
+ iCarriageCapacity=$($JQBIN -r '[.updateblock.train.data.trains[] | select(.station == "'${iStation}'" and .name == "'${sCarriageVariant}'" and .plan == "0")]['${iCarriageIndex}'].maxcapacity' $FARMDATAFILE)
  iSlotsAvailable=$($JQBIN -r '.updateblock.train.config.trains["'${sCarriageVariant}'"].slots' $FARMDATAFILE)
- echo "$iCarriageID $iCarriageCapacity $sCarriageVariant $iSlotsAvailable"
+ echo "$iCarriageID $iCarriageCapacity $iSlotsAvailable"
 }
 
 function doInfiniteQuest {
