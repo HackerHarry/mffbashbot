@@ -2291,9 +2291,6 @@ function checkTrains {
   while [ $iCarriageCapacity -le $iAmountNeeded ]; do
    jData=$(echo $jData | $JQBIN --compact-output '.wagons["'$((iCarriageIndex + 1))'"].id='${iCarriageID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].pid='${iPID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].amount='${iCarriageCapacity})
    iAmountNeeded=$((iAmountNeeded - iCarriageCapacity))
-   if [ $iAmountNeeded -le 0 ]; then
-    continue
-   fi
    # get new carriage
    iCarriageIndex=$((++iCarriageIndex))
    if [ $((iCarriageIndex + 1)) -gt $iCarriagesTrainCanPull ]; then
@@ -2308,6 +2305,9 @@ function checkTrains {
     return
    fi
    iSlot2Fill=1
+   if [ $iAmountNeeded -le 0 ]; then # issue #142
+    continue 2
+   fi
   done
   # non-overflow handling
   jData=$(echo $jData | $JQBIN --compact-output '.wagons["'$((iCarriageIndex + 1))'"].id='${iCarriageID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].pid='${iPID}' | .wagons["'$((iCarriageIndex + 1))'"].slots["'${iSlot2Fill}'"].amount='${iAmountNeeded})
