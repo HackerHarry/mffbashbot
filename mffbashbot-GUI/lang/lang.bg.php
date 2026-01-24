@@ -210,9 +210,9 @@ $strings['dogreenhouse-tt'] = 'Този бонус може да бъде съб
 $strings['spicehouseoven'] = 'Домашна фурна с подправки';
 $strings['saynotospicehousefarmies'] = 'Отпрати клиентите, които не могат да бъдат обслужени';
 $strings['saynotospicehousefarmies-tt'] = 'Това премахва клиентите, за които няма достатъчна наличност на продукти';
-$strings['servespicehousefarmies'] = 'n/a';
-$strings['servespicehousefarmies-tt'] = 'n/a';
-$strings['dotrains'] = 'n/a';
-$strings['dotrains-tt'] = 'n/a';
+$strings['servespicehousefarmies'] = 'Сервирай на клиентите в къщата за подправки';
+$strings['servespicehousefarmies-tt'] = 'Тази функция е предназначена за играчи, които са завършили шеста поредица от куестове и РАБОТИ САМО АКО неработещите клиенти на къщата за подправки бъдат изгонени!';
+$strings['dotrains'] = 'Товарене и изпращане на влакове';
+$strings['dotrains-tt'] = 'Влаковете се товарят и изпращат само ако са изпълнени всички предварителни изисквания.';
 // $strings[''] = '';
 ?>
