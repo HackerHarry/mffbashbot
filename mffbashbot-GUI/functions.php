@@ -1,6 +1,6 @@
 <?php
 // Functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-25 Harry Basalamah
+// Copyright 2016-26 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
@@ -213,9 +213,15 @@ function CreateSelectionsForBuildingID($BuildingID, $position) {
         echo "</select>\n";
         break;
   case 24:
-        // Spice house mill
+        // Gewürzmühle
         echo "<option value=\"sleep\">Sleep</option>\n";
         CreateOptions(1117, 1118, 1119, 1120, 1121, 1122, 1123, 1124, 1125, 1126);
+        echo "</select>\n";
+        break;
+  case 25:
+        // Marmeladenküche
+        echo "<option value=\"sleep\">Sleep</option>\n";
+        CreateOptions(1201, 1202, 1203, 1204, 1205, 1206, 1207, 1208, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 1216, 1217, 1218, 1219, 1220, 1221, 1222, 1223);
         echo "</select>\n";
         break;
   case "flowerarea":
@@ -477,6 +483,9 @@ function GetBuildingTypeForBuildingID($buildingID) {
   case 24:
 	return "SpiceHouse";
 	break;
+  case 25:
+	return "JamFactory";
+	break;
   default:
 	return "unsupported";
   }
@@ -517,6 +526,7 @@ function CreateOptionForQueueList($queueItem, $buildingType) {
    case "TeaFactory":
    case "SushiBar":
    case "SpiceHouse":
+   case "JamFactory":
    case "KnittingMill":
    case "OilMill":
    $queueItemFriendlyName = $productlist[intval($queueItem)];

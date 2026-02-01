@@ -1,5 +1,5 @@
 # Functions file for My Free Farm Bash Bot
-# Copyright 2016-25 Harry Basalamah
+# Copyright 2016-26 Harry Basalamah
 #
 # For license see LICENSE file
 
@@ -261,6 +261,29 @@ function startTeaFactory {
 
 function startTeaFactoryNP {
  startTeaFactory $1 $2 $3
+}
+
+function harvestJamFactory {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "position=${iPosition}&mode=crop&slot=${iRealSlot}&farm=${iFarm}"
+}
+
+function startJamFactory {
+ local iFarm=$1
+ local iPosition=$2
+ local iSlot=$3
+ local iPID=$(sed '2q;d' ${iFarm}/${iPosition}/${iSlot})
+ # PIDs start at 1 for this building type
+ iPID=$((iPID - 1200))
+ local iRealSlot=$(getRealSlotName $iFarm $iPosition $iSlot)
+ sendAJAXFarmRequest "farm=${iFarm}&position=${iPosition}&slot=${iRealSlot}&item=${iPID}&mode=start"
+}
+
+function startJamFactoryNP {
+ startJamFactory $1 $2 $3
 }
 
 function harvestFactory {
@@ -1724,7 +1747,7 @@ function getFreeBarrelSlot {
   echo "Buying a barrel of type #${iBarrelType} for slot ${iBarrelSlot}..."
   sendAJAXFarmUpdateRequest "type=barrels&slot=${iBarrelSlot}&id=${iBarrelType}&mode=vineyard_buy_shop_item"
  fi
- return ${iBarrelSlot}
+ return $iBarrelSlot
 }
 
 function harvestScouts {
@@ -2242,7 +2265,7 @@ function checkTrains {
  del(.id, .unr, .reward, .duration_save, .createdate, .finishdate, .remain,
  .traders, .duration, .durability, .energy)')
  # get the carriage variant we'll be using for the current slot
- iCarriageID=$($JQBIN -r '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"].wagons["1"].id' $FARMDATAFILE)
+ iCarriageID=$($JQBIN -r '.updateblock.train.data.plans["'${iStation}'"]["'${iSlot}'"].wagons | first(.[]).id' $FARMDATAFILE)
  sCarriageVariant=$($JQBIN -r '.updateblock.train.data.trains["'${iCarriageID}'"].name?' $FARMDATAFILE)
  if [ "$sCarriageVariant" = "null" ]; then
   logToFile "${FUNCNAME}: Carriage variant could not be determined for slot $iSlot at station $iStation"
@@ -2266,11 +2289,15 @@ function checkTrains {
  iNeededEnergy=$(echo $jData | $JQBIN -r '.stats.energy')
  iDurability=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].durability' $FARMDATAFILE)
  iEnergy=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].energy' $FARMDATAFILE)
- if [ $((iDurability - iNeededDurability)) -le 0 ] || [ $((iEnergy - iNeededEnergy)) -le 0 ]; then
-  logToFile "${FUNCNAME}: Train cannot be loaded, engine has insufficient durability or energy"
-  return
- fi
  sTrainVariant=$($JQBIN -r '.updateblock.train.data.trains["'${iTrainID}'"].name' $FARMDATAFILE)
+ if [ $((iDurability - iNeededDurability)) -le 0 ] || [ $((iEnergy - iNeededEnergy)) -le 0 ]; then
+  iTrainID=$(getTrain $iStation $iNeededEnergy $iNeededDurability $sTrainVariant)
+  if [ "$iTrainID" = "null" ]; then
+   logToFile "${FUNCNAME}: Train cannot be loaded, no suitable engine available"
+   return
+  fi
+  jData=$(echo $jData | $JQBIN --compact-output '.train='${iTrainID})
+ fi
  iCarriagesTrainCanPull=$($JQBIN -r '.updateblock.train.config.trains["'${sTrainVariant}'"].wagons' $FARMDATAFILE)
  iCarriageIndex=0
  iSlot2Fill=1
@@ -2333,6 +2360,17 @@ function checkTrains {
  jData=$(echo $jData | $JQBIN --compact-output '.' | $JQBIN -r @uri)
  echo "Sending train from station ${iStation}, slot ${iSlot} to trader ${iTrader}..."
  sendAJAXFarmUpdateRequest "plan=${jData}&mode=train_save_plan"
+}
+
+function getTrain {
+ local iStation=$1
+ local iNeededEnergy=$2
+ local iNeededDurability=$3
+ local sTrainVariant=$4
+ local iTrainID
+ # get an id of a suitable engine
+ iTrainID=$($JQBIN -r '[.updateblock.train.data.trains[] | select(.station == "'${iStation}'" and .name == "'${sTrainVariant}'" and .plan == "0" and (.durability | tonumber) >= '${iNeededDurability}' and (.energy | tonumber) >= '${iNeededEnergy}').id][0]' $FARMDATAFILE)
+ echo $iTrainID
 }
 
 function getCarriage {
