@@ -1,6 +1,6 @@
 <?php
 // Save functions file for My Free Farm Bash Bot (front end)
-// Copyright 2016-25 Harry Basalamah
+// Copyright 2016-26 Harry Basalamah
 // Parts of the graphics used are Copyright upjers GmbH
 //
 // For license see LICENSE file
