@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Install script for My Free Farm Bash Bot on GNU/Linux
-# Tested on Debian 8 - 12, Ubuntu 16.04.1 LTS, Linux Mint 19 & 21, Devuan 5
+# Tested on Debian 8 - 13, Ubuntu 16.04.1 LTS, Linux Mint 19 & 21, Devuan 5
 # and Bash on Windows 10 x64 Version 1703 Build 15063.0
 set -e
 
@@ -27,14 +27,14 @@ fi
 if [ -f /etc/debian_version ]; then
  DVER=$(cat /etc/debian_version)
 else
- echo "Sorry, only Debian Jessie, Stretch and Buster are supported for the time being. Bailing out."
+ echo "Sorry, only Debian 8 - 13 are supported for the time being. Bailing out."
  exit 1
 fi
 case $DVER in
  8.*|*essie*)
   PHPV=php5-cgi
   ;;
- 9.*|10.*|11.*|12.*|*tretch*|*uster*|*ookworm*|*sid*)
+ 9.*|10.*|11.*|12.*|13.*|*tretch*|*uster*|*ookworm*|*rixie*|*sid*)
   PHPV=php-cgi
   ;;
 esac
@@ -66,7 +66,7 @@ find . -type d -exec chmod 775 {} +
 find . -type f -exec chmod 664 {} +
 chmod +x *.sh
 case $DVER in
- 12.*|*ookworm*|*sid*)
+ 12.*|13.*|*ookworm*|*rixie*|*sid*)
   chmod g+rx ~
   ;;
 esac
@@ -100,6 +100,17 @@ fi
 if ! grep -q 'server\.stream-response-body\s\+=\s\+1' $LCONF; then
  echo "server.stream-response-body = 1" | sudo tee --append $LCONF > /dev/null
 fi
+case $DVER in
+ 13.*|*rixie*|*sid*)
+  sudo mkdir -p /etc/systemd/system/lighttpd.service.d
+  echo '[Service]
+ProtectHome=no
+NoNewPrivileges=no
+PrivateTmp=no
+ProtectProc=default' | sudo tee /etc/systemd/system/lighttpd.service.d/systemd-sucks.conf > /dev/null
+  sudo systemctl daemon-reload
+  ;;
+esac
 
 sudo /etc/init.d/lighttpd restart
 

@@ -5,6 +5,12 @@
 //
 // For license see LICENSE file
 //
+if (!isset($farm))
+ $farm = 1;
+if ($farm == "runbot") {
+ exec("script/wakeupthebot.sh " . $gamepath);
+ $farm = 1;
+}
 echo "<!DOCTYPE html>
 <html>
 <head>
@@ -16,12 +22,6 @@ echo "<!DOCTYPE html>
 </head>
 <body id=\"main_body\" class=\"main_body\" onload=\"updateBotStatus()\">\n";
 
-if (!isset($farm))
- $farm = 1;
-if ($farm == "runbot") {
- exec("script/wakeupthebot.sh " . $gamepath);
- $farm = 1;
-}
 include 'JSfunctions.php';
 $botver = file_get_contents($gamepath . "/../version.txt");
 echo "<nav class=\"navbar btn-dark bg-dark fixed-top\">
