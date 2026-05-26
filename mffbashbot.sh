@@ -277,6 +277,15 @@ while (true); do
      fi
      continue
     fi
+#    if [ "$BUILDINGID" = "22" ]; then
+     # unused code - mountain station
+#     echo "Checking for pending tasks at mountain station..."
+#     if checkTimeRemaining '.updateblock.hillwalk.data.tour.remain'; then
+#      echo "Collecting reward from mountain station..."
+#      doHillWalk
+#     fi
+#     continue
+#    fi
     if [ "$BUILDINGID" = "23" ]; then
      # sushi bar
      echo "Checking for pending tasks in sushi bar..."
@@ -645,6 +654,13 @@ while (true); do
   fi
 
   # contents of FARMDATAFILE change from here !
+
+# unused code - bingo event
+#  WGETREQ "${AJAXFARM}mode=bingo_init" $FARMDATAFILE
+#  if checkTimeRemaining '.datablock.data.freespin_remain'; then
+#   echo "Collecting free bingo spin..."
+#   sendAJAXFarmRequest "mode=bingo_get_free_spin"
+#  fi
 
   # olympia / winter sports event
   if grep -q "doolympiaevent = 1" $CFGFILE; then

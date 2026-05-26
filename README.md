@@ -5,13 +5,14 @@ English text further [down](#english)
 
 Ein Bot für das Browser-Spiel "My Free Farm".
 
-Es sei an dieser Stelle deutlichst darauf hingewiesen, dass der Gebrauch<br>
-von Bots gegen die AGB des Betreibers verstösst und u.a. eine Löschung<br>
-des Spielerkontos zur Folge haben kann!<br>
-Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**.
+> [!WARNING]
+> Es sei an dieser Stelle deutlichst darauf hingewiesen, dass der Gebrauch<br>
+> von Bots gegen die AGB des Betreibers verstösst und u.a. eine Löschung<br>
+> des Spielerkontos zur Folge haben kann!<br>
+> Der Einsatz dieser Skripte geschieht auf **eigenes Risiko**.
 
-Auch möchte ich euch ermutigen, die Farmspiel-Entwickler durch den Kauf von<br>
-Coins zu unterstützen.
+> [!NOTE]
+> Bitte unterstützt die Farmspiel-Entwickler durch den Kauf von Coins.
 
 Diesen Bot hätte es sicher nicht ohne die hervorragende Arbeit von<br>
 [@Bastian Kanaan](https://github.com/BastianKanaan) gegeben. Sein 'Berater' und 'Automat' leisten vielen Spielern<br>
@@ -26,11 +27,13 @@ Fragen und Kommentare richtet ihr bitte ans [Forum](http://myfreefarm-berater.fo
 
 A bot for the browser game "My Free Farm".
 
-Be advised, that the usage of bots is against the game provider's terms and<br>
-conditions. Your game account may be suspended.<br>
-Use the bot scripts at your **own risk**.
+> [!WARNING]
+> Be advised, that the usage of bots is against the game provider's terms and<br>
+> conditions. Your game account may be suspended.<br>
+> Use the bot scripts at your **own risk**.
 
-I want to encourage you, to support the game designers by purchasing coins.
+> [!NOTE]
+> Please support the game designers by purchasing coins.
 
 This bot would not have seen the light of day without the superb work of<br>
 [@Bastian Kanaan](https://github.com/BastianKanaan). His 'Adviser' and 'Automaton' have been working for many gamers<br>

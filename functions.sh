@@ -3292,6 +3292,19 @@ function startEventGardenNP {
  startEventGarden $1 $2 $3
 }
 
+function doHillWalk {
+ # unused function. starts a hill walk tour using the the previous configuration
+ local jData
+ local iStations
+ local sHelper="&helper_stamina=1&helper_duration=4"
+ # isolate old tour data
+ jData=$($JQBIN --compact-output '.updateblock.hillwalk.data.tour.tour' $FARMDATAFILE | $JQBIN -r @uri)
+ iStations=$($JQBIN '.updateblock.hillwalk.data.tour.tour | length' $FARMDATAFILE)
+ sendAJAXFarmRequest "mode=hillwalk_finish_tour" && sleep 2
+ echo "Starting mountain station tour to $iStation stations..."
+ sendAJAXFarmRequest "tour=${jData}${sHelper}&mode=hillwalk_start_tour"
+}
+
 function getAnimalQueueLength {
  local iAnimalQueueLength=$($JQBIN '.updateblock.farmersmarket.vet.animals.queue | length' $FARMDATAFILE)
  return $iAnimalQueueLength
