@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install script for My Free Farm Bash Bot on GNU/Linux
-# Tested on Debian 8 - 13, Ubuntu 16.04.1 LTS, Linux Mint 19 & 21, Devuan 5
-# and Bash on Windows 10 x64 Version 1703 Build 15063.0
+# Tested on Debian 8-13, Ubuntu 16.04 & 24.04 LTS, Linux Mint 19 & 21, Devuan 5,
+# WSL on Windows 10 x64 Version 1703 and WSL 2 on Windows 11 Version 25H2.
 set -e
 
 echo "Running apt-get update..."
