@@ -6,6 +6,15 @@
 #
 
 #variables
+# macOS uses a different, self-contained layout (GUI served from
+# ~/mffbashbot/mffbashbot-GUI, no /var/www, no init.d). The Linux/Cygwin
+# update flow below does not apply. Update via git instead.
+if uname -a | grep -qi "darwin"; then
+ echo "On macOS please update with:"
+ echo "  cd ~/mffbashbot && git pull && ./install-macos.sh"
+ echo "(install-macos.sh re-applies the config.php and lighttpd patches.)"
+ exit 0
+fi
 BOTGUIROOT=/var/www/html/mffbashbot
 LCONF=/etc/lighttpd/lighttpd.conf
 DIRS=( 1/1

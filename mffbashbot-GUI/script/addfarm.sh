@@ -137,7 +137,15 @@ ovenslot2 = 0
 ovenslot3 = 0
 dotrains = 0"
 
-if ! uname -a | grep -qi "cygwin"; then
+# OS detection (added for macOS support)
+# ISLINUX stays unset on Cygwin and macOS so the Linux-only chgrp/stat block
+# below is skipped (there the web server runs as the current user already).
+if uname -a | grep -qi "cygwin"; then
+ OS=cygwin
+elif uname -a | grep -qi "darwin"; then
+ OS=macos
+else
+ OS=linux
  ISLINUX=mostlikely
 fi
 INDEX=0
@@ -292,17 +300,24 @@ fi
 
 # re-create the start script
 cd "$GAMEPATH"/..
-aFARMS=($(ls -d */ | tr -d '/'))
+# a farm is a directory that contains a config.ini; this skips non-farm
+# directories such as mffbashbot-GUI that may live next to the farms on macOS
+aFARMS=(); for _d in */; do [ -f "${_d}config.ini" ] && aFARMS+=("${_d%/}"); done
 COUNT=1
 FARMCOUNT=${#aFARMS[*]}
 
-if [ "$ISLINUX" = "mostlikely" ]; then
- echo '#!/usr/bin/env bash
-sudo /etc/init.d/lighttpd start' >$STARTSCRIPT
-else
- echo '#!/usr/bin/env bash
-/usr/sbin/lighttpd -f '$LCONF >$STARTSCRIPT
-fi
+echo '#!/usr/bin/env bash' >$STARTSCRIPT
+case "$OS" in
+ macos)
+  # derive paths from the current dir (the bot root) rather than $HOME,
+  # which is not reliably set when the GUI runs this under lighttpd/php-cgi
+  _LTBIN="$(command -v lighttpd || true)"; [ -z "$_LTBIN" ] && _LTBIN="$(brew --prefix)/sbin/lighttpd"
+  echo "pkill -x lighttpd 2>/dev/null; sleep 1" >>$STARTSCRIPT
+  echo "$_LTBIN -f $PWD/lighttpd-macos.conf" >>$STARTSCRIPT
+  ;;
+ cygwin) echo "/usr/sbin/lighttpd -f $LCONF" >>$STARTSCRIPT ;;
+ *)      echo 'sudo /etc/init.d/lighttpd start' >>$STARTSCRIPT ;;
+esac
 echo "screen -DRS mffbashbot -X quit >/dev/null" >>$STARTSCRIPT
 echo "sleep 3 && screen -wipe mffbashbot >/dev/null" >>$STARTSCRIPT
 echo "echo \"Starting farm ${aFARMS[0]}...\"" >>$STARTSCRIPT

@@ -3,6 +3,14 @@
 #
 # For license see LICENSE file
 
+# Portable in-place sed replacement.
+# GNU sed (Linux/Cygwin) accepts "sed -i", but BSD sed (macOS) requires a
+# backup suffix argument. Using "-i.bak" works on both; we then remove the
+# backup file. Usage: sedInPlace 'sedexpression' /path/to/file
+function sedInPlace {
+ sed -i.bak "$1" "$2" && rm -f "$2.bak"
+}
+
 function WGETREQ {
  local sHTTPReq=$1
  local sOut=${2:-/dev/null}
@@ -3946,7 +3954,7 @@ function checkCalendarEvent {
  iEventDaysCount=$($JQBIN '.datablock.config.fields | length' $TMPFILE)
  if [ $iDay -gt $iEventDaysCount ]; then
   echo "Event period is over, deactivating feature..."
-  sed -i 's/docalendarevent = 1/docalendarevent = 0/' $CFGFILE
+  sedInPlace 's/docalendarevent = 1/docalendarevent = 0/' "$CFGFILE"
   return
  fi
  bPresentCollected=$($JQBIN '.datablock.data.days["'${iDay}'"]? | type == "object"' $TMPFILE)

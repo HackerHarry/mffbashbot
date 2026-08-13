@@ -35,6 +35,9 @@ if (version_compare($botver, $versionavailable) == -1) {
  <button id=\"updatebtn\" onclick=\"confirmUpdate()\">{$strings['updateto']} $versionavailable</button>
  <small> -- {$strings['historyishere']}</small></div>";
 }
+echo " -- <form method=\"post\" action=\"queueoverview.php\" style=\"display:inline; margin:0\">
+<input type=\"hidden\" name=\"username\" value=\"$username\">
+<button class=\"btn btn-outline-light btn-sm\" type=\"submit\">Warteschlangen-Übersicht</button></form>";
 echo "</nav><br><br>\n";
 // i know... this bottom bar shouldn't be in this file...
 echo "<nav id=\"bottombar\" class=\"navbar btn-dark bg-dark fixed-bottom\" style=\"display: none\">

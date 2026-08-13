@@ -47,22 +47,33 @@ if ! rm -rf "$GAMEPATH"; then
  exit 1
 fi
 
-if ! uname -a | grep -qi "cygwin"; then
+# OS detection (added for macOS support)
+if uname -a | grep -qi "cygwin"; then
+ OS=cygwin
+elif uname -a | grep -qi "darwin"; then
+ OS=macos
+else
+ OS=linux
  ISLINUX=mostlikely
 fi
 
-# re-create the start script
-aFARMS=($(ls -d */ | tr -d '/'))
+# re-create the start script (we are already in the bot root, see cd above)
+# a farm is a directory that contains a config.ini; this skips non-farm
+# directories such as mffbashbot-GUI that may live next to the farms on macOS
+aFARMS=(); for _d in */; do [ -f "${_d}config.ini" ] && aFARMS+=("${_d%/}"); done
 COUNT=1
 FARMCOUNT=${#aFARMS[*]}
 
-if [ "$ISLINUX" = "mostlikely" ]; then
- echo '#!/usr/bin/env bash
-sudo /etc/init.d/lighttpd start' >$STARTSCRIPT
-else
- echo '#!/usr/bin/env bash
-/usr/sbin/lighttpd -f '$LCONF >$STARTSCRIPT
-fi
+echo '#!/usr/bin/env bash' >$STARTSCRIPT
+case "$OS" in
+ macos)
+  _LTBIN="$(command -v lighttpd || true)"; [ -z "$_LTBIN" ] && _LTBIN="$(brew --prefix)/sbin/lighttpd"
+  echo "pkill -x lighttpd 2>/dev/null; sleep 1" >>$STARTSCRIPT
+  echo "$_LTBIN -f $PWD/lighttpd-macos.conf" >>$STARTSCRIPT
+  ;;
+ cygwin) echo "/usr/sbin/lighttpd -f $LCONF" >>$STARTSCRIPT ;;
+ *)      echo 'sudo /etc/init.d/lighttpd start' >>$STARTSCRIPT ;;
+esac
 echo "screen -DRS mffbashbot -X quit >/dev/null" >>$STARTSCRIPT
 echo "sleep 3 && screen -wipe mffbashbot >/dev/null" >>$STARTSCRIPT
 echo "echo \"Starting farm ${aFARMS[0]}...\"" >>$STARTSCRIPT

@@ -333,6 +333,12 @@ while (true); do
        echo "..."
       fi
       doFarm ${FARM} ${POSITION} ${SLOT}
+     elif [ "$BUILDINGID" = "1" ] && [ "$($JQBIN '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].production['${SLOT}']?' $FARMDATAFILE)" = "null" ]; then
+      # empty field (no crop growing): sow the queued crop on the bare plots.
+      # doFarm skips by itself if the queue is empty/set to sleep, harvestFarm
+      # is a no-op on an empty field, and startFarm(NP) plants + waters.
+      echo "Sowing empty farm ${FARM}, position ${POSITION}, slot ${SLOT}..."
+      doFarm ${FARM} ${POSITION} ${SLOT}
      fi
      if [ $SLOT -eq 0 ]; then
       if checkTimeRemaining '.updateblock.farms.farms["'${FARM}'"]["'${POSITION}'"].water[0].waterremain'; then
@@ -344,8 +350,8 @@ while (true); do
    done
   done
   # reset one-shot flags if set
-  sed -i 's/correctqueuenum = 1/correctqueuenum = 0/' $CFGFILE
-  sed -i 's/removeweed = 1/removeweed = 0/' $CFGFILE
+  sedInPlace 's/correctqueuenum = 1/correctqueuenum = 0/' "$CFGFILE"
+  sedInPlace 's/removeweed = 1/removeweed = 0/' "$CFGFILE"
 
   # work farmers market
   if [ $PLAYERLEVELNUM -ge 23 ]; then
@@ -569,7 +575,7 @@ while (true); do
    echo "Checking for pending tasks in event garden..."
    if ! checkEventGarden; then
     # turn off event garden feature
-    sed -i 's/doeventgarden = 1/doeventgarden = 0/' $CFGFILE
+    sedInPlace 's/doeventgarden = 1/doeventgarden = 0/' "$CFGFILE"
    fi
   fi
 

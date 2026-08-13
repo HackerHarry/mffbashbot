@@ -9,7 +9,9 @@
 
 # variable 1 is mandatory
 : ${1:?No game path provided}
-if ! uname -a | grep -qi "cygwin"; then
+# On Cygwin and macOS the web server runs as the current user, so no sudo
+# is needed (or available) to signal our own bot process.
+if ! uname -a | grep -qiE "cygwin|darwin"; then
  SUDO=sudo
 fi
 GAMEPATH=$1

@@ -73,7 +73,8 @@ for iCount in {1..35}; do
 done
 echo "}" >>$FORMULAS
 # PHP is allergic to that last comma...
-sed -i 's/,}/}/' $FORMULAS
+# portable in-place sed (GNU/Linux/Cygwin and BSD/macOS)
+sed -i.bak 's/,}/}/' "$FORMULAS" && rm -f "$FORMULAS.bak"
 # create list of available event garden crop
 grep 'var products_eventgarden =' $OUTFILE | sed  's/var products_eventgarden = //'  | sed 's/};/}/' | jq '[. | to_entries[] | { (.key): .value.name }] | add' >$EVTGARDENCROP
 

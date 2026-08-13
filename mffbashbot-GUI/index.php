@@ -52,7 +52,7 @@ include 'functions.php';
 <?php
 $username = "./";
 include 'config.php';
-system('cd ' . $gamepath . ' ; for farm in $(ls -d */ | tr -d \'/\'); do echo -n "   farmno[\"$farm\"] = "; grep server $farm/config.ini | awk \'{ printf "%i", $3 }\'; echo ";"; done');
+system('cd ' . $gamepath . ' ; for d in */; do [ -f "${d}config.ini" ] || continue; farm=${d%/}; printf "   farmno[\"$farm\"] = "; grep server "$farm/config.ini" | awk \'{ printf "%i", $3 }\'; echo ";"; done');
 unset($username);
 ?>
    document.forms.logon.serverdummy.options[farmno[farmname]].selected = true;
@@ -97,7 +97,7 @@ if (file_exists("klubauftrag-mengenberechnung.html"))
 <?php
 $username = "./";
 include 'config.php';
-system("cd " . $gamepath . " ; ls -d */ | tr -d '/' | sed -e 's/^\\(.*\\)$/     <option>\\1<\\/option>/'");
+system("cd " . $gamepath . " ; for d in */; do [ -f \"\${d}config.ini\" ] && echo \"     <option>\${d%/}</option>\"; done");
 unset($username);
 ?>
      </select>
